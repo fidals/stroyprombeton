@@ -1,0 +1,11 @@
+Django
+django-mptt
+django-widget-tweaks
+selenium
+selenium-requests
+psycopg2
+unidecode
+-e git+https@github.com:fidals/refarm-catalog.git#egg=refarm-catalog
+-e git+https@github.com:fidals/refarm-blog.git#egg=refarm-blog
+-e git+https@github.com:fidals/refarm-seo.git#egg=refarm-seo
+-e git+https@github.com:fidals/refarm-ecommerce.git#egg=refarm-ecommerce
