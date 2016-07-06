@@ -1,0 +1,10 @@
+// ================================================================
+// We use only woff & woff2 formats.
+// ================================================================
+@font-face {
+  font-family: "FontAwesome";
+  src: url("#{$font-path}/fontawesome-webfont.woff2?v=4.6.3") format("woff2"),
+       url("#{$font-path}/fontawesome-webfont.woff?v=4.6.3") format("woff");
+  font-weight: normal;
+  font-style: normal;
+}

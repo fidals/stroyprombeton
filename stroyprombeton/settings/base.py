@@ -72,6 +72,7 @@ TEMPLATES = [
             'context_processors': [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
+                'django.template.context_processors.media',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'django.core.context_processors.static',
@@ -120,6 +121,13 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'front/build'),
+]
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
 # refarm-blog config
 # Each post type can have it's own alias
 # For config below, page types will have different urls:
@@ -140,5 +148,20 @@ PRODUCTS_TO_LOAD = 30
 
 PRODUCT_MODEL = 'stroyprombeton.Product'
 CART_ID = 'cart'
+
+BASE_URL = 'http://www.stroyprombeton.ru'
+SITE_CREATED = datetime(2013, 1, 1)
+
+IMAGES = {
+    'large': 'main',
+    'small': 'small',
+    'thumbnail': 'logo.png'
+}
+
+SITE_ID = 1
+SITE_DOMAIN_NAME = 'www.stroyprombeton.ru'
+
+# Uncomment for http->https change
+# os.environ['HTTPS'] = 'on'
 
 from .local import *

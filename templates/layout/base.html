@@ -1,0 +1,48 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+
+  <title>{% block title %}{{ meta.title }}{% endblock %}</title>
+
+  <meta name="keywords" content="{% block keywords %}{{ meta.keywords }}{% endblock %}">
+  <meta name="description" content="{% block description %}{{ meta.description }}{% endblock %}">
+
+  <link rel="icon" type="image/x-icon" href="{% static 'images/favicon.ico' %}">
+
+  {% block stylesheets %}
+    <link rel="stylesheet" href="{% static 'css/styles.min.css' %}">
+  {% endblock %}
+</head>
+
+<body>
+<div class="line-through"></div>
+<div class="page-wrapper">
+  {% block header %}
+    {% include 'layout/header.html' %}
+  {% endblock %}
+
+  <div class="page-content clearfix">
+    {% block content %}{% endblock %}
+  </div>
+
+  {% block footer %}
+    {% include 'layout/footer.html' %}
+  {% endblock %}
+</div>
+<div class="line-through line-through-bottom"></div>
+
+<div class="btn-scroll-to-top" id="btn-scroll-to-top">Наверх</div>
+
+{% block jslibs %}
+  <script src="{% static 'js/vendors.min.js' %}"></script>
+{% endblock %}
+
+{% block jslinks %}
+  <script src="{% static 'js/main.min.js' %}"></script>
+{% endblock %}
+
+{% include 'layout/marketing.html' %}
+</body>
+</html>
