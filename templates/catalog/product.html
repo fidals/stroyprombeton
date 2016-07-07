@@ -1,0 +1,98 @@
+{% extends "layout/base.html" %}
+{% load staticfiles %}
+
+{% block main-content %}
+  {% include 'layout/breadcrumbs.html' %}
+
+  <div class="product-header">
+    <h1 class="product-header-title">Плита лицевая железобетонная ПЛ5-1</h1>
+  </div>
+
+  <div class="product">
+    <div class="product-main">
+      <div class="product-photo">
+        <img class="img-responsive" src="{{ MEDIA_URL }}products/1/main.jpg">
+      </div>
+
+      <div class="product-info">
+        <h2>Характеристики</h2>
+        <table class="props-tbl" cellpadding="5">
+          <tbody>
+          <tr>
+            <td class="product-desc-left-col">Код</td>
+            <td class="product-desc-right-col">11202024</td>
+          </tr>
+
+          <tr>
+            <td class="product-desc-left-col">Марка ЖБИ</td>
+            <td class="product-desc-right-col">ПЛ5-1</td>
+          </tr>
+
+          <tr>
+            <td class="product-desc-left-col">Рабочая документация</td>
+            <td class="product-desc-right-col">Серия 3.002.1-1, выпуск 1</td>
+          </tr>
+
+          <tr>
+            <td class="product-desc-left-col">Длина (мм)</td>
+            <td class="product-desc-right-col">2980</td>
+          </tr>
+
+          <tr>
+            <td class="product-desc-left-col">Ширина (мм)</td>
+            <td class="product-desc-right-col">3000</td>
+          </tr>
+
+          <tr>
+            <td class="product-desc-left-col">Высота (мм)</td>
+            <td class="product-desc-right-col">250</td>
+          </tr>
+
+          <tr>
+            <td class="product-desc-left-col">Масса (кг)</td>
+            <td class="product-desc-right-col">3400</td>
+          </tr>
+
+          <tr>
+            <td class="product-desc-left-col">Объем (м3)</td>
+            <td class="product-desc-right-col">1.35</td>
+          </tr>
+
+          <tr>
+            <td class="product-desc-left-col">
+              <div class="product-price">
+                <span>Цена:</span>
+              </div>
+            </td>
+            <td class="product-desc-right-col">
+              <div class="product-price">
+                29500 руб.
+              </div>
+            </td>
+          </tr>
+
+          <tr>
+            <td class="product-desc-left-col">
+              <div class="shk_basket_count" style="float: none !important;">
+                <input class="basket-rest" type="text" name="shk-count" value="1" size="2" code="5933" maxlength="5">
+                <img class="field-arr-up" src="{% static 'images/spin-up.png' %}">
+                <img class="field-arr-down" src="{% static 'images/spin-down.png' %}">
+              </div>
+            </td>
+            <td class="product-desc-right-col">
+              <input class="btn btn-red add-basket" id="shk-submit-5933" type="button"
+                     name="shk-submit" value="Заказать" data-tooltip="Товар добавлен в заказ">
+            </td>
+          </tr>
+
+          <tr>
+          </tr>
+          </tbody>
+        </table>
+        <div class="product-for-nds">
+          <p>Цена указана с учетом НДС. Не является публичной офертой.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}

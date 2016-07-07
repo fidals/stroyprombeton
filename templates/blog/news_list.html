@@ -1,0 +1,93 @@
+{% extends "layout/base.html" %}
+
+{% block main-content %}
+  <h1>Новости компании</h1>
+  <ul class="informer">
+    <li>
+      <div class="news_img">
+        <a href="{% url 'news_item' %}">
+          <img class="img-responsive" src="{{ MEDIA_URL }}/news/02-10-15/100x100.jpg">
+        </a>
+      </div>
+      <i>03.06.2016</i><br>
+      <a href="{% url 'news_item' %}">Запустили серийное производство блоков "Нью Джерси"</a>
+      <div class="inf_intro">В соответствии с нашими планами по развитию предприятия в этом году мы наладили серийный
+        выпуск железобетонных блоков удерживающих ограждений типа «Нью Джерси».
+      </div>
+    </li>
+
+    <li>
+      <div class="news_img">
+        <a href="{% url 'news_item' %}">
+          <img class="img-responsive" src="{{ MEDIA_URL }}/news/02-10-15/100x100.jpg">
+        </a>
+      </div>
+      <i>03.06.2016</i><br>
+      <a href="{% url 'news_item' %}">Запустили серийное производство блоков "Нью Джерси"</a>
+      <div class="inf_intro">В соответствии с нашими планами по развитию предприятия в этом году мы наладили серийный
+        выпуск железобетонных блоков удерживающих ограждений типа «Нью Джерси».
+      </div>
+    </li>
+
+    <li>
+      <div class="news_img">
+        <a href="{% url 'news_item' %}">
+          <img class="img-responsive" src="{{ MEDIA_URL }}/news/02-10-15/100x100.jpg">
+        </a>
+      </div>
+      <i>03.06.2016</i><br>
+      <a href="{% url 'news_item' %}">Запустили серийное производство блоков "Нью Джерси"</a>
+      <div class="inf_intro">В соответствии с нашими планами по развитию предприятия в этом году мы наладили серийный
+        выпуск железобетонных блоков удерживающих ограждений типа «Нью Джерси».
+      </div>
+    </li>
+
+    <li>
+      <div class="news_img">
+        <a href="{% url 'news_item' %}">
+          <img class="img-responsive" src="{{ MEDIA_URL }}/news/02-10-15/100x100.jpg">
+        </a>
+      </div>
+      <i>03.06.2016</i><br>
+      <a href="{% url 'news_item' %}">Запустили серийное производство блоков "Нью Джерси"</a>
+      <div class="inf_intro">В соответствии с нашими планами по развитию предприятия в этом году мы наладили серийный
+        выпуск железобетонных блоков удерживающих ограждений типа «Нью Джерси».
+      </div>
+    </li>
+
+    <li>
+      <div class="news_img">
+        <a href="{% url 'news_item' %}">
+          <img class="img-responsive" src="{{ MEDIA_URL }}/news/02-10-15/100x100.jpg">
+        </a>
+      </div>
+      <i>03.06.2016</i><br>
+      <a href="{% url 'news_item' %}">Запустили серийное производство блоков "Нью Джерси"</a>
+      <div class="inf_intro">В соответствии с нашими планами по развитию предприятия в этом году мы наладили серийный
+        выпуск железобетонных блоков удерживающих ограждений типа «Нью Джерси».
+      </div>
+    </li>
+  </ul>
+  <p>Страницы:</p>
+  <ul class="pagination">
+    <li class="disabled">
+      <span>«&nbsp;Previous</span>
+    </li>
+
+    <li class="active">
+      <span>1</span>
+    </li>
+
+    <li>
+      <a href="/blog/news/2">2</a>
+    </li>
+
+    <li>
+      <a href="/blog/news/3">3</a>
+    </li>
+
+    <li>
+      <a href="/blog/news/2">Next&nbsp;»</a>
+    </li>
+  </ul>
+{% endblock %}

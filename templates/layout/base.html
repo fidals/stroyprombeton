@@ -24,7 +24,27 @@
   {% endblock %}
 
   <div class="page-content clearfix">
-    {% block content %}{% endblock %}
+    {# Left sidebar with accordion & banners #}
+    {% include 'layout/sidebar.html' %}
+
+    <div class="content-container">
+      <div class="content">
+        {# Section with search input #}
+        {% include 'layout/search.html' %}
+
+        <div class="primary-content">
+          {% block main-content %}
+            <h1>Завод железобетонных изделий «СТК-Промбетон»</h1>
+
+            {# Section with carousel & news #}
+            {% include 'index/news.html' %}
+
+            {# Products types list #}
+            {% include 'index/list.html' %}
+          {% endblock %}
+        </div>
+      </div>
+    </div>
   </div>
 
   {% block footer %}

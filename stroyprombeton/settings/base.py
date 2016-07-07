@@ -164,4 +164,10 @@ SITE_DOMAIN_NAME = 'www.stroyprombeton.ru'
 # Uncomment for http->https change
 # os.environ['HTTPS'] = 'on'
 
+CRUMBS = {
+    'main': 'Главная',
+    'catalog': 'Каталог',
+    'blog': 'Список страниц',
+}
+
 from .local import *

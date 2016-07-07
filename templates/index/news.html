@@ -8,12 +8,12 @@
           <div class="random_list_main">
             <div>
               <div class="inf-product-header">
-                <a href="/products/1/">Плита П1,5х2,2</a>
+                <a href="{% url 'product' %}1">Плита П1,5х2,2</a>
               </div>
               <div class="text-center">
                 <div class="inf-product-photo">
-                  <a href="/products/1/">
-                    <img class="shk-image" src="{{ MEDIA_URL }}products/1/1-th.jpg">
+                  <a href="{% url 'product' %}1">
+                    <img class="img-respnsive shk-image" src="{{ MEDIA_URL }}products/1/small.jpg">
                   </a>
                 </div>
               </div>
@@ -62,7 +62,7 @@
               </div>
               <div style="clear: both;"></div>
               <div class="inf_footer">
-                <a href="/products/1/">Подробнее</a>
+                <a href="{% url 'product' %}1">Подробнее</a>
               </div>
             </div>
           </div>

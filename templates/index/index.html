@@ -1,23 +1,11 @@
 {% extends "layout/base.html" %}
-{% load staticfiles %}
-{% block content %}
-  {# Left sidebar with accordion & banners #}
-  {% include 'index/sidebar.html' %}
 
-  <div class="content-container">
-    <div class="content">
-      {# Section with search input #}
-      {% include 'index/search.html' %}
+{% block main-content %}
+  <h1>Завод железобетонных изделий «СТК-Промбетон»</h1>
 
-      <div class="primary-content">
-        <h1>Завод железобетонных изделий «СТК-Промбетон»</h1>
+  {# Section with carousel & news #}
+  {% include 'index/news.html' %}
 
-        {# Section with carousel & news #}
-        {% include 'index/news.html' %}
-
-        {# Products types list #}
-        {% include 'index/list.html' %}
-      </div>
-    </div>
-  </div>
+  {# Products types list #}
+  {% include 'index/list.html' %}
 {% endblock %}

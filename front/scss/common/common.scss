@@ -602,14 +602,6 @@ div.cart-actions ul li:last-child img {
   padding-left: 17px;
 }
 
-.special-section-asterisk {
-  background: url("#{$img-path}/asterisk.png") no-repeat;
-  height: 10px;
-  margin: 7px 0 0 3px;
-  position: absolute;
-  width: 11px;
-}
-
 div.menu-main-sections {
   margin: 10px 0 0;
   padding: 5px;
@@ -2179,17 +2171,12 @@ div.product {
   width: 100%;
 }
 
-.product-header-title {
-  color: #333;
-  float: left;
-}
-
 .product-number {
   color: $c-red-legacy;
 }
 
 .product-main {
-  margin: 20px 0 0 0;
+  margin: 20px 0 0;
 }
 
 .product-photo {
@@ -2259,9 +2246,10 @@ td.product-desc-left-col {
 }
 
 td.product-desc-right-col {
-  text-align: left;
-  color: black;
+  color: $c-black;
   font-weight: bold;
+  padding: 5px;
+  text-align: left;
 }
 
 table.product-info-table tr:first-child td {
