@@ -10,7 +10,7 @@ from django.core.management.base import BaseCommand
 from django.conf import settings
 
 from stroyprombeton.models import Category, Product, Static_page
-from blog.models import Post
+from pages.models import Post
 
 
 class Command(BaseCommand):
@@ -132,8 +132,11 @@ class Command(BaseCommand):
                 current.parent = get_category(category['parent_id'])
                 current.save()
 
-            map(create_parent,
-                (category for category in data if category['parent_id']))
+            def has_parent(category):
+                return bool(category['parent_id'])
+
+            for category in filter(has_parent, data):
+                create_parent(category)
 
         def create_product_data(data: list):
             for product in data:
@@ -155,7 +158,8 @@ class Command(BaseCommand):
                     specification=product['description'],
                     volume=to_float(product['volume']),
                     weight=to_float(product['weight']),
-                    width=to_int(product['width'])
+                    width=to_int(product['width']),
+                    length=to_int(product['length'])
                 )
 
         def create_post_data(data: list):

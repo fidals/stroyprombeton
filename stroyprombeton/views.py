@@ -2,13 +2,54 @@
 Stroyprombeton views.
 
 NOTE: They all should be 'zero-logic'.
-All logic should live in respective applications.
+All logic should be located in respective applications.
 """
 
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.views.decorators.csrf import ensure_csrf_cookie
+from django.utils.decorators import method_decorator
 
 from . import config
+from catalog.views import catalog
+from stroyprombeton.models import Category, Product
+
+set_csrf_cookie = method_decorator(ensure_csrf_cookie, name='dispatch')
+
+
+class CategoryTree(catalog.CategoryTree):
+    """Override model attribute to STB-specific Category."""
+    model = Category
+
+
+@set_csrf_cookie
+class CategoryPage(catalog.CategoryPage):
+    """
+    Override model attribute to STB-specific Category.
+
+    Extend get_object and get_context_data.
+    """
+    model = Category
+    url_lookup_field = 'category_id'
+    db_lookup_field = 'id'
+
+    def get_context_data(self, **kwargs):
+        """Extend method. Use new get_object method."""
+        context = super(CategoryPage, self).get_context_data(**kwargs)
+        templates = {True: 'catalog/category_table.html',
+                     False: 'catalog/category_tile.html'}
+
+        self.template_name = templates.get(context['category'].is_leaf_node())
+
+        return context
+
+
+@set_csrf_cookie
+class ProductPage(catalog.ProductPage):
+    """Override model attribute to STB-specific Product."""
+    model = Product
+
+
+### STB-specific views ###
 
 
 @ensure_csrf_cookie
@@ -26,17 +67,6 @@ def index(request):
 
 
 @ensure_csrf_cookie
-def product_page(request):
-    """Product page view"""
-
-    context = {
-    }
-
-    return render(
-        request, 'catalog/product.html', context)
-
-
-@ensure_csrf_cookie
 def visual_page(request):
     """Visual page view with Products catalog with images"""
 
@@ -45,39 +75,6 @@ def visual_page(request):
 
     return render(
         request, 'catalog/visual.html', context)
-
-
-@ensure_csrf_cookie
-def catalog_page(request):
-    """Catalog page view with all categories list"""
-
-    context = {
-    }
-
-    return render(
-        request, 'catalog/catalog.html', context)
-
-
-@ensure_csrf_cookie
-def category_tile_page(request):
-    """Category page view with tile of subcategories"""
-
-    context = {
-    }
-
-    return render(
-        request, 'catalog/category_tile.html', context)
-
-
-@ensure_csrf_cookie
-def category_table_page(request):
-    """Category page view with table of Products"""
-
-    context = {
-    }
-
-    return render(
-        request, 'catalog/category_table.html', context)
 
 
 def blog_news_list(request):

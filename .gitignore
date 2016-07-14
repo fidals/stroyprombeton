@@ -8,3 +8,5 @@ src/
 front/build
 static
 stroyprombeton/settings/local.py
+stroyprombeton/migrations/
+stb.json

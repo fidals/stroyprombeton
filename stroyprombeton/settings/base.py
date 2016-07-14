@@ -42,9 +42,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.humanize',
     'mptt',
-    'blog',
+    'pages',
     'catalog',
-    'seo',
     'ecommerce',
     'stroyprombeton',
 ]
@@ -169,5 +168,8 @@ CRUMBS = {
     'catalog': 'Каталог',
     'blog': 'Список страниц',
 }
+
+# Used mostly in breadcrumbs to generate URL for catalog's root.
+CATEGORY_TREE_URL = 'category_tree'
 
 from .local import *

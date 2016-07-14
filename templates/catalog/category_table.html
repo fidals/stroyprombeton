@@ -1,178 +1,58 @@
 {% extends "layout/base.html" %}
 {% load staticfiles %}
+{% load breadcrumb_extras %}
+{% block title %}{{ category.title }}{% endblock %}
+{% block keywords %}{{ category.keywords }}{% endblock %}
 
 {% block main-content %}
-  {% include 'layout/breadcrumbs.html' %}
+  <div class="location">{% breadcrumbs breadcrumbs '»' %}</div>
+  <h1 class="gbi-section"> {{ category.h1 }}</h1>
+  {% autoescape off %}
+    {{ category.content }}
+  {% endautoescape %}
 
-  <h1 class="gbi-section"> Водоотводные устройства на железных и автомобильных дорогах общей сети. Альбом 819 </h1>
-  <p>Водоотводные лотки используют:</p>
-  <ul>
-    <li>для малоустойчивых грунтов, которые не держат откосы;</li>
-    <li>когда канавы создают неудобства для населения и благоустройства территории;</li>
-    <li>для понижения уровня грунтовых вод или отвода их в водоприемник;</li>
-    <li>в глубоких выемках для углубления кюветов.</li>
-  </ul>
-  <p>Лотки прямоугольного сечения нужны для укрепления нагорных водоотводных канав и кюветов, где скорость течения воды
-    - до 3,5 м/с. </p>
-  <p>В изделиях есть отверстия 0,5м. Высота составляет 0,50, 0,75 и 1 м. Рассчитаны на автомобильную нагрузку Н-13. </p>
-  <p>Звенья лотков делаем из бетона марки 200, устойчивого к воздействию воды. </p>
-  <p>Длина блоков - 1 или 2 м. Для перекрытия применяем плиты 62х100х10см.
-  </p>
 
   <div class="gbi-list" id="gbi-list">
     <table>
       <tbody>
-      <tr>
-        <th colspan="2">Код</th>
-        <th>Наименование/Марка</th>
-        <th>Цена</th>
-        <th>Количество</th>
-      </tr>
-      <tr>
-        <td class="gbi-list photo"></td>
-        <td class="gbi-list code">10208001</td>
-        <td class="gbi-list name">
-          <a href="{% url 'product' %}1">Плита ПЖ7.10.1</a>
-        </td>
-        <td class="gbi-list price">По запросу</td>
-        <td class="gbi-list buy">
-          <div class="shk-item">
-            <form>
-              <fieldset>
-                <div class="shk_basket_count">
-                  <input class="basket-rest" type="text" name="shk-count" id="shk-count-12665" value="1" size="2"
-                         maxlength="5">
-                  <img class="field-arr-up" src="{% static 'images/spin-up.png' %}">
-                  <img class="field-arr-down" src="{% static 'images/spin-down.png' %}">
+        <tr>
+          <th colspan="2">Код</th>
+          <th>Наименование/Марка</th>
+          <th>Цена</th>
+          <th>Количество</th>
+        </tr>
+        {% for product in products|dictsort:"id" %}
+          {% if product.is_active %}
+            <tr>
+              <!--TODO Needed create logic for images and empty thumb.-->
+              <td class="gbi-list photo"></td>
+              <td class="gbi-list code">{{ product.code|default:'' }}</td>
+              <td class="gbi-list name">
+                <a href="{{ product.get_absolute_url }}">{{ product.name }} {{ product.mark }}</a>
+              </td>
+              <td class="gbi-list price">{{ product.price|default:'По запросу' }}</td>
+              <td class="gbi-list buy">
+                <div class="shk-item">
+                  <form>
+                    <fieldset>
+                      <div class="shk_basket_count">
+                        <input class="basket-rest" type="text" name="shk-count" id="shk-count-12665" value="1" size="2"
+                               maxlength="5">
+                        <img class="field-arr-up" src="{% static 'images/spin-up.png' %}">
+                        <img class="field-arr-down" src="{% static 'images/spin-down.png' %}">
+                      </div>
+                      <div class="shk_basket_buy">
+                        <input class="btn btn-red add-basket" id="shk-submit-12665" name="shk-submit" type="submit"
+                               value="Заказать" data-tooltip="Товар добавлен в заказ" style="cursor: pointer;">
+                      </div>
+                    </fieldset>
+                  </form>
                 </div>
-                <div class="shk_basket_buy">
-                  <input class="btn btn-red add-basket" id="shk-submit-12665" name="shk-submit" type="submit"
-                         value="Заказать" data-tooltip="Товар добавлен в заказ" style="cursor: pointer;">
-                </div>
-              </fieldset>
-            </form>
-          </div>
-        </td>
-      </tr>
-      <tr>
-        <td class="gbi-list photo">
-        </td>
-        <td class="gbi-list code">10208002</td>
-        <td class="gbi-list name">
-          <a href="{% url 'product' %}1">Плита ПЖ5.9.1</a>
-        </td>
-        <td class="gbi-list price">
-          По запросу
-        </td>
-        <td class="gbi-list buy">
-          <div class="shk-item">
-            <form>
-              <fieldset>
-                <div class="shk_basket_count">
-                  <input class="basket-rest" type="text" name="shk-count" id="shk-count-12666" value="1" size="2"
-                         maxlength="5">
-                  <img class="field-arr-up" src="{% static 'images/spin-up.png' %}">
-                  <img class="field-arr-down" src="{% static 'images/spin-down.png' %}">
-                </div>
-                <div class="shk_basket_buy">
-                  <input class="btn btn-red add-basket" id="shk-submit-12666" name="shk-submit" type="submit"
-                         value="Заказать" data-tooltip="Товар добавлен в заказ" style="cursor: pointer;">
-                </div>
-              </fieldset>
-            </form>
-          </div>
-        </td>
-      </tr>
-      <tr>
-        <td class="gbi-list photo">
-        </td>
-        <td class="gbi-list code">10208003</td>
-        <td class="gbi-list name">
-          <a href="{% url 'product' %}1">Плита ПА10.10.1</a>
-        </td>
-        <td class="gbi-list price">
-          По запросу
-        </td>
-        <td class="gbi-list buy">
-          <div class="shk-item">
-            <form>
-              <fieldset>
-                <div class="shk_basket_count">
-                  <input class="basket-rest" type="text" name="shk-count" id="shk-count-12667" value="1" size="2"
-                         maxlength="5">
-                  <img class="field-arr-up" src="{% static 'images/spin-up.png' %}">
-                  <img class="field-arr-down" src="{% static 'images/spin-down.png' %}">
-                </div>
-                <div class="shk_basket_buy">
-                  <input class="btn btn-red add-basket" id="shk-submit-12667" name="shk-submit" type="submit"
-                         value="Заказать" data-tooltip="Товар добавлен в заказ" style="cursor: pointer;">
-                </div>
-              </fieldset>
-            </form>
-          </div>
-        </td>
-      </tr>
-      <tr>
-        <td class="gbi-list photo">
-        </td>
-        <td class="gbi-list code">10208004</td>
-        <td class="gbi-list name">
-          <a href="{% url 'product' %}1">Плита ПА10.4.1</a>
-        </td>
-        <td class="gbi-list price">
-          По запросу
-        </td>
-        <td class="gbi-list buy">
-          <div class="shk-item">
-            <form>
-              <fieldset>
-                <div class="shk_basket_count">
-                  <input class="basket-rest" type="text" name="shk-count" id="shk-count-12668" value="1" size="2"
-                         maxlength="5">
-                  <img class="field-arr-up" src="{% static 'images/spin-up.png' %}">
-                  <img class="field-arr-down" src="{% static 'images/spin-down.png' %}">
-                </div>
-                <div class="shk_basket_buy">
-                  <input class="btn btn-red add-basket" id="shk-submit-12668" name="shk-submit" type="submit"
-                         value="Заказать" data-tooltip="Товар добавлен в заказ" style="cursor: pointer;">
-                </div>
-              </fieldset>
-            </form>
-          </div>
-        </td>
-      </tr>
-      <tr>
-        <td class="gbi-list photo">
-        </td>
-        <td class="gbi-list code">10208005</td>
-        <td class="gbi-list name">
-          <a href="{% url 'product' %}1">Плита ПА10.6.1</a>
-        </td>
-        <td class="gbi-list price">
-          По запросу
-        </td>
-        <td class="gbi-list buy">
-          <div class="shk-item">
-            <form>
-              <fieldset>
-                <div class="shk_basket_count">
-                  <input class="basket-rest" type="text" name="shk-count" id="shk-count-12669" value="1" size="2"
-                         maxlength="5">
-                  <img class="field-arr-up" src="{% static 'images/spin-up.png' %}">
-                  <img class="field-arr-down" src="{% static 'images/spin-down.png' %}">
-                </div>
-                <div class="shk_basket_buy">
-                  <input class="btn btn-red add-basket" id="shk-submit-12669" name="shk-submit" type="submit"
-                         value="Заказать" data-tooltip="Товар добавлен в заказ" style="cursor: pointer;">
-                </div>
-              </fieldset>
-            </form>
-          </div>
-        </td>
-      </tr>
+              </td>
+            </tr>
+          {% endif %}
+        {% endfor %}
       </tbody>
     </table>
-    <p class="price-desc price-desc-1">Все цены на железобетонные изделия указаны с НДС</p>
-    <p class="price-desc price-desc-last price-desc-1">Не является публичной офертой</p>
   </div>
 {% endblock %}

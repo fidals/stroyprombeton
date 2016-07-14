@@ -1,16 +1,21 @@
 {% extends "layout/base.html" %}
 {% load staticfiles %}
+{% load breadcrumb_extras %}
+{% load show_if_product_exist %}
+{% block title %}{{ product.title }}{% endblock %}
+{% block keywords %}{{ product.keywords }}{% endblock %}
 
 {% block main-content %}
-  {% include 'layout/breadcrumbs.html' %}
+  <div class="location">{% breadcrumbs breadcrumbs '»'%}</div>
 
   <div class="product-header">
-    <h1 class="product-header-title">Плита лицевая железобетонная ПЛ5-1</h1>
+    <h1 class="product-header-title">{{ product.h1 }} {{ product.mark }}</h1>
   </div>
 
   <div class="product">
     <div class="product-main">
       <div class="product-photo">
+        <!--TODO Needed create logic for images and empty thumb.-->
         <img class="img-responsive" src="{{ MEDIA_URL }}products/1/main.jpg">
       </div>
 
@@ -18,45 +23,16 @@
         <h2>Характеристики</h2>
         <table class="props-tbl" cellpadding="5">
           <tbody>
-          <tr>
-            <td class="product-desc-left-col">Код</td>
-            <td class="product-desc-right-col">11202024</td>
-          </tr>
 
-          <tr>
-            <td class="product-desc-left-col">Марка ЖБИ</td>
-            <td class="product-desc-right-col">ПЛ5-1</td>
-          </tr>
-
-          <tr>
-            <td class="product-desc-left-col">Рабочая документация</td>
-            <td class="product-desc-right-col">Серия 3.002.1-1, выпуск 1</td>
-          </tr>
-
-          <tr>
-            <td class="product-desc-left-col">Длина (мм)</td>
-            <td class="product-desc-right-col">2980</td>
-          </tr>
-
-          <tr>
-            <td class="product-desc-left-col">Ширина (мм)</td>
-            <td class="product-desc-right-col">3000</td>
-          </tr>
-
-          <tr>
-            <td class="product-desc-left-col">Высота (мм)</td>
-            <td class="product-desc-right-col">250</td>
-          </tr>
-
-          <tr>
-            <td class="product-desc-left-col">Масса (кг)</td>
-            <td class="product-desc-right-col">3400</td>
-          </tr>
-
-          <tr>
-            <td class="product-desc-left-col">Объем (м3)</td>
-            <td class="product-desc-right-col">1.35</td>
-          </tr>
+          {% show_if_exist product.code 'Код' %}
+          {% show_if_exist product.mark 'Марка ЖБИ' %}
+          {% show_if_exist product.specification 'Рабочая документация' %}
+          {% show_if_exist product.length 'Длина (мм)' %}
+          {% show_if_exist product.width 'Ширина (мм)' %}
+          {% show_if_exist product.diameter_in|floatformat:2 'Внутренний диаметр (мм)' %}
+          {% show_if_exist product.diameter_out|floatformat:2 'Внешний диаметр (мм)' %}
+          {% show_if_exist product.weight 'Масса (кг)' %}
+          {% show_if_exist product.volume 'Объем (м3)' %}
 
           <tr>
             <td class="product-desc-left-col">
@@ -66,27 +42,29 @@
             </td>
             <td class="product-desc-right-col">
               <div class="product-price">
-                29500 руб.
+                {% if product.price %}
+                  {{ product.price }} руб.
+                {% else %}
+                  По запросу
+                {% endif %}
               </div>
             </td>
           </tr>
 
-          <tr>
-            <td class="product-desc-left-col">
-              <div class="shk_basket_count" style="float: none !important;">
-                <input class="basket-rest" type="text" name="shk-count" value="1" size="2" code="5933" maxlength="5">
-                <img class="field-arr-up" src="{% static 'images/spin-up.png' %}">
-                <img class="field-arr-down" src="{% static 'images/spin-down.png' %}">
-              </div>
-            </td>
-            <td class="product-desc-right-col">
-              <input class="btn btn-red add-basket" id="shk-submit-5933" type="button"
-                     name="shk-submit" value="Заказать" data-tooltip="Товар добавлен в заказ">
-            </td>
-          </tr>
+            <tr>
+              <td class="product-desc-left-col">
+                <div class="shk_basket_count" style="float: none !important;">
+                  <input class="basket-rest" type="text" name="shk-count" value="1" size="2" code="5933" maxlength="5">
+                  <img class="field-arr-up" src="{% static 'images/spin-up.png' %}">
+                  <img class="field-arr-down" src="{% static 'images/spin-down.png' %}">
+                </div>
+              </td>
+              <td class="product-desc-right-col">
+                <input class="btn btn-red add-basket" id="shk-submit-5933" type="button"
+                       name="shk-submit" value="Заказать" data-tooltip="Товар добавлен в заказ">
+              </td>
+            </tr>
 
-          <tr>
-          </tr>
           </tbody>
         </table>
         <div class="product-for-nds">
