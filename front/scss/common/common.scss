@@ -3179,7 +3179,6 @@ div.form_comment {
 .shop-order-table .btn-order-send {
   float: right;
   position: relative;
-  top: -30px;
 }
 
 .order-price-form td:nth-child(1) {
@@ -3579,4 +3578,8 @@ div.gvds-data ul li a div.gvds-data-work-doc {
 
 .metal-info .metal-related .related-product {
   display: inline-block;
+}
+
+button.order-price {
+  margin-top: 10px;
 }

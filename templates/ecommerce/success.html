@@ -1,0 +1,14 @@
+{% extends 'layout/base.html' %}
+
+{% block title %}Оформление заказа на ЖБИ продукцию{% endblock %}
+
+{% block main-content %}
+  <h1>Ваш заказ принят</h1>
+
+  <p>
+    Ваш email: <a id="user-email" href="mailto:{{ order.email }}">{{ order.email }}</a>. Для уточнения деталей заказа
+    менеджер свяжется с вами по номеру <span id="user-phone">{{ order.phone }}</span>.
+  </p>
+
+  <a href="/">Вернуться на главную</a>
+{% endblock %}

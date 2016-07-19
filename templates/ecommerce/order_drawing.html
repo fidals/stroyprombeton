@@ -1,0 +1,33 @@
+{% extends 'layout/base.html' %}
+{% load widget_tweaks %}
+
+{% block title %}Оформление заказа на изготовление по индивидуальным чертежам{% endblock %}
+
+{% block main-content %}
+  {# TODO: content should be here #}
+  <br>
+  <br>
+
+  <p>Для заказа изделий по индивидуальным чертежам воспользуйтесь формой ниже:</p>
+  <form action="" method="post" class="drawing-order-form" id="drawing-order-form">
+    {% csrf_token %}
+    {% for field in form %}
+      <tr>
+        <td>
+          {{ field.label_tag }}
+          {{ field.errors }}
+        </td>
+        <td>
+          {{ field|add_class:"form-control" }}
+        </td>
+      </tr>
+    {% endfor %}
+    <tr>
+      <td></td>
+      <td>
+        <input type="submit" name="submit" class="button btn btn-red btn-order-send" id="btn-drawing-submit"
+               value="Отправить заявку">
+      </td>
+    </tr>
+  </form>
+{% endblock %}

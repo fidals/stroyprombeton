@@ -5,11 +5,19 @@ from django.core.urlresolvers import reverse
 
 from pages.models import SitePageMixin
 from catalog.models import AbstractProduct, AbstractCategory
+from ecommerce.models import Order as ecOrder
+
+
+class Order(ecOrder):
+    """Extended Order model."""
+    company = models.CharField(max_length=255)
+    address = models.TextField(blank=True, null=True)
+    comment = models.TextField(blank=True, null=True)
 
 
 class Category(AbstractCategory):
     """Extended Category model."""
-    specification = models.CharField(max_length=1000, blank=True, null=True)
+    specification = models.TextField(blank=True, null=True)
     link_to_metal = models.URLField(null=True, blank=True)
 
     product_relation = 'product'
@@ -25,10 +33,10 @@ class Product(AbstractProduct):
                                  on_delete=models.CASCADE,
                                  related_name='products')
     is_new_price = models.NullBooleanField(blank=True, null=True)
-    date_price_updated = models.DateField()
+    date_price_updated = models.DateField(auto_now_add=True)
     code = models.BigIntegerField(null=True, blank=True)
-    mark = models.CharField(max_length=100)
-    specification = models.CharField(max_length=1000, null=True, blank=True)
+    mark = models.CharField(max_length=500)
+    specification = models.TextField(null=True, blank=True)
     length = models.IntegerField(null=True, blank=True)
     width = models.IntegerField(null=True, blank=True)
     height = models.IntegerField(null=True, blank=True)

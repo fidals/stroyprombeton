@@ -1,0 +1,81 @@
+{% load staticfiles %}
+{% load stb_extras %}
+
+<div style="width:100%; margin-bottom: 10px;">
+  <span style="float: right; color: #767A7B; margin-top: 32px;">
+    <span style="font-size: 13px;">(812)</span>
+    <span style="font-size: 25px;" class="ya-opt-phone"><a style="color: #000; text-decoration: none;"
+                                                           href="tel:+78124163200">655-73-60</a></span>
+  </span>
+  <div style="padding: 0 0 8px;">
+    <a href="http://www.stroyprombeton.ru/" target="_blank">
+      <img src="{% static 'images/logo.png' %}" title="На главную" alt="Логотип">
+    </a>
+    <div style="color: #515151; font-size: 13px; margin: -5px 0 0;">Завод железобетонных изделий</div>
+  </div>
+  <div style="width: 100%; background-color: rgb(215, 215, 215); height:1px;"></div>
+</div>
+
+<p style="margin: 0 0 1.15em; font-family: Arial, sans-serif;">
+  <span style="font-size: 18px;">Здравствуйте!</span>
+  <br>
+  <br>
+  <span>{% if order.name %}Уважаемый(ая) {{ order.name }}. {% endif %}<b>Ваш заказ:</b></span>
+</p>
+
+{% if order.items %}
+  <table width="100%" border="1" style="border: none; font-size: 16px;">
+    <tr align="center">
+      <th width="10%" style="border-color: #E4E4E4; padding: 10px; font-weight:bold;">Код</th>
+      <th width="50%" style="border-color: #E4E4E4; padding: 10px; font-weight:bold;">Наименование и марка</th>
+      <th width="15%" style="border-color: #E4E4E4; padding: 10px; font-weight:bold;">Количество</th>
+      <th width="15%" style="border-color: #E4E4E4; padding: 10px; font-weight:bold;">Цена</th>
+    </tr>
+    {% for position in order.items %}
+      {% with product=position.product %}
+        <tr align="center" style="background: #F9F9F9;">
+          <td style="border-color: #E4E4E4; padding: 10px;">{{ product.id }}</td>
+          <td style="border-color: #E4E4E4; padding: 10px;">
+            <a style="color: #C90000; text-decoration: none;"
+               href="{{ product.get_absolute_url }}">{{ product.name }}</a>
+          </td>
+          <td style="border-color: #E4E4E4; padding: 10px;">{{ position.quantity }} шт.</td>
+          <td style="border-color: #E4E4E4; padding: 10px;">
+            {% if position.price %}
+              {{ position.price }} руб.
+            {% else %}
+              По запросу
+            {% endif %}
+          </td>
+        </tr>
+      {% endwith %}
+    {% endfor %}
+    <tr align="center">
+      <td></td>
+      <td></td>
+      <td style="border-color: #E4E4E4; padding: 10px; font-weight: bold;">Итого:</td>
+      <td style="border-color: #E4E4E4; padding: 10px; font-weight: bold;">
+        {% if order.total_price %}
+          {{ order.total_price }} руб.
+        {% else %}
+          По запросу
+        {% endif %}
+      </td>
+    </tr>
+  </table>
+{% endif %}
+
+{# TODO: wrap it in inclusion tag #}
+<p>В ближайшее время наш менеджер свяжется с Вами и уточнит детали заказа:</p>
+{% customer_info order.name 'Ваше имя' %}
+{% customer_info order.phone 'Ваш телефон' %}
+{% customer_info order.email 'Ваш email' %}
+{% customer_info order.company 'Ваша компания' %}
+{% customer_info order.address 'Адрес поставки' %}
+{% customer_info order.comment 'Сообщение' %}
+
+<p>Если у Вас остались вопросы, Вы можете связаться с нашими менеджерами по телефонам:
+  <a href="{{ stb_phone_link_01 }}">{{ stb_phone_01 }}</a>, <a href="{{ stb_phone_link_02 }}">{{ stb_phone_02 }}</a>
+  или по электронной почте:
+  <a href="mailto:{{ stb_email }}">{{ stb_email }}</a>
+</p>

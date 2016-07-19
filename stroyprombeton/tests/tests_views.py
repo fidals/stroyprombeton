@@ -6,11 +6,13 @@ They all should be using Django's TestClient.
 
 All Selenium-tests should be located in tests_selenium.
 """
+from copy import copy
 from datetime import datetime
 
 from django.test import TestCase
 
 from stroyprombeton.models import Category, Product
+from .tests_forms import PriceFormTest, DrawingFormTest
 
 
 class CategoryTree(TestCase):
@@ -306,3 +308,54 @@ class Product_(TestCase):
         specification = self.response.context['product'].specification
 
         self.assertEqual(specification, self.product_data['specification'])
+
+
+class AbstractFormViewTest:
+    """
+    Define common test cases for views with Forms.
+
+    Subclasses should also inherit TestCase!
+    """
+    URL = ''
+    SUCCESS_URL = ''
+    FORM_TEST = None
+    FIELDS = []
+
+    def setUp(self):
+        self.response = self.client.get(self.URL)
+
+    def test_response_status_code(self):
+        status_code = self.response.status_code
+
+        self.assertEqual(status_code, 200)
+
+    def test_submit_form(self):
+        response = self.client.post(self.URL, self.FIELDS)
+        self.assertRedirects(response, self.SUCCESS_URL)
+
+    def test_submit_form_without_required(self):
+        wrong_fields = {'name': 'Test'}
+        response = self.client.post(self.URL, wrong_fields)
+        for required_field in self.FORM_TEST.REQUIRED:
+            self.assertFormError(response, 'form', required_field,
+                                 ['This field is required.'])
+
+    def test_submit_invalid_email(self):
+        wrong_fields = {'email': 'non@a/em.il'}
+        response = self.client.post(self.URL, wrong_fields)
+        self.assertFormError(response, 'form', 'email',
+                             ['Enter a valid email address.'])
+
+
+class OrderPrice(AbstractFormViewTest, TestCase):
+    URL = '/order-price/'
+    SUCCESS_URL = '/price-success/'
+    FORM_TEST = PriceFormTest
+    FIELDS = copy(PriceFormTest.FIELDS)
+
+
+class OrderDrawing(AbstractFormViewTest, TestCase):
+    URL = '/order-drawing/'
+    SUCCESS_URL = '/drawing-success/'
+    FORM_TEST = DrawingFormTest
+    FIELDS = copy(DrawingFormTest.FIELDS)

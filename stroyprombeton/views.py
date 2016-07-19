@@ -5,15 +5,24 @@ NOTE: They all should be 'zero-logic'.
 All logic should be located in respective applications.
 """
 
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render
+from django.views.generic import FormView, TemplateView
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.utils.decorators import method_decorator
 
-from . import config
 from catalog.views import catalog
-from stroyprombeton.models import Category, Product
+from ecommerce import views as ec_views
+
+from . import config
+from . import mailer
+from .models import Category, Product
+from .forms import OrderForm, PriceForm, DrawingForm
 
 set_csrf_cookie = method_decorator(ensure_csrf_cookie, name='dispatch')
+
+
+class OrderFormMixin:
+    order_form = OrderForm
 
 
 class CategoryTree(catalog.CategoryTree):
@@ -49,7 +58,60 @@ class ProductPage(catalog.ProductPage):
     model = Product
 
 
+# We inherit eCommerce CBVs to override its order_form attribute.
+
+class OrderPage(OrderFormMixin, ec_views.OrderPage):
+    pass
+
+
+class AddToCart(OrderFormMixin, ec_views.AddToCart):
+    pass
+
+
+class RemoveFromCart(OrderFormMixin, ec_views.RemoveFromCart):
+    pass
+
+
+class FlushCart(OrderFormMixin, ec_views.FlushCart):
+    pass
+
+
+class ChangeCount(OrderFormMixin, ec_views.ChangeCount):
+    pass
+
 ### STB-specific views ###
+
+
+class OrderDrawing(FormView):
+    template_name = 'ecommerce/order_drawing.html'
+    form_class = DrawingForm
+    success_url = '/drawing-success/'
+
+    def form_valid(self, form):
+        mailer.send_form(form=form,
+                         template='ecommerce/email_drawing.html',
+                         subject='Изготовление по индивидуальным чертежам')
+        return super(OrderDrawing, self).form_valid(form)
+
+
+class OrderPriceSuccess(TemplateView):
+    template_name = 'ecommerce/order_price_success.html'
+
+
+class OrderDrawingSuccess(TemplateView):
+    template_name = 'ecommerce/order_drawing_success.html'
+
+
+class OrderPrice(FormView):
+    template_name = 'ecommerce/order_price.html'
+    form_class = PriceForm
+    success_url = '/price-success/'
+
+    def form_valid(self, form):
+        mailer.send_form(form=form,
+                         template='ecommerce/email_price.html',
+                         subject='Заказ прайс-листа')
+        return super(OrderPrice, self).form_valid(form)
 
 
 @ensure_csrf_cookie
@@ -102,12 +164,3 @@ def blog_post_item(request):
     }
 
     return render(request, 'blog/post_item.html', context)
-
-
-def order_page(request):
-    """Order page view with table of Products"""
-
-    context = {
-    }
-
-    return render(request, 'ecommerce/order.html', context)

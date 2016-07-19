@@ -1,0 +1,30 @@
+<table>
+  <tr>
+    <td>Имя:</td>
+    <td>{{ form.person }}</td>
+  </tr>
+  <tr>
+    <td>Город:</td>
+    <td>{{ form.city }}</td>
+  </tr>
+  <tr>
+    <td>Название организации:</td>
+    <td>{{ form.company }}</td>
+  </tr>
+  <tr>
+    <td>Направление деятельности:</td>
+    <td>{{ form.activity }}</td>
+  </tr>
+  <tr>
+    <td>Сайт:</td>
+    <td><a href="{{ form.site }}">{{ form.site }}</a></td>
+  </tr>
+  <tr>
+    <td>Электронный адрес:</td>
+    <td><a href="mailto:{{ form.email }}">{{ form.email }}</a></td>
+  </tr>
+  <tr>
+    <td>Телефон:</td>
+    <td>{{ form.phone }}</td>
+  </tr>
+</table>

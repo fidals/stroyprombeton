@@ -1,0 +1,34 @@
+{% load stb_extras %}
+
+<div style="width:100%; margin-bottom: 10px;">
+    <span style="float: right; color: #767A7B; margin-top: 32px;">
+        <span style="font-size: 13px;">(812)</span>
+        <span style="font-size: 25px;" class="ya-opt-phone">
+            <a style="color: #000; text-decoration: none;" href="tel:+78124163200">655-73-60</a>
+        </span>
+    </span>
+  <div style="padding: 0 0 8px;">
+    <a href="http://www.stroyprombeton.ru/" target="_blank">
+      <img src="http://www.stroyprombeton.ru/static/images/logo.png" title="На главную" alt="Логотип">
+    </a>
+    <div style="color: #515151; font-size: 13px; margin: -5px 0 0;">Завод железобетонных изделий</div>
+  </div>
+  <div style="width: 100%; background-color: rgb(215, 215, 215); height:1px;"></div>
+</div>
+
+<p style="margin: 0 0 1.15em; font-family: Arial, sans-serif;">
+  Здравствуйте! Уважаемый(ая) {{ form.name }}, в ближайшее время наш менеджер свяжется с Вами и уточнит детали вашей
+  заявки.
+</p>
+
+{% customer_info form.name 'Ваше имя' %}
+{% customer_info form.phone 'Ваш телефон' %}
+{% customer_info form.email 'Ваш email' %}
+{% customer_info form.comment 'Сообщение' %}
+
+<p>Если у Вас остались вопросы, Вы можете связаться с нашими менеджерами по телефонам:
+  <a href="{{ stb_phone_link_01 }}">{{ stb_phone_01 }}</a>,
+  <a href="{{ stb_phone_link_02 }}">{{ stb_phone_02 }}</a>
+  или по электронной почте:
+  <a href="mailto:{{ stb_email }}">{{ stb_email }}</a>
+</p>

@@ -1,0 +1,129 @@
+{% load staticfiles %}
+{% load widget_tweaks %}
+
+<div class="js-order-contain">
+  {% if not cart %}
+    <h2 class="text-center">Нет выбранных позиций</h2>
+    <p class="text-center">Если вы не нашли изделие <a href="/visual/">в каталоге</a>,
+      <br>мы изготовим его <a href="/order-drawing/">по вашим чертежам</a>. Отправьте их
+      через форму ниже или на почту <a href="mailto:{{ stb_email }}">{{ stb_email }}</a>.</p>
+  {% else %}
+    <h2>Ваш заказ</h2>
+    <table class="table table-bordered table-striped">
+      <thead>
+      <tr>
+        <th class="order-product" width="15%">Код</th>
+        <th class="order-product">Наименование и марка</th>
+        <th class="order-product">Цена</th>
+        <th class="order-product" colspan="2">Количество</th>
+      </tr>
+      </thead>
+      <tbody>
+      {% for position in cart %}
+        {% with product=position.product %}
+          <tr class="js-product-row">
+            <td class="order-product">
+              {% if produc.code %} {{ code }} {% else %} - {% endif %}
+            </td>
+            <td class="order-product"><a href="{{ product.get_absolute_url }}">{{ product.name }}</a></td>
+            <td class="order-product" nowrap>
+              {% if position.price %}{{ position.price }} руб.{% else %} По запросу{% endif %}
+            </td>
+            <td class="order-product">
+              <input class="basket-rest input-switcher js-prod-count" productId="{{ product.id }}"
+                     id="count-{{ product.id }}" type="text" value="{{ position.quantity }}" min="1">
+              <img class="field-arr-up" src="{% static 'images/spin-up.png' %}">
+              <img class="field-arr-down" src="{% static 'images/spin-down.png' %}">
+              <span class="order-count">шт.</span>
+            </td>
+            <td class="order-product">
+              <a title="Удалить позицию"><i class="fa fa-times js-remove" productId="{{ product.id }}"></i></a>
+            </td>
+          </tr>
+        {% endwith %}
+      {% endfor %}
+      <tr>
+        <td class="order-total" colspan="2">Итого:</td>
+        <td class="order-product js-order-total" colspan="3"><b>{% firstof cart.total_price 'По запросу' %}</b></td>
+      </tr>
+      </tbody>
+    </table>
+  {% endif %}
+  <h2>Контактная информация</h2>
+  <form action="{% url 'order_page' %}" method="post" id="shop-order-form"> {% csrf_token %}
+    <table class="shop-order-table">
+      <tbody>
+      <tr>
+        <td>Ваше имя:<sup>*</sup></td>
+        <td>
+          {{ form.name.errors }}
+          {{ form.name }}
+        </td>
+      </tr>
+      <tr>
+        <td>Контактный телефон:<sup>*</sup></td>
+        <td>
+          {{ form.phone.errors }}
+          {{ form.phone|add_class:'js-masked-phone' }}
+        </td>
+      </tr>
+      <tr>
+        <td>Электронный адрес (Е-mail):<sup>*</sup></td>
+        <td>
+          {{ form.email.errors }}
+          {{ form.email }}
+        </td>
+      </tr>
+      <tr>
+        <td>Полное название организации:<sup>*</sup></td>
+        <td>
+          {{ form.company.errors }}
+          {{ form.company }}
+        </td>
+      </tr>
+      <tr>
+        <td>Адрес поставки:</td>
+        <td>
+          {{ form.address.errors }}
+          {{ form.address }}
+        </td>
+      </tr>
+      <tr>
+        <td>Комментарий к заказу:</td>
+        <td>
+          {{ form.comment.errors }}
+          {{ form.comment }}
+        </td>
+      </tr>
+      <tr>
+        <td></td>
+        <td>
+          <input type="submit" name="submit" class="button btn btn-red btn-order-send" id="btn-order-send"
+                 value="Отправить заказ">
+        </td>
+      </tr>
+      <tr>
+        <td></td>
+        <td class="form-order order-warning shipping">
+          <div class="dostavka-gbi">
+            <p>Варианты поставки</p>
+            <ul>
+              <li>Доставка автотранспортом компании</li>
+              <li>Доставка по железной дороге</li>
+              <li>Самовывоз со склада в Санкт-Петербурге и Ленинградской области</li>
+            </ul>
+          </div>
+          <div class="dostavka-gbi">
+            <p>Стоимость доставки</p>
+            <ul>
+              <li>Цена доставки по Санкт-Петербургу <span class="price">от 6000 руб.</span></li>
+              <li>Цена доставки по Ленинградской области <span class="price">от 10000 руб.</span></li>
+              <li>Цена доставки в другие регионы России <span class="price">от 20000 руб.</span></li>
+            </ul>
+          </div>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </form>
+</div>

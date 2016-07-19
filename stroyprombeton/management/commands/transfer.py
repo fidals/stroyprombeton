@@ -6,6 +6,7 @@ import pymysql
 from getpass import getpass
 from datetime import datetime
 
+from django.db import transaction
 from django.core.management.base import BaseCommand
 from django.conf import settings
 
@@ -33,7 +34,9 @@ class Command(BaseCommand):
             default=False
         )
 
+    @transaction.atomic
     def handle(self, *args, **options):
+        self.truncate_data()
         if options['liveserver']:
             with self.connect_to_the_mysql_db() as cursor:
                 data = self.get_data_from_db(cursor)
@@ -207,3 +210,7 @@ class Command(BaseCommand):
         except pymysql.err.OperationalError:
             print('Entered incorrect password.')
             self.connect_to_the_mysql_db()
+
+    def truncate_data(self):
+        Category.objects.all().delete()
+        Product.objects.all().delete()

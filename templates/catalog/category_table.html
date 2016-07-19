@@ -15,44 +15,45 @@
   <div class="gbi-list" id="gbi-list">
     <table>
       <tbody>
-        <tr>
-          <th colspan="2">Код</th>
-          <th>Наименование/Марка</th>
-          <th>Цена</th>
-          <th>Количество</th>
-        </tr>
-        {% for product in products|dictsort:"id" %}
-          {% if product.is_active %}
-            <tr>
-              <!--TODO Needed create logic for images and empty thumb.-->
-              <td class="gbi-list photo"></td>
-              <td class="gbi-list code">{{ product.code|default:'' }}</td>
-              <td class="gbi-list name">
-                <a href="{{ product.get_absolute_url }}">{{ product.name }} {{ product.mark }}</a>
-              </td>
-              <td class="gbi-list price">{{ product.price|default:'По запросу' }}</td>
-              <td class="gbi-list buy">
-                <div class="shk-item">
-                  <form>
-                    <fieldset>
-                      <div class="shk_basket_count">
-                        <input class="basket-rest" type="text" name="shk-count" id="shk-count-12665" value="1" size="2"
-                               maxlength="5">
-                        <img class="field-arr-up" src="{% static 'images/spin-up.png' %}">
-                        <img class="field-arr-down" src="{% static 'images/spin-down.png' %}">
-                      </div>
-                      <div class="shk_basket_buy">
-                        <input class="btn btn-red add-basket" id="shk-submit-12665" name="shk-submit" type="submit"
-                               value="Заказать" data-tooltip="Товар добавлен в заказ" style="cursor: pointer;">
-                      </div>
-                    </fieldset>
-                  </form>
+      <tr>
+        <th colspan="2">Код</th>
+        <th>Наименование/Марка</th>
+        <th>Цена</th>
+        <th>Количество</th>
+      </tr>
+      {% for product in products|dictsort:"id" %}
+        {% if product.is_active %}
+          <tr>
+            <!--TODO Needed create logic for images and empty thumb.-->
+            <td class="gbi-list photo"></td>
+            <td class="gbi-list code">{{ product.code|default:'' }}</td>
+            <td class="gbi-list name">
+              <a href="{{ product.get_absolute_url }}">{{ product.name }} {{ product.mark }}</a>
+            </td>
+            <td class="gbi-list price">{{ product.price|default:'По запросу' }}</td>
+            <td class="gbi-list buy">
+              <div class="shk-item js-product-row">
+                <div class="shk_basket_count">
+                  <input class="basket-rest js-product-count" type="text" name="shk-count" value="1" size="2"
+                         maxlength="5">
+                  <img class="field-arr-up" src="{% static 'images/spin-up.png' %}">
+                  <img class="field-arr-down" src="{% static 'images/spin-down.png' %}">
                 </div>
-              </td>
-            </tr>
-          {% endif %}
-        {% endfor %}
+                <div class="shk_basket_buy">
+                  <input class="btn btn-red add-basket js-category-buy" productId="{{ product.id }}" name="shk-submit"
+                         type="submit" value="Заказать" data-tooltip="Товар добавлен в заказ" style="cursor: pointer;">
+                </div>
+              </div>
+            </td>
+          </tr>
+        {% endif %}
+      {% endfor %}
       </tbody>
     </table>
   </div>
+{% endblock %}
+
+{% block jslinks %}
+  {{ block.super }}
+  <script src="{% static 'js/pages.min.js' %}"></script>
 {% endblock %}

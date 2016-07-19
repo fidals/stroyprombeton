@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.humanize',
     'mptt',
+    'widget_tweaks',
     'pages',
     'catalog',
     'ecommerce',
@@ -167,6 +168,10 @@ CRUMBS = {
     'main': 'Главная',
     'catalog': 'Каталог',
     'blog': 'Список страниц',
+}
+
+EMAIL_SUBJECTS = {
+    'order': 'Stroyprombeton | Новый заказ',
 }
 
 # Used mostly in breadcrumbs to generate URL for catalog's root.

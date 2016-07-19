@@ -37,13 +37,19 @@ const PATH = {
         'front/js/vendors/jquery-2.2.4.min.js',
         'front/js/vendors/bootstrap.min.js',
         'front/js/vendors/cookie.js',
+        'front/js/vendors/jquery.mask.min.js',
       ],
 
-      pages: [],
+      pages: [
+        'front/js/components/product.es6',
+        'front/js/components/category.es6',
+        'front/js/components/order.es6',
+      ],
 
       common: [
         'front/js/shared/*.es6',
         'front/js/components/main.es6',
+        'front/js/components/headerCart.es6',
       ],
     },
 
@@ -209,7 +215,7 @@ gulp.task('fonts', () => {
 gulp.task('watch', () => {
   livereload.listen();
   gulp.watch(PATH.watch.styles, ['styles']);
-  gulp.watch(PATH.watch.js, ['js-common']);
+  gulp.watch(PATH.watch.js, ['js-common', 'js-pages']);
   gulp.watch(PATH.watch.images, ['images']);
   gulp.watch(PATH.watch.html, livereload.changed);
 });

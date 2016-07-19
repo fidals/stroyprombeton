@@ -1,12 +1,12 @@
 {% extends "layout/base.html" %}
 {% load staticfiles %}
 {% load breadcrumb_extras %}
-{% load show_if_product_exist %}
+{% load stb_extras %}
 {% block title %}{{ product.title }}{% endblock %}
 {% block keywords %}{{ product.keywords }}{% endblock %}
 
 {% block main-content %}
-  <div class="location">{% breadcrumbs breadcrumbs '»'%}</div>
+  <div class="location">{% breadcrumbs breadcrumbs '»' %}</div>
 
   <div class="product-header">
     <h1 class="product-header-title">{{ product.h1 }} {{ product.mark }}</h1>
@@ -51,19 +51,22 @@
             </td>
           </tr>
 
-            <tr>
-              <td class="product-desc-left-col">
-                <div class="shk_basket_count" style="float: none !important;">
-                  <input class="basket-rest" type="text" name="shk-count" value="1" size="2" code="5933" maxlength="5">
-                  <img class="field-arr-up" src="{% static 'images/spin-up.png' %}">
-                  <img class="field-arr-down" src="{% static 'images/spin-down.png' %}">
-                </div>
-              </td>
-              <td class="product-desc-right-col">
-                <input class="btn btn-red add-basket" id="shk-submit-5933" type="button"
-                       name="shk-submit" value="Заказать" data-tooltip="Товар добавлен в заказ">
-              </td>
-            </tr>
+          <tr>
+            <td class="product-desc-left-col">
+              <div class="shk_basket_count" style="float: none !important;">
+                <input class="basket-rest js-product-count" type="text" name="shk-count" value="1" size="2" code="5933"
+                       maxlength="5">
+                <img class="field-arr-up" src="{% static 'images/spin-up.png' %}">
+                <img class="field-arr-down" src="{% static 'images/spin-down.png' %}">
+              </div>
+            </td>
+            <td class="product-desc-right-col">
+              {# TODO: tooltip on press #}
+              <input class="btn btn-red add-basket js-add-basket" id="shk-submit-5933" type="button"
+                     name="shk-submit" value="Заказать" product-id="{{ product.id }}"
+                     data-tooltip="Товар добавлен в заказ">
+            </td>
+          </tr>
 
           </tbody>
         </table>
@@ -73,4 +76,9 @@
       </div>
     </div>
   </div>
+{% endblock %}
+
+{% block jslinks %}
+  {{ block.super }}
+  <script src="{% static 'js/pages.min.js' %}"></script>
 {% endblock %}
