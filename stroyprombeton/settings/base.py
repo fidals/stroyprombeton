@@ -158,6 +158,8 @@ IMAGES = {
     'thumbnail': 'logo.png'
 }
 
+SEARCH_SEE_ALL_LABEL = 'Смотреть все результаты'
+
 SITE_ID = 1
 SITE_DOMAIN_NAME = 'www.stroyprombeton.ru'
 

@@ -3583,3 +3583,41 @@ div.gvds-data ul li a div.gvds-data-work-doc {
 button.order-price {
   margin-top: 10px;
 }
+
+.autocomplete {
+
+  &-suggestions {
+    .selected {
+      border: 1px solid $c-border;
+      background: $c-backgroud;
+      border-radius: 4px;
+    }
+  }
+
+  &-suggestion {
+    padding: 2px;
+    margin: 2px;
+
+    .item {
+      &-link {
+        display: block;
+        text-decoration: none;
+        color: $c-grey-text;
+       }
+
+      &-name {
+        float: left;
+
+        b {
+          font-weight: normal;
+          color: $c-red-legacy;
+        }
+      }
+
+      &-price {
+        float: right;
+        padding-right: 5px;
+      }
+    }
+  }
+}

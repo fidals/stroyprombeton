@@ -1,5 +1,6 @@
 import time
 
+from selenium.webdriver.common.keys import Keys
 from seleniumrequests import Chrome  # We use this instead of standard selenium
 from selenium.webdriver.common.action_chains import ActionChains
 
@@ -53,7 +54,8 @@ class SeleniumTestCase(LiveServerTestCase):
         )
         self.child_category = Category.objects.create(
             id=2,
-            name='Test Child Category'
+            name='Test Child Category',
+            parent=root_category
         )
         self.product1 = Product.objects.create(
             id=1,
@@ -251,3 +253,85 @@ class CategoryPage(SeleniumTestCase):
         hover(self.browser, self.browser.find_element_by_id('cartInner'))
         self.assertIn('42', self.browser.find_element_by_class_name(
             'js-header-prod-count').text)
+
+
+class Search(SeleniumTestCase):
+    """Selenium-based tests for Search"""
+
+    def setUp(self):
+        super(Search, self).setUp()
+        self.browser.get(self.live_server_url)
+        wait()
+        self.query = 'Test'
+        self.fill_input()
+
+    @property
+    def autocomplete(self):
+        return self.browser.find_element_by_class_name(
+            'autocomplete-suggestions')
+
+    @property
+    def input(self):
+        return self.browser.find_element_by_class_name('search-input')
+
+    def fill_input(self):
+        """Enter correct search term"""
+        self.input.send_keys(self.query)
+        wait()
+
+    def click_submit(self, button):
+        """Click submit button"""
+        button.click()
+        wait()
+
+    def test_autocomplete_can_expand_and_collapse(self):
+        """
+        Autocomplete should minimize during user typing correct search query
+        Autocomplete should minimize by removing search query
+        """
+        # fill input and autocomplete expands
+        self.assertTrue(self.autocomplete.is_displayed())
+
+        # remove search term ...
+        self.input.send_keys(Keys.BACKSPACE * len(self.query))
+        wait()
+        # ... and autocomplete collapse
+        self.assertFalse(self.autocomplete.is_displayed())
+
+    def test_autocomplete_item_link(self):
+        """First autocomplete item should link on category page by click"""
+        first_item = self.autocomplete.find_element_by_css_selector(
+            ':first-child')
+        self.click_submit(first_item)
+
+        self.assertTrue('/gbi/categories/' in self.browser.current_url)
+
+    def test_autocomplete_see_all_item(self):
+        """
+        Autocomplete should contain "see all" item.
+        "See all" item links on search results page
+        """
+        last_item = self.autocomplete.find_element_by_class_name(
+            'autocomplete-last-item')
+        self.click_submit(last_item)
+
+        self.assertTrue('/search/' in self.browser.current_url)
+
+    def test_search_have_results(self):
+        """Search results page should contain links on relevant pages"""
+        button_submit = self.browser.find_element_by_id('search-submit')
+        self.click_submit(button_submit)
+
+        self.assertTrue(self.browser.find_element_by_link_text(
+            'Test Root Category'))
+        self.assertTrue(self.browser.find_element_by_link_text(
+            'Test Child Category'))
+
+    def test_search_results_empty(self):
+        """Search results for wrong term should contain empty result set"""
+        self.input.send_keys('Not existing search query')
+        button_submit = self.browser.find_element_by_id('search-submit')
+        self.click_submit(button_submit)
+        h1 = self.browser.find_element_by_tag_name('h1')
+
+        self.assertTrue(h1.text == 'По вашему запросу ничего не найдено')

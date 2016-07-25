@@ -2,7 +2,7 @@ from django.conf import settings
 from django.conf.urls import url, include
 from django.conf.urls.static import static
 
-from . import views
+from stroyprombeton import views
 
 catalog_urls = [
     url(r'^$', views.CategoryTree.as_view(),
@@ -11,6 +11,11 @@ catalog_urls = [
         name='category'),
     url(r'^products/(?P<product_id>[0-9]+)/$', views.ProductPage.as_view(),
         name='product'),
+]
+
+search_urls = [
+    url(r'^autocomplete/$', views.Autocomplete.as_view(), name='autocomplete'),
+    url(r'^$', views.Search.as_view(), name='search'),
 ]
 
 ecommerce_urls = [
@@ -38,6 +43,7 @@ urlpatterns = [
     url(r'^visual/', views.visual_page, name='catalog'),
     url(r'^shop/', include(ecommerce_urls)),
     url(r'^shop/', include('ecommerce.urls')),
+    url(r'^search/', include(search_urls)),
 ]
 
 if settings.DEBUG:

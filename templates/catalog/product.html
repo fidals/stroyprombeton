@@ -24,15 +24,15 @@
         <table class="props-tbl" cellpadding="5">
           <tbody>
 
-          {% show_if_exist product.code 'Код' %}
-          {% show_if_exist product.mark 'Марка ЖБИ' %}
-          {% show_if_exist product.specification 'Рабочая документация' %}
-          {% show_if_exist product.length 'Длина (мм)' %}
-          {% show_if_exist product.width 'Ширина (мм)' %}
-          {% show_if_exist product.diameter_in|floatformat:2 'Внутренний диаметр (мм)' %}
-          {% show_if_exist product.diameter_out|floatformat:2 'Внешний диаметр (мм)' %}
-          {% show_if_exist product.weight 'Масса (кг)' %}
-          {% show_if_exist product.volume 'Объем (м3)' %}
+          {% show_field_if_exist product.code 'Код' %}
+          {% show_field_if_exist product.mark 'Марка ЖБИ' %}
+          {% show_field_if_exist product.specification 'Рабочая документация' %}
+          {% show_field_if_exist product.length 'Длина (мм)' %}
+          {% show_field_if_exist product.width 'Ширина (мм)' %}
+          {% show_field_if_exist product.diameter_in|floatformat:2 'Внутренний диаметр (мм)' %}
+          {% show_field_if_exist product.diameter_out|floatformat:2 'Внешний диаметр (мм)' %}
+          {% show_field_if_exist product.weight 'Масса (кг)' %}
+          {% show_field_if_exist product.volume 'Объем (м3)' %}
 
           <tr>
             <td class="product-desc-left-col">

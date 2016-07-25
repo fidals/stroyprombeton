@@ -1,0 +1,32 @@
+{% extends 'layout/base.html' %}
+{% load stb_extras %}
+
+{% block main-content %}
+<div class="primary-content">
+  <div class="location">
+    <span class="location section">
+      <a href="{% url 'index' %}">СТК-ПромБетон</a>
+    </span> <span class="location separate">»</span>
+    <span class="location section">Результаты поиска</span>
+  </div>
+  <div class="gbi-list">
+    <table>
+      <thead>
+        <tr>
+          <th>Тип</th>
+          <th>Фото</th>
+          <th>Код</th>
+          <th>Рабочая документация / Наименование / Марка</th>
+          <th>Цена</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% search_result categories 'Раздел' %}
+        {% search_result products 'Изделие' %}
+      </tbody>
+    </table>
+    <p class="price-desc price-desc-1">Все цены на железобетонные изделия указаны с НДС</p>
+    <p class="price-desc price-desc-last price-desc-1">Не является публичной офертой</p>
+  </div>
+</div>
+{% endblock %}

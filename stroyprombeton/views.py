@@ -4,21 +4,43 @@ Stroyprombeton views.
 NOTE: They all should be 'zero-logic'.
 All logic should be located in respective applications.
 """
-
+from django.conf import settings
 from django.shortcuts import render
 from django.views.generic import FormView, TemplateView
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.utils.decorators import method_decorator
 
-from catalog.views import catalog
+from catalog.views import catalog, search
 from ecommerce import views as ec_views
 
-from . import config
-from . import mailer
-from .models import Category, Product
-from .forms import OrderForm, PriceForm, DrawingForm
+from stroyprombeton import config, mailer
+from stroyprombeton.models import Category, Product
+from stroyprombeton.forms import OrderForm, PriceForm, DrawingForm
 
+### Helpers ###
+
+# Sets CSRF-cookie to CBVs.
 set_csrf_cookie = method_decorator(ensure_csrf_cookie, name='dispatch')
+MODEL_MAP = {'product': Product, 'category': Category}
+
+### Search views ###
+
+class AdminAutocomplete(search.AdminAutocomplete):
+    """Override model_map for autocomplete."""
+    model_map = MODEL_MAP
+    search_limit = 500
+
+
+class Search(search.Search):
+    """Override model references to SE-specific ones."""
+    model_map = MODEL_MAP
+    search_limit = 500
+
+
+class Autocomplete(search.Autocomplete):
+    """Override model references to SE-specific ones."""
+    model_map = MODEL_MAP
+    search_url = 'search'
 
 
 class OrderFormMixin:

@@ -4,7 +4,7 @@ register = template.Library()
 
 
 @register.inclusion_tag('tags/product_values.html')
-def show_if_exist(value, title):
+def show_field_if_exist(value, title):
     return {
         'title': title,
         'value': value
@@ -17,3 +17,14 @@ def customer_info(value, title):
         'title': title,
         'value': value
     }
+
+@register.inclusion_tag('tags/search_result.html')
+def search_result(items, type_):
+    return {
+        'items': items,
+        'type_': type_
+    }
+
+@register.filter
+def show_if_exist(value, default=''):
+    return value if value else default

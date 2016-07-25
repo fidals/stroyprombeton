@@ -1,0 +1,22 @@
+{% load stb_extras %}
+
+{% if items %}
+  {% for item in items %}
+    <tr>
+      <td>{{ type_ }}</td>
+      <!--TODO Needed create logic for images and empty thumb.-->
+      <td class="image"></td>
+      <td class="search-element-nomen">{{ item.code|show_if_exist }}</td>
+      <td class="gbi-list name">
+        <a href="{{ item.get_absolute_url }}">{{item.specification|show_if_exist}} {{ item.name }} {{item.mark|show_if_exist}}</a>
+      </td>
+      <td>
+        {% if type_ == 'Раздел' %}
+          {{ item.price|show_if_exist:'-' }}
+        {% else %}
+          {{ item.price|show_if_exist:'По запросу' }}
+        {% endif %}
+      </td>
+    </tr>
+  {% endfor %}
+{% endif %}

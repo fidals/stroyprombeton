@@ -3,15 +3,18 @@
     <tbody>
     <tr>
       <td class="search-form-title">Поиск в каталоге продукции:</td>
-      <td class="search-form-input">
-        <input class="search-input js-autocomplete ui-autocomplete-input" id="search_condition" type="text"
-               value="Запрос для поиска ..." autocomplete="off" role="textbox" aria-autocomplete="list"
-               aria-haspopup="true">
-      </td>
-      <td class="search-form-submit">
-        <input class="btn-gray btn-search-action" id="btn-search-action" type="button" value="Найти">
-      </td>
-    </tr>
+        <form class="navbar-form search-form js-search-form" action="{% url 'search' %}" method="get">
+          <td class="search-form-input">
+            <input class="search-input js-autocomplete ui-autocomplete-input" id="search_condition" name="search"
+                   type="text" placeholder="Запрос для поиска ..." autocomplete="off" role="textbox" aria-autocomplete="list"
+                   aria-haspopup="true">
+          </td>
+          <td class="search-form-submit">
+            <input class="btn-gray btn-search-action" id="search-submit" type="submit" value="Найти">
+          </td>
+        </form>
+      </tr>
     </tbody>
   </table>
 </div>
+

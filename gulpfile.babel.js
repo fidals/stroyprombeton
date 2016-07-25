@@ -38,6 +38,7 @@ const PATH = {
         'front/js/vendors/bootstrap.min.js',
         'front/js/vendors/cookie.js',
         'front/js/vendors/jquery.mask.min.js',
+        'front/js/vendors/auto-complete.min.js',
       ],
 
       pages: [
@@ -50,6 +51,7 @@ const PATH = {
         'front/js/shared/*.es6',
         'front/js/components/main.es6',
         'front/js/components/headerCart.es6',
+        'front/js/components/autocomplete.es6',
       ],
     },
 
