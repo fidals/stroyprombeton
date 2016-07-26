@@ -1,107 +1,22 @@
+{% load stb_extras %}
+{% get_roots as roots %}
+
 <div class="menu-v-content-wrapper">
   <div class="menu-v-content">
-    <section class="akkordion" id="akkordion">
-      <div class="akkordion-title" id="cat-456">Общегражданское и промышленное строительство<i
-          class="fa fa-caret-left"></i></div>
-      <div class="akkordion-content" id="content-456" style="display: none;">
-        <p class="akkordion-last-paragraph">
-          <a class="akkordion-link-to-category" href="/categories/456/">перейти в категорию<i
-              class="fa fa-long-arrow-right"></i></a>
-        </p>
-        <p><a class="akkordion-link" href="/categories/435/">Балконные плиты</a></p>
-        <p><a class="akkordion-link" href="/categories/431/">Козырьки</a></p>
-        <p><a class="akkordion-link" href="/categories/15/">Колонны</a></p>
-        <p><a class="akkordion-link" href="/categories/13/">Перемычки и прогоны</a></p>
-        <p><a class="akkordion-link" href="/categories/74/">Плиты перекрытия ребристые</a></p>
-        <p><a class="akkordion-link" href="/categories/89/">Ригели</a></p>
-        <p><a class="akkordion-link" href="/categories/463/">Сваи</a></p>
-        <p><a class="akkordion-link" href="/categories/11/">Фундаменты и блоки</a></p>
-        <p><a class="akkordion-link" href="/categories/439/">Шахты лифтов</a></p>
-        <p><a class="akkordion-link" href="/categories/12/">Элементы лестниц</a></p>
-
-      </div>
-      <div class="akkordion-title" id="cat-457">Дорожное строительство<i class="fa fa-caret-left"></i></div>
-      <div class="akkordion-content" id="content-457" style="display: none;">
-        <p class="akkordion-last-paragraph">
-          <a class="akkordion-link-to-category" href="/categories/457/">перейти в категорию<i
-              class="fa fa-long-arrow-right"></i></a>
-        </p>
-        <p><a class="akkordion-link" href="/categories/31/">Водоотводные сооружения</a></p>
-        <p><a class="akkordion-link" href="/categories/180/">Водопропускные трубы: звенья, оголовки, откосные
-          стенки, фундаменты</a></p>
-        <p><a class="akkordion-link" href="/categories/199/">Железнодорожные переезды</a></p>
-        <p><a class="akkordion-link" href="/categories/196/">Железнодорожные платформы</a></p>
-        <p><a class="akkordion-link" href="/categories/125/">Железобетонные изделия для укрепительных работ</a>
-        </p>
-        <p><a class="akkordion-link" href="/categories/187/">Искусственные сооружения на специализированных
-          автодорогах</a></p>
-        <p><a class="akkordion-link" href="/categories/203/">Коммуникации</a></p>
-        <p><a class="akkordion-link" href="/categories/165/">Мосты и путепроводы</a></p>
-        <p><a class="akkordion-link" href="/categories/140/">Обстановка и отдельные элементы дороги</a></p>
-        <p><a class="akkordion-link" href="/categories/149/">Опоры</a></p>
-        <p><a class="akkordion-link" href="/categories/115/">Плиты дорожные</a></p>
-        <p><a class="akkordion-link" href="/categories/176/">Подпорные стены</a></p>
-        <p><a class="akkordion-link" href="/categories/172/">Путепроводы тоннельного типа</a></p>
-        <p><a class="akkordion-link" href="/categories/161/">Сваи</a></p>
-        <p><a class="akkordion-link" href="/categories/145/">Тротуарные и ограждающие блоки</a></p>
-
-      </div>
-      <div class="akkordion-title" id="cat-458">Строительство инженерных сетей<i class="fa fa-caret-left"></i></div>
-      <div class="akkordion-content" id="content-458" style="display: none;">
-        <p class="akkordion-last-paragraph">
-          <a class="akkordion-link-to-category" href="/categories/458/">перейти в категорию<i
-              class="fa fa-long-arrow-right"></i></a>
-        </p>
-        <p><a class="akkordion-link" href="/categories/328/">Водоснабжение и канализация</a></p>
-        <p><a class="akkordion-link" href="/categories/314/">Теплоснабжение и электроснабжение </a></p>
-        <p><a class="akkordion-link" href="/categories/337/">Эстакады</a></p>
-      </div>
-      <div class="akkordion-title" id="cat-459">Строительство энергетических объектов<i class="fa fa-caret-left"></i>
-      </div>
-      <div class="akkordion-content" id="content-459" style="display: none;">
-        <p class="akkordion-last-paragraph">
-          <a class="akkordion-link-to-category" href="/categories/459/">перейти в категорию<i
-              class="fa fa-long-arrow-right"></i></a>
-        </p>
-        <p><a class="akkordion-link" href="/categories/44/">Конструкции фундаментов для металлических опор ЛЭП</a>
-        </p>
-        <p><a class="akkordion-link" href="/categories/218/">Металлические конструкции непроходных кабельных
-          эстакад. Серия 3.016.2-12, выпуск 2</a></p>
-        <p><a class="akkordion-link" href="/categories/43/">Опоры ЛЭП</a></p>
-        <p><a class="akkordion-link" href="/categories/462/">Стойки для опор контактной сети</a></p>
-        <p><a class="akkordion-link" href="/categories/59/">Фундаменты под опоры контактной сети для железных
-          дорог</a></p>
-        <p><a class="akkordion-link" href="/categories/45/">Фундаменты трансформаторов и подстанций</a></p>
-
-      </div>
-      <div class="akkordion-title" id="cat-460">Благоустройство территорий<i class="fa fa-caret-left"></i></div>
-      <div class="akkordion-content" id="content-460" style="display: none;">
-        <p class="akkordion-last-paragraph">
-          <a class="akkordion-link-to-category" href="/categories/460/">перейти в категорию<i
-              class="fa fa-long-arrow-right"></i></a>
-        </p>
-        <p><a class="akkordion-link" href="/categories/49/">Бордюрный камень</a></p>
-        <p><a class="akkordion-link" href="/categories/53/">Надолбы и тумбы</a></p>
-        <p><a class="akkordion-link" href="/categories/50/">Плиты бетонные тротуарные</a></p>
-        <p><a class="akkordion-link" href="/categories/52/">Урны</a></p>
-        <p><a class="akkordion-link" href="/categories/51/">Цветочницы</a></p>
-
-      </div>
-      <div class="akkordion-title" id="cat-461">Нефтегазовое строительство<i class="fa fa-caret-left"></i></div>
-      <div class="akkordion-content" id="content-461" style="display: none;">
-        <p class="akkordion-last-paragraph">
-          <a class="akkordion-link-to-category" href="/categories/461/">перейти в категорию<i
-              class="fa fa-long-arrow-right"></i></a>
-        </p>
-        <p><a class="akkordion-link" href="/categories/86/">Утяжелители болотные (тип Аг) . НГ–796–61
-          (ЛЕНГИПРОИНЖПРОЕКТ)</a></p>
-        <p><a class="akkordion-link" href="/categories/85/">Утяжелители болотные клиновидные. ТУ 102-421-86,
-          "Проект 10412"</a></p>
-        <p><a class="akkordion-link" href="/categories/83/">Утяжелители охватывающие для магистральных
-          трубопроводов (тип УБО). Проект 999Б</a></p>
-        <p><a class="akkordion-link" href="/categories/84/">Утяжелители сборные кольцевые для магистральных
-          трубопроводов (тип УТК). ТУ 102-264-81, "Проект №994"</a></p>
-      </div>
+    <section class="accordion js-accordion" id="accordion">
+      {% for root in roots %}
+        <div class="accordion-title js-accordion-title" id="cat-{{ root.id }}">{{ root.name }}<i
+            class="fa fa-caret-left"></i></div>
+        <div class="accordion-content js-accordion-content" id="content-{{ root.id }}" style="display: none;">
+          <p class="accordion-last-paragraph">
+            <a class="accordion-link-to-category" href="{{ root.get_absolute_url }}">перейти в категорию<i
+                class="fa fa-long-arrow-right"></i></a>
+          </p>
+            {% for child in root.get_children_sorted_by_position %}
+              <p><a class="accordion-link" href="{{ child.get_absolute_url }}">{{ child.name }}</a></p>
+            {% endfor %}
+        </div>
+      {% endfor %}
     </section>
   </div>
 </div>

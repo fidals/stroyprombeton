@@ -1,7 +1,9 @@
 from django import template
 
-register = template.Library()
+from stroyprombeton.models import Category
 
+
+register = template.Library()
 
 @register.inclusion_tag('tags/product_values.html')
 def show_field_if_exist(value, title):
@@ -18,6 +20,7 @@ def customer_info(value, title):
         'value': value
     }
 
+
 @register.inclusion_tag('tags/search_result.html')
 def search_result(items, type_):
     return {
@@ -25,6 +28,13 @@ def search_result(items, type_):
         'type_': type_
     }
 
+
 @register.filter
 def show_if_exist(value, default=''):
     return value if value else default
+
+
+@register.assignment_tag
+def get_roots():
+    return Category.objects.root_nodes().filter(is_active=True).order_by('position', 'name')
+

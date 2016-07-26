@@ -51,6 +51,7 @@ const PATH = {
         'front/js/shared/*.es6',
         'front/js/components/main.es6',
         'front/js/components/headerCart.es6',
+        'front/js/components/accordion.es6',
         'front/js/components/autocomplete.es6',
       ],
     },

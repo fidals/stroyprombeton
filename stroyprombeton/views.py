@@ -28,18 +28,17 @@ MODEL_MAP = {'product': Product, 'category': Category}
 class AdminAutocomplete(search.AdminAutocomplete):
     """Override model_map for autocomplete."""
     model_map = MODEL_MAP
-    search_limit = 500
 
 
 class Search(search.Search):
     """Override model references to SE-specific ones."""
     model_map = MODEL_MAP
-    search_limit = 500
 
 
 class Autocomplete(search.Autocomplete):
     """Override model references to SE-specific ones."""
     model_map = MODEL_MAP
+    see_all_label = 'Смотреть все результаты'
     search_url = 'search'
 
 
