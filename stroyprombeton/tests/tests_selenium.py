@@ -19,38 +19,38 @@ def wait(seconds=1):
 def hover(browser, element):
     """Perform a hover over an element."""
     hover_action = ActionChains(browser).move_to_element(element)
+    wait()
     hover_action.perform()
 
 
 class Action(WebElement):
 
     @classmethod
-    def click_and_wait(self, element):
+    def click_and_wait(cls, element, waiting_time=1):
         element.click()
-        wait()
+        wait(waiting_time)
 
     @classmethod
-    def send_keys_and_wait(self, element, *value):
+    def send_keys_and_wait(cls, element, *value, waiting_time=1):
         element.send_keys(*value)
-        wait()
+        wait(waiting_time)
 
-click = Action.click_and_wait
-send_keys = Action.send_keys_and_wait
+click_and_wait = Action.click_and_wait
+send_keys_and_wait = Action.send_keys_and_wait
 
 
 class BuyMixin:
     """Allow to add products to cart."""
 
-    def buy(self, *, product_id=1, quantity=None):
+    def buy(self, *, product_id=1, quantity=None, waiting_time=1):
         product_page = (self.live_server_url +
                         reverse('product', args=(product_id,)))
         self.browser.get(product_page)
         if quantity:
             q = self.browser.find_element_by_class_name('js-product-count')
             q.clear()
-            q.send_keys(quantity)
-        self.browser.find_element_by_class_name('js-add-basket').click()
-        wait()
+            send_keys_and_wait(q, quantity, waiting_time=waiting_time)
+        click_and_wait(self.browser.find_element_by_class_name('js-add-basket'), waiting_time=waiting_time)
 
 
 class SeleniumTestCase(LiveServerTestCase):
@@ -137,18 +137,16 @@ class HeaderCart(SeleniumTestCase, BuyMixin):
         self.buy(product_id=1)
         self.buy(product_id=2)
         self.show_cart()
-        self.browser.find_element_by_xpath(
+        click_and_wait(self.browser.find_element_by_xpath(
             '//*[@id="dropdown-basket"]/table/tbody/tr[1]/td[4]/a/i'
-        ).click()
-        wait()
+        ))
         self.assertIn('1', self.positions)
 
     def test_flush_cart(self):
         self.buy(product_id=1)
         self.buy(product_id=2)
         self.show_cart()
-        self.browser.find_element_by_class_name('js-reset').click()
-        wait()
+        click_and_wait(self.browser.find_element_by_class_name('js-reset'))
         self.assertCartEmpty()
 
 
@@ -175,6 +173,11 @@ class ProductPage(SeleniumTestCase, BuyMixin):
             '//*[@id="dropdown-basket"]/table/tbody/tr[1]/td[3]'
         ).text)
 
+    def test_tooltip(self):
+        self.buy(waiting_time=0)
+        tooltip = self.browser.find_element_by_id('tooltip')
+        self.assertTrue(tooltip.is_displayed())
+
 
 class OrderPage(SeleniumTestCase, BuyMixin):
 
@@ -194,9 +197,8 @@ class OrderPage(SeleniumTestCase, BuyMixin):
         self.buy()
         self.buy(product_id=2)
         self.proceed_order_page()
-        self.browser.find_element_by_xpath(
-            '/html/body/div[2]/div[2]/div[2]/div/div[2]/div/table/tbody/tr[1]/td[5]/a/i').click()
-        wait()
+        click_and_wait(self.browser.find_element_by_xpath(
+            '/html/body/div[2]/div[2]/div[2]/div/div[2]/div/table/tbody/tr[1]/td[5]/a/i'))
         products_in_table = self.browser.find_elements_by_class_name(
             'js-product-row')
         self.assertEqual(len(products_in_table), 1)
@@ -204,9 +206,8 @@ class OrderPage(SeleniumTestCase, BuyMixin):
     def test_order_page_remove_all_products(self):
         self.buy()
         self.proceed_order_page()
-        self.browser.find_element_by_xpath(
-            '/html/body/div[2]/div[2]/div[2]/div/div[2]/div/table/tbody/tr[1]/td[5]/a/i').click()
-        wait()
+        click_and_wait(self.browser.find_element_by_xpath(
+            '/html/body/div[2]/div[2]/div[2]/div/div[2]/div/table/tbody/tr[1]/td[5]/a/i'))
         self.assertIn('Нет выбранных позиций', self.browser.find_element_by_class_name(
             'js-order-contain').text)
 
@@ -215,10 +216,9 @@ class OrderPage(SeleniumTestCase, BuyMixin):
         self.proceed_order_page()
         counter = self.browser.find_element_by_class_name('js-prod-count')
         counter.clear()
-        counter.send_keys(42)
-        self.browser.find_element_by_class_name(
-            'js-order-contain').click()  # Hack
-        wait()
+        send_keys_and_wait(counter, 42)
+        click_and_wait(self.browser.find_element_by_class_name(
+            'js-order-contain'))  # Hack
         self.assertIn(str(self.product1.price * 42),
                       self.browser.find_element_by_class_name('js-order-total').text)
 
@@ -237,22 +237,19 @@ class CategoryPage(SeleniumTestCase):
                          reverse('category', args=(self.child_category.id,)))
 
     def test_buy_product(self):
-        self.browser.find_element_by_xpath(
-            '//*[@id="gbi-list"]/table/tbody/tr[2]/td[5]/div/div[2]/input'
-        ).click()
-        wait()
+        click_and_wait(self.browser.find_element_by_xpath(
+            '//*[@id="gbi-list"]/table/tbody/tr[2]/td[5]/div/div[2]/span/input'
+        ))
         self.assertIn('1', self.browser.find_element_by_class_name(
             'basket-content').text)
 
     def test_buy_two_product(self):
-        self.browser.find_element_by_xpath(
-            '//*[@id="gbi-list"]/table/tbody/tr[2]/td[5]/div/div[2]/input'
-        ).click()
-        wait()
-        self.browser.find_element_by_xpath(
-            '//*[@id="gbi-list"]/table/tbody/tr[3]/td[5]/div/div[2]/input'
-        ).click()
-        wait()
+        click_and_wait(self.browser.find_element_by_xpath(
+            '//*[@id="gbi-list"]/table/tbody/tr[2]/td[5]/div/div[2]/span/input'
+        ))
+        click_and_wait(self.browser.find_element_by_xpath(
+            '//*[@id="gbi-list"]/table/tbody/tr[3]/td[5]/div/div[2]/span/input'
+        ))
         self.assertIn('2', self.browser.find_element_by_class_name(
             'basket-content').text)
 
@@ -260,16 +257,24 @@ class CategoryPage(SeleniumTestCase):
         first_product_count = self.browser.find_element_by_xpath(
             '//*[@id="gbi-list"]/table/tbody/tr[2]/td[5]/div/div[1]/input')
         first_product_count.clear()
-        first_product_count.send_keys('42')
-        self.browser.find_element_by_xpath(
-            '//*[@id="gbi-list"]/table/tbody/tr[2]/td[5]/div/div[2]/input'
-        ).click()
-        wait()
+        send_keys_and_wait(first_product_count, '42')
+        click_and_wait(self.browser.find_element_by_xpath(
+            '//*[@id="gbi-list"]/table/tbody/tr[2]/td[5]/div/div[2]/span/input'
+        ))
         self.assertIn('1', self.browser.find_element_by_class_name(
             'basket-content').text)
         hover(self.browser, self.browser.find_element_by_id('cartInner'))
         self.assertIn('42', self.browser.find_element_by_class_name(
             'js-header-prod-count').text)
+
+    def test_tooltip(self):
+        click_and_wait(self.browser.find_element_by_xpath(
+            '//*[@id="gbi-list"]/table/tbody/tr[2]/td[5]/div/div[2]/span/input'
+        ))
+        tooltip = self.browser.find_element_by_xpath(
+            '//*[@id="gbi-list"]/table/tbody/tr[2]/td[5]/div/div[2]/span/span'
+        )
+        self.assertTrue(tooltip.is_displayed())
 
 
 class Search(SeleniumTestCase):
@@ -293,7 +298,7 @@ class Search(SeleniumTestCase):
 
     def fill_input(self):
         """Enter correct search term"""
-        send_keys(self.input, self.query)
+        send_keys_and_wait(self.input, self.query)
 
     def test_autocomplete_can_expand_and_collapse(self):
         """
@@ -304,7 +309,7 @@ class Search(SeleniumTestCase):
         self.assertTrue(self.autocomplete.is_displayed())
 
         # remove search term ...
-        send_keys(self.input, Keys.BACKSPACE * len(self.query))
+        send_keys_and_wait(self.input, Keys.BACKSPACE * len(self.query))
 
         # ... and autocomplete collapse
         self.assertFalse(self.autocomplete.is_displayed())
@@ -313,7 +318,7 @@ class Search(SeleniumTestCase):
         """First autocomplete item should link on category page by click"""
         first_item = self.autocomplete.find_element_by_css_selector(':first-child')
 
-        click(first_item)
+        click_and_wait(first_item)
 
         self.assertTrue('/gbi/categories/' in self.browser.current_url)
 
@@ -324,24 +329,24 @@ class Search(SeleniumTestCase):
         """
         last_item = self.autocomplete.find_element_by_class_name('autocomplete-last-item')
 
-        click(last_item)
+        click_and_wait(last_item)
 
         self.assertTrue('/search/' in self.browser.current_url)
 
     def test_search_have_results(self):
         """Search results page should contain links on relevant pages"""
         button_submit = self.browser.find_element_by_id('search-submit')
-        click(button_submit)
+        click_and_wait(button_submit)
 
         self.assertTrue(self.browser.find_element_by_link_text('Test Root Category'))
         self.assertTrue(self.browser.find_element_by_link_text('Test Child Category'))
 
     def test_search_results_empty(self):
         """Search results for wrong term should contain empty result set"""
-        send_keys(self.input, 'Not existing search query')
+        send_keys_and_wait(self.input, 'Not existing search query')
         button_submit = self.browser.find_element_by_id('search-submit')
 
-        click(button_submit)
+        click_and_wait(button_submit)
         h1 = self.browser.find_element_by_tag_name('h1')
 
         self.assertTrue(h1.text == 'По вашему запросу ничего не найдено')
@@ -373,7 +378,7 @@ class PageAccordion(SeleniumTestCase):
         accordion_title = self.accordion_title
         accordion_content = self.accordion_content
 
-        click(accordion_title)
+        click_and_wait(accordion_title)
 
         self.assertTrue(accordion_content.is_displayed())
 
@@ -382,7 +387,7 @@ class PageAccordion(SeleniumTestCase):
         accordion_title = self.accordion_title
         accordion_content = self.accordion_content
 
-        click(accordion_title)
-        click(accordion_title)
+        click_and_wait(accordion_title)
+        click_and_wait(accordion_title)
 
         self.assertFalse(accordion_content.is_displayed())

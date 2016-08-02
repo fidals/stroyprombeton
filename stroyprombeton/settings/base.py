@@ -77,6 +77,7 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'django.core.context_processors.static',
                 'ecommerce.context_processors.cart',
+                'stroyprombeton.context_processors.site_info',
             ],
         },
     },

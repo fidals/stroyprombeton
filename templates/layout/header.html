@@ -17,36 +17,36 @@
         <td>
           <p class="header-city text-muted"><i>Санкт-Петербург:</i></p>
           <p class="header-phone">
-            <strong>8 <span class="code">(812)</span> <span class="tel 1">655-73-60</span></strong>
+            <strong>8 <span class="code">(812)</span> <span class="tel 1"></span>{{ site_info.phone.spb1 }}</strong>
           </p>
           <p class="header-phone header-phone-last">
-            <strong>8 <span class="code">(812)</span> <span class="tel 2">655-72-95</span></strong>
+            <strong>8 <span class="code">(812)</span> <span class="tel 2"></span>{{ site_info.phone.spb2 }}</strong>
           </p>
 
           <p class="header-city text-muted"><i>Москва:</i></p>
           <p class="header-phone header-phone-last">
-            8 <span class="code">(499)</span> <span class="tel 3">649-33-79</span>
+            8 <span class="code">(499)</span> <span class="tel 3">{{ site_info.phone.msc }}</span>
           </p>
         </td>
 
         <td>
           <p class="header-city text-muted"><i>Архангельск:</i></p>
           <p class="header-phone header-phone-last">
-            8 <span class="code">(8182)</span> <span class="tel 4">63-92-35</span>
+            8 <span class="code">(8182)</span> <span class="tel 4">{{ site_info.phone.arh }}</span>
           </p>
           <p class="header-phone header-phone-last"></p>
 
           <p class="header-city text-muted"><i>Мурманск:</i></p>
           <p class="header-phone header-phone-last">
-            8 <span class="code">(8152)</span> <span class="tel 5">65-50-48</span>
+            8 <span class="code">(8152)</span> <span class="tel 5">{{ site_info.phone.mur }}</span>
           </p>
 
           <p style="display: none" class="fn org url">www.stroyprombeton.ru</p>
         </td>
 
         <td>
-          <a class="header-email" href="mailto:info@stroyprombeton.ru">
-            <i class="fa fa-envelope"></i> info@stroyprombeton.ru
+          <a class="header-email" href="mailto:{{ site_info.email }}">
+            <i class="fa fa-envelope"></i> {{ site_info.email }}
           </a>
           <p class="header-address-title text-muted">Адрес офиса продаж:</p>
           <p class="header-address">

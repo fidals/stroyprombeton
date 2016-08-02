@@ -6,15 +6,15 @@
       <td>{{ type_ }}</td>
       <!--TODO Needed create logic for images and empty thumb.-->
       <td class="image"></td>
-      <td class="search-element-nomen">{{ item.code|show_if_exist }}</td>
+      <td class="search-element-nomen">{{ item.code|default:'' }}</td>
       <td class="gbi-list name">
-        <a href="{{ item.get_absolute_url }}">{{item.specification|show_if_exist}} {{ item.name }} {{item.mark|show_if_exist}}</a>
+        <a href="{{ item.get_absolute_url }}">{{item.specification|default:''}} {{ item.name }} {{item.mark|default:''}}</a>
       </td>
       <td>
         {% if type_ == 'Раздел' %}
-          {{ item.price|show_if_exist:'-' }}
+          {{ item.price|default:'-' }}
         {% else %}
-          {{ item.price|show_if_exist:'По запросу' }}
+          {{ item.price|default:'По запросу' }}
         {% endif %}
       </td>
     </tr>

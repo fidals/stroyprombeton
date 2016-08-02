@@ -27,8 +27,8 @@
 {% customer_info form.comment 'Сообщение' %}
 
 <p>Если у Вас остались вопросы, Вы можете связаться с нашими менеджерами по телефонам:
-  <a href="{{ stb_phone_link_01 }}">{{ stb_phone_01 }}</a>,
-  <a href="{{ stb_phone_link_02 }}">{{ stb_phone_02 }}</a>
+  <a href="tel:{{ site_info.phone.uri_tel1 }}">{{ site_info.phone.spb1 }}</a>,
+  <a href="tel:{{ site_info.phone.uri_tel2 }}">{{ site_info.phone.spb2 }}</a>
   или по электронной почте:
-  <a href="mailto:{{ stb_email }}">{{ stb_email }}</a>
+  <a href="mailto:{{ site_info.email }}">{{ site_info.email }}</a>
 </p>

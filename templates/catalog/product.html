@@ -9,7 +9,7 @@
   <div class="location">{% breadcrumbs breadcrumbs '»' %}</div>
 
   <div class="product-header">
-    <h1 class="product-header-title">{{ product.h1 }} {{ product.mark }}</h1>
+    <h1 class="product-header-title">{{ product.h1|default:'' }} {{ product.mark|default:'' }}</h1>
   </div>
 
   <div class="product">
@@ -42,11 +42,7 @@
             </td>
             <td class="product-desc-right-col">
               <div class="product-price">
-                {% if product.price %}
-                  {{ product.price }} руб.
-                {% else %}
-                  По запросу
-                {% endif %}
+                {{ product.price|default:'По запросу' }} руб.
               </div>
             </td>
           </tr>
@@ -61,10 +57,12 @@
               </div>
             </td>
             <td class="product-desc-right-col">
-              {# TODO: tooltip on press #}
-              <input class="btn btn-red add-basket js-add-basket" id="shk-submit-5933" type="button"
-                     name="shk-submit" value="Заказать" product-id="{{ product.id }}"
-                     data-tooltip="Товар добавлен в заказ">
+              <span class="tooltip-wrapper js-tooltip">
+                <input class="btn btn-red add-basket js-add-basket" id="shk-submit-5933" type="button"
+                       name="shk-submit" value="Заказать" product-id="{{ product.id }}"
+                       data-tooltip="Товар добавлен в заказ">
+                <span class="tooltip-wrapper-content js-tooltip-content" id="tooltip">Товар добавлен в заказ</span>
+              </span>
             </td>
           </tr>
 

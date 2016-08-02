@@ -44,6 +44,15 @@ HREFS = {
     'stk_module': 'http://xn----htbqgdmrio5g.xn--p1ai',
 }
 
-SHOP_INFO = {
+SITE_INFO = {
     'email': 'info@stroyprombeton.ru',
+    'phone': {
+        'msc': '649-33-79',
+        'spb1': '655-73-60',
+        'spb2': '655-72-95',
+        'arh': '63-92-35',
+        'mur': '65-50-48',
+        'uri_tel1': '+78126557360',
+        'uri_tel2': '+78126557295'
+    },
 }

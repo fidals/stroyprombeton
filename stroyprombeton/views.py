@@ -4,7 +4,6 @@ Stroyprombeton views.
 NOTE: They all should be 'zero-logic'.
 All logic should be located in respective applications.
 """
-from django.conf import settings
 from django.shortcuts import render
 from django.views.generic import FormView, TemplateView
 from django.views.decorators.csrf import ensure_csrf_cookie
@@ -142,7 +141,6 @@ def index(request):
     context = {
         'meta': config.page_metadata('main'),
         'href': config.HREFS,
-        'shop_info': config.SHOP_INFO
     }
 
     return render(

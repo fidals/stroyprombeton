@@ -29,11 +29,6 @@ def search_result(items, type_):
     }
 
 
-@register.filter
-def show_if_exist(value, default=''):
-    return value if value else default
-
-
 @register.assignment_tag
 def get_roots():
     return Category.objects.root_nodes().filter(is_active=True).order_by('position', 'name')

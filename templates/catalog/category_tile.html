@@ -6,9 +6,9 @@
 
 {% block main-content %}
   <div class="location">{% breadcrumbs breadcrumbs '»' %}</div>
-  <h1 class="gbi-section"> {{ category.h1 }}</h1>
+  <h1 class="gbi-section"> {{ category.h1|default:'' }}</h1>
   {% autoescape off %}
-    {{ category.content }}
+    {{ category.content|default:'' }}
   {% endautoescape %}
 
   {% for category in children|dictsort:'name' %}

@@ -6,9 +6,9 @@
 
 {% block main-content %}
   <div class="location">{% breadcrumbs breadcrumbs '»' %}</div>
-  <h1 class="gbi-section"> {{ category.h1 }}</h1>
+  <h1 class="gbi-section"> {{ category.h1|default:'' }}</h1>
   {% autoescape off %}
-    {{ category.content }}
+    {{ category.content|default:'' }}
   {% endautoescape %}
 
 
@@ -28,7 +28,7 @@
             <td class="gbi-list photo"></td>
             <td class="gbi-list code">{{ product.code|default:'' }}</td>
             <td class="gbi-list name">
-              <a href="{{ product.get_absolute_url }}">{{ product.name }} {{ product.mark }}</a>
+              <a href="{{ product.get_absolute_url }}">{{ product.name }} {{ product.mark|default:'' }}</a>
             </td>
             <td class="gbi-list price">{{ product.price|default:'По запросу' }}</td>
             <td class="gbi-list buy">
@@ -40,8 +40,11 @@
                   <img class="field-arr-down" src="{% static 'images/spin-down.png' %}">
                 </div>
                 <div class="shk_basket_buy">
-                  <input class="btn btn-red add-basket js-category-buy" productId="{{ product.id }}" name="shk-submit"
-                         type="submit" value="Заказать" data-tooltip="Товар добавлен в заказ" style="cursor: pointer;">
+                  <span class="tooltip-wrapper js-tooltip">
+                    <input class="btn btn-red add-basket js-category-buy" productId="{{ product.id }}" name="shk-submit"
+                           type="submit" value="Заказать" data-tooltip="Товар добавлен в заказ" style="cursor: pointer;">
+                    <span class="tooltip-wrapper-content js-tooltip-content">Товар добавлен в заказ</span>
+                  </span>
                 </div>
               </div>
             </td>
