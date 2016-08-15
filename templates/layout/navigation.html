@@ -1,11 +1,9 @@
+{% load stb_extras %}
+{% get_navigation as navigation %}
 <ul class="list-unstyled navigation menu">
-  <li><a href="/">Главная</a></li>
-  <li><a href="#">Оформление заказа</a></li>
-  <li><a href="#">Доставка</a></li>
-  <li><a href="#">Производство</a></li>
-  <li><a href="#">Наши объекты</a></li>
-  <li><a href="#">О компании</a></li>
-  <li><a href="#">Контакты</a></li>
+  {% for item in navigation %}
+    <li><a href="{{ item.get_absolute_url }}">{{ item.menu_title }}</a></li>
+  {% endfor %}
   <li>
     <div id="sticky-wrapper" class="basket-sticky-wrapper basket-sticky">
       <div class="basket basket-sticky">

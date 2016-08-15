@@ -10,10 +10,12 @@ from django.views.decorators.csrf import ensure_csrf_cookie
 from django.utils.decorators import method_decorator
 
 from catalog.views import catalog, search
+from pages.views import CustomPage, FlatPage
+from pages.models import Page
 from ecommerce import views as ec_views
 
-from stroyprombeton import config, mailer
-from stroyprombeton.models import Category, Product
+from stroyprombeton import mailer, config
+from stroyprombeton.models import Category, Product, Territory
 from stroyprombeton.forms import OrderForm, PriceForm, DrawingForm
 
 ### Helpers ###
@@ -134,17 +136,27 @@ class OrderPrice(FormView):
         return super(OrderPrice, self).form_valid(form)
 
 
-@ensure_csrf_cookie
-def index(request):
-    """Main page view"""
-
+class IndexPage(CustomPage):
+    """Custom view for Index page."""
+    template_name = 'pages/index/index.html'
+    slug = 'index'
     context = {
-        'meta': config.page_metadata('main'),
         'href': config.HREFS,
+        'news': Page.objects.get(slug='news').children.all().filter(is_active=True)[:3]
     }
 
-    return render(
-        request, 'index/index.html', context)
+
+class TerritoryMapPage(CustomPage):
+    """Custom view for territory map and it's pages."""
+    template_name = 'pages/territory/territory_map.html'
+    slug_field = 'obekty'
+    context = {
+        'territories': Territory.objects.all()
+    }
+
+class RegionFlatPage(FlatPage):
+    """Custom view for regions and it's flat_pages."""
+    template_name = 'pages/territory/region_page.html'
 
 
 @ensure_csrf_cookie
@@ -156,30 +168,3 @@ def visual_page(request):
 
     return render(
         request, 'catalog/visual.html', context)
-
-
-def blog_news_list(request):
-    """News page view"""
-
-    context = {
-    }
-
-    return render(request, 'blog/news_list.html', context)
-
-
-def blog_news_item(request):
-    """News page view"""
-
-    context = {
-    }
-
-    return render(request, 'blog/news_item.html', context)
-
-
-def blog_post_item(request):
-    """Blog post page view"""
-
-    context = {
-    }
-
-    return render(request, 'blog/post_item.html', context)

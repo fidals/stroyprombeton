@@ -11,7 +11,7 @@ const product = (() => {
   };
 
   const setUpListeners = () => {
-    DOM.$addToCart.click(() => buyProduct());
+    DOM.$addToCart.click(buyProduct);
   };
 
   const buyProduct = () => {

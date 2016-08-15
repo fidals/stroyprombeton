@@ -42,9 +42,15 @@ const PATH = {
       ],
 
       pages: [
+        'front/js/components/innerPages.es6',
         'front/js/components/product.es6',
         'front/js/components/category.es6',
         'front/js/components/order.es6',
+      ],
+      
+      vendorsPages: [
+        'front/js/vendors/jquery.maphilight.min.js',
+        'front/js/vendors/jquery.tooltipster.min.js',
       ],
 
       common: [
@@ -86,8 +92,9 @@ gulp.task('build', callback => {
   sequence(
     'styles',
     'js-vendors',
+    'js-vendors-pages',
     'js-common',
-    // 'js-pages',
+    'js-pages',
     // 'js-admin',
     'images',
     'fonts',
@@ -124,6 +131,20 @@ gulp.task('js-vendors', () => {
   gulp.src(PATH.src.js.vendors)
     .pipe(changed(PATH.build.js, {extension: '.js'}))
     .pipe(concat('vendors.js'))
+    .pipe(rename({
+      suffix: '.min',
+    }))
+    .pipe(uglify())
+    .pipe(gulp.dest(PATH.build.js));
+});
+
+// ================================================================
+// JS : Build common vendors-pages js only
+// ================================================================
+gulp.task('js-vendors-pages', () => {
+  gulp.src(PATH.src.js.vendorsPages)
+    .pipe(changed(PATH.build.js, {extension: '.js'}))
+    .pipe(concat('vendors-pages.js'))
     .pipe(rename({
       suffix: '.min',
     }))

@@ -1,6 +1,7 @@
 from django import template
 
 from stroyprombeton.models import Category
+from pages.models import Page
 
 
 register = template.Library()
@@ -30,6 +31,10 @@ def search_result(items, type_):
 
 
 @register.assignment_tag
+def get_navigation():
+    return Page.objects.get(slug='navi').children.all().order_by('position')
+
+
+@register.assignment_tag
 def get_roots():
     return Category.objects.root_nodes().filter(is_active=True).order_by('position', 'name')
-

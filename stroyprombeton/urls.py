@@ -4,6 +4,7 @@ from django.conf.urls.static import static
 
 from stroyprombeton import views
 
+
 catalog_urls = [
     url(r'^$', views.CategoryTree.as_view(),
         name='category_tree'),
@@ -11,6 +12,11 @@ catalog_urls = [
         name='category'),
     url(r'^products/(?P<product_id>[0-9]+)/$', views.ProductPage.as_view(),
         name='product'),
+]
+
+build_objects_url = [
+    url(r'^$', views.TerritoryMapPage.as_view(), name='territory_page'),
+    url(r'^([\w-]+)/$', views.RegionFlatPage.as_view(), name='region_flat_page'),
 ]
 
 search_urls = [
@@ -35,10 +41,9 @@ urlpatterns = [
         name='order_price_success'),
     url(r'^drawing-success/', views.OrderDrawingSuccess.as_view(),
         name='order_drawing_success'),
-    url(r'^$', views.index, name='index'),
-    url(r'^blog/news/$', views.blog_news_list, name='news'),
-    url(r'^blog/news/1/$', views.blog_news_item, name='news_item'),
-    url(r'^blog/posts/1/$', views.blog_post_item, name='post_item'),
+    url(r'^$', views.IndexPage.as_view(), name='index'),
+    url(r'^page/', include('pages.urls')),
+    url(r'^obekty/', include(build_objects_url)),
     url(r'^gbi/', include(catalog_urls)),
     url(r'^visual/', views.visual_page, name='catalog'),
     url(r'^shop/', include(ecommerce_urls)),

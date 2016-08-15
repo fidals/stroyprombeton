@@ -11,8 +11,16 @@ from datetime import datetime
 
 from django.test import TestCase
 
+from pages.models import Page
+from stroyprombeton.management.commands.transfer import custom_page_data
 from stroyprombeton.models import Category, Product
-from .tests_forms import PriceFormTest, DrawingFormTest
+from stroyprombeton.tests.tests_forms import PriceFormTest, DrawingFormTest
+
+
+def create_custom_pages():
+    """Create index, category_tree, news and territory pages."""
+    for fields in custom_page_data.values():
+        Page.objects.create(**fields)
 
 
 class CategoryTree(TestCase):
@@ -21,6 +29,7 @@ class CategoryTree(TestCase):
     @classmethod
     def setUpTestData(cls):
         """Create root and child category."""
+        create_custom_pages()
         cls.root_name = 'Test root category'
         cls.child_name = 'Test child category'
 
@@ -66,49 +75,53 @@ class CategoryTile(TestCase):
     @classmethod
     def setUpTestData(cls):
         """Create root and child category."""
+        create_custom_pages()
         cls.root_data = {
-            'h1': 'Козырьки',
-            'content': 'Козырьки устанавливают над входами зданий.',
-            'name': 'Test root category'
+            'name': 'Test root category',
+            'id': 1,
+            'page': Page.objects.create(
+                content='Козырьки устанавливают над входами зданий.',
+                h1='Козырьки',
+            ),
         }
+
+        cls.root_category = Category.objects.create(**cls.root_data)
 
         cls.child_data = {
-            'h1': 'Козырьки входов, плиты парапетные.',
-            'content': 'Козырьки применяют при строительстве зданий.',
-            'name': 'Test child category'
+            'name': 'Test child category',
+            'id': 2,
+            'parent': cls.root_category,
+            'page': Page.objects.create(
+                content='Козырьки применяют при строительстве зданий.',
+                h1='Козырьки входов, плиты парапетные.',
+            )
         }
 
-        root_category = Category.objects.create(id=1, **cls.root_data)
-
-        Category.objects.create(
-            id=2,
-            parent=root_category,
-            **cls.child_data
-        )
+        Category.objects.create(**cls.child_data)
 
     def setUp(self):
         """Get response from /gbi/categories/1/"""
-        self.response = self.client.get('/gbi/categories/1/')
+        self.response = self.client.get('/gbi/categories/' + str(self.root_data['id']) + '/')
 
     def test_response_status_code(self):
         status_code = self.response.status_code
 
         self.assertEqual(status_code, 200)
 
-    def test_breadcrumbs(self):
-        breadcrumbs = self.response.context['breadcrumbs']
+    def test_page(self):
+        page = self.response.context['page']
 
-        self.assertEqual(len(breadcrumbs), 3)
+        self.assertTrue(page)
 
     def test_h1(self):
-        h1 = self.response.context['category'].h1
+        h1 = self.response.context['category'].page.h1
 
-        self.assertEqual(h1, self.root_data['h1'])
+        self.assertEqual(h1, self.root_data['page'].h1)
 
     def test_content(self):
-        content = self.response.context['category'].content
+        content = self.response.context['page'].content
 
-        self.assertEqual(content, self.root_data['content'])
+        self.assertEqual(content, self.root_data['page'].content)
 
     def test_children_categories_quantity(self):
         quantity = len(self.response.context['children'])
@@ -128,22 +141,27 @@ class CategoryTable(TestCase):
     @classmethod
     def setUpTestData(cls):
         """Create category and product."""
+        create_custom_pages()
         cls.root_data = {
-            'h1': 'Козырьки',
             'name': 'Test root category',
-            'content': 'Козырьки устанавливают над входами зданий.',
+            'id': 1,
+            'page': Page.objects.create(
+                h1='Козырьки',
+                content='Козырьки устанавливают над входами зданий.',
+            )
         }
+
+        root_category = Category.objects.create(**cls.root_data)
 
         cls.product_data = {
             'price': 1447.21,
             'code': 350,
             'name': 'Test product name',
-            'date_price_updated': datetime.now()
+            'date_price_updated': datetime.now(),
+            'category': root_category
         }
 
-        root_category = Category.objects.create(id=1, **cls.root_data)
-
-        Product.objects.create(category=root_category, **cls.product_data)
+        Product.objects.create(**cls.product_data)
 
     def setUp(self):
         """Get response from /gbi/categories/1/"""
@@ -154,20 +172,20 @@ class CategoryTable(TestCase):
 
         self.assertEqual(status_code, 200)
 
-    def test_breadcrumbs(self):
-        breadcrumbs = self.response.context['breadcrumbs']
+    def test_page(self):
+        page = self.response.context['page']
 
-        self.assertEqual(len(breadcrumbs), 3)
+        self.assertTrue(page)
 
     def test_h1(self):
-        h1 = self.response.context['category'].h1
+        h1 = self.response.context['page'].h1
 
-        self.assertEqual(h1, self.root_data['h1'])
+        self.assertEqual(h1, self.root_data['page'].h1)
 
     def test_content(self):
-        content = self.response.context['category'].content
+        content = self.response.context['page'].content
 
-        self.assertEqual(content, self.root_data['content'])
+        self.assertEqual(content, self.root_data['page'].content)
 
     def test_products_quantity(self):
         quantity = len(self.response.context['products'])
@@ -196,16 +214,18 @@ class Product_(TestCase):
     @classmethod
     def setUpTestData(cls):
         """Create category and product."""
-
+        create_custom_pages()
         root_data = {
-            'h1': 'Козырьки',
+            'id': 1,
             'name': 'Test root category',
-            'content': 'Козырьки устанавливают над входами зданий.',
         }
 
+        root_category = Category.objects.create(**root_data)
+
         cls.product_data = {
+            'id': 1,
+            'category': root_category,
             'name': 'Test product name',
-            'h1': 'Плита парапетная железобетонная АП 13.5',
             'price': 1447.21,
             'code': 350,
             'mark': 350,
@@ -217,19 +237,14 @@ class Product_(TestCase):
             'diameter_out': 321,
             'weight': 1111,
             'volume': 2222,
-            'date_price_updated': datetime.now()
+            'date_price_updated': datetime.now(),
+            'page': Page.objects.create(
+                content='Козырьки устанавливают над входами зданий.',
+                h1='Козырьки',
+            )
         }
 
-        root_category = Category.objects.create(
-            id=1,
-            **root_data
-        )
-
-        Product.objects.create(
-            id=1,
-            category=root_category,
-            **cls.product_data
-        )
+        Product.objects.create(**cls.product_data)
 
     def setUp(self):
         self.response = self.client.get('/gbi/products/1/')
@@ -239,15 +254,15 @@ class Product_(TestCase):
 
         self.assertEqual(status_code, 200)
 
-    def test_status_breadcrumbs(self):
-        breadcrumbs = self.response.context['breadcrumbs']
+    def test_page(self):
+        page = self.response.context['page']
 
-        self.assertEqual(len(breadcrumbs), 4)
+        self.assertTrue(page)
 
     def test_h1(self):
-        h1 = self.response.context['product'].h1
+        h1 = self.response.context['page'].h1
 
-        self.assertEqual(h1, self.product_data['h1'])
+        self.assertEqual(h1, self.product_data['page'].h1)
 
     def test_product_name(self):
         name = self.response.context['product'].name

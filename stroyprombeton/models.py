@@ -1,10 +1,16 @@
 """Models which are specific for stroyprombeton.ru"""
 
+from unidecode import unidecode
+from random import randint
+from sys import maxsize
+
+from django.utils.text import slugify
 from django.db import models
+from django.contrib.postgres.fields import ArrayField
 from django.core.urlresolvers import reverse
 
-from pages.models import SitePageMixin
 from catalog.models import AbstractProduct, AbstractCategory
+from pages.models import PageConnectorMixin
 from ecommerce.models import Order as ecOrder
 
 
@@ -32,10 +38,11 @@ class Product(AbstractProduct):
     category = models.ForeignKey(Category,
                                  on_delete=models.CASCADE,
                                  related_name='products')
+    _slug = models.SlugField(max_length=400)
     is_new_price = models.NullBooleanField(blank=True, null=True)
     date_price_updated = models.DateField(auto_now_add=True)
     code = models.BigIntegerField(null=True, blank=True)
-    mark = models.CharField(max_length=500)
+    mark = models.CharField(max_length=500, null=True, blank=True)
     specification = models.TextField(null=True, blank=True)
     length = models.IntegerField(null=True, blank=True)
     width = models.IntegerField(null=True, blank=True)
@@ -45,20 +52,36 @@ class Product(AbstractProduct):
     diameter_out = models.IntegerField(null=True, blank=True)
     diameter_in = models.IntegerField(null=True, blank=True)
 
+    def save(self, *args, **kwargs):
+        #product slug should be unique, we don't use slug in product url
+        self._slug = slugify(unidecode(self.name)) + str(randint(0, maxsize))[1:10]
+        super(Product, self).save(*args, **kwargs)
+
+
+    @property
+    def slug(self):
+        return self._slug
+
     def get_absolute_url(self):
         return reverse('product', args=(self.id,))
 
 
-class Static_page(SitePageMixin):
-    slug = models.SlugField(null=True, blank=True)
+class Territory(PageConnectorMixin):
+    """Territory model - is a regions on map (ex: Chelyabinsk region)"""
+    name = models.CharField(max_length=255, unique=True)
+    coord = ArrayField(models.TextField())
+    slug = models.SlugField(max_length=255)
 
+    @property
+    def title(self):
+        return self.name
 
-class Territory(SitePageMixin):
-    """Territory model - a territory on map (ex: Chelyabinsk region)"""
-    slug = models.SlugField(null=True, blank=True)
+    @title.setter
+    def title(self, value):
+        # ORM requires any setter
+        pass
 
-
-class Object(SitePageMixin):
-    """Object model - constructed object on some Territory (ex.: highway)"""
-    slug = models.SlugField(null=True, blank=True)
-    territory = models.ForeignKey(Territory)
+    def save(self, *args, **kwargs):
+        if self.name and not self.slug:
+            self.slug = slugify(unidecode(self.name))
+        super(Territory, self).save(*args, **kwargs)

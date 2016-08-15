@@ -1,0 +1,15 @@
+{% extends 'layout/base.html' %}
+{% load pages_extras %}
+
+{% block main-content %}
+  {% breadcrumbs page '»' %}
+  <h1>{{ page.h1 }}</h1>
+
+  {% for object in page.children.all %}
+    <ul class="gbi_map_list">
+      <li>
+        <a href="{{ object.get_absolute_url }}">{{ object.menu_title }}</a>
+      </li>
+    </ul>
+  {% endfor %}
+{% endblock %}

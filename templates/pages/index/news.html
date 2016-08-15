@@ -1,0 +1,26 @@
+{% load stb_extras %}
+
+<td style="width: 50%; vertical-align: top; padding: 0;">
+  <div class="m_informer">
+    <a class="inf_header" href="{% url 'pages:flat_page' 'news' %}">Новости компании</a>
+    <div class="inf_content">
+      <ul>
+        {% for post in news %}
+          <li>
+            <div class="news_img">
+              <a href="{{ post.get_absolute_url }}">
+                <img class="img-responsive" src="{{ MEDIA_URL }}news/{{ post.date_published|date:'d-m-y' }}/100x100.jpg">
+              </a>
+            </div>
+            <div class="news_text">
+              <i>{{ post.date_published|date:'d-m-Y' }}</i><br>
+              <a href={{ post.get_absolute_url }}>{{ post.h1 }}</a><br>
+              <div class="inf_intro">{{ post.description }}</div>
+            </div>
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+    <div class="inf_footer"><a href="{% url 'pages:flat_page' 'news' %}">Посмотреть все новости</a></div>
+  </div>
+</td>

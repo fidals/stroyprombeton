@@ -1,8 +1,8 @@
-{% extends "layout/base.html" %}
+{% extends 'layout/base.html' %}
 {% load mptt_tags %}
 
 {% block main-content %}
-  <h1>Все категории</h1>
+  <h1>{{ page.h1 }}</h1>
 
   <ul class="catalog">
     {% recursetree nodes %}

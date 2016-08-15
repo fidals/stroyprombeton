@@ -3,18 +3,9 @@ const mainPage = (() => {
     $btnScrollTop: $('#btn-scroll-to-top'),
     $scrollWrapper: $('#scroll-wrapper'),
     $tooltip: $('.js-tooltip'),
-    tooltipContent: '.js-tooltip-content',
-  };
-
-  const CONFIG = {
-    scrollbar: {
-      autoReinitialise: true,
-      mouseWheelSpeed: 30,
-    },
   };
 
   const init = () => {
-    pluginsInit();
     setupXHR();
     setUpListeners();
   };
@@ -39,11 +30,7 @@ const mainPage = (() => {
     DOM.$btnScrollTop.on('click', () => $('html, body').animate({ scrollTop: 0 }, 300));
     DOM.$tooltip.click(event => showTooltip($(event.target).next()));
   };
-
-  const pluginsInit = () => {
-    console.warn('Here will be plugins initialization.');
-  };
-
+  
   const enableScrollToTop = () => {
     DOM.$btnScrollTop.addClass('active');
   };
@@ -56,7 +43,7 @@ const mainPage = (() => {
     $item.fadeIn();
     setTimeout(() => $item.fadeOut(), 1000);
   };
-
+  
   /**
    * Toggles to top button.
    */

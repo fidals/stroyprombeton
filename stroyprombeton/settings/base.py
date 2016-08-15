@@ -180,4 +180,11 @@ EMAIL_SUBJECTS = {
 # Used mostly in breadcrumbs to generate URL for catalog's root.
 CATEGORY_TREE_URL = 'category_tree'
 
+# Some defaults for autocreation struct pages: index, catalog tree
+# Pages with this data are created in DB only once.
+
+# TODO needed remove PAGES in dev-788
+PAGES = {
+}
+
 from .local import *

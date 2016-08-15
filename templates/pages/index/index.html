@@ -1,0 +1,18 @@
+{% extends 'layout/base.html' %}
+{% block main-content %}
+  <h1>{{ page.h1 }}</h1>
+
+  {# Section with carousel & news #}
+  <table class="index-main-top" border="0">
+    <tbody>
+    <tr>
+      {% include 'pages/index/our_product.html' %}
+      {% include 'pages/index/news.html' %}
+    </tr>
+    </tbody>
+  </table>
+
+
+  {# Product types list #}
+  {% include 'pages/index/list.html' %}
+{% endblock %}

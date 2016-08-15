@@ -2427,6 +2427,11 @@ ul.informer {
   margin: 0 10px 10px 0;
   padding: 1px;
   width: 70px;
+
+  img {
+    max-width: 100%;
+  }
+
 }
 
 .news_img + i {
@@ -3580,7 +3585,7 @@ button.order-price {
         display: block;
         text-decoration: none;
         color: $c-grey-text;
-       }
+      }
 
       &-name {
         float: left;

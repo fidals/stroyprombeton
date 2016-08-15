@@ -1,15 +1,13 @@
-{% extends "layout/base.html" %}
+{% extends 'layout/base.html' %}
 {% load staticfiles %}
-{% load breadcrumb_extras %}
+{% load pages_extras %}
 {% load stb_extras %}
-{% block title %}{{ product.title }}{% endblock %}
-{% block keywords %}{{ product.keywords }}{% endblock %}
 
 {% block main-content %}
-  <div class="location">{% breadcrumbs breadcrumbs '»' %}</div>
+  <div class="location">{% breadcrumbs page '»' %}</div>
 
   <div class="product-header">
-    <h1 class="product-header-title">{{ product.h1|default:'' }} {{ product.mark|default:'' }}</h1>
+    <h1 class="product-header-title">{{ page.h1|default:'' }} {{ product.mark|default:'' }}</h1>
   </div>
 
   <div class="product">
@@ -74,6 +72,11 @@
       </div>
     </div>
   </div>
+{% endblock %}
+
+{% block jslibs %}
+  {{ block.super }}
+  <script src="{% static 'js/vendors-pages.min.js' %}"></script>
 {% endblock %}
 
 {% block jslinks %}

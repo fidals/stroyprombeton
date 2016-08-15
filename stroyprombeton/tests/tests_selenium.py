@@ -9,6 +9,8 @@ from django.test import LiveServerTestCase
 from django.core.urlresolvers import reverse
 
 from stroyprombeton.models import Category, Product
+from stroyprombeton.management.commands.transfer import custom_page_data
+from pages.models import Page
 
 
 def wait(seconds=1):
@@ -19,7 +21,6 @@ def wait(seconds=1):
 def hover(browser, element):
     """Perform a hover over an element."""
     hover_action = ActionChains(browser).move_to_element(element)
-    wait()
     hover_action.perform()
 
 
@@ -65,6 +66,14 @@ class SeleniumTestCase(LiveServerTestCase):
         cls.browser.maximize_window()
 
     def prepareFixtures(self):
+        navigation = Page.objects.create(slug='navi')
+        custom_page_data['index']['parent'] = \
+            custom_page_data['obekty']['parent'] = navigation
+
+        # Create navigation and required custom pages
+        for fields in custom_page_data.values():
+            Page.objects.create(**fields)
+
         root_category = Category.objects.create(
             id=1,
             name='Test Root Category'

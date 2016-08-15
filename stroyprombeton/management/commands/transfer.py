@@ -5,18 +5,67 @@ import json
 import pymysql
 from getpass import getpass
 from datetime import datetime
+from unidecode import unidecode
 
+from django.utils.text import slugify
 from django.db import transaction
 from django.core.management.base import BaseCommand
 from django.conf import settings
 
-from stroyprombeton.models import Category, Product, Static_page
-from pages.models import Post
+from stroyprombeton.models import Category, Product, Territory
+from pages.models import Page
 
+custom_page_data = {
+    'news': {
+        'slug': 'news',
+        'h1': 'Новости компании',
+        'title': 'Завод ЖБИ «СТК-ПромБетон»',
+        'menu_title': 'Новости компании'
+    },
+    'obekty': {
+        'route': 'territory_page',
+        'slug': 'obekty',
+        'h1': 'Регионы, в которые поставлялась продукция «СТК-ПромБетон»',
+        'title': 'Регионы, в которые поставлялась продукция «СТК-ПромБетон»',
+        'menu_title': 'Наши объекты',
+        'position': 4,
+        'type': Page.CUSTOM_TYPE,
+    },
+    'index': {
+        'slug': 'index',
+        'route': 'index',
+        'title': 'Завод ЖБИ «СТК-ПромБетон» | Производство ЖБИ в Санкт-Петербурге, железобетонные изделия СПб',
+        'h1': 'Завод железобетонных изделий «СТК-Промбетон»',
+        'menu_title': 'Главная',
+        'type': Page.CUSTOM_TYPE,
+    },
+    'category_tree': {
+        'slug': 'category_tree',
+        'route': 'category_tree',
+        'title': 'Каталог товаров',
+        'h1': 'Все категории',
+        'type': Page.CUSTOM_TYPE,
+        'menu_title': 'Каталог',
+    },
+    'search': {
+        'slug': 'search',
+        'type': Page.CUSTOM_TYPE,
+        'title': 'Результаты поиска',
+    },
+}
 
 class Command(BaseCommand):
 
     path_to_JSON = os.path.join(settings.BASE_DIR, 'stb.json')
+
+    navigation_items_positions = {
+        'ordering': 1,
+        'delivery': 2,
+        'proizvodstvo-gbi': 3,
+        'about': 5,
+        'contacts': 6
+    }
+
     MYSQL_CONFIG = {
         'user': 'proger',
         'password': '',
@@ -108,24 +157,27 @@ class Command(BaseCommand):
                        if date and not isinstance(date, datetime) else date)
 
         to_int = (lambda obj:
-                  int(obj) if obj is not None else obj)
+                  int(obj) if obj else obj)
 
         to_float = (lambda obj:
-                    float(obj) if obj is not None else obj)
+                    float(obj) if obj else obj)
+
+        is_exist = lambda obj: obj if obj else ''
 
         def create_category_data(data: list):
-            for category in data:
-                Category.objects.create(
-                    id=to_int(category['id']),
-                    name=category['name'],
-                    content=category['text'],
-                    _date_published=to_datetime(category['date']),
-                    h1=category['h1'],
-                    is_active=bool(category['is_active']),
-                    position=to_int(category['ord']),
-                    specification=category['mark'],
-                    title=category['title']
+            for category_data in data:
+                category = Category.objects.create(
+                    id=to_int(category_data['id']),
+                    name=category_data['name'],
+                    is_active=bool(category_data['is_active']),
+                    position=to_int(category_data['ord']),
+                    specification=category_data['mark'],
                 )
+                category.page.content = category_data['text']
+                category.page._date_published = to_datetime(category_data['date'])
+                category.page.h1 = is_exist(category_data['h1'])
+                category.page.menu_title = category_data['title']
+                category.save()
 
             get_category = (lambda id_:
                             Category.objects.all().get(id=to_int(id_)))
@@ -142,66 +194,84 @@ class Command(BaseCommand):
                 create_parent(category)
 
         def create_product_data(data: list):
-            for product in data:
-                Product.objects.create(
+            for product_data in data:
+                product = Product.objects.create(
                     category=Category.objects.get(
-                        id=to_int(product['section_id'])
+                        id=to_int(product_data['section_id'])
                     ),
-                    code=to_int(product['nomen']),
-                    content=product['text'],
-                    date_price_updated=to_datetime(product['price_date']),
-                    _date_published=to_datetime(product['date']),
-                    diameter_in=to_int(product['diameter_in']),
-                    diameter_out=to_int(product['diameter_out']),
-                    height=to_int(product['height']),
-                    keywords=product['keywords'],
-                    mark=product['mark'],
-                    name=product['title'],
-                    price=to_float(product['price']),
-                    specification=product['description'],
-                    volume=to_float(product['volume']),
-                    weight=to_float(product['weight']),
-                    width=to_int(product['width']),
-                    length=to_int(product['length'])
+                    code=to_int(product_data['nomen']),
+                    date_price_updated=to_datetime(product_data['price_date']),
+                    diameter_in=to_int(product_data['diameter_in']),
+                    diameter_out=to_int(product_data['diameter_out']),
+                    height=to_int(product_data['height']),
+                    mark=product_data['mark'],
+                    name=product_data['title'],
+                    price=to_float(product_data['price']),
+                    specification=product_data['description'],
+                    volume=to_float(product_data['volume']),
+                    weight=to_float(product_data['weight']),
+                    width=to_int(product_data['width']),
+                    length=to_int(product_data['length'])
                 )
+                product.page.content = product_data['text']
+                product.page._date_published = to_datetime(product_data['date'])
+                product.page.keywords = is_exist(product_data['keywords'])
+                product.save()
 
         def create_post_data(data: list):
-            for post in data:
-                Post.objects.create(
-                    content=post['text'],
-                    _date_published=to_datetime(post['date']),
-                    description=post['description'],
-                    h1=post['h1'],
-                    is_active=bool(post['is_active']),
-                    keywords=post['keywords'],
-                    name=post['name'],
-                    title=post['title']
+            news = Page.objects.create(**custom_page_data['news'])
+            for post_data in data:
+                Page.objects.create(
+                    slug=slugify(unidecode(post_data['name'])),
+                    content=is_exist(post_data['text']),
+                    parent=news,
+                    _date_published=to_datetime(post_data['date']),
+                    description=is_exist(post_data['description']),
+                    h1=is_exist(post_data['h1']),
+                    is_active=bool(post_data['is_active']),
+                    keywords=is_exist(post_data['keywords']),
+                    title=post_data['title'] or post_data['name']
                 )
 
         def create_static_page_data(data: list):
-            for static_page in data:
-                Static_page.objects.create(
-                    content=static_page['text'],
-                    _date_published=to_datetime(static_page['date']),
-                    description=static_page['description'],
-                    h1=static_page['h1'],
-                    is_active=bool(static_page['is_active']),
-                    keywords=static_page['keywords'],
-                    name=static_page['name'],
-                    slug=static_page['alias'],
-                    title=static_page['title']
+            navigation = Page.objects.create(slug='navi')
+            Page.objects.create(**custom_page_data['obekty'], parent=navigation)
+            Page.objects.create(**custom_page_data['index'], parent=navigation)
+            Page.objects.create(**custom_page_data['category_tree'])
+            Page.objects.create(**custom_page_data['search'])
+
+            for static_page_data in data:
+                static_page = Page.objects.create(
+                    content=static_page_data['text'],
+                    _date_published=to_datetime(static_page_data['date']),
+                    description=is_exist(static_page_data['description']),
+                    h1=is_exist(static_page_data['h1']),
+                    is_active=bool(static_page_data['is_active']),
+                    keywords=is_exist(static_page_data['keywords']),
+                    slug=static_page_data['alias'],
+                    title=static_page_data['title'] or static_page_data['name']
                 )
+                if static_page.slug in self.navigation_items_positions:
+                    static_page.parent = navigation
+                    static_page.menu_title = static_page_data['title'] or static_page_data['name']
+                    static_page.position = self.navigation_items_positions[static_page.slug]
+                    static_page.save()
 
         create_category_data(data['categories'])
         create_product_data(data['products'])
         create_post_data(data['posts'])
         create_static_page_data(data['static_pages'])
 
+        print('Was created {} categories, {} products, {} pages'.format(
+            Category.objects.count(),
+            Product.objects.count(),
+            Page.objects.count(),
+        ))
+
     def connect_to_the_mysql_db(self) -> pymysql.connect:
         """Connection to the database and create the cursor."""
-        password = getpass(
+        self.MYSQL_CONFIG['password'] = getpass(
             prompt='Enter password for stroyprombeton database: ')
-        self.MYSQL_CONFIG['password'] = password
 
         try:
             conn = pymysql.connect(**self.MYSQL_CONFIG)
@@ -214,3 +284,5 @@ class Command(BaseCommand):
     def truncate_data(self):
         Category.objects.all().delete()
         Product.objects.all().delete()
+        Page.objects.all().delete()
+        Territory.objects.all().delete()

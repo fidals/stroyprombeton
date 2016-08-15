@@ -1,14 +1,12 @@
-{% extends "layout/base.html" %}
+{% extends 'layout/base.html' %}
 {% load staticfiles %}
-{% load breadcrumb_extras %}
-{% block title %}{{ category.title }}{% endblock %}
-{% block keywords %}{{ category.keywords }}{% endblock %}
+{% load pages_extras %}
 
 {% block main-content %}
-  <div class="location">{% breadcrumbs breadcrumbs '»' %}</div>
-  <h1 class="gbi-section"> {{ category.h1|default:'' }}</h1>
+  <div class="location">{% breadcrumbs page '»' %}</div>
+  <h1 class="gbi-section"> {{ page.h1|default:'' }}</h1>
   {% autoescape off %}
-    {{ category.content|default:'' }}
+    {{ page.content|default:'' }}
   {% endautoescape %}
 
   {% for category in children|dictsort:'name' %}

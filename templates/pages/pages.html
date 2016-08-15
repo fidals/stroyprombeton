@@ -1,0 +1,18 @@
+<ul class="informer">
+  {% for page in pages %}
+    <li>
+      <div class="news_img">
+        <a href="{{ page.get_absolute_url }}">
+          <img src="{{ MEDIA_URL }}news/{{ page.date_published|date:'d-m-y' }}/100x100.jpg" alt="{{ page.h1 }}">
+        </a>
+      </div>
+      <i>{{ page.date_published|date:'d.m.Y' }}</i>
+      <br>
+      <a href="{{ page.get_absolute_url }}">{{ page.h1 }}</a>
+      <div class="inf_intro">
+        {{ page.description }}
+      </div>
+    </li>
+
+  {% endfor %}
+</ul>
