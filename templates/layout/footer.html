@@ -1,8 +1,139 @@
-<div class="footer">
-  <div>Все права защищены. 2009-2016 ООО «СТК-ПромБетон» (Москва, Санкт-Петербург)</div>
-  <div class="backlink">Делаем сложные магазины.
-    <a
-        href="https://fidals.com/blog/stb-project.html?utm_source=STB_site&amp;utm_medium=backlink&amp;utm_campaign=backlink_traffic"
-        target="_blank">Fidals.com</a>
+<footer class="footer">
+  <div class="container container-fluid">
+    <div class="row">
+      <div class="col-xs-offset-1 col-xs-2">
+        <div class="footer-list">
+          <h3 class="footer-list-h3">ЗАКАЗ</h3>
+          <ul>
+            <li class="footer-list-item">
+              <a class="footer-list-link" href="{% url 'pages:flat_page' 'navi' 'ordering' %}">Как оформить</a>
+            </li>
+            <li class="footer-list-item">
+              <a class="footer-list-link" href="{% url 'pages:flat_page' 'navi' 'delivery' %}">Доставка</a>
+            </li>
+            <li class="footer-list-item">
+              <a class="footer-list-link" href="{% url 'pages:flat_page' 'obekty' %}">Наши объекты</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="col-xs-3">
+        <div class="footer-list">
+          <h3 class="footer-list-h3">КАТАЛОГ</h3>
+          <ul>
+            <li class="footer-list-item">
+              <a class="footer-list-link" href="{% url 'category' '457' %}">
+                Дорожное строительство
+              </a>
+            </li>
+            <li class="footer-list-item">
+              <a class="footer-list-link" href="{% url 'category' '456' %}">
+                Общегражданское и промышленное строительство
+              </a>
+            </li>
+            <li class="footer-list-item">
+              <a class="footer-list-link" href="{% url 'category' '458' %}">
+                Строительство инженерных сетей
+              </a>
+            </li>
+            <li class="footer-list-item">
+              <a class="footer-list-link" href="{% url 'category' '459' %}">
+                Строительство энергетических объектов
+              </a>
+            </li>
+            <li class="footer-list-item">
+              <a class="footer-list-link" href="#">Серии</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="col-xs-2">
+        <div class="footer-list">
+          <h3 class="footer-list-h3">О КОМПАНИИ</h3>
+          <ul>
+            <li class="footer-list-item">
+              <a class="footer-list-link" href="{% url 'pages:flat_page' 'navi' 'proizvodstvo-gbi' %}">
+                Производство
+              </a>
+            </li>
+            <li class="footer-list-item">
+              <a class="footer-list-link" href="#">Реквизиты</a>
+            </li>
+            <li class="footer-list-item">
+              <a class="footer-list-link" href="{% url 'pages:flat_page' 'navi' 'contacts' %}">
+                Региональные филиалы
+              </a>
+            </li>
+            <li class="footer-list-item">
+              <a class="footer-list-link" href="{% url 'pages:flat_page' 'news' %}">
+                Новости
+              </a>
+            </li>
+            <li class="footer-list-item">
+              <a class="footer-list-link" href="{% url 'pages:flat_page' 'navi' 'contacts' %}">
+                Контакты
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="col-xs-3">
+        <div class="footer-list footer-contacts">
+          <ul class="vcard">
+            <li class="footer-list-item footer-contacts-brand">
+              <a href="#">
+                <img src="{{ STATIC_URL }}images/logo.svg" alt="СТК-ПромБетон">
+              </a>
+            </li>
+            <li class="footer-list-item tel">
+              <span class="type">Санкт-Петербург</span>
+              <a class="footer-list-link value" href="tel:+78126557360">8 (812) 655-73-60</a>
+            </li>
+            <li class="footer-list-item tel">
+              <span class="type">Москва</span>
+              <a class="footer-list-link value" href="tel:+74996493379">8 (499) 649-33-79</a>
+            </li>
+            <li class="footer-list-item footer-contacts-email email">
+              <a class="footer-list-link" href="mailto:info@stroyprombeton.ru">
+                info@stroyprombeton.ru
+              </a>
+            </li>
+            <li class="footer-list-item">
+              Адрес офиса продаж:
+            </li>
+            <li class="footer-list-item">
+              <address class="adr">
+                <span class="locality">СПб</span>,
+                <span class="street-address">пр.&nbsp;Елизарова&nbsp;38А, офис&nbsp;218</span>
+              </address>
+            </li>
+            <li class="footer-list-item">
+              <span class="workhours">пн-пт 9:00-18:00</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="row footer-copy-row">
+      <div class="col-xs-offset-1 col-xs-7">
+        <div class="footer-copy">
+          <p>
+            <small class="footer-copy-rights">Все права защищены. 2009-2016
+            ООО&nbsp;<b class="footer-copy-bold">«СТК-ПромБетон»</b>
+            (Москва, Санкт-Петербург).</small>
+          </p>
+          <p>
+            Делаем сложные магазины.
+            <a class="footer-copy-link"
+               href="https://fidals.com/blog/stb-project.html?utm_source=STB_site&amp;utm_medium=backlink&amp;utm_campaign=backlink_traffic"
+               target="_blank">Fidals.com</a>
+          </p>
+        </div>
+      </div>
+    </div>
   </div>
-</div>
+</footer>

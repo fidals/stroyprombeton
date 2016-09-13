@@ -1,0 +1,77 @@
+// ================================================================
+// NEWS PAGE
+// ================================================================
+.page-news {
+  padding: $h-header 0 58px;
+}
+
+// ================================================================
+// BREADCRUMBS
+// ================================================================
+.breadcrumbs-news {
+  padding-bottom: 38px;
+}
+
+// ================================================================
+// NEWS
+// ================================================================
+.news {
+
+  &-date {
+    margin-bottom: 19px;
+    font-size: $f-size-base;
+    font-weight: 400;
+    color: $c-news-date;
+  }
+
+  &-title {
+    margin-bottom: 24px;
+    font-size: $f-size-base + 18;
+    font-weight: 300;
+    line-height: 1.18;
+    text-align: center;
+    color: $c-news-title;
+  }
+
+  &-image {
+
+    &-head {
+      margin-bottom: 32px;
+      font-size: 0;
+    }
+
+    &-small {
+      margin-bottom: 56px;
+    }
+  }
+
+  &-text {
+    font-size: $f-size-base + 2;
+    font-weight: 300;
+    line-height: 1.3;
+    color: $c-news-text;
+
+    &-p {
+      margin-bottom: 25px;
+    }
+  }
+
+  &-back {
+    margin-bottom: 60px;
+
+    &-link {
+      font-size: $f-size-base - 3;
+      font-weight: 600;
+      line-height: 1.23;
+      color: $c-news-back-link;
+    }
+
+    &-link:hover {
+      color: $c-news-back-link-hover;
+    }
+
+    &-link:active {
+      color: $c-news-back-link-active;
+    }
+  }
+}

@@ -2,20 +2,9 @@
 // IMPORTS
 // ================================================================
 import gulp from 'gulp';
-import changed from 'gulp-changed';
-import livereload from 'gulp-livereload';
-import gulpIf from 'gulp-if';
-import babel from 'gulp-babel';
-import scss from 'gulp-sass';
-import sassGlob from 'gulp-sass-glob';
-import autoprefixer from 'gulp-autoprefixer';
-import sourcemaps from 'gulp-sourcemaps';
-import concat from 'gulp-concat';
-import uglify from 'gulp-uglify';
-import rename from 'gulp-rename';
-import minifyCSS from 'gulp-cssnano';
-import plumber from 'gulp-plumber';
 import sequence from 'run-sequence';
+
+const $ = require('gulp-load-plugins')();
 
 // ================================================================
 // CONSTS
@@ -27,6 +16,11 @@ const ENV = {
 
 const PATH = {
   src: {
+    sprites: {
+      main: 'front/images/spriteSrc/main/*.png',
+      pages: 'front/images/spriteSrc/pages/*.png',
+    },
+
     styles: [
       'front/scss/styles.scss',
       'front/scss/pages.scss',
@@ -35,20 +29,26 @@ const PATH = {
     js: {
       vendors: [
         'front/js/vendors/jquery-2.2.4.min.js',
-        'front/js/vendors/bootstrap.min.js',
+        'front/js/vendors/bootstrap.min.js', // should be removed;
         'front/js/vendors/cookie.js',
         'front/js/vendors/jquery.mask.min.js',
         'front/js/vendors/auto-complete.min.js',
       ],
 
       pages: [
+        'front/js/components/catalog.es6',
+        'front/js/components/category.es6',
+        'front/js/components/product.es6',
+        'front/js/components/series.es6',
+        // old ones:
         'front/js/components/innerPages.es6',
         'front/js/components/product.es6',
         'front/js/components/category.es6',
         'front/js/components/order.es6',
       ],
-      
+
       vendorsPages: [
+        // old ones:
         'front/js/vendors/jquery.maphilight.min.js',
         'front/js/vendors/jquery.tooltipster.min.js',
       ],
@@ -56,17 +56,30 @@ const PATH = {
       common: [
         'front/js/shared/*.es6',
         'front/js/components/main.es6',
+        'front/js/components/autocomplete.es6',
+        // old ones:
         'front/js/components/headerCart.es6',
         'front/js/components/accordion.es6',
-        'front/js/components/autocomplete.es6',
       ],
     },
 
-    images: 'front/images/**/*',
+    images: [
+      'front/images/**/*',
+      '!front/images/spriteSrc{,/**}',
+    ],
+
     fonts: 'front/fonts/**/*',
   },
 
   build: {
+    sprites: {
+      pathInCss: '../images/',
+      img: 'front/build/images/',
+      scss: {
+        main: 'front/scss/common/',
+        pages: 'front/scss/pages/',
+      },
+    },
     styles: 'front/build/css/',
     js: 'front/build/js/',
     images: 'front/build/images/',
@@ -90,12 +103,13 @@ gulp.task('build', callback => {
   ENV.production = true;
 
   sequence(
-    'styles',
     'js-vendors',
     'js-vendors-pages',
     'js-common',
     'js-pages',
     // 'js-admin',
+    'sprites',
+    'styles',
     'images',
     'fonts',
     callback
@@ -103,25 +117,25 @@ gulp.task('build', callback => {
 });
 
 // ================================================================
-// STYLES : Build all stylesheets
+// Styles : Build all stylesheets
 // ================================================================
 gulp.task('styles', () => {
   gulp.src(PATH.src.styles)
-    .pipe(changed(PATH.build.styles, { extension: '.css' }))
-    .pipe(gulpIf(ENV.development, sourcemaps.init()))
-    .pipe(plumber())
-    .pipe(sassGlob())
-    .pipe(scss())
-    .pipe(gulpIf(ENV.production, autoprefixer({
+    .pipe($.changed(PATH.build.styles, { extension: '.css' }))
+    .pipe($.if(ENV.development, $.sourcemaps.init()))
+    .pipe($.plumber())
+    .pipe($.sassGlob())
+    .pipe($.sass())
+    .pipe($.if(ENV.production, $.autoprefixer({
       browsers: ['last 3 versions'],
     })))
-    .pipe(rename({
+    .pipe($.rename({
       suffix: '.min',
     }))
-    .pipe(gulpIf(ENV.production, minifyCSS()))
-    .pipe(gulpIf(ENV.development, sourcemaps.write('.')))
+    .pipe($.if(ENV.production, $.cssnano()))
+    .pipe($.if(ENV.development, $.sourcemaps.write('.')))
     .pipe(gulp.dest(PATH.build.styles))
-    .pipe(livereload());
+    .pipe($.livereload());
 });
 
 // ================================================================
@@ -129,12 +143,12 @@ gulp.task('styles', () => {
 // ================================================================
 gulp.task('js-vendors', () => {
   gulp.src(PATH.src.js.vendors)
-    .pipe(changed(PATH.build.js, {extension: '.js'}))
-    .pipe(concat('vendors.js'))
-    .pipe(rename({
+    .pipe($.changed(PATH.build.js, { extension: '.js' }))
+    .pipe($.concat('vendors.js'))
+    .pipe($.rename({
       suffix: '.min',
     }))
-    .pipe(uglify())
+    .pipe($.uglify())
     .pipe(gulp.dest(PATH.build.js));
 });
 
@@ -143,12 +157,12 @@ gulp.task('js-vendors', () => {
 // ================================================================
 gulp.task('js-vendors-pages', () => {
   gulp.src(PATH.src.js.vendorsPages)
-    .pipe(changed(PATH.build.js, {extension: '.js'}))
-    .pipe(concat('vendors-pages.js'))
-    .pipe(rename({
+    .pipe($.changed(PATH.build.js, { extension: '.js' }))
+    .pipe($.concat('vendors-pages.js'))
+    .pipe($.rename({
       suffix: '.min',
     }))
-    .pipe(uglify())
+    .pipe($.uglify())
     .pipe(gulp.dest(PATH.build.js));
 });
 
@@ -157,20 +171,20 @@ gulp.task('js-vendors-pages', () => {
 // ================================================================
 gulp.task('js-common', () => {
   gulp.src(PATH.src.js.common)
-    .pipe(changed(PATH.build.js, {extension: '.js'}))
-    .pipe(gulpIf(ENV.development, sourcemaps.init()))
-    .pipe(plumber())
-    .pipe(babel({
+    .pipe($.changed(PATH.build.js, { extension: '.js' }))
+    .pipe($.if(ENV.development, $.sourcemaps.init()))
+    .pipe($.plumber())
+    .pipe($.babel({
       presets: ['es2015'],
     }))
-    .pipe(concat('main.js'))
-    .pipe(rename({
+    .pipe($.concat('main.js'))
+    .pipe($.rename({
       suffix: '.min',
     }))
-    .pipe(gulpIf(ENV.production, uglify()))
-    .pipe(gulpIf(ENV.development, sourcemaps.write('.')))
+    .pipe($.if(ENV.production, $.uglify()))
+    .pipe($.if(ENV.development, $.sourcemaps.write('.')))
     .pipe(gulp.dest(PATH.build.js))
-    .pipe(livereload());
+    .pipe($.livereload());
 });
 
 // ================================================================
@@ -178,20 +192,20 @@ gulp.task('js-common', () => {
 // ================================================================
 gulp.task('js-pages', () => {
   gulp.src(PATH.src.js.pages)
-    .pipe(changed(PATH.build.js, {extension: '.js'}))
-    .pipe(gulpIf(ENV.development, sourcemaps.init()))
-    .pipe(plumber())
-    .pipe(babel({
+    .pipe($.changed(PATH.build.js, { extension: '.js' }))
+    .pipe($.if(ENV.development, $.sourcemaps.init()))
+    .pipe($.plumber())
+    .pipe($.babel({
       presets: ['es2015'],
     }))
-    .pipe(concat('pages.js'))
-    .pipe(rename({
+    .pipe($.concat('pages.js'))
+    .pipe($.rename({
       suffix: '.min',
     }))
-    .pipe(gulpIf(ENV.production, uglify()))
-    .pipe(gulpIf(ENV.development, sourcemaps.write('.')))
+    .pipe($.if(ENV.production, $.uglify()))
+    .pipe($.if(ENV.development, $.sourcemaps.write('.')))
     .pipe(gulp.dest(PATH.build.js))
-    .pipe(livereload());
+    .pipe($.livereload());
 });
 
 // ================================================================
@@ -199,28 +213,28 @@ gulp.task('js-pages', () => {
 // ================================================================
 gulp.task('js-admin', () => {
   gulp.src(PATH.src.js.admin)
-    .pipe(changed(PATH.build.js, {extension: '.js'}))
-    .pipe(gulpIf(ENV.development, sourcemaps.init()))
-    .pipe(plumber())
-    .pipe(babel({
+    .pipe($.changed(PATH.build.js, { extension: '.js' }))
+    .pipe($.if(ENV.development, $.sourcemaps.init()))
+    .pipe($.plumber())
+    .pipe($.babel({
       presets: ['es2015'],
     }))
-    .pipe(concat('admin.js'))
-    .pipe(rename({
+    .pipe($.concat('admin.js'))
+    .pipe($.rename({
       suffix: '.min',
     }))
-    .pipe(gulpIf(ENV.production, uglify()))
-    .pipe(gulpIf(ENV.development, sourcemaps.write('.')))
+    .pipe($.if(ENV.production, $.uglify()))
+    .pipe($.if(ENV.development, $.sourcemaps.write('.')))
     .pipe(gulp.dest(PATH.build.js))
-    .pipe(livereload());
+    .pipe($.livereload());
 });
 
 // ================================================================
 // Images : Copy images
 // ================================================================
 gulp.task('images', () => {
-  return gulp.src(PATH.src.images)
-    .pipe(changed(PATH.build.images))
+  gulp.src(PATH.src.images)
+    .pipe($.changed(PATH.build.images))
     .pipe(gulp.dest(PATH.build.images));
 });
 
@@ -228,20 +242,56 @@ gulp.task('images', () => {
 // Fonts : Copy fonts
 // ================================================================
 gulp.task('fonts', () => {
-  return gulp.src(PATH.src.fonts)
-    .pipe(changed(PATH.build.fonts))
+  gulp.src(PATH.src.fonts)
+    .pipe($.changed(PATH.build.fonts))
     .pipe(gulp.dest(PATH.build.fonts));
+});
+
+// ================================================================
+// Sprites
+// ================================================================
+gulp.task('sprites', () => {
+  let spriteData = gulp.src(PATH.src.sprites.main)
+    .pipe($.spritesmith({
+      imgName: 'sprite-main.png',
+      cssName: 'sprite-main.css',
+      imgPath: `${PATH.build.sprites.pathInCss}sprite-main.png`,
+    }));
+
+  spriteData.img.pipe(gulp.dest(PATH.build.sprites.img));
+
+  spriteData.css
+    .pipe($.rename({
+      extname: '.scss',
+    }))
+    .pipe(gulp.dest(PATH.build.sprites.scss.main));
+
+  spriteData = gulp.src(PATH.src.sprites.pages)
+    .pipe($.spritesmith({
+      imgName: 'sprite-pages.png',
+      cssName: 'sprite-pages.css',
+      imgPath: `${PATH.build.sprites.pathInCss}sprite-pages.png`,
+    }));
+
+  spriteData.img.pipe(gulp.dest(PATH.build.sprites.img));
+
+  spriteData.css
+    .pipe($.rename({
+      extname: '.scss',
+    }))
+    .pipe(gulp.dest(PATH.build.sprites.scss.pages));
 });
 
 // ================================================================
 // WATCH
 // ================================================================
 gulp.task('watch', () => {
-  livereload.listen();
+  $.livereload.listen();
   gulp.watch(PATH.watch.styles, ['styles']);
   gulp.watch(PATH.watch.js, ['js-common', 'js-pages']);
   gulp.watch(PATH.watch.images, ['images']);
-  gulp.watch(PATH.watch.html, livereload.changed);
+  gulp.watch(PATH.watch.fonts, ['fonts']);
+  gulp.watch(PATH.watch.html, $.livereload.changed);
 });
 
 // ================================================================

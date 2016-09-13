@@ -1,0 +1,173 @@
+// ================================================================
+// SEARCH PAGE
+// ================================================================
+.page-search {
+  padding-top: $h-header;
+}
+
+// ================================================================
+// HEADER
+// ================================================================
+.search-header {
+  padding: 118px 0 78px;
+
+  &-h1 {
+    padding-left: 16px;
+    font-size: $f-size-base + 18;
+    font-weight: 300;
+    line-height: 1.18;
+    text-align: center;
+    color: $c-search-header;
+  }
+}
+
+// ================================================================
+// CONTENT
+// ================================================================
+.search-content {
+  padding-bottom: 63px;
+}
+
+// ================================================================
+// TABLE
+// ================================================================
+.search-table {
+  border-collapse: collapse;
+
+  &-space {
+    height: 11px;
+  }
+
+  &-td {
+    padding: 7px 0;
+  }
+
+  &-col {
+
+    &-type {
+      padding-right: 30px;
+      width: 98px;
+      font-size: $f-size-base + 2;
+      font-weight: 300;
+      line-height: 1.33;
+      letter-spacing: -0.6px;
+      text-align: center;
+      color: $c-search-table-type;
+    }
+
+    &-picture {
+      padding: 6px 31px 0 0;
+      width: 99px;
+      text-align: center;
+    }
+
+    &-picture-ico {
+      display: inline-block;
+    }
+
+    &-code {
+      padding-right: 26px;
+      width: 99px;
+      font-size: $f-size-base;
+      font-weight: 700;
+      line-height: 1.25;
+      text-align: center;
+      color: $c-search-table-code;
+    }
+
+    &-name {
+      padding-right: 31px;
+      width: 495px;
+      font-size: $f-size-base + 2;
+      font-weight: 300;
+      line-height: 1.33;
+      color: $c-search-table-name;
+    }
+
+    &-price {
+      width: 68px;
+      font-size: $f-size-base - 4;
+      font-weight: 600;
+      line-height: 2.5;
+      text-align: center;
+      color: $c-search-table-price;
+    }
+  }
+
+  &-th {
+    padding-bottom: 8px;
+    font-size: $f-size-base + 1;
+    font-weight: 600;
+    line-height: 1.76;
+    text-align: center;
+    color: $c-table-th;
+    border-bottom: 1px solid $c-black;
+
+    &:not(:last-child) {
+      padding-right: 31px;
+    }
+  }
+
+  &-more {
+    position: relative;
+    padding: 46px 3px 32px 0;
+    text-align: center;
+    border-bottom: 1px solid $c-table-border-bottom;
+
+    &-btn {
+      position: relative;
+      padding-bottom: 54px;
+      display: inline-block;
+      font-size: $f-size-base - 3;
+      font-weight: 600;
+      line-height: 1.23;
+      color: $c-table-btn;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    &-btn-arrow {
+      position: absolute;
+      left: 0;
+      right: 0;
+      margin: 16px auto 0;
+      transition: all 0.2s ease;
+    }
+
+    &-btn-arrow-hover,
+    &-btn-arrow-active {
+      opacity: 0;
+    }
+
+    &-btn:hover {
+      color: $c-table-btn-hover;
+    }
+
+    &-btn:hover .search-table-more-btn-arrow-hover,
+    &-btn:active .search-table-more-btn-arrow-active {
+      opacity: 1;
+    }
+
+    &-btn:active {
+      color: $c-table-btn-active;
+    }
+  }
+}
+
+// ================================================================
+// INFO
+// ================================================================
+.search-info {
+  padding-bottom: 62px;
+  font-size: $f-size-base + 2;
+  font-weight: 300;
+  line-height: 1.33;
+  color: $c-search-info;
+}
+
+// ================================================================
+// CONTACT US
+// ================================================================
+.search-contact-us {
+  padding-bottom: 121px;
+}

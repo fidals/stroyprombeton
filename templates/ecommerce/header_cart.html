@@ -1,48 +1,34 @@
-<div id="cart-dropdown">
-  <div id="shop-cart" class="shop-cart">
-    <a href="{% url 'ecommerce:order_page' %}">
-      <div id="cartInner" class="{{ cart|yesno:"cart-full,cart-empty" }}">
-        <div class="basket-content">{{ cart|length }}</div>
-      </div>
-    </a>
-  </div>
-  <div id="dropdown-basket" class="mbasket-items">
-    {% if cart|length %}
-      <table width="100%">
-        {% for position in cart %}
-          {% with product=position.product %}
-            <tr class="cart-order">
-              <td align="right" nowrap="">
-                <a href="{{ product.get_absolute_url }}" title="{{ product.name }}"><b>{{ product.name }}</b></a>
-              </td>
-              <td align="center" nowrap>
+<li class="nav-item nav-cart-button js-nav-chart {% if cart|length %}active{% endif %}">
+  <a class="nav-link nav-chart" href="{% url 'ecommerce:order_page' %}">Корзина</a>
+
+  <div class="nav-chart">
+    <div class="nav-chart-clear js-clear-cart">Очистить корзину</div>
+    <ul>
+      {% for position in cart %}
+        {% with product=position.product %}
+          <li class="nav-chart-item">
+            <a class="nav-chart-item-name" href="{{ product.get_absolute_url }}">
+              {{ product.name }}
+            </a>
+
+            <div class="nav-chart-item-summ">
+              <span class="nav-chart-item-price">
                 {% if position.price %}
                   {{ position.price }} руб.
                 {% else %}
                   По запросу
                 {% endif %}
-              </td>
-              <td align="center" class="js-header-prod-count count-spinner" nowrap>{{ position.quantity }} шт.</td>
-              <td align="center">
-                <a title="Удалить" class="shk-del"><i class="fa fa-times js-remove"
-                                                      productId="{{ product.id }}"></i></a>
-              </td>
-            </tr>
-          {% endwith %}
-        {% endfor %}
-        <tr class="cart-order">
-          <td align="right" nowrap><strong>Итого:</strong></td>
-          {% if cart.total_price %}
-            <td align="center" nowrap> {{ cart.total_price }}</td>
-          {% else %}
-            <td align="center" nowrap> По запросу</td>
-          {% endif %}
-          <td align="center"><a title="Удалить все" class="shk-del js-reset">Удалить все</a></td>
-        </tr>
-      </table>
-    {% else %}
-      <span class="empty-cart-dropdown">Нет выбранных позиций. Перейти к <a id="catalog-link"
-                                                                            href="{% url 'catalog' %}">каталогу</a>. </span>
-    {% endif %}
+              </span>
+              <span class="nav-chart-item-count js-header-prod-count">x {{ position.quantity }} шт.</span>
+            </div>
+            <i class="fa fa-close nav-chart-item-remove js-remove" aria-hidden="true" title="Удалить"></i>
+          </li>
+        {% endwith %}
+      {% endfor %}
+    </ul>
+
+    <div class="nav-chart-order">
+      <a href="{% url 'ecommerce:order_page' %}" class="btn nav-chart-order-btn">Оформить заказ</a>
+    </div>
   </div>
-</div>
+</li>

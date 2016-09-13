@@ -53,10 +53,9 @@ class Product(AbstractProduct):
     diameter_in = models.IntegerField(null=True, blank=True)
 
     def save(self, *args, **kwargs):
-        #product slug should be unique, we don't use slug in product url
+        # product slug should be unique, we don't use slug in product url
         self._slug = slugify(unidecode(self.name)) + str(randint(0, maxsize))[1:10]
         super(Product, self).save(*args, **kwargs)
-
 
     @property
     def slug(self):

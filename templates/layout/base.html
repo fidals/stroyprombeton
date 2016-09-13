@@ -5,49 +5,32 @@
   {% if page %}
     {% include 'layout/metadata.html' with page=page only %}
   {% endif %}
+
+  <link rel="icon" type="image/x-icon" href="{% static 'images/favicon.ico' %}">
+
   {% block stylesheets %}
     <link rel="stylesheet" href="{% static 'css/styles.min.css' %}">
   {% endblock %}
 </head>
 
 <body>
-<div class="line-through"></div>
-<div class="page-wrapper">
-  {% block header %}
-    {% include 'layout/header.html' %}
-  {% endblock %}
+{% block header %}
+  {% include 'layout/header.html' %}
+{% endblock %}
 
-  <div class="page-content clearfix">
-    {# Left sidebar with accordion & banners #}
-    {% include 'layout/sidebar.html' %}
-
-    <div class="content-container">
-      <div class="content">
-        {# Section with search input #}
-        {% include 'layout/search.html' %}
-
-        <div class="primary-content">
-          {% block main-content %}
-            <h1>Завод железобетонных изделий «СТК-Промбетон»</h1>
-
-            {# Section with carousel & news #}
-            {% include 'index/news.html' %}
-
-            {# Products types list #}
-            {% include 'index/list.html' %}
-          {% endblock %}
-        </div>
-      </div>
-    </div>
-  </div>
-
-  {% block footer %}
-    {% include 'layout/footer.html' %}
-  {% endblock %}
+<div class="content">
+  {% block content %}{% endblock %}
 </div>
-<div class="line-through line-through-bottom"></div>
 
-<div class="btn-scroll-to-top" id="btn-scroll-to-top">Наверх</div>
+{% block footer %}
+  {% include 'layout/footer.html' %}
+{% endblock %}
+
+{% block backcall_modal %}
+  {% include 'layout/backcall_modal.html' %}
+{% endblock %}
+
+<div class="btn btn-scroll-to-top" id="btn-scroll-to-top">Наверх</div>
 
 {% block jslibs %}
   <script src="{% static 'js/vendors.min.js' %}"></script>

@@ -2,13 +2,12 @@
 {% load staticfiles %}
 {% load pages_extras %}
 
-{% block main-content %}
+{% block content %}
   <div class="location">{% breadcrumbs page '»' %}</div>
-  <h1 class="gbi-section"> {{ page.h1|default:'' }}</h1>
+  <h1 class="gbi-section">{{ page.h1|default:'' }}</h1>
   {% autoescape off %}
     {{ page.content|default:'' }}
   {% endautoescape %}
-
 
   <div class="gbi-list" id="gbi-list">
     <table>

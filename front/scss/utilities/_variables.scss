@@ -5,8 +5,7 @@
 $img-path: "../images";
 $font-path: "../fonts";
 
-// Theme colors:
-$c-black: #000;
+// Old colors:
 $c-btn-red: #ff7f83;
 $c-btn-red-hover: #ef4b50;
 $c-border: #999;
@@ -17,6 +16,220 @@ $c-nav-bg-end: #e8e8e8;
 $c-red-legacy: #c90000;
 $c-white: #fff;
 
+// Theme colors:
+$c-black: #000;
+$c-selection: #fc7126;
+$c-white: #fff;
+
+$c-btn-orange: #fc7126;
+$c-btn-orange-hover: #bd6739;
+$c-btn-orange-active: #904f2b;
+$c-btn-white-active: #9b9b9b;
+$c-btn-white-bg-hover: #c3c3c3;
+$c-link: #47a1d2;
+$c-link-hover: #07d;
+
+$c-nav-bg: #f3f3f3;
+$c-nav-link: #404040;
+$c-nav-link-hover: #979797;
+$c-nav-link-chart: #fc7126;
+$c-nav-link-chart-hover: #bd6739;
+$c-nav-chart-clear: #fc7126;
+$c-nav-chart-clear-hover: #bd6739;
+$c-nav-chart-clear-active: #904f2b;
+$c-nav-chart-item-name: #434343;
+$c-nav-chart-item-price: #2c2c2c;
+$c-nav-chart-item-count: #434343;
+$c-nav-chart-item-remove: #9b9b9b;
+$c-nav-subnav-link: #434343;
+$c-nav-subnav-link-hover: #979797;
+$c-searchbar-bg: #fc7126;
+
+// Search
+$c-btn-search: #6d6c6c;
+$c-btn-search-hover: #434343;
+$c-search-text: #434343;
+$c-search-link: #434343;
+$c-search-link-hover: #fcfcfc;
+$c-search-highlight: #1f8dd6;
+
+$c-path: #fc7126;
+$c-path-hover: #bd6739;
+$c-path-active: #904f2b;
+
+$c-footer-bg: #f3f3f3;
+$c-footer-headers: #1d1d1d;
+$c-footer-li: #434343;
+$c-copyright: #5f5f5f;
+
+// Modal
+$c-modal-close: #9b9b9b;
+$c-modal-h3: #263238;
+$c-modal-label: #acacac;
+$c-modal-label-asterisk: #fc7126;
+$c-modal-input: #404040;
+$c-modal-input-border: #d5d5d5;
+$c-modal-status-check: #51ceb2;
+$c-modal-status-fail: #ed0b00;
+
+$c-popover: #212121;
+$c-popover-border: #fc7126;
+
+// Page Main
+$c-application-bg: #33393d;
+
+$c-offer-title: #1c2e36;
+$c-offer-title-hover: #979797;
+
+$c-about-bg: #fbfbfb;
+$c-about-h2: #171237;
+$c-about-text: #212121;
+
+$c-partners-title: #212121;
+
+$c-news-item-bg: #f8f8f8;
+$c-news-item-bg-hover: #fbfbfb;
+$c-news-title: #263238;
+$c-news-short: #212121;
+
+$c-reviews: #1c2e36;
+$c-reviews-title: #2e2e2e;
+$c-reviews-nav-item: #bdc3c7;
+$c-reviews-nav-item-active: #242424;
+$c-reviews-bot-line: #e6eaeb;
+
+// Page Catalog
+$c-catalog-h1: #171237;
+$c-catalog-category-title-bg: #fc7126;
+$c-catalog-category-title-hover-bg: #bd6739;
+$c-catalog-subcategory: #404040;
+$c-catalog-subcategory-hover: #fc7126;
+$c-catalog-subcategory-ico: #fc7126;
+$c-catalog-subcategory-item: #404040;
+$c-catalog-about: #212121;
+
+// Page Category
+$c-category-title: #171237;
+$c-category-filter-title: #fc7126;
+$c-category-filter-item: #bababa;
+$c-category-filter-item-ico: #fc7126;
+$c-category-filter-item-hover: #fc7126;
+$c-category-filter-clear: #fc7126;
+$c-category-order-item: #bababa;
+$c-category-order-item-hover: #bd6739;
+$c-category-order-item-active: #904f2b;
+$c-category-order-item-selected: #fc7126;
+$c-category-about: #212121;
+$c-category-about-serial-border: #171237;
+$c-table-th: #263238;
+$c-table-code: #263238;
+$c-table-name: #212121;
+$c-table-price: #2c2c2c;
+$c-table-input: #404040;
+$c-table-input-border: #ccc;
+$c-table-caret: #9e9e9e;
+$c-table-caret-hover: #404040;
+$c-table-order: #fc7126;
+$c-table-order-hover: #bd6739;
+$c-table-order-active: #904f2b;
+$c-table-btn: #fc7126;
+$c-table-btn-hover: #bd6739;
+$c-table-btn-active: #904f2b;
+$c-table-border-bottom: #ababab;
+
+// Page Series
+$c-series-h1: #171237;
+$c-series-categories-item: #212121;
+$c-series-categories-item-hover: #fc7126;
+$c-series-categories-item-active: #fc7126;
+$c-series-categories-border: #ababab;
+$c-series-list-bg: #dde3e8;
+$c-series-list-border: #ababab;
+$c-series-list-item: #2c2c2c;
+$c-series-list-link: #212121;
+$c-series-about: #212121;
+
+// Page Cart
+$c-cart-header: #171237;
+$c-cart-order-bg: #fbfbfb;
+$c-cart-order-header: #171237;
+$c-cart-order-title: #acacac;
+$c-cart-order-val: #263238;
+$c-cart-table-border: #979797;
+$c-cart-table-th: #fc7126;
+$c-cart-table-name: #404040;
+$c-cart-table-name-hover: #9b9b9b;
+$c-cart-table-name-del: #9b9b9b;
+$c-cart-table-count: #979797;
+$c-cart-table-price: #263238;
+$c-cart-contacts-title: #171237;
+$c-cart-contacts-label: #acacac;
+$c-cart-contacts-label-asterisk: #fc7126;
+$c-cart-contacts-input: #404040;
+$c-cart-contacts-input-border: #d5d5d5;
+$c-cart-contacts-input-check: #51ceb2;
+$c-cart-contacts-input-fail: #ed0b00;
+$c-cart-contacts-textarea: #404040;
+$c-cart-contacts-attachment-btn: #404040;
+$c-cart-contacts-attachment-btn-hover: #979797;
+$c-cart-contacts-attachment-info: #acacac;
+
+// Page Product
+$c-product-header: #171237;
+$c-product-serial: #404040;
+$c-product-characteristics-title: #263238;
+$c-product-characteristics-table-border: #979797;
+$c-product-characteristics-table-name: #404040;
+$c-product-characteristics-table-val: #263238;
+$c-product-order-table: #263238;
+$c-product-describe-title: #263238;
+$c-product-describe-text: #212121;
+$c-product-series-title: #171237;
+$c-product-series-text: #212121;
+
+// Page newslist
+$c-newslist-title: #171237;
+$c-newslist-item-bg: rgba(243, 243, 243, .6);
+$c-newslist-item-title: #263238;
+$c-newslist-item-date: #acacac;
+$c-newslist-item-text: #212121;
+
+// Single news
+$c-news-date: #acacac;
+$c-news-title: #171237;
+$c-news-text: #212121;
+$c-news-back-link: #fc7126;
+$c-news-back-link-hover: #bd6739;
+$c-news-back-link-active: #904f2b;
+
+// Search
+$c-search-header: #171237;
+$c-search-table-type: #212121;
+$c-search-table-code: #263238;
+$c-search-table-name: #212121;
+$c-search-table-price: #2c2c2c;
+$c-search-info: #212121;
+
+// Slider
+$c-slider-title: #263238;
+$c-slider-price: #263238;
+
+// Page 404
+$c-404-h1: #2c2c2c;
+$c-404-info: #626262;
+
+// Params
+$h-nav: 56px;
+$h-searchbar: 44px;
+$h-header: $h-nav + $h-searchbar;
+
+// Shadows:
+$c-shadow: rgba($c-black, 0.25);
+$sh-search: 0 1px 5px 0 $c-shadow;
+$sh-search-focus: 0 2px 10px 1px rgba($c-black, 0.2);
+$sh-news-item: 0 2px 4px 0 $c-shadow;
+$sh-modal: 0 2px 8px 0 $c-shadow;
+
 // Fonts:
 $f-size-base: 16px;
-$f-family: Calibri, Arial, sans-serif;
+$f-family: "Open Sans", sans-serif;

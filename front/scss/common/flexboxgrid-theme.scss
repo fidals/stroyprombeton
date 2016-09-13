@@ -1,0 +1,58 @@
+// ================================================================
+// FLEXBOXGRID CUSTOMIZATION
+// ================================================================
+$w-container-lg: 1200px;
+$gutter-width: 30px;
+$half-gutter-width: $gutter-width * 0.5;
+
+// fix
+// remove when adaptive design
+.container {
+  min-width: $w-container-lg;
+}
+// -- end fix
+
+.container-fluid {
+  padding-right: $gutter-width;
+  padding-left: $gutter-width;
+}
+
+.col-xs,
+.col-xs-1,
+.col-xs-2,
+.col-xs-3,
+.col-xs-4,
+.col-xs-5,
+.col-xs-6,
+.col-xs-7,
+.col-xs-8,
+.col-xs-9,
+.col-xs-10,
+.col-xs-11,
+.col-xs-12 {
+  padding-right: $half-gutter-width;
+  padding-left: $half-gutter-width;
+}
+
+@media only screen and (min-width: $w-container-lg) {
+  .container {
+    width: $w-container-lg;
+  }
+
+  .col-lg,
+  .col-lg-1,
+  .col-lg-2,
+  .col-lg-3,
+  .col-lg-4,
+  .col-lg-5,
+  .col-lg-6,
+  .col-lg-7,
+  .col-lg-8,
+  .col-lg-9,
+  .col-lg-10,
+  .col-lg-11,
+  .col-lg-12 {
+    padding-right: $half-gutter-width;
+    padding-left: $half-gutter-width;
+  }
+}

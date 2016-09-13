@@ -1,66 +1,24 @@
 {% load staticfiles %}
-<div class="header clearfix">
-  <div class="header-left-colomn">
-    <div class="header-logos clearfix">
-      <a class="header-logo-link" href="/">
-        <img src="{% static 'images/logo.png' %}" title="На главную" alt="Логотип">
-        <span class="header-logo-text">завод железобетонных изделий</span>
-      </a>
-      <a class="header-stk-logo-wrapper" href="{{ href.stk_module }}"
-         target="_blank" rel="nofollow">
-        <img src="{% static 'images/stk-logo.png' %}" class="img-responsive stk-logo" alt="СТК-Модуль">
-      </a>
+
+<header class="header">
+  <nav class="nav-wrapper js-nav">
+    <div class="container container-fluid">
+      <div class="row between-xs">
+        <div class="col-xs-3">
+          <div class="nav-logo">
+            <a href="/">
+              <img src="{{ STATIC_URL }}images/stk-prombeton.png" title="На главную" alt="СТК-ПромБетон">
+            </a>
+          </div>
+        </div>
+
+        <div class="col-xs-offset-3 col-xs-6">
+          <ul class="nav">
+            {% include 'layout/navigation.html' %}
+            {% include 'ecommerce/header_cart.html' %}
+          </ul>
+        </div>
+      </div>
     </div>
-
-    <table class="header-contacts m-contacts_new vcard">
-      <tr>
-        <td>
-          <p class="header-city text-muted"><i>Санкт-Петербург:</i></p>
-          <p class="header-phone">
-            <strong>8 <span class="code">(812)</span> <span class="tel 1"></span>{{ site_info.phone.spb1 }}</strong>
-          </p>
-          <p class="header-phone header-phone-last">
-            <strong>8 <span class="code">(812)</span> <span class="tel 2"></span>{{ site_info.phone.spb2 }}</strong>
-          </p>
-
-          <p class="header-city text-muted"><i>Москва:</i></p>
-          <p class="header-phone header-phone-last">
-            8 <span class="code">(499)</span> <span class="tel 3">{{ site_info.phone.msc }}</span>
-          </p>
-        </td>
-
-        <td>
-          <p class="header-city text-muted"><i>Архангельск:</i></p>
-          <p class="header-phone header-phone-last">
-            8 <span class="code">(8182)</span> <span class="tel 4">{{ site_info.phone.arh }}</span>
-          </p>
-          <p class="header-phone header-phone-last"></p>
-
-          <p class="header-city text-muted"><i>Мурманск:</i></p>
-          <p class="header-phone header-phone-last">
-            8 <span class="code">(8152)</span> <span class="tel 5">{{ site_info.phone.mur }}</span>
-          </p>
-
-          <p style="display: none" class="fn org url">www.stroyprombeton.ru</p>
-        </td>
-
-        <td>
-          <a class="header-email" href="mailto:{{ site_info.email }}">
-            <i class="fa fa-envelope"></i> {{ site_info.email }}
-          </a>
-          <p class="header-address-title text-muted">Адрес офиса продаж:</p>
-          <p class="header-address">
-            <i class="fa fa-map-marker" aria-hidden="true"></i>
-            Санкт-Петербург, <br>
-            пр. Елизарова 38А, <br>
-            офис 218
-          </p>
-        </td>
-      </tr>
-    </table>
-  </div>
-
-  <div class="header-right-colomn"></div>
-
-  {% include 'layout/navigation.html' %}
-</div>
+  </nav>
+</header>

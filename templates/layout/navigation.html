@@ -1,14 +1,36 @@
 {% load stb_extras %}
-{% get_navigation as navigation %}
-<ul class="list-unstyled navigation menu">
-  {% for item in navigation %}
-    <li><a href="{{ item.get_absolute_url }}">{{ item.menu_title }}</a></li>
-  {% endfor %}
-  <li>
-    <div id="sticky-wrapper" class="basket-sticky-wrapper basket-sticky">
-      <div class="basket basket-sticky">
-        <div class="menu-basket js-cart-header">{% include 'ecommerce/header_cart.html' %}</div>
-      </div>
-    </div>
-  </li>
-</ul>
+{% get_roots as roots %}
+
+<li class="nav-item">
+  <a class="nav-link" href="{% url 'pages:flat_page' 'navi' 'ordering' %}">Заказ</a>
+</li>
+
+<li class="nav-item">
+  <a class="nav-link" href="{% url 'catalog' %}">Каталог</a>
+
+  <ul class="nav-subnav js-nav-subnav">
+    {% for item in roots %}
+      <li class="nav-subnav-item">
+        <a class="nav-subnav-item-link" href="{{ item.get_absolute_url }}">
+          {{ item.name }}
+        </a>
+      </li>
+    {% endfor %}
+  </ul>
+</li>
+
+<li class="nav-item">
+  <a class="nav-link" href="#">Серии</a>
+</li>
+
+<li class="nav-item">
+  <a class="nav-link" href="{% url 'pages:flat_page' 'navi' 'delivery' %}">Доставка</a>
+</li>
+
+<li class="nav-item">
+  <a class="nav-link" href="#">Реквизиты</a>
+</li>
+
+<li class="nav-item">
+  <a class="nav-link" href="{% url 'pages:flat_page' 'navi' 'contacts' %}">Контакты</a>
+</li>

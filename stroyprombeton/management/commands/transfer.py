@@ -54,8 +54,8 @@ custom_page_data = {
     },
 }
 
-class Command(BaseCommand):
 
+class Command(BaseCommand):
     path_to_JSON = os.path.join(settings.BASE_DIR, 'stb.json')
 
     navigation_items_positions = {
@@ -101,7 +101,7 @@ class Command(BaseCommand):
     def get_data_from_db(self, cur: pymysql):
         tables = {
             'categories': ' '.join([
-                'id, parent_id, mark, name, title, h1, date, is_active,',
+                'id, parent_id, mark, name, title, h1, date,',
                 'text, ord'
             ]),
             'posts': ' '.join([
@@ -169,7 +169,6 @@ class Command(BaseCommand):
                 category = Category.objects.create(
                     id=to_int(category_data['id']),
                     name=category_data['name'],
-                    is_active=bool(category_data['is_active']),
                     position=to_int(category_data['ord']),
                     specification=category_data['mark'],
                 )
@@ -177,6 +176,7 @@ class Command(BaseCommand):
                 category.page._date_published = to_datetime(category_data['date'])
                 category.page.h1 = is_exist(category_data['h1'])
                 category.page.menu_title = category_data['title']
+                category.page.is_active = bool(category_data['is_active'])
                 category.save()
 
             get_category = (lambda id_:

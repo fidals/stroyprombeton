@@ -1,18 +1,251 @@
 {% extends 'layout/base.html' %}
-{% block main-content %}
-  <h1>{{ page.h1 }}</h1>
 
-  {# Section with carousel & news #}
-  <table class="index-main-top" border="0">
-    <tbody>
-    <tr>
-      {% include 'pages/index/our_product.html' %}
-      {% include 'pages/index/news.html' %}
-    </tr>
-    </tbody>
-  </table>
+{% block content %}
+  <section class="banner">
+    <div class="container container-fluid">
+      <div class="row">
+        <div class="col-xs-12">
+          <div class="banner-address">
+            <p>Адрес офиса продаж:</p>
+            <p>СПб, пр. Елизарова 38А, офис 218</p>
+            <p>пн-пт 9:00-18:00</p>
+          </div>
+        </div>
+      </div>
 
+      <div class="row">
+        <div class="col-xs-12">
+          <div class="banner-name">
+            <h1 class="banner-name-h1">«СТК-ПромБетон»</h1>
+            <h2 class="banner-name-h2">Завод железобетонных изделий </h2>
+          </div>
+        </div>
+      </div>
+    </div>
 
-  {# Product types list #}
-  {% include 'pages/index/list.html' %}
+    <div class="searchbar js-searchbar">
+      <div class="container container-fluid">
+        <div class="row">
+          {% include 'layout/search.html' %}
+
+          <div class="col-xs-7">
+            <ul class="searchbar-contacts">
+              <li class="searchbar-contacts-item">
+                СПб
+                <a class="searchbar-contacts-link" href="tel:+78126557360">+7 (812) 655-73-60</a>
+              </li>
+              <li class="searchbar-contacts-item">
+                Мск
+                <a class="searchbar-contacts-link" href="tel:+74996493379">+7 (499) 649-33-79</a>
+              </li>
+              <li class="searchbar-contacts-item">
+                <a class="searchbar-contacts-link" href="mailto:info@stroyprombeton.ru">
+                  info@stroyprombeton.ru
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="application js-application">
+    <div class="container container-fluid">
+      <div class="row">
+        <div class="col-xs-offset-2 col-xs-6">
+          <div class="application-title">
+            <p>Оставьте свою заявку, мы вам перезвоним, как только оператор будет свободен.</p>
+          </div>
+        </div>
+
+        <div class="col-xs-4">
+          <div class="application-btn">
+            <button class="btn btn-white js-btn-contact-us">Свяжитесь со мной</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="catalog-section">
+    <div class="container container-fluid">
+      <div class="row">
+        <div class="col-xs-12">
+          <div class="catalog-section-image">
+            <img src="{{ STATIC_URL }}images/catalog-prev.png" alt="Каталог ЖБИ">
+          </div>
+          <div class="catalog-section-btn">
+            <a href="{% url 'catalog' %}" class="btn btn-catalog">Каталог ЖБИ</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="offer">
+    <div class="container container-fluid">
+      <div class="row">
+        <div class="col-xs-offset-1 col-xs-3">
+          <a href="{% url 'order_drawing' %}" class="offer-item">
+            <div class="offer-image">
+              <div class="offer-item-image offer-item-image-nohover icon-offer-draft"></div>
+              <div class="offer-item-image offer-item-image-hover icon-offer-draft-hover"></div>
+            </div>
+            <div class="offer-item-title">
+              ЖБИ по вашим чертежам
+              <i class="fa fa-angle-right offer-item-title-chevron" aria-hidden="true"></i>
+            </div>
+          </a>
+        </div>
+
+        <div class="col-xs-offset-1 col-xs-2">
+          <a href="{% url 'order_price' %}" class="offer-item">
+            <div class="offer-image">
+              <div class="offer-item-image offer-item-image-nohover icon-offer-pricelist"></div>
+              <div class="offer-item-image offer-item-image-hover icon-offer-pricelist-hover"></div>
+            </div>
+            <div class="offer-item-title">
+              Прайс-листы
+              <i class="fa fa-angle-right offer-item-title-chevron" aria-hidden="true"></i>
+            </div>
+          </a>
+        </div>
+
+        <div class="col-xs-offset-1 col-xs-3">
+          <a href="#"  class="offer-item">
+            <div class="offer-image">
+              <div class="offer-item-image offer-item-image-nohover icon-offer-commercial"></div>
+              <div class="offer-item-image offer-item-image-hover icon-offer-commercial-hover"></div>
+            </div>
+            <div class="offer-item-title">
+              Коммерческое предложение
+              <i class="fa fa-angle-right offer-item-title-chevron" aria-hidden="true"></i>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="about">
+    <div class="container container-fluid">
+      <div class="row middle-xs">
+        <div class="col-xs-offset-1 col-xs-3">
+          <h2 class="about-h2 main-h2">О компании</h2>
+        </div>
+
+        <div class="col-xs-7">
+          <div class="about-text">
+            <p class="about-text-p">
+              Завод “СТК-ПромБетон” уже шесть лет производит железобетонные
+              изделия. У нас более 12000 позиций. За счет использования легких
+              конструкций из фанеры мы создаем практически любые виды изделий.
+            </p>
+            <p class="about-text-p">
+              Предприятие “СТК-ПромБетон” занимает площадь в 0.35 га.
+              Ежемесячный объем производства составляет более 1000 кубов (м3).
+              За два года мы увеличили мощность завода в полтора раза. Так мы
+              сократили время изготовления крупных и сезонных заказов.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-xs-offset-1 col-xs-10">
+          <div class="about-more">
+            <p><a class="more-link" href="{% url 'pages:flat_page' 'navi' 'proizvodstvo-gbi' %}">
+              Производство
+              <i class="fa fa-arrow-right more-link-arrow" aria-hidden="true"></i>
+            </a></p>
+            <p><a class="more-link" href="{% url 'pages:flat_page' 'navi' 'about' %}">
+              О заводе и партнерах
+              <i class="fa fa-arrow-right more-link-arrow" aria-hidden="true"></i>
+            </a></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="objects">
+    <div class="container container-fluid">
+      <div class="row">
+        <div class="col-xs-12">
+          <div class="objects-title">
+            <h2 class="objects-title-h2 main-h2">Наши объекты</h2>
+          </div>
+          <div class="objects-map">
+            <img src="{{ STATIC_URL }}images/map.svg" alt="Карта объектов">
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="news">
+    <div class="container container-fluid">
+      <div class="row">
+        <div class="col-xs-offset-1 col-xs-3">
+          {% include 'pages/index/partners.html' %}
+        </div>
+
+        <div class="col-xs-7">
+          {% include 'pages/index/news.html' %}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="reviews">
+    <div class="container container-fluid">
+      <div class="row middle-xs">
+        <div class="col-xs-offset-1 col-xs-3">
+          <h2 class="main-h2">Отзывы</h2>
+        </div>
+        <div class="col-xs-6">
+          <ul class="reviews-content">
+            {% for review in reviews %}
+              <li class="reviews-content-item js-reviews-item {% if forloop.counter0 == 0 %}active{% endif %}">
+                <p class="reviews-content-item-title">{{ review.title }}</p>
+                <p>{{ review.text }}</p>
+              </li>
+            {% endfor %}
+          </ul>
+
+          <div class="reviews-nav">
+            <div class="reviews-nav-item js-reviews-nav-item active" data-slide-to="0"></div>
+            <div class="reviews-nav-item js-reviews-nav-item" data-slide-to="1"></div>
+            <div class="reviews-nav-item js-reviews-nav-item" data-slide-to="2"></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-xs-offset-4 col-xs-7">
+          <div class="reviews-more">
+            <p>
+              <a class="more-link" href="#">
+                Благодарственное письмо
+                <i class="fa fa-arrow-down more-link-arrow" aria-hidden="true"></i>
+              </a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="contact-us">
+    <div class="container container-fluid">
+      <div class="row">
+        <div class="col-xs-12">
+          <div class="contact-us-btn">
+            <button class="btn js-btn-contact-us">Cвяжитесь со мной</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 {% endblock %}

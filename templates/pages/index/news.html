@@ -1,26 +1,25 @@
 {% load stb_extras %}
 
-<td style="width: 50%; vertical-align: top; padding: 0;">
-  <div class="m_informer">
-    <a class="inf_header" href="{% url 'pages:flat_page' 'news' %}">Новости компании</a>
-    <div class="inf_content">
-      <ul>
-        {% for post in news %}
-          <li>
-            <div class="news_img">
-              <a href="{{ post.get_absolute_url }}">
-                <img class="img-responsive" src="{{ MEDIA_URL }}news/{{ post.date_published|date:'d-m-y' }}/100x100.jpg">
-              </a>
-            </div>
-            <div class="news_text">
-              <i>{{ post.date_published|date:'d-m-Y' }}</i><br>
-              <a href={{ post.get_absolute_url }}>{{ post.h1 }}</a><br>
-              <div class="inf_intro">{{ post.description }}</div>
-            </div>
-          </li>
-        {% endfor %}
-      </ul>
-    </div>
-    <div class="inf_footer"><a href="{% url 'pages:flat_page' 'news' %}">Посмотреть все новости</a></div>
+<section class="mainpage-news">
+  <h2 class="mainpage-news-h2 main-h2">Новости</h2>
+
+  <ul>
+    {% for item in news %}
+      <li class="mainpage-news-item">
+        <a href="{{ item.get_absolute_url }}">
+          <img class="mainpage-news-item-img"
+               src="{{ MEDIA_URL }}news/{{ item.date_published|date:'d-m-y' }}/165x165.jpg">
+          <p class="mainpage-news-item-title">{{ item.h1 }}</p>
+          <p class="mainpage-news-item-short">{{ item.description }}</p>
+        </a>
+      </li>
+    {% endfor %}
+  </ul>
+
+  <div class="mainpage-news-about">
+    <a class="more-link" href="{% url 'pages:flat_page' 'news' %}">
+      Все новости
+      <i class="fa fa-arrow-right more-link-arrow" aria-hidden="true"></i>
+    </a>
   </div>
-</td>
+</section>

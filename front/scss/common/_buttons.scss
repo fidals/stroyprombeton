@@ -1,38 +1,68 @@
+.btn {
+  background-color: $c-white;
+  border: 2px solid $c-btn-orange;
+  border-radius: 25px;
+  color: $c-btn-orange;
+  cursor: pointer;
+  display: inline-block;
+  font-size: $f-size-base + 4;
+  line-height: 1.2;
+  font-weight: 300;
+  outline: none;
+  padding: 9px 30px 10px;
+  transition: all 0.3s ease;
+
+  &:hover {
+    color: $c-btn-orange-hover;
+    border: solid 2px $c-btn-orange-hover;
+  }
+
+  &:active {
+    color: $c-btn-orange-active;
+    border: solid 2px $c-btn-orange-active;
+  }
+
+  &-white {
+    background-color: $c-application-bg;
+    border-color: $c-white;
+    color: $c-white;
+    font-size: $f-size-base;
+
+    &:hover {
+      background-color: $c-btn-white-bg-hover;
+      border-color: $c-white;
+      color: $c-white;
+    }
+
+    &:active {
+      color: $c-btn-white-active;
+      border: solid 2px $c-white;
+      background-color: $c-btn-white-bg-hover;
+    }
+  }
+}
+
 .btn-scroll-to-top {
   @include font-smoothing;
-  background: $c-btn-red;
-  border: 2px solid $c-btn-red;
-  border-radius: 3px;
-  bottom: 20px;
+  background: $c-btn-orange;
+  border: 1px solid $c-btn-orange;
+  bottom: 50px;
   box-shadow: 0 1px 0 rgba($c-white, 0.2) inset,
               0 1px 2px rgba($c-black, 0.05);
   color: $c-white;
   cursor: pointer;
-  font-size: $f-size-base + 4;
-  font-weight: 400;
-  margin-bottom: 25px;
-  outline: none;
   opacity: 0;
-  padding: 6px 20px;
+  padding: 6px 20px 7px;
   position: fixed;
-  right: 0;
-  text-align: center;
-  text-decoration: none;
-  transition: all 0.3s ease;
+  right: 5px;
   z-index: 10;
 
   &:hover,
-  &:focus {
-    background: $c-btn-red-hover;
-    border: 2px solid $c-btn-red-hover;
-    color: $c-white;
-  }
-
+  &:focus,
   &:active {
-    box-shadow: none;
-    background: $c-white;
-    border: 2px solid $c-btn-red;
-    color: $c-btn-red;
+    background: lighten($c-btn-orange, 8%);
+    border: 1px solid $c-btn-orange;
+    color: $c-white;
   }
 
   &.active {

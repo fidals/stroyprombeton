@@ -1,0 +1,110 @@
+// ================================================================
+// NEWSLIST PAGE
+// ================================================================
+.page-newslist {
+  padding: $h-header 0 99px;
+}
+
+// ================================================================
+// NEWSLIST
+// ================================================================
+.newslist {
+  padding: 22px 0;
+
+  &-title {
+    margin-bottom: 59px;
+    font-size: $f-size-base + 18;
+    font-weight: 300;
+    line-height: 1.18;
+    color: $c-newslist-title;
+  }
+
+  &-item {
+    position: relative;
+    margin-bottom: 52px;
+    padding: 20px 97px 0 292px;
+    height: 240px;
+    background-color: $c-newslist-item-bg;
+
+    &-img {
+      position: absolute;
+      left: 0;
+      top: 0;
+    }
+
+    &-title {
+      margin-bottom: 7px;
+      font-size: $f-size-base;
+      font-weight: 700;
+      line-height: 1.25;
+      color: $c-newslist-item-title;
+    }
+
+    &-date {
+      margin-bottom: 12px;
+      font-size: $f-size-base;
+      font-weight: 600;
+      color: $c-newslist-item-date;
+    }
+
+    &-text {
+      font-size: $f-size-base + 2;
+      font-weight: 300;
+      line-height: 1.33;
+      color: $c-newslist-item-text;
+    }
+
+    &-more {
+      position: absolute;
+      bottom: 18px;
+      right: 23px;
+    }
+  }
+
+  &-more {
+    position: relative;
+    padding-top: 7px;
+    text-align: center;
+
+    &-btn {
+      position: relative;
+      padding-bottom: 54px;
+      display: inline-block;
+      font-size: $f-size-base - 1;
+      font-weight: 600;
+      line-height: 1.23;
+      color: $c-table-btn;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    &-btn-arrow {
+      position: absolute;
+      left: 0;
+      right: 0;
+      margin: 16px auto 0;
+      transition: all 0.2s ease;
+    }
+
+    &-btn-arrow-hover,
+    &-btn-arrow-active {
+      opacity: 0;
+    }
+
+    &-btn:hover {
+      color: $c-table-btn-hover;
+    }
+
+    &-btn:hover .newslist-more-btn-arrow-hover {
+      opacity: 1;
+    }
+
+    &-btn:active {
+      color: $c-table-btn-active;
+    }
+
+    &-btn:active .newslist-more-btn-arrow-active {
+      opacity: 1;
+    }
+  }
+}

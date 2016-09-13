@@ -6,6 +6,7 @@ from pages.models import Page
 
 register = template.Library()
 
+
 @register.inclusion_tag('tags/product_values.html')
 def show_field_if_exist(value, title):
     return {
@@ -31,10 +32,5 @@ def search_result(items, type_):
 
 
 @register.assignment_tag
-def get_navigation():
-    return Page.objects.get(slug='navi').children.all().order_by('position')
-
-
-@register.assignment_tag
 def get_roots():
-    return Category.objects.root_nodes().filter(is_active=True).order_by('position', 'name')
+    return Category.objects.root_nodes().filter(page__is_active=True).order_by('position', 'name')

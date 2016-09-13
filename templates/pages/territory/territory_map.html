@@ -7,9 +7,9 @@
   <link rel="stylesheet" href="{% static 'css/pages.min.css' %}">
 {% endblock %}
 
-{% block main-content %}
+{% block content %}
   <h1>{{ page.h1 }}</h1>
-  <img class="gbi-map" src="{{ STATIC_URL }}images/stb_map.jpg" width="850px" height="485px" usemap="#rf" border="0"/>
+  <img class="gbi-map" src="{{ STATIC_URL }}images/stb-map.jpg" width="850px" height="485px" usemap="#rf" border="0"/>
   <map name="rf">
     {% for territory in territories %}
       {% for coord in territory.coord %}

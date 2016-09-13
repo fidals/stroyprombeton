@@ -4,6 +4,10 @@ from django.conf.urls.static import static
 
 from stroyprombeton import views
 
+build_objects_url = [
+    url(r'^$', views.TerritoryMapPage.as_view(), name='territory_page'),
+    url(r'^([\w-]+)/$', views.RegionFlatPage.as_view(), name='region_flat_page'),
+]
 
 catalog_urls = [
     url(r'^$', views.CategoryTree.as_view(),
@@ -14,16 +18,6 @@ catalog_urls = [
         name='product'),
 ]
 
-build_objects_url = [
-    url(r'^$', views.TerritoryMapPage.as_view(), name='territory_page'),
-    url(r'^([\w-]+)/$', views.RegionFlatPage.as_view(), name='region_flat_page'),
-]
-
-search_urls = [
-    url(r'^autocomplete/$', views.Autocomplete.as_view(), name='autocomplete'),
-    url(r'^$', views.Search.as_view(), name='search'),
-]
-
 ecommerce_urls = [
     url(r'^cart-add/$', views.AddToCart.as_view(), name='cart_add'),
     url(r'^cart-change/$', views.ChangeCount.as_view(), name='cart_set_count'),
@@ -32,23 +26,28 @@ ecommerce_urls = [
     url(r'^order/$', views.OrderPage.as_view(), name='order_page'),
 ]
 
+search_urls = [
+    url(r'^autocomplete/$', views.Autocomplete.as_view(), name='autocomplete'),
+    url(r'^$', views.Search.as_view(), name='search'),
+]
+
 urlpatterns = [
-    url(r'^order-price/', views.OrderPrice.as_view(),
-        name='order_price'),
-    url(r'^order-drawing/', views.OrderDrawing.as_view(),
-        name='order_drawing'),
-    url(r'^price-success/', views.OrderPriceSuccess.as_view(),
-        name='order_price_success'),
+    url(r'^$', views.IndexPage.as_view(), name='index'),
     url(r'^drawing-success/', views.OrderDrawingSuccess.as_view(),
         name='order_drawing_success'),
-    url(r'^$', views.IndexPage.as_view(), name='index'),
-    url(r'^page/', include('pages.urls')),
-    url(r'^obekty/', include(build_objects_url)),
     url(r'^gbi/', include(catalog_urls)),
-    url(r'^visual/', views.visual_page, name='catalog'),
+    url(r'^obekty/', include(build_objects_url)),
+    url(r'^order-drawing/', views.OrderDrawing.as_view(),
+        name='order_drawing'),
+    url(r'^order-price/', views.OrderPrice.as_view(),
+        name='order_price'),
+    url(r'^page/', include('pages.urls')),
+    url(r'^price-success/', views.OrderPriceSuccess.as_view(),
+        name='order_price_success'),
     url(r'^shop/', include(ecommerce_urls)),
     url(r'^shop/', include('ecommerce.urls')),
     url(r'^search/', include(search_urls)),
+    url(r'^visual/', views.visual_page, name='catalog'),
 ]
 
 if settings.DEBUG:

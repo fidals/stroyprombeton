@@ -1,0 +1,298 @@
+// ================================================================
+// PRODUCT PAGE
+// ================================================================
+.page-product {
+  padding-top: $h-header;
+}
+
+// ================================================================
+// HEADER
+// ================================================================
+.product-header {
+  padding: 21px 0 48px;
+
+  &-h1 {
+    padding-left: 14px;
+    font-size: $f-size-base + 18;
+    font-weight: 300;
+    line-height: 1.18;
+    text-align: center;
+    color: $c-product-header;
+  }
+}
+
+// ================================================================
+// SERIAL
+// ================================================================
+.product-serial {
+  padding-bottom: 48px;
+
+  &-content {
+    padding-left: 19px;
+    font-size: $f-size-base;
+    color: $c-product-serial;
+  }
+
+  &-title {
+    font-weight: 400;
+  }
+
+  &-val {
+    margin-right: 23px;
+    font-weight: 600;
+  }
+}
+
+// ================================================================
+// IMAGE
+// ================================================================
+.product-image {
+  padding: 35px 0;
+}
+
+// ================================================================
+// CHARACTERISTICS
+// ================================================================
+.product-characteristics {
+  padding: 50px 0;
+
+  &-title {
+    margin-bottom: 21px;
+    font-size: $f-size-base;
+    font-weight: 700;
+    line-height: 1.25;
+    color: $c-product-characteristics-title;
+  }
+
+  &-table {
+    border-collapse: collapse;
+    border-top: 1px solid $c-product-characteristics-table-border;
+  }
+
+  &-name {
+    padding: 11px 30px 11px 0;
+    width: 194px;
+    font-size: $f-size-base;
+    font-weight: 400;
+    color: $c-product-characteristics-table-name;
+    border-bottom: 1px solid $c-product-characteristics-table-border;
+    line-height: 1.4;
+  }
+
+  &-val {
+    padding: 11px 0;
+    font-size: $f-size-base;
+    font-weight: 700;
+    line-height: 1.4;
+    color: $c-product-characteristics-table-val;
+    border-bottom: 1px solid $c-product-characteristics-table-border;
+  }
+}
+
+// ================================================================
+// PRICE
+// ================================================================
+.product-order {
+  padding-bottom: 58px;
+
+  &-table {
+    margin-bottom: 22px;
+    border-collapse: collapse;
+    border-bottom: 1px solid $c-product-characteristics-table-border;
+
+    &-th {
+      padding-bottom: 14px;
+      font-size: $f-size-base;
+      font-weight: 700;
+      line-height: 1.25;
+      text-align: center;
+      color: $c-product-order-table;
+      border-bottom: 1px solid $c-product-characteristics-table-border;
+    }
+
+    &-col-price,
+    &-col-total {
+      padding: 17px 0 23px;
+      width: 162px;
+      font-size: $f-size-base + 4;
+      font-weight: 600;
+      text-align: center;
+      color: $c-product-order-table;
+    }
+
+    &-col-count {
+      width: 132px;
+      text-align: center;
+    }
+  }
+
+  &-submit {
+    margin-bottom: 8px;
+    padding-left: 292px;
+
+    &-btn {
+      padding: 9px 29px;
+      font-size: $f-size-base;
+      line-height: 1;
+    }
+  }
+
+  &-pricelist {
+    padding-left: 292px;
+  }
+}
+
+// ================================================================
+// DESCRIBE
+// ================================================================
+.product-describe {
+
+  &-title {
+    padding-bottom: 21px;
+    font-size: $f-size-base;
+    font-weight: 700;
+    line-height: 1.25;
+    color: $c-product-describe-title;
+  }
+
+  &-text {
+    font-size: $f-size-base + 2;
+    font-weight: 300;
+    line-height: 1.33;
+    color: $c-product-describe-text;
+  }
+}
+
+// ================================================================
+// SAME SERIES
+// ================================================================
+.same-series {
+  padding: 33px 0 120px;
+
+  &-title {
+    margin-bottom: 18px;
+    padding-left: 8px;
+    font-size: $f-size-base + 18;
+    font-weight: 300;
+    line-height: 1.18;
+    text-align: center;
+    color: $c-product-series-title;
+  }
+
+  &-text {
+    margin-bottom: 40px;
+    font-size: $f-size-base + 2;
+    font-weight: 300;
+    line-height: 1.33;
+    text-align: center;
+    color: $c-product-series-text;
+  }
+}
+
+// ================================================================
+// SLIDER
+// ================================================================
+.slider {
+  position: relative;
+  overflow: hidden;
+  height: 342px;
+
+  &-content {
+    position: absolute;
+    left: 0;
+    top: 0;
+    font-size: 0;
+    white-space: nowrap;
+  }
+
+  &-item {
+    display: inline-block;
+    margin-right: 31px;
+    width: 360px;
+
+    &-title {
+      margin-bottom: 16px;
+      font-size: $f-size-base;
+      font-weight: 700;
+      line-height: 1.25;
+      color: $c-slider-title;
+    }
+
+    &-image {
+      margin-bottom: 15px;
+      height: 240px;
+      overflow: hidden;
+    }
+
+    &-image-img {
+      width: 100%;
+    }
+
+    &-price {
+      margin-bottom: 9px;
+      font-size: $f-size-base + 4;
+      font-weight: 600;
+      text-align: right;
+      color: $c-slider-price;
+    }
+
+    &-order {
+      text-align: right;
+    }
+  }
+
+  &-nav {
+    position: absolute;
+    top: 0;
+    bottom: 32px;
+    margin: auto 0;
+    width: 47px;
+    height: 53px;
+    background-color: $c-black;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &-disable {
+      opacity: .5;
+      cursor: default;
+    }
+
+    &:hover {
+      height: 238px;
+    }
+
+    &-disable:hover {
+      height: 53px;
+    }
+
+    &::after {
+      content: " ";
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      margin: auto;
+      width: 10px;
+      height: 10px;
+      border-bottom: 2px solid $c-white;
+      border-right: 2px solid $c-white;
+    }
+
+    &-left {
+      left: 0;
+    }
+
+    &-left::after {
+      left: 21px;
+      transform: rotate(135deg);
+    }
+
+    &-right {
+      right: 0;
+    }
+
+    &-right::after {
+      right: 21px;
+      transform: rotate(-45deg);
+    }
+  }
+}

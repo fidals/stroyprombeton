@@ -1,0 +1,244 @@
+// ================================================================
+// CART PAGE
+// ================================================================
+.page-cart {
+  padding-top: $h-header;
+}
+
+// ================================================================
+// HEADER
+// ================================================================
+.cart-header {
+  padding: 81px 0 79px;
+
+  &-h1 {
+    font-size: $f-size-base + 18;
+    font-weight: 300;
+    line-height: 1.18;
+    color: $c-cart-header;
+  }
+}
+
+// ================================================================
+// ORDER
+// ================================================================
+.cart-order {
+  padding: 9px 0 39px;
+  background-color: $c-cart-order-bg;
+
+  &-title {
+    padding-bottom: 22px;
+    font-size: $f-size-base + 18;
+    font-weight: 300;
+    line-height: 1.18;
+    color: $c-cart-order-header;
+  }
+
+  &-total {
+    padding: 18px 0 20px 74px;
+
+    &-title {
+      margin-right: 19px;
+      font-size: $f-size-base;
+      font-weight: 600;
+      color: $c-cart-order-title;
+    }
+
+    &-val {
+      font-size: $f-size-base + 4;
+      font-weight: 600;
+      color: $c-cart-order-val;
+    }
+  }
+}
+
+// ================================================================
+// TABLE
+// ================================================================
+.cart-table {
+  border-collapse: collapse;
+  border-bottom: 1px solid $c-cart-table-border;
+
+  &-col {
+
+    &-name {
+      position: relative;
+      padding: 15px 30px 14px 98px;
+      width: 572px;
+      font-size: $f-size-base;
+      font-weight: 400;
+      color: $c-cart-table-name;
+      border-right: 1px solid $c-cart-table-border;
+      transition: all 0.2s ease;
+    }
+
+    &-name-del {
+      opacity: 0;
+      position: absolute;
+      right: 6px;
+      top: 0;
+      bottom: 0;
+      margin: auto;
+      padding: 6px;
+      height: 24px;
+      font-size: $f-size-base - 4;
+      line-height: 1;
+      color: $c-cart-table-name-del;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    &-name:hover {
+      color: $c-cart-table-name-hover;
+    }
+
+    &-name:hover .cart-table-col-name-del {
+      opacity: 1;
+    }
+
+    &-count {
+      width: 129px;
+      text-align: center;
+      border-right: 1px solid $c-cart-table-count;
+    }
+
+    &-price {
+      padding-left: 23px;
+      width: 244px;
+      font-size: $f-size-base + 4;
+      font-weight: 600;
+      color: $c-cart-table-price;
+    }
+  }
+
+  &-th {
+    font-size: $f-size-base - 3;
+    font-weight: 600;
+    line-height: 1.23;
+    text-align: left;
+    color: $c-cart-table-th;
+    border-bottom: 1px solid $c-cart-table-border;
+
+    &-name {
+      padding: 7px 0 8px 98px;
+    }
+
+    &-price {
+      padding: 7px 0 8px 22px;
+    }
+  }
+}
+
+// ================================================================
+// CONTACTS
+// ================================================================
+.cart-contacts {
+  padding: 14px 0 54px;
+
+  &-title {
+    padding-bottom: 47px;
+    font-size: $f-size-base + 18;
+    font-weight: 300;
+    line-height: 1.18;
+    color: $c-cart-contacts-title;
+  }
+
+  &-label {
+    margin-bottom: 11px;
+    font-size: $f-size-base;
+    color: $c-cart-contacts-label;
+
+    &-asterisk {
+      font-size: $f-size-base - 2;
+      font-weight: 600;
+      color: $c-cart-contacts-label-asterisk;
+    }
+  }
+
+  &-input {
+    margin: 0 0 31px 98px;
+
+    &-field {
+      padding: 8px 19px;
+      width: 340px;
+      font-size: $f-size-base;
+      font-weight: 400;
+      line-height: 1;
+      color: $c-cart-contacts-input;
+      border-radius: 4px;
+      border: 1px solid $c-cart-contacts-input-border;
+    }
+
+    &-status {
+      display: none;
+      margin-left: 5px;
+      font-size: $f-size-base - 5;
+      vertical-align: 2px;
+    }
+
+    &-status-check {
+      color: $c-cart-contacts-input-check;
+    }
+
+    &-status-fail {
+      color: $c-cart-contacts-input-fail;
+    }
+  }
+
+  &-textarea {
+    padding: 8px 19px;
+    width: 100%;
+    height: 122px;
+    font-size: $f-size-base;
+    font-weight: 400;
+    line-height: 1;
+    color: $c-cart-contacts-textarea;
+    border-radius: 4px;
+    border: 1px solid $c-cart-contacts-input-border;
+  }
+
+  &-attachment {
+    margin: 0 0 40px 98px;
+
+    &-btn {
+      display: inline-block;
+      margin-right: 7px;
+    }
+
+    &-btn-ico {
+      padding: 0 5px;
+      font-size: $f-size-base + 21;
+      color: $c-cart-contacts-attachment-btn;
+      transform: rotate(-99deg);
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+
+    &-btn-ico:hover {
+      color: $c-cart-contacts-attachment-btn-hover;
+    }
+
+    &-input {
+      display: none;
+    }
+
+    &-info {
+      display: inline-block;
+      font-size: $f-size-base - 4;
+      font-weight: 400;
+      line-height: 1.5;
+      vertical-align: bottom;
+      color: $c-cart-contacts-attachment-info;
+    }
+  }
+
+  &-submit {
+    margin-bottom: 67px;
+    text-align: right;
+
+    &-btn {
+      padding: 5px 28px;
+      font-size: $f-size-base;
+    }
+  }
+}
