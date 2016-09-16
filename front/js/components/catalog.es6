@@ -1,46 +1,31 @@
 (() => {
   const DOM = {
-    $category: $('.js-catalog-category-title'),
-    categoryUL: '.js-catalog-category-ul',
-    $subcategory: $('.js-catalog-subcategory'),
-    subcategoryUL: '.js-catalog-subcategory-ul',
+    $catalogLink: $('.js-catalog-title'),
+    categoryList: '.js-catalog-ul',
+    listWrapper: 'catalog-ul-wrapper',
   };
 
   const init = () => {
     setUpListeners();
   };
 
-  const setUpListeners = () => {
-    DOM.$category
-      .click(function () {
-        toggleCategory($(this));
-      });
+  function setUpListeners() {
+    DOM.$catalogLink.click(event => toggleFirstLevelList(event));
+  }
 
-    DOM.$subcategory
-      .click(function () {
-        toggleSubcategory($(this));
-      });
-  };
 
-  const toggleCategory = $category => {
-    $category
-      .toggleClass('catalog-category-title-active')
-      .next(DOM.categoryUL)
+  function toggleFirstLevelList(event) {
+    event.preventDefault();
+
+    $(event.target)
+      .toggleClass('active')
+      .next(DOM.categoryList)
+      .stop()
+      .slideToggle()
+      .find('ul')
       .stop()
       .slideToggle();
-  };
-
-  const toggleSubcategory = $subcategory => {
-    $subcategory
-      .find('.catalog-subcategory-ico')
-      .toggleClass('fa-minus')
-      .toggleClass('fa-plus')
-      .end()
-      .toggleClass('catalog-subcategory-active')
-      .next(DOM.subcategoryUL)
-      .stop()
-      .slideToggle();
-  };
+  }
 
   init();
 })();

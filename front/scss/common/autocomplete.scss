@@ -14,11 +14,11 @@
     text-align: left;
     top: 29px;
     width: 360px;
-    z-index: 5;
+    z-index: 4;
 
     b {
-      font-weight: normal;
       color: $c-search-highlight;
+      font-weight: normal;
     }
   }
 }

@@ -13,33 +13,39 @@
   {% endblock %}
 </head>
 
-<body>
-{% block header %}
-  {% include 'layout/header.html' %}
-{% endblock %}
+<body class="{% block body_class %}{% endblock %}">
+  <header class="header">
+    {% include 'layout/navigation_bar.html' %}
 
-<div class="content">
-  {% block content %}{% endblock %}
-</div>
+    {% block search_bar %}
+      <div class="searchbar js-searchbar">
+        {% include 'layout/search_bar.html' %}
+      </div>
+    {% endblock %}
+  </header>
 
-{% block footer %}
-  {% include 'layout/footer.html' %}
-{% endblock %}
+  <div class="content">
+    {% block content %}{% endblock %}
+  </div>
 
-{% block backcall_modal %}
-  {% include 'layout/backcall_modal.html' %}
-{% endblock %}
+  {% block footer %}
+    {% include 'layout/footer.html' %}
+  {% endblock %}
 
-<div class="btn btn-scroll-to-top" id="btn-scroll-to-top">Наверх</div>
+  {% block backcall_modal %}
+    {% include 'layout/backcall_modal.html' %}
+  {% endblock %}
 
-{% block jslibs %}
-  <script src="{% static 'js/vendors.min.js' %}"></script>
-{% endblock %}
+  <div class="btn btn-scroll-to-top" id="btn-scroll-to-top">Наверх</div>
 
-{% block jslinks %}
-  <script src="{% static 'js/main.min.js' %}"></script>
-{% endblock %}
+  {% block jslibs %}
+    <script src="{% static 'js/vendors.min.js' %}"></script>
+  {% endblock %}
 
-{% include 'layout/marketing.html' %}
+  {% block jslinks %}
+    <script src="{% static 'js/main.min.js' %}"></script>
+  {% endblock %}
+
+  {% include 'layout/marketing.html' %}
 </body>
 </html>

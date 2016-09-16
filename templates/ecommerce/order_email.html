@@ -4,12 +4,15 @@
 <div style="width:100%; margin-bottom: 10px;">
   <span style="float: right; color: #767A7B; margin-top: 32px;">
     <span style="font-size: 13px;">(812)</span>
-    <span style="font-size: 25px;" class="ya-opt-phone"><a style="color: #000; text-decoration: none;"
-                                                           href="tel:+78124163200">655-73-60</a></span>
+    <span style="font-size: 25px;" class="ya-opt-phone">
+      <a style="color: #000; text-decoration: none;" href="tel:{{ site_info.phone.spb_1_url }}">
+        {{ site_info.phone.spb_1 }}
+      </a>
+    </span>
   </span>
   <div style="padding: 0 0 8px;">
     <a href="http://www.stroyprombeton.ru/" target="_blank">
-      <img src="{% static 'images/logo.png' %}" title="На главную" alt="Логотип">
+      <img src="{% static 'images/logo.png' %}" alt="Логотип">
     </a>
     <div style="color: #515151; font-size: 13px; margin: -5px 0 0;">Завод железобетонных изделий</div>
   </div>
@@ -75,7 +78,8 @@
 {% customer_info order.comment 'Сообщение' %}
 
 <p>Если у Вас остались вопросы, Вы можете связаться с нашими менеджерами по телефонам:
-  <a href="{{ site_info.phone.uri_tel1 }}">{{ site_info.phone.spb1 }}</a>, <a href="{{ site_info.phone.uri_tel2 }}">{{ site_info.phone.spb2 }}</a>
+  <a href="{{ site_info.phone.moscow_1_url }}">{{ site_info.phone.spb1 }}</a>,
+  <a href="{{ site_info.phone.spb_1_url }}">{{ site_info.phone.spb2 }}</a>
   или по электронной почте:
   <a href="mailto:{{ site_info.email }}">{{ site_info.email }}</a>
 </p>

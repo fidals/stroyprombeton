@@ -31,6 +31,6 @@ def search_result(items, type_):
     }
 
 
-@register.assignment_tag
-def get_roots():
+@register.simple_tag
+def get_root_categories():
     return Category.objects.root_nodes().filter(page__is_active=True).order_by('position', 'name')

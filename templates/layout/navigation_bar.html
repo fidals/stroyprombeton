@@ -1,0 +1,22 @@
+{% load staticfiles %}
+
+<nav class="nav-wrapper js-nav">
+  <div class="container container-fluid">
+    <div class="row between-xs">
+      <div class="col-xs-3">
+        <div class="nav-logo">
+          <a href="/">
+            <img src="{{ STATIC_URL }}images/stk-prombeton.png" title="На главную" alt="СТК-ПромБетон">
+          </a>
+        </div>
+      </div>
+
+      <div class="col-xs-offset-3 col-xs-6">
+        <ul class="nav">
+          {% include 'layout/navigation.html' %}
+          {% include 'ecommerce/header_cart.html' %}
+        </ul>
+      </div>
+    </div>
+  </div>
+</nav>

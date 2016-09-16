@@ -59,7 +59,6 @@ const PATH = {
         'front/js/components/autocomplete.es6',
         // old ones:
         'front/js/components/headerCart.es6',
-        'front/js/components/accordion.es6',
       ],
     },
 

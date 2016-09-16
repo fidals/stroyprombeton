@@ -4,9 +4,9 @@
 <div class="js-order-contain">
   {% if not cart %}
     <h2 class="text-center">Нет выбранных позиций</h2>
-    <p class="text-center">Если вы не нашли изделие <a href="/visual/">в каталоге</a>,
-      <br>мы изготовим его <a href="/order-drawing/">по вашим чертежам</a>. Отправьте их
-      через форму ниже или на почту <a href="mailto:{{ site_info.email }}">{{ site_info.email }}</a>.</p>
+    <p class="text-center">Если вы не нашли изделие <a href="{% url 'category_tree' %}">в каталоге</a>,
+      <br>мы изготовим его <a href="{% url 'order_drawing' %}">по вашим чертежам</a>.
+    </p>
   {% else %}
     <h2>Ваш заказ</h2>
     <table class="table table-bordered table-striped">

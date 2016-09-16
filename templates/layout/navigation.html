@@ -1,15 +1,15 @@
 {% load stb_extras %}
-{% get_roots as roots %}
+{% get_root_categories as root_categories %}
 
 <li class="nav-item">
   <a class="nav-link" href="{% url 'pages:flat_page' 'navi' 'ordering' %}">Заказ</a>
 </li>
 
 <li class="nav-item">
-  <a class="nav-link" href="{% url 'catalog' %}">Каталог</a>
+  <a class="nav-link" href="{% url 'category_tree' %}">Каталог</a>
 
   <ul class="nav-subnav js-nav-subnav">
-    {% for item in roots %}
+    {% for item in root_categories %}
       <li class="nav-subnav-item">
         <a class="nav-subnav-item-link" href="{{ item.get_absolute_url }}">
           {{ item.name }}

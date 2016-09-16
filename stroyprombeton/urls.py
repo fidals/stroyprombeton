@@ -10,8 +10,7 @@ build_objects_url = [
 ]
 
 catalog_urls = [
-    url(r'^$', views.CategoryTree.as_view(),
-        name='category_tree'),
+    url(r'^$', views.CategoryTree.as_view(), name='category_tree'),
     url(r'^categories/(?P<category_id>[0-9]+)/$', views.CategoryPage.as_view(),
         name='category'),
     url(r'^products/(?P<product_id>[0-9]+)/$', views.ProductPage.as_view(),
@@ -47,7 +46,6 @@ urlpatterns = [
     url(r'^shop/', include(ecommerce_urls)),
     url(r'^shop/', include('ecommerce.urls')),
     url(r'^search/', include(search_urls)),
-    url(r'^visual/', views.visual_page, name='catalog'),
 ]
 
 if settings.DEBUG:

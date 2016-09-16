@@ -1,143 +1,97 @@
 // ================================================================
 // CATALOG PAGE
 // ================================================================
-.page-catalog {
-  padding-top: $h-header;
-}
-
-// ================================================================
-// CATALOG
-// ================================================================
 .catalog {
   padding: 21px 0;
 
   &-h1 {
-    margin-bottom: 55px;
-    padding-left: 23px;
+    color: $c-catalog-h1;
     font-size: $f-size-base + 18;
     font-weight: 300;
     line-height: 1.18;
-    color: $c-catalog-h1;
+    margin-bottom: 55px;
+    padding-left: 23px;
     text-align: center;
   }
 
-  &-category {
-    margin-bottom: 108px;
-
-    &-title {
-      display: flex;
-      align-items: center;
-      position: relative;
-      margin-bottom: 28px;
-      padding: 0 70px 0 32px;
-      height: 120px;
-      font-size: $f-size-base + 18;
-      font-weight: 300;
-      line-height: 1.18;
-      color: $c-white;
-      border-radius: 3px;
-      background-color: $c-catalog-category-title-bg;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-
-    &-title:hover {
-      background-color: $c-catalog-category-title-hover-bg;
-    }
-
-    &-title-img {
-      position: absolute;
-      left: -294px;
-      top: -40px;
-      width: 264px;
-    }
-
-    &-title::after {
-      position: absolute;
-      right: 32px;
-      top: 49px;
-      content: " ";
-      display: block;
-      width: 23px;
-      height: 23px;
-      border-right: 2px solid $c-white;
-      border-bottom: 2px solid $c-white;
-      transform: rotate(-45deg);
-      transition: all 0.2s ease;
-    }
-
-    &-title-active::after {
-      right: 25px;
-      top: 42px;
-      transform: rotate(45deg);
-    }
-
-    &-ul {
-      display: none;
-      margin: 0 0 57px 76px;
-    }
+  &-ul {
+    display: none;
+    margin: 0 0 30px 50px;
   }
 
-  &-subcategory {
-    position: relative;
-    margin-bottom: 12px;
+  &-title {
+    display: block;
+    color: $c-catalog-sub;
+    cursor: pointer;
     font-size: $f-size-base;
     font-weight: 400;
-    color: $c-catalog-subcategory;
-    cursor: pointer;
+    margin-bottom: 12px;
+    position: relative;
     transition: all 0.2s ease;
 
-    &:hover {
-      color: $c-catalog-subcategory-hover;
-    }
-
-    &-ico {
-      color: $c-catalog-subcategory-ico;
-      font-size: $f-size-base - 2;
-      height: 14px;
-      margin: 0 5px 0 0;
-      position: relative;
-      top: -1px;
-    }
-
-    &-ul {
-      display: none;
-      margin: -2px 21px 22px 36px;
-    }
-
-    &-item {
-      position: relative;
-    }
-
-    &-item::before {
-      content: "•";
-      display: block;
+    &::after {
+      content: "-";
+      font-weight: 600;
+      left: -15px;
       position: absolute;
-      left: -24px;
-      margin-right: 19px;
-    }
-
-    &-link {
-      color: $c-catalog-subcategory-item;
-    }
-
-    &-link:hover {
-      color: $c-black;
+      top: -2px;
     }
   }
 }
 
+.catalog-ul-wrapper > .catalog {
+  &-title {
+    align-items: center;
+    background-color: $c-catalog-title-bg;
+    border-radius: 3px;
+    color: $c-white;
+    cursor: pointer;
+    display: flex;
+    font-size: $f-size-base + 18;
+    font-weight: 300;
+    margin: 0 0 30px;
+    min-height: 120px;
+    padding: 15px 70px 20px 32px;
+    position: relative;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background-color: $c-catalog-title-hover-bg;
+    }
+
+    &::after {
+      border-right: 2px solid $c-white;
+      border-bottom: 2px solid $c-white;
+      content: "";
+      display: block;
+      height: 23px;
+      left: auto;
+      position: absolute;
+      right: 32px;
+      top: 49px;
+      transform: rotate(-45deg);
+      transition: all 0.2s ease;
+      width: 23px;
+    }
+
+    &.active::after {
+      right: 25px;
+      top: 42px;
+      transform: rotate(45deg);
+    }
+  }
+}
 // ================================================================
 // ABOUT CATALOG
 // ================================================================
 .about-catalog {
-  padding-bottom: 118px;
+  color: $c-catalog-about;
   font-size: $f-size-base + 2;
   font-weight: 300;
   line-height: 1.39;
-  color: $c-catalog-about;
+  padding-bottom: 100px;
 
   &-p {
-    margin-bottom: 26px;
+    margin-bottom: 25px;
   }
 }

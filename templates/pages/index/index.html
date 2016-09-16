@@ -1,7 +1,15 @@
 {% extends 'layout/base.html' %}
 
+{% block body_class %}index{% endblock %}
+
+{% block search_bar %}
+  <div class="searchbar searchbar-banner js-searchbar">
+    {% include 'layout/search_bar.html' %}
+  </div>
+{% endblock %}
+
 {% block content %}
-  <section class="banner">
+  <section class="banner js-banner">
     <div class="container container-fluid">
       <div class="row">
         <div class="col-xs-12">
@@ -18,32 +26,6 @@
           <div class="banner-name">
             <h1 class="banner-name-h1">«СТК-ПромБетон»</h1>
             <h2 class="banner-name-h2">Завод железобетонных изделий </h2>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="searchbar js-searchbar">
-      <div class="container container-fluid">
-        <div class="row">
-          {% include 'layout/search.html' %}
-
-          <div class="col-xs-7">
-            <ul class="searchbar-contacts">
-              <li class="searchbar-contacts-item">
-                СПб
-                <a class="searchbar-contacts-link" href="tel:+78126557360">+7 (812) 655-73-60</a>
-              </li>
-              <li class="searchbar-contacts-item">
-                Мск
-                <a class="searchbar-contacts-link" href="tel:+74996493379">+7 (499) 649-33-79</a>
-              </li>
-              <li class="searchbar-contacts-item">
-                <a class="searchbar-contacts-link" href="mailto:info@stroyprombeton.ru">
-                  info@stroyprombeton.ru
-                </a>
-              </li>
-            </ul>
           </div>
         </div>
       </div>
@@ -76,7 +58,7 @@
             <img src="{{ STATIC_URL }}images/catalog-prev.png" alt="Каталог ЖБИ">
           </div>
           <div class="catalog-section-btn">
-            <a href="{% url 'catalog' %}" class="btn btn-catalog">Каталог ЖБИ</a>
+            <a href="{% url 'category_tree' %}" class="btn btn-catalog">Каталог ЖБИ</a>
           </div>
         </div>
       </div>
@@ -113,7 +95,7 @@
         </div>
 
         <div class="col-xs-offset-1 col-xs-3">
-          <a href="#"  class="offer-item">
+          <a href="#" class="offer-item">
             <div class="offer-image">
               <div class="offer-item-image offer-item-image-nohover icon-offer-commercial"></div>
               <div class="offer-item-image offer-item-image-hover icon-offer-commercial-hover"></div>
@@ -199,42 +181,7 @@
   </section>
 
   <section class="reviews">
-    <div class="container container-fluid">
-      <div class="row middle-xs">
-        <div class="col-xs-offset-1 col-xs-3">
-          <h2 class="main-h2">Отзывы</h2>
-        </div>
-        <div class="col-xs-6">
-          <ul class="reviews-content">
-            {% for review in reviews %}
-              <li class="reviews-content-item js-reviews-item {% if forloop.counter0 == 0 %}active{% endif %}">
-                <p class="reviews-content-item-title">{{ review.title }}</p>
-                <p>{{ review.text }}</p>
-              </li>
-            {% endfor %}
-          </ul>
-
-          <div class="reviews-nav">
-            <div class="reviews-nav-item js-reviews-nav-item active" data-slide-to="0"></div>
-            <div class="reviews-nav-item js-reviews-nav-item" data-slide-to="1"></div>
-            <div class="reviews-nav-item js-reviews-nav-item" data-slide-to="2"></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="row">
-        <div class="col-xs-offset-4 col-xs-7">
-          <div class="reviews-more">
-            <p>
-              <a class="more-link" href="#">
-                Благодарственное письмо
-                <i class="fa fa-arrow-down more-link-arrow" aria-hidden="true"></i>
-              </a>
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
+    {% include 'pages/index/reviews.html' %}
   </section>
 
   <section class="contact-us">
@@ -242,7 +189,7 @@
       <div class="row">
         <div class="col-xs-12">
           <div class="contact-us-btn">
-            <button class="btn js-btn-contact-us">Cвяжитесь со мной</button>
+            <button class="btn js-btn-contact-us">Свяжитесь со мной</button>
           </div>
         </div>
       </div>

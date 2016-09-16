@@ -1,0 +1,37 @@
+<div class="container container-fluid">
+  <div class="row">
+    <div class="col-xs-offset-1 col-xs-4 searchbar-wrap">
+      <form class="search" action="{% url 'search' %}" method="get">
+        <input type="text" class="search-field js-search-field">
+
+        <button class="search-btn" type="submit">
+          <i class="fa fa-search" aria-hidden="true"></i>
+        </button>
+
+        <div class="search-inner js-search-propose"></div>
+      </form>
+    </div>
+
+    <div class="col-xs-7">
+      <ul class="searchbar-contacts">
+        <li class="searchbar-contacts-item">
+          СПб
+          <a class="searchbar-contacts-link" href="tel:{{ site_info.phone.spb_1_url }}">
+            {{ site_info.phone.spb_1 }}
+          </a>
+        </li>
+        <li class="searchbar-contacts-item">
+          Мск
+          <a class="searchbar-contacts-link" href="tel:{{ site_info.phone.moscow_1_url }}">
+            {{ site_info.phone.moscow_1 }}
+          </a>
+        </li>
+        <li class="searchbar-contacts-item">
+          <a class="searchbar-contacts-link" href="mailto:{{ site_info.email }}">
+            {{ site_info.email }}
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>

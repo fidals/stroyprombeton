@@ -1,20 +1,41 @@
-{% extends 'layout/base.html' %}
+{% extends 'pages/inner_page.html' %}
+
+{% load staticfiles %}
 {% load mptt_tags %}
 
 {% block content %}
-  <h1>{{ page.h1 }}</h1>
+  {% include 'layout/breadcrumbs.html' %}
 
-  <ul class="catalog">
-    {% recursetree nodes %}
-      <li>
-        <a href="{{ node.get_absolute_url }}">{{ node.name }}</a>
+  <div class="container container-fluid">
+    <h1 class="catalog-h1">Каталог ЖБИ</h1>
+  </div>
+
+  <div class="container container-fluid">
+    <div class="catalog-ul-wrapper">
+      {% recursetree nodes %}
+        <a class="catalog-title {% if not node.parent %}js-catalog-title{% endif %}"
+           href="{{ node.get_absolute_url }}">
+          {{ node.name }}
+        </a>
+
         {% if not node.is_leaf_node %}
-          <ul>
+          <ul class="catalog-ul js-catalog-ul">
             {{ children }}
           </ul>
         {% endif %}
-      </li>
-    {% endrecursetree %}
-  </ul>
+      {% endrecursetree %}
+    </div>
+  </div>
 
+  <section class="about-catalog">
+    <div class="container container-fluid">
+      <div class="row">
+        <div class="col-xs-offset-2 col-xs-8">
+          {% autoescape off %}
+            {{ page.content }}
+          {% endautoescape %}
+        </div>
+      </div>
+    </div>
+  </section>
 {% endblock %}

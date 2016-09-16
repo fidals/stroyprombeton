@@ -42,6 +42,10 @@ a {
   }
 }
 
+.content {
+  padding-top: $h-nav + $h-searchbar;
+}
+
 // ================================================================
 // HEADER
 // ================================================================
@@ -49,8 +53,8 @@ a {
   position: fixed;
   left: 0;
   top: 0;
-  width: 100%;
-  z-index: 10;
+  right: 0;
+  z-index: 5;
 }
 
 // ================================================================
@@ -61,8 +65,10 @@ a {
   right: -14px;
 
   &-wrapper {
-    height: $h-nav;
     background-color: $c-nav-bg;
+    height: $h-nav;
+    position: relative;
+    z-index: 2;
   }
 
   &-logo {
@@ -308,8 +314,16 @@ a {
 // SEARCH BAR
 // ================================================================
 .searchbar {
+  background-color: $c-searchbar-bg;
   height: $h-searchbar;
-  transition: all 0.3s ease;
+  transition: background-color 0.3s ease;
+
+  &-banner {
+    background: none;
+    position: relative;
+    top: 390px;
+    z-index: 1;
+  }
 
   &.active {
     background-color: $c-searchbar-bg;
@@ -353,7 +367,7 @@ a {
   color: $c-path;
   font-size: $f-size-base - 3;
 
-  &-link {
+  &-item a {
     font-weight: 600;
     line-height: 1.23;
     color: $c-path;
@@ -372,8 +386,8 @@ a {
 // FOOTER
 // ================================================================
 .footer {
-  padding: 46px 0 32px;
   background-color: $c-footer-bg;
+  padding: 30px 0;
 
   &-list {
     &-h3 {

@@ -1,4 +1,4 @@
-const mainPage = (() => {
+(() => {
   const DOM = {
     $gbiMap: $('.gbi-map'),
     $gbiTooltip: $('.gbi-tooltip'),
@@ -7,7 +7,7 @@ const mainPage = (() => {
   const init = () => {
     pluginsInit();
   };
-  
+
   const pluginsInit = () => {
     DOM.$gbiMap.maphilight();
     DOM.$gbiTooltip.tooltipster({

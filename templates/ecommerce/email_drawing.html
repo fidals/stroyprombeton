@@ -4,7 +4,9 @@
     <span style="float: right; color: #767A7B; margin-top: 32px;">
         <span style="font-size: 13px;">(812)</span>
         <span style="font-size: 25px;" class="ya-opt-phone">
-            <a style="color: #000; text-decoration: none;" href="tel:+78124163200">655-73-60</a>
+            <a style="color: #000; text-decoration: none;" href="tel:{{ site_info.phone.spb_1_url }}">
+              {{ site_info.phone.spb_1 }}
+            </a>
         </span>
     </span>
   <div style="padding: 0 0 8px;">
@@ -17,8 +19,8 @@
 </div>
 
 <p style="margin: 0 0 1.15em; font-family: Arial, sans-serif;">
-  Здравствуйте! Уважаемый(ая) {{ form.name }}, в ближайшее время наш менеджер свяжется с Вами и уточнит детали вашей
-  заявки.
+  Здравствуйте! Уважаемый(ая) {{ form.name }}, в ближайшее время наш менеджер свяжется с Вами
+  и уточнит детали вашей заявки.
 </p>
 
 {% customer_info form.name 'Ваше имя' %}
@@ -27,8 +29,8 @@
 {% customer_info form.comment 'Сообщение' %}
 
 <p>Если у Вас остались вопросы, Вы можете связаться с нашими менеджерами по телефонам:
-  <a href="tel:{{ site_info.phone.uri_tel1 }}">{{ site_info.phone.spb1 }}</a>,
-  <a href="tel:{{ site_info.phone.uri_tel2 }}">{{ site_info.phone.spb2 }}</a>
+  <a href="tel:{{ site_info.phone.moscow_1_url }}">{{ site_info.phone.spb1 }}</a>,
+  <a href="tel:{{ site_info.phone.spb_1_url }}">{{ site_info.phone.spb2 }}</a>
   или по электронной почте:
   <a href="mailto:{{ site_info.email }}">{{ site_info.email }}</a>
 </p>

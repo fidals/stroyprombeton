@@ -3,7 +3,10 @@
 // ================================================================
 .content {
   flex: 1;
-  padding-top: $h-nav;
+
+  .index & {
+    padding-top: $h-nav;
+  }
 
   &-h2 {
     font-size: $f-size-base + 18;

@@ -2,11 +2,10 @@ __pycache__/
 *.py[cod]
 *$py.class
 .idea/
-node_modules
+node_modules/
 env/
 src/
-front/build
-static
+front/build/
+static/
 stroyprombeton/settings/local.py
-stroyprombeton/migrations/
 stb.json

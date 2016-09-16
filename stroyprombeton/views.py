@@ -138,7 +138,6 @@ class IndexPage(CustomPage):
     template_name = 'pages/index/index.html'
     slug = 'index'
     context = {
-        'href': config.HREFS,
         'news': Page.objects.get(slug='news').children.all().filter(is_active=True)[:2],
         'partners': config.PARTNERS,
         'reviews': config.REVIEWS,
@@ -157,14 +156,3 @@ class TerritoryMapPage(CustomPage):
 class RegionFlatPage(FlatPage):
     """Custom view for regions and it's flat_pages."""
     template_name = 'pages/territory/region_page.html'
-
-
-@ensure_csrf_cookie
-def visual_page(request):
-    """Visual page view with Products catalog with images"""
-
-    context = {
-    }
-
-    return render(
-        request, 'catalog/visual.html', context)
