@@ -5,20 +5,16 @@
 $img-path: "../images";
 $font-path: "../fonts";
 
-// Old colors:
-$c-btn-red: #ff7f83;
-$c-btn-red-hover: #ef4b50;
-$c-border: #999;
-$c-backgroud: #cfcfcf;
-$c-grey-text: #333;
-$c-nav-bg-start: #f9f9f9;
-$c-nav-bg-end: #e8e8e8;
-$c-red-legacy: #c90000;
-$c-white: #fff;
-
 // Theme colors:
 $c-black: #000;
+$c-text-orange: #fc7126;
 $c-selection: #fc7126;
+$c-show-more-border: #ababab;
+$c-show-more-hover: #bd6739;
+$c-show-more-active: #904f2b;
+$c-show-more-disabled: #bababa;
+$c-table-row-bg: #f2f2f2;
+$c-text: #212121;
 $c-white: #fff;
 
 $c-btn-orange: #fc7126;
@@ -72,6 +68,7 @@ $c-modal-input-border: #d5d5d5;
 $c-modal-status-check: #51ceb2;
 $c-modal-status-fail: #ed0b00;
 
+// Popover
 $c-popover: #212121;
 $c-popover-border: #fc7126;
 
@@ -83,14 +80,10 @@ $c-offer-title-hover: #979797;
 
 $c-about-bg: #fbfbfb;
 $c-about-h2: #171237;
-$c-about-text: #212121;
-
-$c-partners-title: #212121;
 
 $c-news-item-bg: #f8f8f8;
 $c-news-item-bg-hover: #fbfbfb;
 $c-news-title: #263238;
-$c-news-short: #212121;
 
 $c-reviews: #1c2e36;
 $c-reviews-title: #2e2e2e;
@@ -99,28 +92,20 @@ $c-reviews-nav-item-active: #242424;
 $c-reviews-bot-line: #e6eaeb;
 
 // Page Catalog
-$c-catalog-h1: #171237;
 $c-catalog-title-bg: #fc7126;
 $c-catalog-title-hover-bg: #bd6739;
 $c-catalog-sub: #404040;
 $c-catalog-sub-hover: #fc7126;
 $c-catalog-sub-ico: #fc7126;
 $c-catalog-sub-item: #404040;
-$c-catalog-about: #212121;
 
 // Page Category
 $c-category-title: #171237;
-$c-category-filter-title: #fc7126;
 $c-category-filter-item: #bababa;
-$c-category-filter-item-ico: #fc7126;
 $c-category-filter-item-hover: #fc7126;
 $c-category-filter-clear: #fc7126;
 $c-category-order-item: #bababa;
-$c-category-order-item-hover: #bd6739;
-$c-category-order-item-active: #904f2b;
-$c-category-order-item-selected: #fc7126;
-$c-category-about: #212121;
-$c-category-about-serial-border: #171237;
+$c-category-about-border: #171237;
 $c-table-th: #263238;
 $c-table-code: #263238;
 $c-table-name: #212121;
@@ -135,7 +120,6 @@ $c-table-order-active: #904f2b;
 $c-table-btn: #fc7126;
 $c-table-btn-hover: #bd6739;
 $c-table-btn-active: #904f2b;
-$c-table-border-bottom: #ababab;
 
 // Page Series
 $c-series-h1: #171237;
@@ -149,30 +133,30 @@ $c-series-list-item: #2c2c2c;
 $c-series-list-link: #212121;
 $c-series-about: #212121;
 
-// Page Cart
-$c-cart-header: #171237;
-$c-cart-order-bg: #fbfbfb;
-$c-cart-order-header: #171237;
-$c-cart-order-title: #acacac;
-$c-cart-order-val: #263238;
-$c-cart-table-border: #979797;
-$c-cart-table-th: #fc7126;
-$c-cart-table-name: #404040;
-$c-cart-table-name-hover: #9b9b9b;
-$c-cart-table-name-del: #9b9b9b;
-$c-cart-table-count: #979797;
-$c-cart-table-price: #263238;
-$c-cart-contacts-title: #171237;
-$c-cart-contacts-label: #acacac;
-$c-cart-contacts-label-asterisk: #fc7126;
-$c-cart-contacts-input: #404040;
-$c-cart-contacts-input-border: #d5d5d5;
-$c-cart-contacts-input-check: #51ceb2;
-$c-cart-contacts-input-fail: #ed0b00;
-$c-cart-contacts-textarea: #404040;
-$c-cart-contacts-attachment-btn: #404040;
-$c-cart-contacts-attachment-btn-hover: #979797;
-$c-cart-contacts-attachment-info: #acacac;
+// Page Order
+$c-order-header: #171237;
+$c-order-order-bg: #fbfbfb;
+$c-order-order-header: #171237;
+$c-order-order-title: #acacac;
+$c-order-order-val: #263238;
+$c-order-table-border: #979797;
+$c-order-table-th: #fc7126;
+$c-order-table-name: #404040;
+$c-order-table-name-hover: #9b9b9b;
+$c-order-table-name-del: #9b9b9b;
+$c-order-table-count: #979797;
+$c-order-table-price: #263238;
+$c-order-contacts-title: #171237;
+$c-order-contacts-label: #acacac;
+$c-order-contacts-label-asterisk: #fc7126;
+$c-order-contacts-input: #404040;
+$c-order-contacts-input-border: #d5d5d5;
+$c-order-contacts-input-check: #51ceb2;
+$c-order-contacts-input-fail: #ed0b00;
+$c-order-contacts-textarea: #404040;
+$c-order-contacts-attachment-btn: #404040;
+$c-order-contacts-attachment-btn-hover: #979797;
+$c-order-contacts-attachment-info: #acacac;
 
 // Page Product
 $c-product-header: #171237;
@@ -201,14 +185,6 @@ $c-news-text: #212121;
 $c-news-back-link: #fc7126;
 $c-news-back-link-hover: #bd6739;
 $c-news-back-link-active: #904f2b;
-
-// Search
-$c-search-header: #171237;
-$c-search-table-type: #212121;
-$c-search-table-code: #263238;
-$c-search-table-name: #212121;
-$c-search-table-price: #2c2c2c;
-$c-search-info: #212121;
 
 // Slider
 $c-slider-title: #263238;

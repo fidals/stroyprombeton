@@ -1,89 +1,219 @@
-/**
- * Category Page module defines logic, operations and DOM for CategoryPage.
- */
 (() => {
   const DOM = {
-    $filterItem: $('.js-category-filter-item'),
-    $filterCheckAll: $('.js-category-filter-item-all'),
-    $filterClear: $('.js-category-filter-clear'),
-    tableColCountInput: '.js-category-table-col-count-input',
-    tableColCountUp: '.js-category-table-col-count-up',
-    tableColCountDown: '.js-category-table-col-count-down',
-    filterItemIco: '.category-filter-item-ico',
-    $filterItemIco: $('.category-filter-item-ico'),
-    // old ones:
     $addToCart: $('.js-category-buy'),
-    productRow: '.js-product-row',
-    counter: '.js-product-count',
+    $showMoreLink: $('#load-more-products'),
+    $productsTable: $('#products-wrapper'),
+    $searchFilter: $('#search-filter'),
+    countInput: '.js-count-input',
+    countUp: '.js-count-input-up',
+    countDown: '.js-count-input-down',
+  };
+
+  const config = {
+    fetchProductsUrl: '/fetch-products/',
+    productsToFetch: 30,
+    totalProductsCount: parseInt($('.js-total-products').first().text(), 10),
   };
 
   const init = () => {
+    setLoadMoreLinkState();
     setUpListeners();
   };
 
   /**
    * Subscribing on events using mediator.
    */
-  const setUpListeners = () => {
-    DOM.$addToCart.click((event) => buyProduct(event));
+  function setUpListeners() {
+    mediator.subscribe('onCartUpdate', showTooltip);
+    mediator.subscribe('onProductsFilter', updateLoadMoreLink, refreshProductsList);
+    mediator.subscribe('onProductsLoad', updateLoadMoreLink, appendToProductsList);
+
+    DOM.$addToCart.click(event => buyProduct(event));
+    DOM.$showMoreLink.click(loadProducts);
+    DOM.$searchFilter.keyup(filterProducts);
 
     $(document)
-      .on('click', DOM.tableColCountUp, function () {
-        countIncrease($(this).siblings(DOM.tableColCountInput));
+      .on('click', DOM.countUp, function countUp() {
+        countIncrease($(this).siblings(DOM.countInput));
       })
-      .on('click', DOM.tableColCountDown, function () {
-        countDecrease($(this).siblings(DOM.tableColCountInput));
+      .on('click', DOM.countDown, function countDown() {
+        countDecrease($(this).siblings(DOM.countInput));
       });
+  }
 
-    DOM.$filterItem.click(function () {
-      filterItemToggle($(this).find(DOM.filterItemIco));
-    });
+  function countIncrease($input) {
+    $input.val((i, val) => ++val);
+  }
 
-    DOM.$filterCheckAll.click(filterCheckAll);
+  function countDecrease($input) {
+    $input.val((i, val) => (val > 1) ? --val : val);
+  }
 
-    DOM.$filterClear.click(filterClear);
+  function setLoadMoreLinkState() {
+    if ($('.table-tr').size() < config.productsToFetch) {
+      DOM.$showMoreLink.addClass('disabled');
+    }
+  }
+
+  /**
+   * Get product quantity & id from DOM.
+   */
+  const getProductInfo = event => {
+    const $product = $(event.target);
+    const productCount = $product.closest('td').prev().find('.js-count-input').val();
+    const productId = $product.closest('tr').attr('id');
+
+    return {
+      count: parseInt(productCount, 10),
+      id: parseInt(productId, 10),
+    };
   };
 
-  const buyProduct = event => {
-    const buyInfo = () => {
-      const product = $(event.target);
-      const count = product.closest(DOM.productRow).find(DOM.counter).val();
-      return {
-        count: parseInt(count),
-        id: parseInt(product.attr('productId')),
-      };
+  /**
+   * Add product to Cart and update it.
+   */
+  function buyProduct(event) {
+    const { id, count } = getProductInfo(event);
+
+    server.addToCart(id, count)
+      .then(data => mediator.publish('onCartUpdate', data));
+  }
+
+  /**
+   * Show tooltip after adding Product in to the Cart.
+   */
+  function showTooltip(event) {
+    const $target = $(event.target).closest('.table-td').find('.js-popover');
+
+    $target.fadeIn();
+    setTimeout(() => $target.fadeOut(), 1000);
+  }
+
+  /**
+   * Get already loaded products count.
+   */
+  const getLoadedProducts = () => parseInt(DOM.$showMoreLink.attr('data-load-count'), 10);
+
+  const getFilterTerm = () => DOM.$searchFilter.val();
+
+  const getCategoryId = () => DOM.$searchFilter.attr('data-category');
+
+  /**
+   * Update products to load data attribute counter.
+   * Add 'disabled' attribute to button if there are no more products to load.
+   *
+   * @param {string} products - HTML string of fetched products
+   */
+  function updateLoadMoreLink(_, products) {
+    const oldCount = parseInt(DOM.$showMoreLink.attr('data-load-count'), 10);
+    const newCount = oldCount + config.productsToFetch;
+    const productsLoaded = countWord(products, 'table-tr');
+
+    DOM.$showMoreLink.attr('data-load-count', newCount);
+
+    if (productsLoaded < config.productsToFetch) {
+      DOM.$showMoreLink.addClass('disabled');
+    }
+  }
+
+  /**
+   * Update Products list in DOM via appending HTML-list of loaded products to wrapper.
+   *
+   * @param {string} products - HTML string of fetched product's list
+   */
+  function appendToProductsList(_, products) {
+    DOM.$productsTable.append(products);
+  }
+
+  /**
+   * Insert filtered Products list.
+   *
+   * @param {string} products - HTML string of fetched product's list
+   */
+  function refreshProductsList(_, products) {
+    DOM.$productsTable.html(products);
+  }
+
+  /**
+   * Count word occurrence in string.
+   *
+   * @param {string} source - string to search occurrence in
+   * @param {string} word - searched word in whole string
+   * @return {number} count - word occurrence count in source string
+   */
+  function countWord(source, word) {
+    let count = 0;
+    let index = 0;
+
+    while ((index = source.indexOf(word)) >= 0) {
+      source = source.substring(index + word.length);
+      count += 1;
+    }
+
+    return count;
+  }
+
+  /**
+   * Load more products from back-end with/without filtering.
+   * After products successfully loaded - publishes 'onProductLoad' event.
+   */
+  function loadProducts() {
+    if (DOM.$showMoreLink.hasClass('disabled')) return;
+
+    const fetchData = {
+      categoryId: getCategoryId(),
+      offset: getLoadedProducts(),
+      filterValue: getFilterTerm(),
+      filtered: getFilterTerm().length > 0,
     };
 
-    const { id, count } = buyInfo(event);
-    server.addToCart(id, count).then(data => mediator.publish('onCartUpdate', data));
-  };
+    fetchProducts(fetchData)
+      .then(
+        products => {
+          mediator.publish('onProductsLoad', products);
+        },
+        response => console.warn(response)
+      );
+  }
 
-  const countIncrease = $input => {
-    $input.val((i, val) => ++val);
-  };
+  /**
+   * Load filtered products from back-end by filter term on typing in filter field.
+   * After products successfully loaded - publishes 'onProductsFilter' event.
+   * Number `3` is minimal length for search term.
+   */
+  function filterProducts() {
+    helpers.delay(() => {
+      const filterValue = getFilterTerm();
+      if (filterValue.length > 0 && filterValue.length < 3) return;
 
-  const countDecrease = $input => {
-    $input.val((i, val) => (val > 1) ? --val : val);
-  };
+      const fetchData = {
+        categoryId: getCategoryId(),
+        filterValue,
+        filtered: filterValue.length >= 3,
+      };
 
-  const filterItemToggle = $ico => {
-    $ico.toggleClass('fa-square-o fa-check-square-o');
-    DOM.$filterCheckAll.find(DOM.filterItemIco)
-      .addClass('fa-square-o')
-      .removeClass('fa-check-square-o');
-  };
+      fetchProducts(fetchData)
+        .then(
+          products => {
+            mediator.publish('onProductsFilter', products);
+            DOM.$showMoreLink.attr('data-load-count', config.productsToFetch);
+          },
+          response => console.warn(response)
+        );
+    }, 300);
+  }
 
-  const filterCheckAll = () => {
-    DOM.$filterItemIco
-      .addClass('fa-check-square-o')
-      .removeClass('fa-square-o');
-  };
-
-  const filterClear = () => {
-    DOM.$filterItemIco
-      .addClass('fa-square-o')
-      .removeClass('fa-check-square-o');
-  };
+  /**
+   * Load products from back-end by passed data.
+   */
+  function fetchProducts(fetchData) {
+    return $.post(config.fetchProductsUrl, {
+      categoryId: fetchData.categoryId,
+      term: fetchData.filterValue,
+      offset: fetchData.offset,
+      filtered: fetchData.filtered,
+    });
+  }
 
   init();
 })();

@@ -12,13 +12,14 @@ https://docs.djangoproject.com/en/1.9/ref/settings/
 
 import os
 from datetime import datetime
+import dj_database_url
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(
     os.path.dirname(os.path.abspath(__file__))))
 
 # Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/1.9/howto/deployment/checklist/
+# See https://goo.gl/GBVo6Q
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'gl9syc68r%rmb*1&yzz(4%cotfpb$dy&wkb_y5_d0*be0pfulq'
@@ -73,7 +74,7 @@ TEMPLATES = [
                 'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.template.context_processors.media',
-                'django.core.context_processors.static',
+                'django.template.context_processors.static',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
                 'ecommerce.context_processors.cart',
@@ -86,8 +87,7 @@ TEMPLATES = [
 WSGI_APPLICATION = 'stroyprombeton.wsgi.application'
 
 # Password validation
-# https://docs.djangoproject.com/en/1.9/ref/settings/#auth-password-validators
-
+# https://goo.gl/KVqbnH
 AUTH_PASSWORD_VALIDATORS = [
     {
         'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
@@ -104,8 +104,7 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 # Internationalization
-# https://docs.djangoproject.com/en/1.9/topics/i18n/
-
+# https://goo.gl/HD4atG
 LANGUAGE_CODE = 'en-us'
 
 TIME_ZONE = 'UTC'
@@ -117,8 +116,7 @@ USE_L10N = True
 USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/1.9/howto/static-files/
-
+# https://goo.gl/HTQqfF
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
@@ -128,6 +126,15 @@ STATICFILES_DIRS = [
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+DATABASE_URL = 'postgres://postgres:11@db/stroyprombeton'
+
+DATABASES = {
+    'default': dj_database_url.config(
+        env='DATABASE_URL',
+        default=DATABASE_URL
+    )
+}
 
 # refarm-blog config
 # Each post type can have it's own alias

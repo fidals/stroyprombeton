@@ -1,0 +1,47 @@
+{% for product in products %}
+  {% if product.page.is_active %}
+    <tr class="table-tr" id="{{ product.id }}">
+      <td class="table-td table-picture text-center">
+        <div class="table-picture-ico icon-picture"></div>
+      </td>
+      {# TODO Needed create logic for images and empty thumb. #}
+      {# http://youtrack.stkmail.ru/issue/dev-811 #}
+      <td class="table-td table-code">
+        {{ product.code|default:'' }}
+      </td>
+      <td class="table-td table-name">
+        <a class="table-link" href="{{ product.get_absolute_url }}">
+          {{ product.name }} {{ product.mark }}
+        </a>
+      </td>
+      <td class="table-td table-price">
+        {{ product.price|default:'По запросу' }}
+      </td>
+      <td class="table-td table-count">
+        <div class="table-count-wrap">
+          <input class="table-count-input js-count-input"
+                 type="number" min="1" step="1" pattern="[0-9]*"
+                 value="1" data-id="{{ product.id }}">
+          <i class="table-count-caret table-count-up
+                    fa fa-caret-up js-count-input-up"
+             aria-hidden="true">
+          </i>
+          <i class="table-count-caret table-count-down
+                    fa fa-caret-down js-count-input-down"
+             aria-hidden="true">
+          </i>
+        </div>
+      </td>
+      <td class="table-td table-order text-center">
+        <span class="tooltip-wrapper">
+          <span class="category-table-order js-category-buy">Заказать</span>
+        </span>
+
+        <div class="popover js-popover">
+          Товар добавлен в корзину
+          <div class="popover-arrow"></div>
+        </div>
+      </td>
+    </tr>
+  {% endif %}
+{% endfor %}

@@ -9,33 +9,16 @@
     $modalClose: $('.js-modal-close'),
     $reviewsItem: $('.js-reviews-item'),
     $reviewsNavItems: $('.js-reviews-nav-item'),
-    $popoverTrigger: $('.js-popover-trigger'),
     popover: '.js-popover',
     $btnScrollTop: $('#btn-scroll-to-top'),
-    $tooltip: $('.js-tooltip'),
     bannerClass: 'searchbar-banner',
   };
 
   const searchbarInitTopValue = parseInt(DOM.$searchBar.css('top'), 10);
 
   const init = () => {
-    setupXHR();
     setUpListeners();
   };
-
-  // TODO: move to config module
-  // http://youtrack.stkmail.ru/issue/dev-748
-  function setupXHR() {
-    const csrfUnsafeMethod = (method) => !(/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
-
-    $.ajaxSetup({
-      beforeSend: (xhr, settings) => {
-        if (csrfUnsafeMethod(settings.type)) {
-          xhr.setRequestHeader('X-CSRFToken', Cookies.get('csrftoken'));
-        }
-      },
-    });
-  }
 
   function setUpListeners() {
     $(window).scroll(toggleScrollToTopBtn);
@@ -43,21 +26,7 @@
     DOM.$btnScrollTop.click(scrollToTop);
     DOM.$btnContactUs.click(showBackcallModal);
     DOM.$modalClose.click(closeBackcallModal);
-    DOM.$tooltip.click(event => showTooltip($(event.target).next()));
-
-    DOM.$popoverTrigger
-      .hover(function popoverShow() {
-        $(this).find(DOM.popover).stop().fadeIn();
-      }, function popoverHide() {
-        $(this).find(DOM.popover).stop().fadeOut();
-      });
-
     DOM.$reviewsNavItems.click(reviewsSlideTo);
-  }
-
-  function showTooltip($item) {
-    $item.fadeIn();
-    setTimeout(() => $item.fadeOut(), 1000);
   }
 
   /**

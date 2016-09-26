@@ -1,11 +1,11 @@
 const server = (() => {
-  const CONFIG = {
+  const config = {
     addToCartUrl: '/shop/cart-add/',
     changeCartUrl: '/shop/cart-change/',
     removeFromCartUrl: '/shop/cart-remove/',
     flushCartUrl: '/shop/cart-flush/',
   };
-  
+
   /**
    * Add product to backend's Cart.
    * @param productId
@@ -13,7 +13,7 @@ const server = (() => {
    */
   const addToCart = (productId, quantity) => {
     return $.post(
-      CONFIG.addToCartUrl,
+      config.addToCartUrl,
       {
         product: productId,
         quantity,
@@ -21,16 +21,16 @@ const server = (() => {
     );
   };
 
-   /**
+  /**
    * Flush (clear) the cart on backend.
    */
-  const flushCart = () => $.post(CONFIG.flushCartUrl);
+  const flushCart = () => $.post(config.flushCartUrl);
 
   /**
    * Remove given product from Cart.
    * @param productId
    */
-  const removeFromCart = productId => $.post(CONFIG.removeFromCartUrl, { product: productId });
+  const removeFromCart = productId => $.post(config.removeFromCartUrl, { product: productId });
 
   /**
    * Return $.post request, which changes quantity of a given Product in Cart.
@@ -39,7 +39,7 @@ const server = (() => {
    */
   const changeInCart = (productId, quantity) => {
     return $.post(
-      CONFIG.changeCartUrl,
+      config.changeCartUrl,
       {
         product: productId,
         quantity,

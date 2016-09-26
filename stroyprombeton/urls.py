@@ -26,8 +26,8 @@ ecommerce_urls = [
 ]
 
 search_urls = [
-    url(r'^autocomplete/$', views.Autocomplete.as_view(), name='autocomplete'),
     url(r'^$', views.Search.as_view(), name='search'),
+    url(r'^autocomplete/$', views.Autocomplete.as_view(), name='autocomplete'),
 ]
 
 urlpatterns = [
@@ -35,17 +35,15 @@ urlpatterns = [
     url(r'^drawing-success/', views.OrderDrawingSuccess.as_view(),
         name='order_drawing_success'),
     url(r'^gbi/', include(catalog_urls)),
+    url(r'^fetch-products/$', views.fetch_products, name='fetch_products'),
     url(r'^obekty/', include(build_objects_url)),
-    url(r'^order-drawing/', views.OrderDrawing.as_view(),
-        name='order_drawing'),
-    url(r'^order-price/', views.OrderPrice.as_view(),
-        name='order_price'),
+    url(r'^order-drawing/', views.OrderDrawing.as_view(), name='order_drawing'),
+    url(r'^order-price/', views.OrderPrice.as_view(), name='order_price'),
     url(r'^page/', include('pages.urls')),
-    url(r'^price-success/', views.OrderPriceSuccess.as_view(),
-        name='order_price_success'),
+    url(r'^price-success/', views.OrderPriceSuccess.as_view(), name='order_price_success'),
+    url(r'^search/', include(search_urls)),
     url(r'^shop/', include(ecommerce_urls)),
     url(r'^shop/', include('ecommerce.urls')),
-    url(r'^search/', include(search_urls)),
 ]
 
 if settings.DEBUG:

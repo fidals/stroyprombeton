@@ -23,9 +23,8 @@ class Order(ecOrder):
 
 class Category(AbstractCategory):
     """Extended Category model."""
-    specification = models.TextField(blank=True, null=True)
+    specification = models.TextField(default='', blank=True, null=True)
     link_to_metal = models.URLField(null=True, blank=True)
-
     product_relation = 'product'
 
     def get_absolute_url(self):
@@ -42,8 +41,8 @@ class Product(AbstractProduct):
     is_new_price = models.NullBooleanField(blank=True, null=True)
     date_price_updated = models.DateField(auto_now_add=True)
     code = models.BigIntegerField(null=True, blank=True)
-    mark = models.CharField(max_length=500, null=True, blank=True)
-    specification = models.TextField(null=True, blank=True)
+    mark = models.CharField(default='', max_length=500, null=True, blank=True)
+    specification = models.TextField(default='', null=True, blank=True)
     length = models.IntegerField(null=True, blank=True)
     width = models.IntegerField(null=True, blank=True)
     height = models.IntegerField(null=True, blank=True)

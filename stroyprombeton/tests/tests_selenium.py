@@ -5,12 +5,12 @@ from seleniumrequests import Chrome  # We use this instead of standard selenium
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.remote.webelement import WebElement
 
-from django.test import LiveServerTestCase
+from django.conf import settings
 from django.core.urlresolvers import reverse
+from django.db.models import Count
+from django.test import LiveServerTestCase
 
-from stroyprombeton.models import Category, Product
-from stroyprombeton.management.commands.transfer import custom_page_data
-from pages.models import Page
+from stroyprombeton.models import Category
 
 
 def wait(seconds=1):
@@ -24,8 +24,27 @@ def hover(browser, element):
     hover_action.perform()
 
 
-class Action(WebElement):
+class SeleniumTestCase(LiveServerTestCase):
+    """Common superclass for running selenium-based tests."""
 
+    fixtures = ['dump.json']
+
+    @classmethod
+    def setUpClass(cls):
+        """Instantiate browser instance."""
+        super(SeleniumTestCase, cls).setUpClass()
+        cls.browser = Chrome()
+        cls.browser.implicitly_wait(5)
+        cls.browser.maximize_window()
+
+    @classmethod
+    def tearDownClass(cls):
+        """Close selenium session."""
+        cls.browser.quit()
+        super(SeleniumTestCase, cls).tearDownClass()
+
+
+class Action(WebElement):
     @classmethod
     def click_and_wait(cls, element, waiting_time=1):
         element.click()
@@ -35,6 +54,7 @@ class Action(WebElement):
     def send_keys_and_wait(cls, element, *value, waiting_time=1):
         element.send_keys(*value)
         wait(waiting_time)
+
 
 click_and_wait = Action.click_and_wait
 send_keys_and_wait = Action.send_keys_and_wait
@@ -51,79 +71,25 @@ class BuyMixin:
             q = self.browser.find_element_by_class_name('js-product-count')
             q.clear()
             send_keys_and_wait(q, quantity, waiting_time=waiting_time)
-        click_and_wait(self.browser.find_element_by_class_name('js-add-basket'), waiting_time=waiting_time)
-
-
-class SeleniumTestCase(LiveServerTestCase):
-    """Common superclass for running selenium-based tests."""
-
-    @classmethod
-    def setUpClass(cls):
-        """Instantiate browser instance."""
-        super(SeleniumTestCase, cls).setUpClass()
-        cls.browser = Chrome()
-        cls.browser.implicitly_wait(5)
-        cls.browser.maximize_window()
-
-    def prepareFixtures(self):
-        navigation = Page.objects.create(slug='navi')
-        custom_page_data['index']['parent'] = \
-            custom_page_data['obekty']['parent'] = navigation
-
-        # Create navigation and required custom pages
-        for fields in custom_page_data.values():
-            Page.objects.create(**fields)
-
-        root_category = Category.objects.create(
-            id=1,
-            name='Test Root Category'
-        )
-        self.child_category = Category.objects.create(
-            id=2,
-            name='Test Child Category',
-            parent=root_category
-        )
-        self.product1 = Product.objects.create(
-            id=1,
-            price=1447.21,
-            code=350,
-            name='Test product one',
-            category=self.child_category
-        )
-        self.product2 = Product.objects.create(
-            id=2,
-            price=666.21,
-            code=24,
-            name='Test product two',
-            category=self.child_category
-        )
-
-    def setUp(self):
-        self.prepareFixtures()
-
-    @classmethod
-    def tearDownClass(cls):
-        """Closes selenium's session."""
-        cls.browser.quit()
-        super(SeleniumTestCase, cls).tearDownClass()
+        click_and_wait(self.browser.find_element_by_class_name('js-add-basket'),
+                       waiting_time=waiting_time)
 
 
 class HeaderCart(SeleniumTestCase, BuyMixin):
-
     def setUp(self):
         super(HeaderCart, self).setUp()
         self.browser.get(self.live_server_url)
 
-    def assertCartEmpty(self):
+    def assert_cart_is_empty(self):
         self.show_cart()
-        is_empty = self.browser.find_element_by_class_name(
-            'empty-cart-dropdown')
-        self.assertTrue(is_empty.is_displayed())
-        self.assertIn('Нет выбранных позиций', is_empty.text)
+        cart_wrapper = self.browser.find_element_by_class_name('js-cart-trigger')
+        cart_wrapper_classes = cart_wrapper.get_attribute('class')
+
+        self.assertNotIn('active', cart_wrapper_classes)
 
     @property
     def cart(self):
-        return self.browser.find_element_by_id('cartInner')
+        return self.browser.find_element_by_class_name('js-cart-trigger')
 
     @property
     def positions(self):
@@ -133,8 +99,9 @@ class HeaderCart(SeleniumTestCase, BuyMixin):
         hover(self.browser, self.cart)
 
     def test_empty_dropdown(self):
-        self.assertCartEmpty()
+        self.assert_cart_is_empty()
 
+    # TODO: This tests wouldn't work cause of http://youtrack.stkmail.ru/issue/dev-811
     def test_add_to_cart_updates_header(self):
         self.buy(product_id=1)
         self.show_cart()
@@ -142,6 +109,7 @@ class HeaderCart(SeleniumTestCase, BuyMixin):
         self.assertIn(self.product1.name, self.browser.find_element_by_class_name(
             'mbasket-items').text)
 
+    # TODO: This tests wouldn't work cause of http://youtrack.stkmail.ru/issue/dev-811
     def test_delete_from_header_cart(self):
         self.buy(product_id=1)
         self.buy(product_id=2)
@@ -151,6 +119,7 @@ class HeaderCart(SeleniumTestCase, BuyMixin):
         ))
         self.assertIn('1', self.positions)
 
+    # TODO: This tests wouldn't work cause of http://youtrack.stkmail.ru/issue/dev-811
     def test_flush_cart(self):
         self.buy(product_id=1)
         self.buy(product_id=2)
@@ -160,7 +129,6 @@ class HeaderCart(SeleniumTestCase, BuyMixin):
 
 
 class ProductPage(SeleniumTestCase, BuyMixin):
-
     def test_buy_product(self):
         self.buy()
         self.assertIn('1', self.browser.find_element_by_class_name(
@@ -189,7 +157,6 @@ class ProductPage(SeleniumTestCase, BuyMixin):
 
 
 class OrderPage(SeleniumTestCase, BuyMixin):
-
     def proceed_order_page(self):
         self.browser.get(self.live_server_url +
                          reverse('ecommerce:order_page'))
@@ -233,7 +200,6 @@ class OrderPage(SeleniumTestCase, BuyMixin):
 
 
 class CategoryPage(SeleniumTestCase):
-
     @classmethod
     def setUpClass(cls):
         super(CategoryPage, cls).setUpClass()
@@ -241,10 +207,30 @@ class CategoryPage(SeleniumTestCase):
         cls.quantity = 'js-product-count'
 
     def setUp(self):
-        super(CategoryPage, self).setUp()
-        self.browser.get(self.live_server_url +
-                         reverse('category', args=(self.child_category.id,)))
+        server = self.live_server_url
+        self.testing_url = lambda category_id: server + reverse('category', args=(category_id,))
 
+        root_category = Category.objects.filter(parent=None).first()
+        children_category = Category.objects.filter(parent=root_category).first()
+        category_with_product_less_then_load_limit = Category.objects.annotate(
+            prod_count=Count('products')).exclude(prod_count=0).filter(
+                prod_count__lt=settings.PRODUCTS_TO_LOAD).first()
+
+        self.root_category = self.testing_url(root_category.id)
+        self.children_category = self.testing_url(children_category.id)
+        self.deep_children_category = self.testing_url(
+            category_with_product_less_then_load_limit.id)
+
+    def get_tables_rows_count(self):
+        return len(self.browser.find_elements_by_class_name('table-tr'))
+
+    def get_load_more_button(self):
+        return self.browser.find_element_by_id('load-more-products')
+
+    def get_load_more_button_classes(self):
+        return self.browser.find_element_by_id('load-more-products').get_attribute('class')
+
+    # TODO: This tests wouldn't work cause of http://youtrack.stkmail.ru/issue/dev-811
     def test_buy_product(self):
         click_and_wait(self.browser.find_element_by_xpath(
             '//*[@id="gbi-list"]/table/tbody/tr[2]/td[5]/div/div[2]/span/input'
@@ -252,6 +238,7 @@ class CategoryPage(SeleniumTestCase):
         self.assertIn('1', self.browser.find_element_by_class_name(
             'basket-content').text)
 
+    # TODO: This tests wouldn't work cause of http://youtrack.stkmail.ru/issue/dev-811
     def test_buy_two_product(self):
         click_and_wait(self.browser.find_element_by_xpath(
             '//*[@id="gbi-list"]/table/tbody/tr[2]/td[5]/div/div[2]/span/input'
@@ -262,6 +249,7 @@ class CategoryPage(SeleniumTestCase):
         self.assertIn('2', self.browser.find_element_by_class_name(
             'basket-content').text)
 
+    # TODO: This tests wouldn't work cause of http://youtrack.stkmail.ru/issue/dev-811
     def test_buy_product_with_quantity(self):
         first_product_count = self.browser.find_element_by_xpath(
             '//*[@id="gbi-list"]/table/tbody/tr[2]/td[5]/div/div[1]/input')
@@ -277,13 +265,69 @@ class CategoryPage(SeleniumTestCase):
             'js-header-prod-count').text)
 
     def test_tooltip(self):
-        click_and_wait(self.browser.find_element_by_xpath(
-            '//*[@id="gbi-list"]/table/tbody/tr[2]/td[5]/div/div[2]/span/input'
-        ))
-        tooltip = self.browser.find_element_by_xpath(
-            '//*[@id="gbi-list"]/table/tbody/tr[2]/td[5]/div/div[2]/span/span'
-        )
+        """We should see tooltip after clicking on `Заказать` button."""
+
+        self.browser.get(self.root_category)
+        click_and_wait(self.browser.find_element_by_class_name('js-category-buy'))
+        tooltip = self.browser.find_element_by_class_name('js-popover')
         self.assertTrue(tooltip.is_displayed())
+
+    def test_load_more_products(self):
+        """We able to load more products by clicking on `Показать ещё` link."""
+
+        self.browser.get(self.root_category)
+        before_load_products = self.get_tables_rows_count()
+        click_and_wait(self.get_load_more_button())
+        after_load_products = self.get_tables_rows_count()
+
+        self.assertTrue(before_load_products < after_load_products)
+
+    def test_load_more_button_disabled_state_with_few_products(self):
+        """
+        `Показать ещё` link should be disabled by default if there are less
+        than settings.PRODUCTS_TO_LOAD products on page.
+        """
+
+        self.browser.get(self.deep_children_category)
+
+        self.assertIn('disabled', self.get_load_more_button_classes())
+
+    def test_load_more_button_disabled_state(self):
+        self.browser.get(self.children_category)
+        load_more_button = self.get_load_more_button()
+        click_and_wait(load_more_button)
+        click_and_wait(load_more_button)
+        click_and_wait(load_more_button)
+
+        self.assertIn('disabled', self.get_load_more_button_classes())
+
+    def test_filter_products(self):
+        """We are able to filter products by typing in filter field."""
+
+        self.browser.get(self.root_category)
+        filter_field = self.browser.find_element_by_id('search-filter')
+        before_filter_products = self.get_tables_rows_count()
+        send_keys_and_wait(filter_field, '10')
+        after_filter_products = self.get_tables_rows_count()
+
+        self.assertTrue(before_filter_products > after_filter_products)
+
+    def test_filter_products_and_disabled_state(self):
+        """
+        If we filter products and load more products several times - we should
+        see that `Показать ещё` link became disabled. That means that there are
+        no more filtered products to load from server.
+        """
+
+        self.browser.get(self.root_category)
+        filter_field = self.browser.find_element_by_id('search-filter')
+        send_keys_and_wait(filter_field, '3')
+
+        load_more_button = self.get_load_more_button()
+        click_and_wait(load_more_button)
+        click_and_wait(load_more_button)
+
+        self.assertIn('disabled', self.get_load_more_button_classes())
 
 
 class Search(SeleniumTestCase):
@@ -303,7 +347,7 @@ class Search(SeleniumTestCase):
 
     @property
     def input(self):
-        return self.browser.find_element_by_class_name('search-input')
+        return self.browser.find_element_by_class_name('js-search-field')
 
     def fill_input(self):
         """Enter correct search term"""
@@ -336,7 +380,7 @@ class Search(SeleniumTestCase):
         Autocomplete should contain "see all" item.
         "See all" item links on search results page
         """
-        last_item = self.autocomplete.find_element_by_class_name('autocomplete-last-item')
+        last_item = self.autocomplete.find_element_by_class_name('search-more-link')
 
         click_and_wait(last_item)
 
@@ -344,7 +388,7 @@ class Search(SeleniumTestCase):
 
     def test_search_have_results(self):
         """Search results page should contain links on relevant pages"""
-        button_submit = self.browser.find_element_by_id('search-submit')
+        button_submit = self.browser.find_element_by_class_name('search-btn')
         click_and_wait(button_submit)
 
         self.assertTrue(self.browser.find_element_by_link_text('Test Root Category'))
@@ -353,50 +397,9 @@ class Search(SeleniumTestCase):
     def test_search_results_empty(self):
         """Search results for wrong term should contain empty result set"""
         send_keys_and_wait(self.input, 'Not existing search query')
-        button_submit = self.browser.find_element_by_id('search-submit')
+        button_submit = self.browser.find_element_by_class_name('search-btn')
 
         click_and_wait(button_submit)
         h1 = self.browser.find_element_by_tag_name('h1')
 
         self.assertTrue(h1.text == 'По вашему запросу ничего не найдено')
-
-
-class PageAccordion(SeleniumTestCase):
-
-    def setUp(self):
-        super(PageAccordion, self).setUp()
-        self.browser.get(self.live_server_url)
-        self.browser.execute_script('localStorage.clear();')
-        self.browser.get(self.live_server_url)
-        wait()
-
-    @property
-    def accordion_title(self):
-        return self.browser.find_element_by_id('cat-1')
-
-    @property
-    def accordion_content(self):
-        return self.browser.find_element_by_id('content-1')
-
-    def test_accordion_minimized(self):
-        """Accordion item should be minimized by default"""
-        self.assertFalse(self.accordion_content.is_displayed())
-
-    def test_accordion_expand(self):
-        """Accordion item should expand by click on title"""
-        accordion_title = self.accordion_title
-        accordion_content = self.accordion_content
-
-        click_and_wait(accordion_title)
-
-        self.assertTrue(accordion_content.is_displayed())
-
-    def test_accordion_minimize_by_double_click(self):
-        """Accordion item should be minimized by two clicks on title"""
-        accordion_title = self.accordion_title
-        accordion_content = self.accordion_content
-
-        click_and_wait(accordion_title)
-        click_and_wait(accordion_title)
-
-        self.assertFalse(accordion_content.is_displayed())

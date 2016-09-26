@@ -5,12 +5,10 @@ $w-container-lg: 1200px;
 $gutter-width: 30px;
 $half-gutter-width: $gutter-width * 0.5;
 
-// fix
-// remove when adaptive design
-.container {
-  min-width: $w-container-lg;
-}
-// -- end fix
+// Uncomment for fixed layout.
+//.container {
+//  min-width: $w-container-lg;
+//}
 
 .container-fluid {
   padding-right: $gutter-width;

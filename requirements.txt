@@ -1,11 +1,13 @@
 Django==1.9.5
 django-mptt==0.8.3
 django-widget-tweaks
+pillow
 selenium
 selenium-requests
 psycopg2
-pymysql
+openpyxl
 unidecode
+dj-database-url==0.4.1
 -e git+git@github.com:fidals/refarm-catalog.git#egg=refarm-catalog
 -e git+git@github.com:fidals/refarm-site.git#egg=refarm-site
 -e git+git@github.com:fidals/refarm-ecommerce.git#egg=refarm-ecommerce

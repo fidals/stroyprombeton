@@ -26,9 +26,11 @@
   };
 
   const renderItem = (item, term) => {
+    const highlightedText = highlight(item.name, term);
+
     const context = {
       url: item.url,
-      name: `<span class="search-item-text">${highlight(item.name, term)}</span>`,
+      name: `<span class="search-item-text">${highlightedText}</span>`,
       price: item.price ? `<span class="search-item-price">${item.price} руб.</span>` : '',
       mark: item.mark ? `<span class="search-item-mark">${item.mark}</span>` : '',
       specification: item.specification ?
@@ -67,9 +69,7 @@
     selector: config.searchInput,
     minChars: config.minChars,
     source: (term, response) => {
-      $.getJSON(config.url, {
-        q: term,
-      }, namesArray => {
+      $.getJSON(config.url, { term }, namesArray => {
         response(namesArray);
       });
     },

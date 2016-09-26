@@ -4,11 +4,13 @@
     "$": true,
     "Cookies": true,
     "configs": true,
+    "document": true,
     "google": true,
+    "localStorage": true,
     "mediator": true,
     "server": true,
-    "validator": true,
-    "window": true,
+    "helpers": true,
+    "window": true
   },
   "rules": {
     "no-use-before-define": ["error", {

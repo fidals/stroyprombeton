@@ -1,34 +1,34 @@
-<li class="nav-item nav-cart-button js-nav-chart {% if cart|length %}active{% endif %}">
-  <a class="nav-link nav-chart" href="{% url 'ecommerce:order_page' %}">Корзина</a>
+<li class="nav-item nav-cart-button js-cart-trigger {% if cart|length %}active{% endif %}">
+  <a class="nav-link nav-cart-link" href="{% url 'ecommerce:order_page' %}">Корзина</a>
 
-  <div class="nav-chart">
-    <div class="nav-chart-clear js-clear-cart">Очистить корзину</div>
+  <div class="cart">
+    <div class="cart-clear js-clear-cart">Очистить корзину</div>
     <ul>
       {% for position in cart %}
         {% with product=position.product %}
-          <li class="nav-chart-item">
-            <a class="nav-chart-item-name" href="{{ product.get_absolute_url }}">
+          <li class="cart-item">
+            <a class="cart-item-name" href="{{ product.get_absolute_url }}">
               {{ product.name }}
             </a>
 
-            <div class="nav-chart-item-summ">
-              <span class="nav-chart-item-price">
+            <div class="cart-item-sum">
+              <span class="cart-item-price">
                 {% if position.price %}
                   {{ position.price }} руб.
                 {% else %}
                   По запросу
                 {% endif %}
               </span>
-              <span class="nav-chart-item-count js-header-prod-count">x {{ position.quantity }} шт.</span>
+              <span class="cart-item-count js-header-prod-count">x {{ position.quantity }} шт.</span>
             </div>
-            <i class="fa fa-close nav-chart-item-remove js-remove" aria-hidden="true" title="Удалить"></i>
+            <i class="fa fa-close cart-item-remove js-remove" aria-hidden="true" title="Удалить"></i>
           </li>
         {% endwith %}
       {% endfor %}
     </ul>
 
-    <div class="nav-chart-order">
-      <a href="{% url 'ecommerce:order_page' %}" class="btn nav-chart-order-btn">Оформить заказ</a>
+    <div class="cart-order">
+      <a href="{% url 'ecommerce:order_page' %}" class="btn cart-order-btn">Оформить заказ</a>
     </div>
   </div>
 </li>

@@ -7,7 +7,7 @@
   <div class="location">{% breadcrumbs page '»' %}</div>
 
   <div class="product-header">
-    <h1 class="product-header-title">{{ page.h1|default:'' }} {{ product.mark|default:'' }}</h1>
+    <h1 class="product-header-title">{{ page.h1 }} {{ product.mark }}</h1>
   </div>
 
   <div class="product">
@@ -21,49 +21,46 @@
         <h2>Характеристики</h2>
         <table class="props-tbl" cellpadding="5">
           <tbody>
+            {% show_field_if_exist product.code 'Код' %}
+            {% show_field_if_exist product.mark 'Марка ЖБИ' %}
+            {% show_field_if_exist product.specification 'Рабочая документация' %}
+            {% show_field_if_exist product.length 'Длина (мм)' %}
+            {% show_field_if_exist product.width 'Ширина (мм)' %}
+            {% show_field_if_exist product.diameter_in|floatformat:2 'Внутренний диаметр (мм)' %}
+            {% show_field_if_exist product.diameter_out|floatformat:2 'Внешний диаметр (мм)' %}
+            {% show_field_if_exist product.weight 'Масса (кг)' %}
+            {% show_field_if_exist product.volume 'Объем (м3)' %}
 
-          {% show_field_if_exist product.code 'Код' %}
-          {% show_field_if_exist product.mark 'Марка ЖБИ' %}
-          {% show_field_if_exist product.specification 'Рабочая документация' %}
-          {% show_field_if_exist product.length 'Длина (мм)' %}
-          {% show_field_if_exist product.width 'Ширина (мм)' %}
-          {% show_field_if_exist product.diameter_in|floatformat:2 'Внутренний диаметр (мм)' %}
-          {% show_field_if_exist product.diameter_out|floatformat:2 'Внешний диаметр (мм)' %}
-          {% show_field_if_exist product.weight 'Масса (кг)' %}
-          {% show_field_if_exist product.volume 'Объем (м3)' %}
+            <tr>
+              <td class="product-desc-left-col">
+                <div class="product-price">
+                  <span>Цена:</span>
+                </div>
+              </td>
+              <td class="product-desc-right-col">
+                <div class="product-price">
+                  {{ product.price|default:'По запросу' }} руб.
+                </div>
+              </td>
+            </tr>
 
-          <tr>
-            <td class="product-desc-left-col">
-              <div class="product-price">
-                <span>Цена:</span>
-              </div>
-            </td>
-            <td class="product-desc-right-col">
-              <div class="product-price">
-                {{ product.price|default:'По запросу' }} руб.
-              </div>
-            </td>
-          </tr>
-
-          <tr>
-            <td class="product-desc-left-col">
-              <div class="shk_basket_count" style="float: none !important;">
-                <input class="basket-rest js-product-count" type="text" name="shk-count" value="1" size="2" code="5933"
-                       maxlength="5">
-                <img class="field-arr-up" src="{% static 'images/spin-up.png' %}">
-                <img class="field-arr-down" src="{% static 'images/spin-down.png' %}">
-              </div>
-            </td>
-            <td class="product-desc-right-col">
-              <span class="tooltip-wrapper js-tooltip">
-                <input class="btn btn-red add-basket js-add-basket" id="shk-submit-5933" type="button"
-                       name="shk-submit" value="Заказать" product-id="{{ product.id }}"
-                       data-tooltip="Товар добавлен в заказ">
-                <span class="tooltip-wrapper-content js-tooltip-content" id="tooltip">Товар добавлен в заказ</span>
-              </span>
-            </td>
-          </tr>
-
+            <tr>
+              <td class="product-desc-left-col">
+                <div class="shk_basket_count" style="float: none !important;">
+                  <input class="basket-rest js-product-count" type="text" name="shk-count" value="1" size="2" code="5933"
+                         maxlength="5">
+                  <img class="field-arr-up" src="{% static 'images/spin-up.png' %}">
+                  <img class="field-arr-down" src="{% static 'images/spin-down.png' %}">
+                </div>
+              </td>
+              <td class="product-desc-right-col">
+                <span class="tooltip-wrapper">
+                  <input class="btn btn-red add-basket js-add-basket" id="shk-submit-5933" type="button"
+                         name="shk-submit" value="Заказать" product-id="{{ product.id }}"
+                         data-tooltip="Товар добавлен в заказ">
+                </span>
+              </td>
+            </tr>
           </tbody>
         </table>
         <div class="product-for-nds">

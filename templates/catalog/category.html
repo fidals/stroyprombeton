@@ -1,0 +1,72 @@
+{% extends 'pages/inner_page.html' %}
+
+{% load staticfiles %}
+
+{% block content %}
+  {% include 'layout/breadcrumbs.html' %}
+
+  <div class="container container-fluid">
+    <div class="row">
+      <div class="col-xs-12">
+        <h1 class="title-h1">{{ page.h1 }}</h1>
+      </div>
+    </div>
+  </div>
+
+  <section class="category-search">
+    <div class="container container-fluid">
+      <div class="row center-xs">
+        <div class="col-xs-4">
+          <div class="search">
+            <input class="search-field" id="search-filter" type="text"
+                   data-category="{{ category.id }}"
+                   placeholder="Поиск (по названию, артиклу, серии)">
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="container container-fluid">
+    <div class="row">
+      <div class="col-xs-2">
+        {% if children %}
+          <div class="category-filter">
+            <div class="category-filter-title">Подкатегории</div>
+            <ul>
+              {% for child in children %}
+                <li class="category-filter-item">
+                  <a class="category-filter-link" href="{{ child.get_absolute_url }}">
+                    {{ child }}
+                  </a>
+                </li>
+              {% endfor %}
+            </ul>
+          </div>
+        {% endif %}
+      </div>
+
+      <div class="col-xs-9">
+        <table class="table">
+          <thead>
+            <tr>
+              <th class="table-th">Фото</th>
+              <th class="table-th">Код</th>
+              <th class="table-th">Наименование / Марка</th>
+              <th class="table-th text-left">Цена</th>
+              <th class="table-th">Количество</th>
+              <th class="table-th"></th>
+            </tr>
+          </thead>
+          <tbody id="products-wrapper">
+            {% include 'catalog/category_products.html' %}
+          </tbody>
+        </table>
+
+        {% include 'layout/show_more_button.html' %}
+      </div>
+    </div>
+  </div>
+
+  {% include 'catalog/category_about.html' %}
+{% endblock %}

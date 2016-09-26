@@ -1,0 +1,45 @@
+.searchbar {
+  background-color: $c-searchbar-bg;
+  height: $h-searchbar;
+  transition: background-color 0.3s ease;
+
+  &-banner {
+    background: none;
+    position: relative;
+    top: 390px;
+    z-index: 1;
+  }
+
+  &.active {
+    background-color: $c-searchbar-bg;
+    left: 0;
+    position: fixed;
+    right: 0;
+    top: 56px;
+    z-index: 1;
+  }
+
+  &-wrap {
+    padding-top: 9px;
+  }
+
+  &-contacts {
+    display: flex;
+    padding-top: 11px;
+
+    &-item {
+      color: $c-white;
+      font-size: $f-size-base - 1;
+      font-weight: 600;
+      margin-right: 28px;
+    }
+
+    &-link {
+      color: $c-white;
+    }
+
+    &-link:hover {
+      color: $c-application-bg;
+    }
+  }
+}

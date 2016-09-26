@@ -4,15 +4,16 @@ Stroyprombeton views.
 NOTE: They all should be 'zero-logic'.
 All logic should be located in respective applications.
 """
+from django.conf import settings
 from django.shortcuts import render
 from django.views.generic import FormView, TemplateView
-from django.views.decorators.csrf import ensure_csrf_cookie
 from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import ensure_csrf_cookie
 
-from ecommerce import views as ec_views
 from catalog.views import catalog, search
-from pages.models import Page
-from pages.views import CustomPage, FlatPage
+from catalog.models import search as filter_
+from ecommerce import views as ec_views
+from pages.views import CustomPage, FlatPage, Page
 
 from stroyprombeton import mailer, config
 from stroyprombeton.forms import OrderForm, PriceForm, DrawingForm
@@ -24,22 +25,59 @@ set_csrf_cookie = method_decorator(ensure_csrf_cookie, name='dispatch')
 MODEL_MAP = {'product': Product, 'category': Category}
 
 
+def fetch_products(request):
+    """Filter product table on Category page by Name, vendor code, series."""
+
+    size = settings.PRODUCTS_TO_LOAD
+    category_id = request.POST.get('categoryId')
+    term = request.POST.get('term')
+    offset = request.POST.get('offset')
+    filtered = request.POST.get('filtered')
+
+    category = Category.objects.get(id=category_id)
+    products = Product.objects.get_products_by_category_id(category, ordering=('name', 'mark'))
+
+    if filtered == 'true':
+        lookups = ['name__icontains', 'code__icontains', 'mark__icontains']
+        products = filter_(products, term, lookups, ordering=('name', 'mark'))
+
+    if offset:
+        offset = int(offset)
+        left_product_count = products.count() - offset
+        size = left_product_count if left_product_count < size else size
+
+        products = products[offset:offset + size]
+
+    return render(request, 'catalog/category_products.html', {'products': products})
+
+
 # Search views #
+class Autocomplete(search.Autocomplete):
+    """Override model references to STB-specific ones."""
+
+    model_map = MODEL_MAP
+    see_all_label = 'Показать все результаты'
+    search_url = 'search'
+
+    # Extend default ordering fields
+    extra_ordering_fields = ('mark', )
+
+    # Extend default search fields
+    extra_entity_fields = {
+        'product': {
+            'mark',
+        },
+    }
+
+
 class AdminAutocomplete(search.AdminAutocomplete):
-    """Override model_map for autocomplete."""
+    """Override model references to STB-specific ones."""
     model_map = MODEL_MAP
 
 
 class Search(search.Search):
-    """Override model references to SE-specific ones."""
+    """Override model references to STB-specific ones."""
     model_map = MODEL_MAP
-
-
-class Autocomplete(search.Autocomplete):
-    """Override model references to SE-specific ones."""
-    model_map = MODEL_MAP
-    see_all_label = 'Показать все результаты'
-    search_url = 'search'
 
 
 class OrderFormMixin:
@@ -64,11 +102,13 @@ class CategoryPage(catalog.CategoryPage):
 
     def get_context_data(self, **kwargs):
         """Extend method. Use new get_object method."""
-        context = super(CategoryPage, self).get_context_data(**kwargs)
-        templates = {True: 'catalog/category_table.html',
-                     False: 'catalog/category_tile.html'}
 
-        self.template_name = templates.get(context['category'].is_leaf_node())
+        self.template_name = 'catalog/category.html'
+        context = super(CategoryPage, self).get_context_data(**kwargs)
+        products = Product.objects.get_products_by_category_id(kwargs['object'], ordering=('name', 'mark'))
+        sliced_products = products[:settings.PRODUCTS_TO_LOAD]
+
+        context['products'] = sliced_products
 
         return context
 

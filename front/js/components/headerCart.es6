@@ -1,6 +1,6 @@
 (() => {
   const DOM = {
-    $cart: $('.js-nav-chart'),
+    $cart: $('.js-cart-trigger'),
     clearCartClass: '.js-clear-cart',
     removeFromCart: '.js-remove',
   };
@@ -20,7 +20,7 @@
   }
 
   /**
-   * Remove product with the given id from cart.
+   * Remove product from cart by given id.
    * Trigger 'onCartUpdate' event afterwards.
    * @param productId
    */
@@ -30,7 +30,7 @@
   }
 
   /**
-   * Remove everything from cart.
+   * Remove all products from cart.
    * Trigger 'onCartUpdate' event afterwards.
    */
   function clearCart() {

@@ -15,10 +15,10 @@ def cached_time() -> int:
 SITE_INFO = {
     'email': 'info@stroyprombeton.ru',
     'phone': {
-        'moscow_1': '8 (499) 649-33-79',
-        'moscow_1_url': '+74996493379',
-        'spb_1': '8 (812) 655-73-60',
-        'spb_1_url': '+78126557360'
+        'moscow_1': '8 (499) 322-31-98',
+        'moscow_1_url': '+74993223198',
+        'spb_1': '8 (812) 648-13-80',
+        'spb_1_url': '+78126481380'
     },
 }
 

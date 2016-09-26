@@ -7,24 +7,40 @@ const configs = (() => {
     $phoneInputs: $('.js-masked-phone'),
   };
 
-  const LABELS = {
+  const labels = {
     phone: 'phone',
   };
 
   const init = () => {
     pluginsInit();
+    setupXHR();
   };
 
-  const pluginsInit = () => {
+  function pluginsInit() {
     DOM.$phoneInputs
       .attr('placeholder', '+7 (999) 000 00 00')
       .mask('+9 (999) 999 99 99')
-      .on('keyup', (event) => {
-        localStorage.setItem(LABELS.phone, $(event.target).val());
+      .on('keyup', event => {
+        localStorage.setItem(labels.phone, $(event.target).val());
       });
-  };
+  }
+
+  /**
+   * Set all unsafe ajax requests with csrftoken.
+   */
+  function setupXHR() {
+    const csrfUnsafeMethod = method => !(/^(GET|HEAD|OPTIONS|TRACE)$/.test(method));
+
+    $.ajaxSetup({
+      beforeSend: (xhr, settings) => {
+        if (csrfUnsafeMethod(settings.type)) {
+          xhr.setRequestHeader('X-CSRFToken', Cookies.get('csrftoken'));
+        }
+      },
+    });
+  }
 
   init();
 
-  return { LABELS };
+  return { labels };
 })();

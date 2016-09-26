@@ -1,279 +1,35 @@
 // ================================================================
-// CATEGORY PAGE
-// ================================================================
-.page-category {
-  padding-top: $h-header;
-}
-
-// ================================================================
-// HEADER
-// ================================================================
-.category-header {
-  padding: 21px 0;
-
-  &-h1 {
-    padding-left: 9px;
-    font-size: $f-size-base + 18;
-    font-weight: 300;
-    line-height: 1.18;
-    text-align: center;
-    color: $c-category-title;
-  }
-}
-
-// ================================================================
-// CATEGORY SEARCH
+// SEARCH
 // ================================================================
 .category-search {
-  padding: 23px 0;
-}
-
-// ================================================================
-// CATEGORY CONTENT
-// ================================================================
-.category-content {
-  padding: 80px 0 40px;
+  margin: 0 0 60px;
 }
 
 // ================================================================
 // FILTER
 // ================================================================
 .category-filter {
-
   &-title {
-    padding: 9px 0 17px;
-    font-size: $f-size-base - 3;
+    border-bottom: 1px solid $c-text-orange;
+    color: $c-text-orange;
     font-weight: 600;
-    line-height: 1.23;
-    text-align: center;
-    color: $c-category-filter-title;
+    margin: 0 0 10px;
+    padding: 1px 0 10px;
   }
 
   &-item {
-    position: relative;
-    margin-bottom: 12px;
-    padding-left: 20px;
+    margin-bottom: 15px;
+  }
+
+  &-link {
+    color: $c-category-filter-item;
+    display: block;
     font-size: $f-size-base - 4;
     font-weight: 700;
-    color: $c-category-filter-item;
-    cursor: pointer;
     transition: all 0.2s ease;
 
     &:hover {
       color: $c-category-filter-item-hover;
-    }
-
-    &-ico {
-      position: absolute;
-      left: 0;
-      top: 3px;
-      font-size: $f-size-base - 1;
-      color: $c-category-filter-item-ico;
-    }
-  }
-
-  &-clear {
-    padding-top: 19px;
-    font-size: $f-size-base - 4;
-    font-weight: bold;
-    text-align: center;
-    color: $c-category-filter-clear;
-    cursor: pointer;
-  }
-}
-
-.category-order {
-  padding: 26px 0 17px;
-  width: 172px;
-
-  &-item {
-    margin-bottom: 15px;
-    font-size: $f-size-base - 3;
-    font-weight: 600;
-    line-height: 1.23;
-    color: $c-category-order-item;
-    cursor: pointer;
-    transition: all 0.2s ease;
-
-    &-selected {
-      color: $c-category-order-item-selected;
-    }
-
-    &:hover {
-      color: $c-category-order-item-hover;
-    }
-
-    &:active {
-      color: $c-category-order-item-active;
-    }
-  }
-}
-
-// ================================================================
-// TABLE
-// ================================================================
-.category-table {
-  border-collapse: collapse;
-
-  &-space {
-    height: 11px;
-  }
-
-  &-td {
-    padding: 7px 0;
-  }
-
-  &-col-code {
-    width: 98px;
-    padding-right: 30px;
-    font-size: $f-size-base;
-    font-weight: 700;
-    line-height: 1.25;
-    text-align: center;
-    color: $c-table-code;
-  }
-
-  &-col-name {
-    width: 490px;
-    padding-right: 30px;
-    font-size: $f-size-base + 2;
-    font-weight: 300;
-    line-height: 1.33;
-    color: $c-table-name;
-  }
-
-  &-col-price {
-    width: 98px;
-    padding-right: 30px;
-    font-size: $f-size-base - 4;
-    font-weight: 600;
-    line-height: 2.5;
-    text-align: center;
-    color: $c-table-price;
-  }
-
-  &-col-count {
-    width: 98px;
-    padding-right: 30px;
-
-    &-wrap {
-      position: relative;
-      width: 60px;
-      display: inline-block;
-    }
-
-    &-input {
-      width: 60px;
-      font-size: $f-size-base;
-      font-weight: 400;
-      text-align: center;
-      color: $c-table-input;
-      border: 1px solid $c-table-input-border;
-      border-radius: 2px;
-      -moz-appearance: textfield;
-    }
-
-    &-caret {
-      position: absolute;
-      right: 1px;
-      width: 20px;
-      height: 10px;
-      font-size: $f-size-base - 2;
-      line-height: 0.8;
-      text-align: center;
-      color: $c-table-caret;
-      cursor: pointer;
-      background-color: $c-white;
-      transition: all 0.2s ease;
-    }
-
-    &-caret:hover {
-      color: $c-table-caret-hover;
-    }
-
-    &-up {
-      top: 2px;
-    }
-
-    &-down {
-      bottom: 2px;
-    }
-  }
-
-  &-col-order {
-    width: 68px;
-    font-size: $f-size-base - 3;
-    font-weight: 600;
-    line-height: 1.23;
-    text-align: center;
-  }
-
-  &-th {
-    padding-bottom: 4px;
-    font-size: $f-size-base;
-    font-weight: 700;
-    line-height: 1.25;
-    text-align: center;
-    color: $c-table-th;
-    border-bottom: 1px solid $c-black;
-  }
-
-  &-order {
-    color: $c-table-order;
-    cursor: pointer;
-    transition: all 0.2s ease;
-
-    &:hover {
-      color: $c-table-order-hover;
-    }
-
-    &:active {
-      color: $c-table-order-active;
-    }
-  }
-
-  &-more {
-    position: relative;
-    padding: 30px 100px 27px 0;
-    text-align: center;
-    border-bottom: 1px solid $c-table-border-bottom;
-
-    &-btn {
-      position: relative;
-      padding-bottom: 54px;
-      display: inline-block;
-      font-size: $f-size-base - 3;
-      font-weight: 600;
-      line-height: 1.23;
-      color: $c-table-btn;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-
-    &-btn-arrow {
-      position: absolute;
-      left: 0;
-      right: 0;
-      margin: 16px auto 0;
-      transition: all 0.2s ease;
-    }
-
-    &-btn-arrow-hover,
-    &-btn-arrow-active {
-      opacity: 0;
-    }
-
-    &-btn:hover {
-      color: $c-table-btn-hover;
-    }
-
-    &-btn:hover .category-table-more-btn-arrow-hover,
-    &-btn:active .category-table-more-btn-arrow-active {
-      opacity: 1;
-    }
-
-    &-btn:active {
-      color: $c-table-btn-active;
     }
   }
 }
@@ -282,23 +38,17 @@
 // ABOUT
 // ================================================================
 .category-about {
-  padding: 34px 0 124px;
+  padding: 0 0 60px;
 
   &-serial {
-    position: relative;
-    padding: 8px;
+    border: 1px solid $c-category-about-border;
     font-size: $f-size-base + 2;
-    font-weight: 300;
-    line-height: 1.33;
+    padding: 8px;
+    position: relative;
     text-align: center;
-    color: $c-category-about;
-    border: 1px solid $c-category-about-serial-border;
   }
 
   &-text {
     font-size: $f-size-base + 2;
-    font-weight: 300;
-    line-height: 1.33;
-    color: $c-category-about;
   }
 }

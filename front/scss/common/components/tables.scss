@@ -1,0 +1,132 @@
+.table {
+  border-collapse: collapse;
+  width: 100%;
+
+  &-space {
+    height: 11px;
+  }
+
+  &-th {
+    border-bottom: 1px solid $c-black;
+    font-size: $f-size-base + 1;
+    font-weight: 600;
+    padding: 0 5px 10px;
+  }
+
+  &-tr {
+    border-bottom: 1px solid $c-table-row-bg;
+
+    &:nth-child(2n) {
+      background: rgba($c-black, 0.02);
+    }
+  }
+
+  &-td {
+    padding: 10px 5px;
+  }
+
+  &-type {
+    font-size: $f-size-base + 2;
+    width: 80px;
+  }
+
+  &-picture {
+    width: 80px;
+
+    &-ico {
+      cursor: pointer;
+      display: inline-block;
+
+      &.icon-picture {
+        position: relative;
+        top: 2px;
+      }
+    }
+  }
+
+  &-code {
+    font-size: $f-size-base;
+    font-weight: 700;
+    width: 90px;
+  }
+
+  &-name {
+    font-size: $f-size-base + 2;
+    width: 440px;
+  }
+
+  &-price {
+    font-size: $f-size-base - 2;
+    font-weight: 400;
+    width: 100px;
+  }
+
+  &-order {
+    color: $c-table-order;
+    cursor: pointer;
+    font-size: $f-size-base - 3;
+    font-weight: 600;
+    position: relative;
+    transition: all 0.2s ease;
+
+    &:hover {
+      color: $c-table-order-hover;
+    }
+
+    &:active {
+      color: $c-table-order-active;
+    }
+  }
+
+  &-count {
+    width: 98px;
+    padding-right: 30px;
+
+    &-wrap {
+      position: relative;
+      width: 60px;
+      display: inline-block;
+    }
+
+    &-input {
+      width: 60px;
+      font-size: $f-size-base;
+      font-weight: 400;
+      text-align: center;
+      color: $c-table-input;
+      border: 1px solid $c-table-input-border;
+      border-radius: 2px;
+      -moz-appearance: textfield;
+    }
+
+    &-caret {
+      position: absolute;
+      right: 1px;
+      width: 20px;
+      height: 10px;
+      font-size: $f-size-base - 2;
+      line-height: 0.8;
+      text-align: center;
+      color: $c-table-caret;
+      cursor: pointer;
+      background-color: $c-white;
+      transition: all 0.2s ease;
+    }
+
+    &-caret:hover {
+      color: $c-table-caret-hover;
+    }
+
+    &-up {
+      top: 2px;
+    }
+
+    &-down {
+      bottom: 2px;
+    }
+  }
+
+  &-link {
+    color: $c-text;
+  }
+}

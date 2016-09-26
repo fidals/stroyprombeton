@@ -72,7 +72,7 @@ const PATH = {
 
   build: {
     sprites: {
-      pathInCss: '../images/',
+      pathInCss: '../images',
       img: 'front/build/images/',
       scss: {
         main: 'front/scss/common/',
@@ -254,7 +254,7 @@ gulp.task('sprites', () => {
     .pipe($.spritesmith({
       imgName: 'sprite-main.png',
       cssName: 'sprite-main.css',
-      imgPath: `${PATH.build.sprites.pathInCss}sprite-main.png`,
+      imgPath: `${PATH.build.sprites.pathInCss}/sprite-main.png`,
     }));
 
   spriteData.img.pipe(gulp.dest(PATH.build.sprites.img));
@@ -269,7 +269,7 @@ gulp.task('sprites', () => {
     .pipe($.spritesmith({
       imgName: 'sprite-pages.png',
       cssName: 'sprite-pages.css',
-      imgPath: `${PATH.build.sprites.pathInCss}sprite-pages.png`,
+      imgPath: `${PATH.build.sprites.pathInCss}/sprite-pages.png`,
     }));
 
   spriteData.img.pipe(gulp.dest(PATH.build.sprites.img));

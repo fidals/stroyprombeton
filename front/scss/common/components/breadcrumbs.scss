@@ -1,0 +1,19 @@
+.breadcrumbs {
+  padding: 30px 0;
+  color: $c-path;
+  font-size: $f-size-base - 3;
+
+  &-item a {
+    font-weight: 600;
+    line-height: 1.23;
+    color: $c-path;
+
+    &:hover {
+      color: $c-path-hover;
+    }
+
+    &:active {
+      color: $c-path-active;
+    }
+  }
+}

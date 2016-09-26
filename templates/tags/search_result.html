@@ -2,18 +2,23 @@
 
 {% if items %}
   {% for item in items %}
-    <tr>
-      <td>{{ type_ }}</td>
-      <!--TODO Needed create logic for images and empty thumb.-->
-      <td class="image"></td>
-      <td class="search-element-nomen">{{ item.code|default:'' }}</td>
-      <td class="gbi-list name">
-        <a href="{{ item.get_absolute_url }}">{{item.specification|default:''}} {{ item.name }} {{item.mark|default:''}}</a>
+    <tr class="table-tr" id="{{ item.id }}">
+      <td class="table-td table-type">{{ type_ }}</td>
+      <!--TODO Need to create logic for images and empty thumb.-->
+      <td class="table-td table-picture text-center">
+        <div class="table-picture-ico icon-picture"></div>
       </td>
-      <td>
-        {% if type_ == 'Раздел' %}
+      <td class="table-td table-code">{{ item.code|default:'' }}</td>
+      <td class="table-td table-name">
+        <a class="table-link" href="{{ item.get_absolute_url }}">
+          {{ item.specification }} {{ item.name }} {{ item.mark }}
+        </a>
+      </td>
+      {% if type_ == 'Раздел' %}
+        <td class="table-td table-price text-center">
           {{ item.price|default:'-' }}
-        {% else %}
+      {% else %}
+        <td class="table-td table-price">
           {{ item.price|default:'По запросу' }}
         {% endif %}
       </td>

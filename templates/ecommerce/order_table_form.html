@@ -23,7 +23,7 @@
         {% with product=position.product %}
           <tr class="js-product-row">
             <td class="order-product">
-              {% if produc.code %} {{ code }} {% else %} - {% endif %}
+              {% if produc.code|default:'' %} {{ code }} {% else %} - {% endif %}
             </td>
             <td class="order-product"><a href="{{ product.get_absolute_url }}">{{ product.name }}</a></td>
             <td class="order-product" nowrap>

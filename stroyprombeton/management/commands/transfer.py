@@ -190,7 +190,7 @@ class Command(BaseCommand):
                     id=to_int(category_data['id']),
                     name=category_data['name'],
                     position=to_int(category_data['ord']),
-                    specification=category_data['mark'],
+                    specification=category_data['mark'] or '',
                 )
                 category.page.content = category_data['text']
                 category.page._date_published = to_datetime(category_data['date'])

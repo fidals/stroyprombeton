@@ -2,7 +2,7 @@
   <div class="row">
     <div class="col-xs-offset-1 col-xs-4 searchbar-wrap">
       <form class="search" action="{% url 'search' %}" method="get">
-        <input type="text" class="search-field js-search-field">
+        <input class="search-field js-search-field" name="term" type="text">
 
         <button class="search-btn" type="submit">
           <i class="fa fa-search" aria-hidden="true"></i>

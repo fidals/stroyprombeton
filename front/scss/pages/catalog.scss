@@ -4,16 +4,6 @@
 .catalog {
   padding: 21px 0;
 
-  &-h1 {
-    color: $c-catalog-h1;
-    font-size: $f-size-base + 18;
-    font-weight: 300;
-    line-height: 1.18;
-    margin-bottom: 55px;
-    padding-left: 23px;
-    text-align: center;
-  }
-
   &-ul {
     display: none;
     margin: 0 0 30px 50px;
@@ -85,11 +75,7 @@
 // ABOUT CATALOG
 // ================================================================
 .about-catalog {
-  color: $c-catalog-about;
   font-size: $f-size-base + 2;
-  font-weight: 300;
-  line-height: 1.39;
-  padding-bottom: 100px;
 
   &-p {
     margin-bottom: 25px;

@@ -1,8 +1,6 @@
 from django import template
 
 from stroyprombeton.models import Category
-from pages.models import Page
-
 
 register = template.Library()
 

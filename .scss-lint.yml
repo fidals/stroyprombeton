@@ -1,7 +1,8 @@
+# Docs for defaults: https://goo.gl/EBDN5B
+# Docs for explanations: https://goo.gl/DsBp2k
 severity: error
 
 linters:
-
   BorderZero:
     enabled: true
     convention: zero
@@ -20,6 +21,10 @@ linters:
 
   NameFormat:
     enabled: true
+
+  NestingDepth:
+    enabled: true
+    ignore_parent_selectors: true
 
   PrivateNamingConvention:
     enabled: true

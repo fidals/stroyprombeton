@@ -1,0 +1,161 @@
+.nav {
+  position: relative;
+  right: -14px;
+
+  &-wrapper {
+    background-color: $c-nav-bg;
+    height: $h-nav;
+    position: relative;
+    z-index: 2;
+  }
+
+  &-logo {
+    margin-top: 8px;
+  }
+
+  &-item {
+    float: left;
+    display: block;
+    position: relative;
+
+    &:last-child {
+      margin-right: 0;
+    }
+  }
+
+  &-link {
+    color: $c-nav-link;
+    display: block;
+    font-size: $f-size-base;
+    font-weight: 400;
+    line-height: 1.25;
+    padding: 18px 14px;
+
+    &:hover {
+      color: $c-nav-link-hover;
+    }
+  }
+
+  &-cart-link {
+    color: $c-nav-link-chart;
+
+    &:hover {
+      color: $c-nav-link-chart-hover;
+    }
+  }
+
+  &-cart-button:hover {
+    .cart {
+      display: block;
+    }
+  }
+}
+
+.cart {
+  display: none;
+  position: absolute;
+  right: 15px;
+  top: 45px;
+  padding: 12px 16px 16px;
+  width: 324px;
+  background-color: $c-white;
+  border-radius: 2px;
+  box-shadow: $sh-modal;
+
+  &-clear {
+    margin-bottom: 21px;
+    font-size: $f-size-base - 3;
+    font-weight: 600;
+    line-height: 1.23;
+    text-align: right;
+    color: $c-nav-chart-clear;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover {
+      color: $c-nav-chart-clear-hover;
+    }
+
+    &:active {
+      color: $c-nav-chart-clear-active;
+    }
+  }
+
+  &-item {
+    position: relative;
+
+    &:not(:last-child) {
+      margin-bottom: 35px;
+    }
+
+    &-name {
+      color: $c-nav-chart-item-name;
+      margin-bottom: 5px;
+    }
+
+    &-price {
+      color: $c-nav-chart-item-price;
+      font-size: $f-size-base - 4;
+      font-weight: 600;
+      margin-right: 4px;
+    }
+
+    &-count {
+      color: $c-nav-chart-item-count;
+      font-size: $f-size-base - 2;
+      line-height: 1.14;
+    }
+
+    &-remove {
+      position: absolute;
+      right: -6px;
+      top: 0;
+      padding: 2px;
+      color: $c-nav-chart-item-remove;
+      cursor: pointer;
+    }
+  }
+
+  &-order {
+    padding-top: 19px;
+    text-align: right;
+
+    &-btn {
+      padding: 4px 18px 6px;
+      font-size: $f-size-base;
+    }
+  }
+}
+
+.nav-subnav {
+  background-color: $c-white;
+  border-radius: 2px;
+  box-shadow: $sh-modal;
+  display: none;
+  left: 2px;
+  padding: 16px 12px;
+  position: absolute;
+  transition: opacity 0.3s ease;
+  top: 42px;
+  width: 360px;
+
+  .nav-item:hover & {
+    display: block;
+  }
+
+  &-item {
+    margin-bottom: 4px;
+
+    &-link {
+      font-size: $f-size-base - 2;
+      font-weight: 300;
+      line-height: 1.14;
+      letter-spacing: -0.2px;
+      color: $c-nav-subnav-link;
+    }
+
+    &-link:hover {
+      color: $c-nav-subnav-link-hover;
+    }
+  }
+}

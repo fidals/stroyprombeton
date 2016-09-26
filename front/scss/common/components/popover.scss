@@ -1,0 +1,31 @@
+.popover {
+  background-color: $c-white;
+  border: solid 1px $c-popover-border;
+  border-radius: 4px;
+  bottom: 70%;
+  color: $c-popover;
+  display: none;
+  font-size: $f-size-base + 2;
+  font-weight: 400;
+  left: 50%;
+  line-height: 1.33;
+  margin-bottom: 17px;
+  margin-left: -150px;
+  padding: 20px 10px;
+  position: absolute;
+  text-align: center;
+  width: 300px;
+
+  &-arrow {
+    background-color: $c-white;
+    border-right: 1px solid $c-popover-border;
+    border-bottom: 1px solid $c-popover-border;
+    bottom: -13px;
+    height: 24px;
+    left: 50%;
+    margin-left: -13px;
+    position: absolute;
+    transform: rotate(45deg);
+    width: 24px;
+  }
+}

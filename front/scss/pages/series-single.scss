@@ -33,12 +33,12 @@
   padding-top: 35px;
 
   &-title {
-    padding-bottom: 28px;
+    color: $c-text-orange;
     font-size: $f-size-base - 3;
     font-weight: 600;
     line-height: 1.23;
+    padding-bottom: 28px;
     text-align: center;
-    color: $c-category-filter-title;
   }
 
   &-clear {
@@ -63,9 +63,6 @@
 // ABOUT
 // ================================================================
 .series-single-about {
-  padding-bottom: 121px;
   font-size: $f-size-base + 2;
-  font-weight: 300;
-  line-height: 1.33;
-  color: $c-category-about;
+  padding-bottom: 121px;
 }
