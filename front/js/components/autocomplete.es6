@@ -31,7 +31,6 @@
     const context = {
       url: item.url,
       name: `<span class="search-item-text">${highlightedText}</span>`,
-      price: item.price ? `<span class="search-item-price">${item.price} руб.</span>` : '',
       mark: item.mark ? `<span class="search-item-mark">${item.mark}</span>` : '',
       specification: item.specification ?
         `<span class="search-item-spec">${item.specification}</span>` :
@@ -42,7 +41,7 @@
     return `
       <div class="autocomplete-suggestion search-item" data-val="${context.itemName}">
         <a href="${context.url}" class="search-item-link">
-          ${context.specification}${context.name}${context.mark}${context.price}
+          ${context.specification}${context.name}${context.mark}
         </a>
       </div>
     `;

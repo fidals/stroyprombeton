@@ -56,14 +56,14 @@ a {
 
 .more-link {
   color: $c-btn-orange;
+  display: block;
   font-size: $f-size-base - 3;
   font-weight: 600;
-  line-height: 1.23;
-  text-align: right;
+  padding: 5px 10px;
 
   &-arrow {
+    font-size: $f-size-base - 4;
     margin-left: 5px;
-    font-size: $f-size-base - 6;
   }
 
   &:hover {
@@ -93,19 +93,19 @@ a {
   position: relative;
 
   &-field {
-    width: 100%;
-    height: 26px;
-    padding: 2px 48px 3px 12px;
-    font-size: $f-size-base - 2;
-    font-weight: 300;
-    line-height: 1.14;
-    letter-spacing: -0.0125em;
-    color: $c-search-text;
     background-color: $c-white;
     border: 0;
     border-radius: 13px;
     box-shadow: $sh-search;
+    color: $c-search-text;
+    height: 26px;
+    font-size: $f-size-base - 2;
+    font-weight: 300;
+    letter-spacing: -0.0125em;
+    line-height: 1.14;
+    padding: 2px 40px 3px 12px;
     transition: box-shadow 0.2s ease;
+    width: 100%;
 
     &:focus {
       box-shadow: $sh-search-focus;
@@ -130,20 +130,6 @@ a {
     }
   }
 
-  &-inner {
-    // TODO: Should be deleted after styling autocomplete lib.
-    display: none;
-    position: absolute;
-    left: 0;
-    top: 29px;
-    padding: 12px 0;
-    width: 360px;
-    text-align: left;
-    background-color: $c-white;
-    border-radius: 2px;
-    box-shadow: $sh-modal;
-  }
-
   &-more {
     margin-bottom: 9px;
 
@@ -160,6 +146,9 @@ a {
     &-text {
       display: inline-block;
       margin-right: 5px;
+      max-width: 280px;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     &-link {
@@ -168,10 +157,7 @@ a {
       font-size: $f-size-base - 2;
       font-weight: 300;
       padding: 5px 10px;
-    }
-
-    &-price {
-      margin-left: auto;
+      white-space: nowrap;
     }
   }
 }
