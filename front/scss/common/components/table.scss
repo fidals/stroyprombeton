@@ -68,6 +68,7 @@
     font-weight: 600;
     position: relative;
     transition: all 0.2s ease;
+    width: 80px;
 
     &:hover {
       color: $c-table-order-hover;
@@ -79,13 +80,12 @@
   }
 
   &-count {
-    width: 98px;
-    padding-right: 30px;
+    width: 70px;
 
     &-wrap {
+      display: inline-block;
       position: relative;
       width: 60px;
-      display: inline-block;
     }
 
     &-input {
@@ -111,10 +111,10 @@
       cursor: pointer;
       background-color: $c-white;
       transition: all 0.2s ease;
-    }
 
-    &-caret:hover {
-      color: $c-table-caret-hover;
+      &:hover {
+        color: $c-table-caret-hover;
+      }
     }
 
     &-up {

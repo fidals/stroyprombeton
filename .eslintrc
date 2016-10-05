@@ -1,5 +1,5 @@
 {
-  "extends": "airbnb-base",
+  "extends": "airbnb",
   "globals": {
     "$": true,
     "Cookies": true,
@@ -7,6 +7,7 @@
     "document": true,
     "google": true,
     "localStorage": true,
+    "location": true,
     "mediator": true,
     "server": true,
     "helpers": true,

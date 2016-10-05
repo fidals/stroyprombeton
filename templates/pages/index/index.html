@@ -53,12 +53,21 @@
   <section class="catalog-section">
     <div class="container container-fluid">
       <div class="row">
-        <div class="col-xs-12">
+        <div class="col-xs-6">
           <div class="catalog-section-image">
-            <img src="{{ STATIC_URL }}images/catalog-prev.png" alt="Каталог ЖБИ">
+            <img class="img-responsive img-centered" src="{{ STATIC_URL }}images/catalog-gbi.png" alt="Каталог ЖБИ">
           </div>
           <div class="catalog-section-btn">
             <a href="{% url 'category_tree' %}" class="btn btn-catalog">Каталог ЖБИ</a>
+          </div>
+        </div>
+
+        <div class="col-xs-6">
+          <div class="catalog-section-image">
+            <img class="img-responsive img-centered" src="{{ STATIC_URL }}images/catalog-new-jersey.png" alt="Блоки 'Нью-Джерси'">
+          </div>
+          <div class="catalog-section-btn">
+            <a href="{% url 'category' 473 %}" class="btn btn-catalog">Блоки "Нью-Джерси"</a>
           </div>
         </div>
       </div>
