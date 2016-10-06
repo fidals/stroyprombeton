@@ -1,3 +1,5 @@
+{% load stb_extras %}
+
 <li class="nav-item nav-cart-button js-cart-trigger {% if cart|length %}active{% endif %}">
   <a class="nav-link nav-cart-link" href="{% url 'ecommerce:order_page' %}">Корзина</a>
 
@@ -12,13 +14,7 @@
             </a>
 
             <div class="cart-item-sum">
-              <span class="cart-item-price">
-                {% if position.price %}
-                  {{ position.price }} руб.
-                {% else %}
-                  По запросу
-                {% endif %}
-              </span>
+              <span class="cart-item-price">{{ product.price|format_price }}</span>
               <span class="cart-item-count js-header-prod-count">x {{ position.quantity }} шт.</span>
             </div>
             <i class="fa fa-close cart-item-remove js-remove" aria-hidden="true" title="Удалить"></i>

@@ -29,6 +29,14 @@ def search_result(items, type_):
     }
 
 
+@register.filter
+def format_price(price):
+    if price:
+        return str(price) + ' руб.'
+    else:
+        return 'По запросу'
+
+
 @register.simple_tag
 def get_root_categories():
     return Category.objects.root_nodes().filter(page__is_active=True).order_by('position', 'name')

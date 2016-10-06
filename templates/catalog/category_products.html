@@ -1,3 +1,5 @@
+{% load stb_extras %}
+
 {% for product in products %}
   {% if product.page.is_active %}
     <tr class="table-tr" id="{{ product.id }}">
@@ -15,21 +17,11 @@
         </a>
       </td>
       <td class="table-td table-price">
-        {{ product.price|default:'По запросу' }}
+        {{ product.price|format_price }}
       </td>
       <td class="table-td table-count">
         <div class="table-count-wrap">
-          <input class="table-count-input js-count-input"
-                 type="number" min="1" step="1" pattern="[0-9]*"
-                 value="1" data-id="{{ product.id }}">
-          <i class="table-count-caret table-count-up
-                    fa fa-caret-up js-count-input-up"
-             aria-hidden="true">
-          </i>
-          <i class="table-count-caret table-count-down
-                    fa fa-caret-down js-count-input-down"
-             aria-hidden="true">
-          </i>
+          {% include 'catalog/count_input.html' %}
         </div>
       </td>
       <td class="table-td table-order text-center">

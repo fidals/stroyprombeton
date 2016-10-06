@@ -118,6 +118,18 @@ class ProductPage(catalog.ProductPage):
     """Override model attribute to STB-specific Product."""
     model = Product
 
+    def get_context_data(self, **kwargs):
+        """Extend Product page context."""
+        context = super(ProductPage, self).get_context_data(**kwargs)
+        product = self.get_object()
+        siblings = Product.objects.filter(specification=product.specification).exclude(id=product.id)
+
+        context.update({
+            'siblings': siblings
+        })
+
+        return context
+
 
 # We inherit eCommerce CBVs to override its order_form attribute.
 class OrderPage(OrderFormMixin, ec_views.OrderPage):

@@ -1,5 +1,6 @@
 {% load staticfiles %}
 {% load widget_tweaks %}
+{% load stb_extras %}
 
 <div class="js-order-contain">
   {% if not cart %}
@@ -27,7 +28,7 @@
             </td>
             <td class="order-product"><a href="{{ product.get_absolute_url }}">{{ product.name }}</a></td>
             <td class="order-product" nowrap>
-              {% if position.price %}{{ position.price }} руб.{% else %} По запросу{% endif %}
+              {{ product.price|format_price }}
             </td>
             <td class="order-product">
               <input class="basket-rest input-switcher js-prod-count" productId="{{ product.id }}"

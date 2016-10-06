@@ -1,0 +1,35 @@
+{% load stb_extras %}
+
+<section class="product-siblings">
+  <div class="container container-fluid">
+    <div class="row">
+      <div class="col-xs-12">
+        <h2 class="product-siblings-title">В этой же серии:</h2>
+        <div class="product-siblings-text">
+          Для вашего проекта могут также подойти такие железобетонные изделия:
+        </div>
+
+        <div class="slider js-slider">
+          <div class="slider-content js-slider-content">
+            {% for item in siblings %}
+              <div class="slider-item js-slider-item">
+                <a href="{{ item.get_absolute_url }}" class="slider-item-link">
+                  <div class="slider-item-title">{{ item.name }}</div>
+                  <div class="slider-item-image">
+                    <img class="img-responsive img-centered slider-item-image-img"
+                         src="{{ item.image }}" alt="{{ item.name }}">
+                  </div>
+                </a>
+                <div class="slider-item-price text-right">{{ item.price|format_price }}</div>
+                <a class="more-link text-right paddingless" href="{{ item.get_absolute_url }}">Заказать</a>
+              </div>
+            {% endfor %}
+          </div>
+
+          <div class="slider-nav slider-nav-disable slider-nav-left js-slider-nav-left"></div>
+          <div class="slider-nav slider-nav-right js-slider-nav-right"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

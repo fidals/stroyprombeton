@@ -1,82 +1,101 @@
-{% extends 'layout/base.html' %}
+{% extends 'pages/inner_page.html' %}
+
 {% load staticfiles %}
 {% load pages_extras %}
 {% load stb_extras %}
 
 {% block content %}
-  <div class="location">{% breadcrumbs page '»' %}</div>
+  {% include 'layout/breadcrumbs.html' %}
 
-  <div class="product-header">
-    <h1 class="product-header-title">{{ page.h1 }} {{ product.mark }}</h1>
-  </div>
-
-  <div class="product">
-    <div class="product-main">
-      <div class="product-photo">
-        <!--TODO Needed create logic for images and empty thumb.-->
-        <img class="img-responsive" src="{{ MEDIA_URL }}products/1/main.jpg">
-      </div>
-
-      <div class="product-info">
-        <h2>Характеристики</h2>
-        <table class="props-tbl" cellpadding="5">
-          <tbody>
-            {% show_field_if_exist product.code 'Код' %}
-            {% show_field_if_exist product.mark 'Марка ЖБИ' %}
-            {% show_field_if_exist product.specification 'Рабочая документация' %}
-            {% show_field_if_exist product.length 'Длина (мм)' %}
-            {% show_field_if_exist product.width 'Ширина (мм)' %}
-            {% show_field_if_exist product.diameter_in|floatformat:2 'Внутренний диаметр (мм)' %}
-            {% show_field_if_exist product.diameter_out|floatformat:2 'Внешний диаметр (мм)' %}
-            {% show_field_if_exist product.weight 'Масса (кг)' %}
-            {% show_field_if_exist product.volume 'Объем (м3)' %}
-
-            <tr>
-              <td class="product-desc-left-col">
-                <div class="product-price">
-                  <span>Цена:</span>
-                </div>
-              </td>
-              <td class="product-desc-right-col">
-                <div class="product-price">
-                  {{ product.price|default:'По запросу' }} руб.
-                </div>
-              </td>
-            </tr>
-
-            <tr>
-              <td class="product-desc-left-col">
-                <div class="shk_basket_count" style="float: none !important;">
-                  <input class="basket-rest js-product-count" type="text" name="shk-count" value="1" size="2" code="5933"
-                         maxlength="5">
-                  <img class="field-arr-up" src="{% static 'images/spin-up.png' %}">
-                  <img class="field-arr-down" src="{% static 'images/spin-down.png' %}">
-                </div>
-              </td>
-              <td class="product-desc-right-col">
-                <span class="tooltip-wrapper">
-                  <input class="btn btn-red add-basket js-add-basket" id="shk-submit-5933" type="button"
-                         name="shk-submit" value="Заказать" product-id="{{ product.id }}"
-                         data-tooltip="Товар добавлен в заказ">
-                </span>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-        <div class="product-for-nds">
-          <p>Цена указана с учетом НДС. Не является публичной офертой.</p>
-        </div>
+  <div class="container container-fluid">
+    <div class="row">
+      <div class="col-xs-12">
+        <h1 class="title-h1">{{ page.h1 }} {{ product.mark }}</h1>
       </div>
     </div>
   </div>
-{% endblock %}
 
-{% block jslibs %}
-  {{ block.super }}
-  <script src="{% static 'js/vendors-pages.min.js' %}"></script>
-{% endblock %}
+  <section class="product-serial text-center">
+    <div class="container container-fluid">
+      <div class="row">
+        <div class="col-xs-offset-2 col-xs-8">
+          <div class="product-serial-content">
+            <span class="product-serial-title">Код</span>
+            <span class="product-serial-val">{{ product.code }}</span>
+            <span class="product-serial-title">Серия</span>
+            {# TODO: `specification` should be replaced by `spec` #}
+            <span class="product-serial-val">{{ product.specification }}</span>
+            <span class="product-serial-title">Марка</span>
+            <span class="product-serial-val">{{ product.mark }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-{% block jslinks %}
-  {{ block.super }}
-  <script src="{% static 'js/pages.min.js' %}"></script>
+  <section class="product-info">
+    <div class="container container-fluid">
+      <div class="row">
+        <div class="col-xs-offset-1 col-xs-6">
+          <div class="product-image">
+            <img class="img-responsive img-centered" src="{{ product.image }}" alt="{{ product.name }}">
+          </div>
+          <div class="product-characteristics">
+            <h2 class="product-characteristics-title">Характеристики</h2>
+            <table class="product-characteristics-table">
+              {% show_field_if_exist product.category 'Тип' %}
+              {# TODO: `specification` should be replaced by `spec` #}
+              {% show_field_if_exist product.specification 'Рабочая документация' %}
+              {% show_field_if_exist product.length 'Длина (мм)' %}
+              {% show_field_if_exist product.width 'Ширина (мм)' %}
+              {% show_field_if_exist product.height 'Высота (мм)' %}
+              {% show_field_if_exist product.weight 'Масса (кг)' %}
+              {% show_field_if_exist product.volume 'Объем (м<sup>3</sup>)' %}
+              {% show_field_if_exist product.diameter_out 'Внешний диаметр (мм)' %}
+              {% show_field_if_exist product.diameter_in 'Внутренний диаметр (мм)' %}
+            </table>
+          </div>
+        </div>
+
+        <div class="col-xs-5">
+          <div class="product-order">
+            <table class="product-order-table">
+              <tr>
+                <th class="product-order-table-th">Цена</th>
+                <th class="product-order-table-th">Кол-во</th>
+                <th class="product-order-table-th">Итог</th>
+              </tr>
+              <tr>
+                <td class="product-order-table-col-price js-product-price">
+                  {{ product.price|format_price }}
+                </td>
+                <td class="product-order-table-col-count">
+                  <div class="category-table-col-count-wrap">
+                    {% include 'catalog/count_input.html' %}
+                  </div>
+                </td>
+                <td class="product-order-table-col-total">
+                  <span class="js-product-sum">{{ product.price|format_price }}</span>
+                </td>
+              </tr>
+            </table>
+            <div class="product-order-submit text-right">
+              <input class="btn product-order-submit-btn" type="submit" value="Заказать">
+            </div>
+          </div>
+
+          <div class="product-describe">
+            <h2 class="product-describe-title">
+              Производство ЖБИ: {{ page.h1 }} {{ product.mark }}
+            </h2>
+            <div class="product-describe-text">
+              {% autoescape off %}{{ page.content }}{% endautoescape %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {% include 'catalog/product_siblings.html' %}
 {% endblock %}

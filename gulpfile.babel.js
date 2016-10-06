@@ -36,14 +36,11 @@ const PATH = {
       ],
 
       pages: [
-        'front/js/components/catalog.es6',
-        'front/js/components/category.es6',
-        'front/js/components/product.es6',
-        'front/js/components/series.es6',
-        // old ones:
         'front/js/components/innerPages.es6',
+        'front/js/components/productCountInput.es6',
         'front/js/components/product.es6',
         'front/js/components/category.es6',
+        'front/js/components/catalog.es6',
         'front/js/components/order.es6',
       ],
 
@@ -57,7 +54,6 @@ const PATH = {
         'front/js/shared/*.es6',
         'front/js/components/main.es6',
         'front/js/components/autocomplete.es6',
-        // old ones:
         'front/js/components/headerCart.es6',
       ],
     },
@@ -97,7 +93,7 @@ const PATH = {
 // ================================================================
 // BUILD
 // ================================================================
-gulp.task('build', callback => {
+gulp.task('build', (callback) => {
   ENV.development = false;
   ENV.production = true;
 

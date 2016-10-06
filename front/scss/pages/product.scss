@@ -1,11 +1,4 @@
 // ================================================================
-// PRODUCT PAGE
-// ================================================================
-.page-product {
-  padding-top: $h-header;
-}
-
-// ================================================================
 // HEADER
 // ================================================================
 .product-header {
@@ -25,20 +18,14 @@
 // SERIAL
 // ================================================================
 .product-serial {
-  padding-bottom: 48px;
-
-  &-content {
-    padding-left: 19px;
-    font-size: $f-size-base;
-    color: $c-product-serial;
-  }
+  padding-bottom: 50px;
 
   &-title {
     font-weight: 400;
   }
 
   &-val {
-    margin-right: 23px;
+    margin-right: 20px;
     font-weight: 600;
   }
 }
@@ -47,14 +34,14 @@
 // IMAGE
 // ================================================================
 .product-image {
-  padding: 35px 0;
+  padding: 35px 0 85px;
 }
 
 // ================================================================
 // CHARACTERISTICS
 // ================================================================
 .product-characteristics {
-  padding: 50px 0;
+  padding: 0 0 85px;
 
   &-title {
     margin-bottom: 21px;
@@ -125,28 +112,12 @@
       text-align: center;
     }
   }
-
-  &-submit {
-    margin-bottom: 8px;
-    padding-left: 292px;
-
-    &-btn {
-      padding: 9px 29px;
-      font-size: $f-size-base;
-      line-height: 1;
-    }
-  }
-
-  &-pricelist {
-    padding-left: 292px;
-  }
 }
 
 // ================================================================
 // DESCRIBE
 // ================================================================
 .product-describe {
-
   &-title {
     padding-bottom: 21px;
     font-size: $f-size-base;
@@ -157,35 +128,27 @@
 
   &-text {
     font-size: $f-size-base + 2;
-    font-weight: 300;
-    line-height: 1.33;
-    color: $c-product-describe-text;
   }
 }
 
 // ================================================================
-// SAME SERIES
+// SIBLINGS
 // ================================================================
-.same-series {
-  padding: 33px 0 120px;
-
+.product-siblings {
   &-title {
-    margin-bottom: 18px;
-    padding-left: 8px;
+    color: $c-product-series-title;
     font-size: $f-size-base + 18;
     font-weight: 300;
     line-height: 1.18;
+    margin-bottom: 18px;
+    padding-left: 8px;
     text-align: center;
-    color: $c-product-series-title;
   }
 
   &-text {
-    margin-bottom: 40px;
     font-size: $f-size-base + 2;
-    font-weight: 300;
-    line-height: 1.33;
+    margin-bottom: 40px;
     text-align: center;
-    color: $c-product-series-text;
   }
 }
 
@@ -229,15 +192,10 @@
     }
 
     &-price {
-      margin-bottom: 9px;
+      color: $c-slider-price;
       font-size: $f-size-base + 4;
       font-weight: 600;
-      text-align: right;
-      color: $c-slider-price;
-    }
-
-    &-order {
-      text-align: right;
+      margin-bottom: 9px;
     }
   }
 
@@ -266,7 +224,7 @@
     }
 
     &::after {
-      content: " ";
+      content: "";
       position: absolute;
       top: 0;
       bottom: 0;

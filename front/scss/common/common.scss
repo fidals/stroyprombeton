@@ -35,6 +35,10 @@ a {
 }
 
 .text {
+  &-right {
+    text-align: right;
+  }
+
   &-left {
     text-align: left;
   }
@@ -75,6 +79,14 @@ a {
   }
 }
 
+.paddingless {
+  padding: 0;
+}
+
+.marginless {
+  margin: 0;
+}
+
 // ================================================================
 // HEADER
 // ================================================================
@@ -100,7 +112,6 @@ a {
     color: $c-search-text;
     height: 26px;
     font-size: $f-size-base - 2;
-    font-weight: 300;
     letter-spacing: -0.0125em;
     line-height: 1.14;
     padding: 2px 40px 3px 12px;
@@ -180,11 +191,9 @@ a {
     }
 
     &-item {
-      margin-bottom: 8px;
-      font-size: $f-size-base - 2;
-      font-weight: 300;
-      letter-spacing: -0.0125em;
       color: $c-footer-li;
+      font-size: $f-size-base - 2;
+      margin-bottom: 10px;
     }
 
     &-link {
@@ -209,9 +218,9 @@ a {
   }
 
   &-copy {
-    font-size: $f-size-base - 2;
-    font-weight: 300;
     color: $c-copyright;
+    font-size: $f-size-base - 2;
+    line-height: 1.5;
 
     &-rights {
       font-size: $f-size-base - 2;

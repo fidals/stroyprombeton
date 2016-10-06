@@ -19,7 +19,7 @@
           {{ item.price|default:'-' }}
       {% else %}
         <td class="table-td table-price">
-          {{ item.price|default:'По запросу' }}
+          {{ item.price|format_price }}
         {% endif %}
       </td>
     </tr>

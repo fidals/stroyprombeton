@@ -52,13 +52,12 @@
 
   &-name {
     font-size: $f-size-base + 2;
-    width: 440px;
+    width: 420px;
   }
 
   &-price {
-    font-size: $f-size-base - 2;
     font-weight: 400;
-    width: 100px;
+    width: 120px;
   }
 
   &-order {
@@ -82,47 +81,8 @@
   &-count {
     width: 70px;
 
-    &-wrap {
-      display: inline-block;
-      position: relative;
-      width: 60px;
-    }
-
     &-input {
       width: 60px;
-      font-size: $f-size-base;
-      font-weight: 400;
-      text-align: center;
-      color: $c-table-input;
-      border: 1px solid $c-table-input-border;
-      border-radius: 2px;
-      -moz-appearance: textfield;
-    }
-
-    &-caret {
-      position: absolute;
-      right: 1px;
-      width: 20px;
-      height: 10px;
-      font-size: $f-size-base - 2;
-      line-height: 0.8;
-      text-align: center;
-      color: $c-table-caret;
-      cursor: pointer;
-      background-color: $c-white;
-      transition: all 0.2s ease;
-
-      &:hover {
-        color: $c-table-caret-hover;
-      }
-    }
-
-    &-up {
-      top: 2px;
-    }
-
-    &-down {
-      bottom: 2px;
     }
   }
 

@@ -58,11 +58,7 @@
       <td></td>
       <td style="border-color: #E4E4E4; padding: 10px; font-weight: bold;">Итого:</td>
       <td style="border-color: #E4E4E4; padding: 10px; font-weight: bold;">
-        {% if order.total_price %}
-          {{ order.total_price }} руб.
-        {% else %}
-          По запросу
-        {% endif %}
+        {{ order.price|format_price }}
       </td>
     </tr>
   </table>

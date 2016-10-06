@@ -4,9 +4,6 @@
     $showMoreLink: $('#load-more-products'),
     $productsTable: $('#products-wrapper'),
     $searchFilter: $('#search-filter'),
-    countInput: '.js-count-input',
-    countUp: '.js-count-input-up',
-    countDown: '.js-count-input-down',
   };
 
   const config = {
@@ -31,22 +28,6 @@
     DOM.$addToCart.click(event => buyProduct(event));
     DOM.$showMoreLink.click(loadProducts);
     DOM.$searchFilter.keyup(filterProducts);
-
-    $(document)
-      .on('click', DOM.countUp, function countUp() {
-        countIncrease($(this).siblings(DOM.countInput));
-      })
-      .on('click', DOM.countDown, function countDown() {
-        countDecrease($(this).siblings(DOM.countInput));
-      });
-  }
-
-  function countIncrease($input) {
-    $input.val((i, val) => ++val);
-  }
-
-  function countDecrease($input) {
-    $input.val((i, val) => (val > 1) ? --val : val);
   }
 
   function setLoadMoreLinkState() {
@@ -58,7 +39,7 @@
   /**
    * Get product quantity & id from DOM.
    */
-  const getProductInfo = event => {
+  const getProductInfo = (event) => {
     const $product = $(event.target);
     const productCount = $product.closest('td').prev().find('.js-count-input').val();
     const productId = $product.closest('tr').attr('id');
@@ -80,7 +61,7 @@
   }
 
   /**
-   * Show tooltip after adding Product in to the Cart.
+   * Show tooltip after adding Product to the Cart.
    */
   function showTooltip(event) {
     const $target = $(event.target).closest('.table-td').find('.js-popover');
@@ -169,7 +150,7 @@
 
     fetchProducts(fetchData)
       .then(
-        products => {
+        (products) => {
           mediator.publish('onProductsLoad', products);
         },
         response => console.warn(response)
@@ -194,7 +175,7 @@
 
       fetchProducts(fetchData)
         .then(
-          products => {
+          (products) => {
             mediator.publish('onProductsFilter', products);
             DOM.$showMoreLink.attr('data-load-count', config.productsToFetch);
           },
