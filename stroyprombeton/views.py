@@ -13,7 +13,7 @@ from django.views.decorators.csrf import ensure_csrf_cookie
 from catalog.views import catalog, search
 from catalog.models import search as filter_
 from ecommerce import views as ec_views
-from pages.views import CustomPage, FlatPage, Page
+from pages.views import CustomPage, FlatPage, get_or_create_struct_page
 
 from stroyprombeton import mailer, config
 from stroyprombeton.forms import OrderForm, PriceForm, DrawingForm
@@ -190,7 +190,7 @@ class IndexPage(CustomPage):
     template_name = 'pages/index/index.html'
     slug = 'index'
     context = {
-        'news': Page.objects.get(slug='news').children.all().filter(is_active=True)[:2],
+        'news': get_or_create_struct_page(slug='news').children.all().filter(is_active=True)[:2],
         'partners': config.PARTNERS,
         'reviews': config.REVIEWS,
     }

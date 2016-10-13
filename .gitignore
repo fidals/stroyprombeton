@@ -7,5 +7,6 @@ env/
 src/
 front/build/
 static/
+media/
 stroyprombeton/settings/local.py
 stb.json

@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'mptt',
     'widget_tweaks',
     'pages',
+    'images',
     'catalog',
     'ecommerce',
     'stroyprombeton',
@@ -160,11 +161,8 @@ CART_ID = 'cart'
 BASE_URL = 'http://www.stroyprombeton.ru'
 SITE_CREATED = datetime(2013, 1, 1)
 
-IMAGES = {
-    'large': 'main',
-    'small': 'small',
-    'thumbnail': 'logo.png'
-}
+PLACEHOLDER_IMAGE = 'images/common/logo.svg'
+PLACEHOLDER_ALT = 'Логотип компании СтройПромБетон'
 
 SEARCH_SEE_ALL_LABEL = 'Смотреть все результаты'
 

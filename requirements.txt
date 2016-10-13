@@ -5,6 +5,7 @@ pillow
 selenium
 selenium-requests
 psycopg2
+pymysql
 openpyxl
 unidecode
 dj-database-url==0.4.1

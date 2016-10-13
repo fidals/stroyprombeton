@@ -7,13 +7,15 @@ from getpass import getpass
 from datetime import datetime
 from unidecode import unidecode
 
-from django.utils.text import slugify
 from django.db import transaction
-from django.core.management.base import BaseCommand
 from django.conf import settings
+from django.core.files.images import ImageFile
+from django.core.management.base import BaseCommand
+from django.utils.text import slugify
 
 from stroyprombeton.models import Category, Product, Territory
 from pages.models import Page
+from images.models import Image
 
 custom_page_data = {
     'news': {
@@ -74,6 +76,63 @@ custom_page_data = {
     },
 }
 
+IMAGES_ROOT_FOLDER_NAME = os.path.join(settings.MEDIA_ROOT, 'products')
+
+
+# TODO - launch and test it
+def fill_images_data():
+
+    def iter_decimal_dirs(path: str):
+        return (
+            dir_ for dir_ in os.scandir(path)
+            if dir_.is_dir() and dir_.name.isdecimal()
+        )
+
+    def iter_files(path: str):
+        return (file_ for file_ in os.scandir(path) if file_.is_file())
+
+    def get_page(product_id: int) -> Page:
+        try:
+            product_ = Product.objects.get(id=product_id)
+        except Product.DoesNotExist:
+            # images folder can contain unsupported ids
+            return
+        return product_.page
+
+    def create_image_model(file_, product_id: int, slug):
+        file_short_name, _ = os.path.splitext(file_.name)
+
+        # miss compressed or doubled images: '222-th.jpg', for example
+        if file_short_name.endswith('-th'):
+            return
+
+        # create Image model object based on current image
+        page = get_page(product_id=product_id)
+        if not page:
+            return
+        # don't use bulk create, because save() isn't hooked with it
+        # proof link: http://bit.ly/django_bulk_create
+        Image.objects.create(
+            model=page,
+            # autoincrement file names: '1.jpg', '2.jpg' and so on
+            slug=slug,
+            image=ImageFile(open(file_.path, mode='rb')),
+            is_main=(file_short_name == dir_.name)
+        )
+
+    if not os.path.isdir(IMAGES_ROOT_FOLDER_NAME):
+        return
+
+    # run over every image in every folder
+    for dir_ in iter_decimal_dirs(IMAGES_ROOT_FOLDER_NAME):
+        for slug_index, file in enumerate(iter_files(dir_.path)):
+            create_image_model(
+                file_=file,
+                product_id=int(dir_.name),
+                slug=str(slug_index)
+            )
+    # old folder stays in fs as backup of old photos
+
 
 class Command(BaseCommand):
     path_to_JSON = os.path.join(settings.BASE_DIR, 'stb.json')
@@ -115,7 +174,7 @@ class Command(BaseCommand):
             self.insert_data_to_DB(data)
 
     def get_data_from_json(self) -> dict:
-        with open(self.path_to_JSON) as stb_json:
+        with open(self.path_to_JSON, encoding='utf-8') as stb_json:
             return json.load(stb_json)
 
     def get_data_from_db(self, cur: pymysql):
@@ -281,6 +340,7 @@ class Command(BaseCommand):
         create_product_data(data['products'])
         create_post_data(data['posts'])
         create_static_page_data(data['static_pages'])
+        fill_images_data()
 
         print('Was created {} categories, {} products, {} pages'.format(
             Category.objects.count(),
