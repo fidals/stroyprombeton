@@ -108,9 +108,10 @@ class CategoryPage(catalog.CategoryPage):
         products = Product.objects.get_products_by_category_id(kwargs['object'], ordering=('name', 'mark'))
         sliced_products = products[:settings.PRODUCTS_TO_LOAD]
 
-        context['products'] = sliced_products
-
-        return context
+        return {
+            **context,
+            'products': sliced_products,
+        }
 
 
 @set_csrf_cookie
@@ -124,11 +125,10 @@ class ProductPage(catalog.ProductPage):
         product = self.get_object()
         siblings = Product.objects.filter(specification=product.specification).exclude(id=product.id)
 
-        context.update({
+        return {
+            **context,
             'siblings': siblings
-        })
-
-        return context
+        }
 
 
 # We inherit eCommerce CBVs to override its order_form attribute.
@@ -159,9 +159,11 @@ class OrderDrawing(FormView):
     success_url = '/drawing-success/'
 
     def form_valid(self, form):
-        mailer.send_form(form=form,
-                         template='ecommerce/email_drawing.html',
-                         subject='Изготовление по индивидуальным чертежам')
+        mailer.send_form(
+            form=form,
+            template='ecommerce/email_drawing.html',
+            subject='Изготовление по индивидуальным чертежам'
+        )
         return super(OrderDrawing, self).form_valid(form)
 
 
@@ -179,9 +181,11 @@ class OrderPrice(FormView):
     success_url = '/price-success/'
 
     def form_valid(self, form):
-        mailer.send_form(form=form,
-                         template='ecommerce/email_price.html',
-                         subject='Заказ прайс-листа')
+        mailer.send_form(
+            form=form,
+            template='ecommerce/email_price.html',
+            subject='Заказ прайс-листа'
+        )
         return super(OrderPrice, self).form_valid(form)
 
 
