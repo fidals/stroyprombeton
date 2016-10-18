@@ -5,6 +5,7 @@ input {
   color: $c-table-input;
   font-size: $f-size-base;
   font-weight: 400;
+  padding: 4px 0;
 }
 
 .input {
@@ -14,17 +15,17 @@ input {
   }
 
   &-caret {
-    position: absolute;
-    right: 1px;
-    width: 20px;
-    height: 10px;
-    font-size: $f-size-base - 2;
-    line-height: 0.8;
-    text-align: center;
+    background-color: $c-white;
     color: $c-table-caret;
     cursor: pointer;
-    background-color: $c-white;
+    height: 12px;
+    font-size: $f-size-base - 2;
+    line-height: 0.8;
+    position: absolute;
+    right: 1px;
+    text-align: center;
     transition: all 0.2s ease;
+    width: 20px;
 
     &:hover {
       color: $c-table-caret-hover;
@@ -35,7 +36,7 @@ input {
     }
 
     &-down {
-      bottom: 2px;
+      bottom: 6px;
     }
   }
 }

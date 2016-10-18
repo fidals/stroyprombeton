@@ -7,6 +7,7 @@ $font-path: "../fonts";
 
 // Theme colors:
 $c-black: #000;
+$c-orange: #fc7126;
 $c-text-orange: #fc7126;
 $c-selection: #fc7126;
 $c-show-more-border: #ababab;
@@ -53,6 +54,11 @@ $c-path: #fc7126;
 $c-path-hover: #bd6739;
 $c-path-active: #904f2b;
 
+// Regions map
+$c-region-fill: #DDE3E8;
+$c-region-fill-hover: #67778B;
+
+// Footer
 $c-footer-bg: #f3f3f3;
 $c-footer-headers: #1d1d1d;
 $c-footer-li: #434343;
@@ -121,7 +127,7 @@ $c-table-btn: #fc7126;
 $c-table-btn-hover: #bd6739;
 $c-table-btn-active: #904f2b;
 
-// Page Series
+// Page Specs
 $c-series-h1: #171237;
 $c-series-categories-item: #212121;
 $c-series-categories-item-hover: #fc7126;
@@ -195,7 +201,8 @@ $c-404-info: #626262;
 // Params
 $h-nav: 56px;
 $h-searchbar: 44px;
-$h-header: $h-nav + $h-searchbar;
+$h-header-top-padding: 30px;
+$h-header: $h-nav + $h-searchbar + $h-header-top-padding;
 
 // Shadows:
 $c-shadow: rgba($c-black, 0.25);

@@ -6,12 +6,13 @@
       <div class="col-xs-3">
         <div class="nav-logo">
           <a href="/">
-            <img src="{{ STATIC_URL }}images/stk-prombeton.png" title="На главную" alt="СТК-ПромБетон">
+            <img class="img-responsive" src="{% static 'images/stk-prombeton.png' %}"
+                 title="На главную" alt="СТК-ПромБетон">
           </a>
         </div>
       </div>
 
-      <div class="col-xs-offset-2 col-xs-7">
+      <div class="col-md-9 col-lg-offset-2 col-lg-7">
         <ul class="nav">
           {% include 'layout/navigation.html' %}
           {% include 'ecommerce/header_cart.html' %}

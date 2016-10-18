@@ -1,21 +1,7 @@
 (() => {
-  const DOM = {
-    $gbiMap: $('.gbi-map'),
-    $gbiTooltip: $('.gbi-tooltip'),
-  };
-
   const init = () => {
-    pluginsInit();
     pasteSearchTerm();
   };
-
-  function pluginsInit() {
-    DOM.$gbiMap.maphilight();
-    DOM.$gbiTooltip.tooltipster({
-      maxWidth: 300,
-      interactive: true,
-    });
-  }
 
   /**
    * Paste entered user search term in search field.

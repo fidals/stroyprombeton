@@ -7,13 +7,7 @@
 {% block content %}
   {% include 'layout/breadcrumbs.html' %}
 
-  <div class="container container-fluid">
-    <div class="row">
-      <div class="col-xs-12">
-        <h1 class="title-h1">{{ page.h1 }} {{ product.mark }}</h1>
-      </div>
-    </div>
-  </div>
+  {% include 'layout/page_h1.html' with page=page %}
 
   <section class="product-serial text-center">
     <div class="container container-fluid">
@@ -89,6 +83,7 @@
               Производство ЖБИ: {{ page.h1 }} {{ product.mark }}
             </h2>
             <div class="product-describe-text">
+              {# TODO: https://goo.gl/arjtqq #}
               {% autoescape off %}{{ page.content }}{% endautoescape %}
             </div>
           </div>

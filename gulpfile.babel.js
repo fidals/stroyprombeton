@@ -33,6 +33,7 @@ const PATH = {
         'front/js/vendors/cookie.js',
         'front/js/vendors/jquery.mask.min.js',
         'front/js/vendors/auto-complete.min.js',
+        'front/js/vendors/tooltipster.bundle.min.js',
       ],
 
       pages: [
@@ -45,9 +46,6 @@ const PATH = {
       ],
 
       vendorsPages: [
-        // old ones:
-        'front/js/vendors/jquery.maphilight.min.js',
-        'front/js/vendors/jquery.tooltipster.min.js',
       ],
 
       common: [

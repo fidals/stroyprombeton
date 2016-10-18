@@ -4,6 +4,9 @@ Stroyprombeton views.
 NOTE: They all should be 'zero-logic'.
 All logic should be located in respective applications.
 """
+import os
+import json
+
 from django.conf import settings
 from django.shortcuts import render
 from django.views.generic import FormView, TemplateView
@@ -17,12 +20,21 @@ from pages.views import CustomPage, FlatPage, get_or_create_struct_page
 
 from stroyprombeton import mailer, config
 from stroyprombeton.forms import OrderForm, PriceForm, DrawingForm
-from stroyprombeton.models import Category, Product, Territory
+from stroyprombeton.models import Category, Product
 
 # Helpers
 # Sets CSRF-cookie to CBVs.
 set_csrf_cookie = method_decorator(ensure_csrf_cookie, name='dispatch')
 MODEL_MAP = {'product': Product, 'category': Category}
+
+
+def get_regions():
+    file_path = os.path.join(settings.BASE_DIR, 'templates/pages/index/regions.json')
+
+    with open(file_path) as json_data:
+        regions = json.load(json_data)
+
+    return regions
 
 
 def fetch_products(request):
@@ -39,7 +51,7 @@ def fetch_products(request):
 
     if filtered == 'true':
         lookups = ['name__icontains', 'code__icontains', 'mark__icontains']
-        products = filter_(products, term, lookups, ordering=('name', 'mark'))
+        products = filter_(term, products, lookups, ordering=('name', 'mark'))
 
     if offset:
         offset = int(offset)
@@ -60,7 +72,7 @@ class Autocomplete(search.Autocomplete):
     search_url = 'search'
 
     # Extend default ordering fields
-    extra_ordering_fields = ('mark', )
+    extra_ordering_fields = ('mark',)
 
     # Extend default search fields
     extra_entity_fields = {
@@ -72,11 +84,13 @@ class Autocomplete(search.Autocomplete):
 
 class AdminAutocomplete(search.AdminAutocomplete):
     """Override model references to STB-specific ones."""
+
     model_map = MODEL_MAP
 
 
 class Search(search.Search):
     """Override model references to STB-specific ones."""
+
     model_map = MODEL_MAP
 
 
@@ -86,6 +100,7 @@ class OrderFormMixin:
 
 class CategoryTree(catalog.CategoryTree):
     """Override model attribute to STB-specific Category."""
+
     model = Category
 
 
@@ -96,6 +111,7 @@ class CategoryPage(catalog.CategoryPage):
 
     Extend get_object and get_context_data.
     """
+
     model = Category
     url_lookup_field = 'category_id'
     db_lookup_field = 'id'
@@ -117,10 +133,12 @@ class CategoryPage(catalog.CategoryPage):
 @set_csrf_cookie
 class ProductPage(catalog.ProductPage):
     """Override model attribute to STB-specific Product."""
+
     model = Product
 
     def get_context_data(self, **kwargs):
         """Extend Product page context."""
+
         context = super(ProductPage, self).get_context_data(**kwargs)
         product = self.get_object()
         siblings = Product.objects.filter(specification=product.specification).exclude(id=product.id)
@@ -191,24 +209,19 @@ class OrderPrice(FormView):
 
 class IndexPage(CustomPage):
     """Custom view for Index page."""
+
     template_name = 'pages/index/index.html'
     slug = 'index'
+
     context = {
         'news': get_or_create_struct_page(slug='news').children.all().filter(is_active=True)[:2],
         'partners': config.PARTNERS,
         'reviews': config.REVIEWS,
-    }
-
-
-class TerritoryMapPage(CustomPage):
-    """Custom view for territory map and it's pages."""
-    template_name = 'pages/territory/territory_map.html'
-    slug_field = 'obekty'
-    context = {
-        'territories': Territory.objects.all()
+        'regions': get_regions(),
     }
 
 
 class RegionFlatPage(FlatPage):
     """Custom view for regions and it's flat_pages."""
-    template_name = 'pages/territory/region_page.html'
+
+    template_name = 'pages/regions/region_page.html'

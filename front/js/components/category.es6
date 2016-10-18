@@ -25,7 +25,7 @@
     mediator.subscribe('onProductsFilter', updateLoadMoreLink, refreshProductsList);
     mediator.subscribe('onProductsLoad', updateLoadMoreLink, appendToProductsList);
 
-    DOM.$addToCart.click(event => buyProduct(event));
+    DOM.$addToCart.click(buyProduct);
     DOM.$showMoreLink.click(loadProducts);
     DOM.$searchFilter.keyup(filterProducts);
   }
@@ -57,14 +57,14 @@
     const { id, count } = getProductInfo(event);
 
     server.addToCart(id, count)
-      .then(data => mediator.publish('onCartUpdate', data));
+      .then(data => mediator.publish('onCartUpdate', { data, target: event.target }));
   }
 
   /**
    * Show tooltip after adding Product to the Cart.
    */
-  function showTooltip(event) {
-    const $target = $(event.target).closest('.table-td').find('.js-popover');
+  function showTooltip(_, data) {
+    const $target = $(data.target).closest('.table-td').find('.js-popover');
 
     $target.fadeIn();
     setTimeout(() => $target.fadeOut(), 1000);

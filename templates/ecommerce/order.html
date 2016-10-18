@@ -1,18 +1,8 @@
-{% extends 'layout/base.html' %}
+{% extends 'pages/inner_page.html' %}
+
 {% load staticfiles %}
 
 {% block content %}
   <h1>Оформление заказа на ЖБИ продукцию</h1>
   {% include 'ecommerce/order_table_form.html' %}
 {% endblock %}
-
-{% block jslibs %}
-  {{ block.super }}
-  <script src="{% static 'js/vendors-pages.min.js' %}"></script>
-{% endblock %}
-
-{% block jslinks %}
-  {{ block.super }}
-  <script src="{% static 'js/pages.min.js' %}"></script>
-{% endblock %}
-

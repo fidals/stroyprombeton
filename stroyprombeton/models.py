@@ -6,7 +6,6 @@ from sys import maxsize
 
 from django.utils.text import slugify
 from django.db import models
-from django.contrib.postgres.fields import ArrayField
 from django.core.urlresolvers import reverse
 
 from catalog.models import AbstractProduct, AbstractCategory
@@ -64,22 +63,25 @@ class Product(AbstractProduct):
         return reverse('product', args=(self.id,))
 
 
-class Territory(PageConnectorMixin):
-    """Territory model - is a regions on map (ex: Chelyabinsk region)"""
+class Region(PageConnectorMixin):
+    """Region model - is a region on map (ex: Chelyabinsk region)"""
+
     name = models.CharField(max_length=255, unique=True)
-    coord = ArrayField(models.TextField())
     slug = models.SlugField(max_length=255)
 
     @property
-    def title(self):
+    def h1(self):
         return self.name
 
-    @title.setter
-    def title(self, value):
+    @h1.setter
+    def h1(self, value):
         # ORM requires any setter
         pass
 
     def save(self, *args, **kwargs):
         if self.name and not self.slug:
             self.slug = slugify(unidecode(self.name))
-        super(Territory, self).save(*args, **kwargs)
+        super(Region, self).save(*args, **kwargs)
+
+    def get_absolute_url(self):
+        return reverse('region_flat_page', args=(self.slug,))

@@ -1,5 +1,6 @@
 (() => {
   const DOM = {
+    // TODO: Doesn't work cause of new layout
     $addToCart: $('.js-add-basket'),
     $counter: $('.js-product-count'),
     $sliderContent: $('.js-slider-content'),

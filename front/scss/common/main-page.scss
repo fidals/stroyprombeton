@@ -179,26 +179,40 @@
 }
 
 // ================================================================
-// OBJECTS
+// OBJECTS MAP
 // ================================================================
 .objects {
   padding: 44px 0;
+
+  &-map {
+    margin: 0 auto;
+  }
 
   &-title {
     position: relative;
 
     &-h2 {
-      position: absolute;
       left: 99px;
+      position: absolute;
       top: 42px;
     }
   }
-
-  &-map {
-    text-align: center;
-  }
 }
 
+.map-region {
+  cursor: default;
+  fill: $c-region-fill;
+  transition: fill 0.3s ease;
+
+  &.active {
+    fill: lighten($c-region-fill-hover, 15%);
+  }
+
+  &.active:hover {
+    cursor: pointer;
+    fill: $c-region-fill-hover;
+  }
+}
 // ================================================================
 // PARTNERS
 // ================================================================
@@ -213,10 +227,10 @@
     margin-bottom: 60px;
 
     &-title {
-      margin-top: 10px;
       font-size: $f-size-base - 3;
       font-weight: 400;
       line-height: 1;
+      margin-top: 10px;
     }
   }
 }
@@ -304,10 +318,10 @@
     }
 
     &-item-title {
-      margin-bottom: 22px;
+      color: $c-reviews-title;
       font-size: $f-size-base + 4;
       font-weight: 600;
-      color: $c-reviews-title;
+      margin-bottom: 22px;
     }
   }
 
@@ -317,14 +331,14 @@
     text-align: center;
 
     &-item {
-      display: inline-block;
-      margin: 0 4px;
-      width: 9px;
-      height: 9px;
       background-color: $c-reviews-nav-item;
       border-radius: 50%;
       cursor: pointer;
+      display: inline-block;
+      height: 9px;
+      margin: 0 4px;
       transition: all 0.2s ease;
+      width: 9px;
     }
 
     &-item.active,
@@ -334,10 +348,10 @@
   }
 
   &-more {
+    border-bottom: 1px solid $c-reviews-bot-line;
     margin-top: 15px;
     padding-bottom: 20px;
     text-align: right;
-    border-bottom: 1px solid $c-reviews-bot-line;
   }
 }
 

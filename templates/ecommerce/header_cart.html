@@ -6,20 +6,18 @@
   <div class="cart">
     <div class="cart-clear js-clear-cart">Очистить корзину</div>
     <ul>
-      {% for position in cart %}
-        {% with product=position.product %}
-          <li class="cart-item">
-            <a class="cart-item-name" href="{{ product.get_absolute_url }}">
-              {{ product.name }}
-            </a>
+      {% for id, product in cart %}
+        <li class="cart-item">
+          <a class="cart-item-name" href="{{ product.url }}">
+            {{ product.name }}
+          </a>
 
-            <div class="cart-item-sum">
-              <span class="cart-item-price">{{ product.price|format_price }}</span>
-              <span class="cart-item-count js-header-prod-count">x {{ position.quantity }} шт.</span>
-            </div>
-            <i class="fa fa-close cart-item-remove js-remove" aria-hidden="true" title="Удалить"></i>
-          </li>
-        {% endwith %}
+          <div class="cart-item-sum">
+            <span class="cart-item-price">{{ product.price|format_price }}</span>
+            <span class="cart-item-count js-header-prod-count">x {{ product.quantity }} шт.</span>
+          </div>
+          <i class="fa fa-close cart-item-remove js-remove" aria-hidden="true" title="Удалить"></i>
+        </li>
       {% endfor %}
     </ul>
 

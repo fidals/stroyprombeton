@@ -18,7 +18,7 @@ from stroyprombeton.tests.tests_forms import PriceFormTest, DrawingFormTest
 
 
 def create_custom_pages():
-    """Create index, category_tree, news and territory pages."""
+    """Create index, category_tree, news and region pages."""
     for fields in custom_page_data.values():
         Page.objects.create(**fields)
 

@@ -25,7 +25,7 @@ a {
 
 .content {
   flex: 1;
-  padding: $h-nav + $h-searchbar 0;
+  padding: $h-header 0;
 }
 
 .separator {
@@ -48,7 +48,7 @@ a {
   }
 }
 
-.title {
+.heading {
   &-h1 {
     font-size: $f-size-base + 18;
     font-weight: 300;

@@ -13,7 +13,7 @@ from django.core.files.images import ImageFile
 from django.core.management.base import BaseCommand
 from django.utils.text import slugify
 
-from stroyprombeton.models import Category, Product, Territory
+from stroyprombeton.models import Category, Product, Region
 from pages.models import Page
 from images.models import Image
 
@@ -23,15 +23,6 @@ custom_page_data = {
         'h1': 'Новости компании',
         'title': 'Завод ЖБИ «СТК-ПромБетон»',
         'menu_title': 'Новости компании'
-    },
-    'obekty': {
-        'route': 'territory_page',
-        'slug': 'obekty',
-        'h1': 'Регионы, в которые поставлялась продукция «СТК-ПромБетон»',
-        'title': 'Регионы, в которые поставлялась продукция «СТК-ПромБетон»',
-        'menu_title': 'Наши объекты',
-        'position': 4,
-        'type': Page.CUSTOM_TYPE,
     },
     'index': {
         'slug': 'index',
@@ -102,7 +93,7 @@ def fill_images_data():
     def create_image_model(file_, product_id: int, slug):
         file_short_name, _ = os.path.splitext(file_.name)
 
-        # miss compressed or doubled images: '222-th.jpg', for example
+        # skip compressed or doubled images: '222-th.jpg', for example
         if file_short_name.endswith('-th'):
             return
 
@@ -110,8 +101,7 @@ def fill_images_data():
         page = get_page(product_id=product_id)
         if not page:
             return
-        # don't use bulk create, because save() isn't hooked with it
-        # proof link: http://bit.ly/django_bulk_create
+
         Image.objects.create(
             model=page,
             # autoincrement file names: '1.jpg', '2.jpg' and so on
@@ -180,12 +170,10 @@ class Command(BaseCommand):
     def get_data_from_db(self, cur: pymysql):
         tables = {
             'categories': ' '.join([
-                'id, parent_id, mark, name, title, h1, date,',
-                'text, ord'
+                'id, parent_id, mark, name, title, h1, date, text, ord'
             ]),
             'posts': ' '.join([
-                'name, title, h1, keywords, description, is_active, date,',
-                'text'
+                'name, title, h1, keywords, description, is_active, date, text'
             ]),
             'products': ' '.join([
                 'section_id, nomen, mark, length, width, height, weight,',
@@ -193,9 +181,8 @@ class Command(BaseCommand):
                 'keywords, description, date, text, price_date',
             ]),
             'static_pages': ' '.join([
-                'alias, name, title, h1, keywords, description, is_active,',
-                'date, text'
-            ])
+                'alias, name, title, h1, keywords, description, is_active, date, text'
+            ]),
         }
 
         def get_data(table: str) -> tuple:
@@ -208,8 +195,7 @@ class Command(BaseCommand):
             remove_esc_char = (lambda string: string.replace('\n', '').
                                replace('\r', '').replace('\t', ''))
 
-            check = (lambda raw:
-                     remove_esc_char(raw) if isinstance(raw, str) else raw)
+            check = (lambda raw: remove_esc_char(raw) if isinstance(raw, str) else raw)
 
             return [
                 [check(raw) for raw in obj]
@@ -235,15 +221,11 @@ class Command(BaseCommand):
                        datetime.strptime(date, '%Y-%m-%dT%H:%M:%S')
                        if date and not isinstance(date, datetime) else date)
 
-        to_int = (lambda obj:
-                  int(obj) if obj else obj)
-
-        to_float = (lambda obj:
-                    float(obj) if obj else obj)
-
+        to_int = (lambda obj: int(obj) if obj else obj)
+        to_float = (lambda obj: float(obj) if obj else obj)
         is_exist = lambda obj: obj if obj else ''
 
-        def create_category_data(data: list):
+        def create_categories(data: list):
             for category_data in data:
                 category = Category.objects.create(
                     id=to_int(category_data['id']),
@@ -258,8 +240,7 @@ class Command(BaseCommand):
                 category.page.is_active = bool(category_data['is_active'])
                 category.save()
 
-            get_category = (lambda id_:
-                            Category.objects.all().get(id=to_int(id_)))
+            get_category = (lambda id_: Category.objects.all().get(id=to_int(id_)))
 
             def create_parent(category):
                 current = get_category(category['id'])
@@ -272,7 +253,7 @@ class Command(BaseCommand):
             for category in filter(has_parent, data):
                 create_parent(category)
 
-        def create_product_data(data: list):
+        def create_products(data: list):
             for product_data in data:
                 product = Product.objects.create(
                     category=Category.objects.get(
@@ -297,8 +278,9 @@ class Command(BaseCommand):
                 product.page.keywords = is_exist(product_data['keywords'])
                 product.save()
 
-        def create_post_data(data: list):
+        def create_posts(data: list):
             news = Page.objects.create(**custom_page_data['news'])
+
             for post_data in data:
                 Page.objects.create(
                     slug=slugify(unidecode(post_data['name'])),
@@ -312,11 +294,10 @@ class Command(BaseCommand):
                     title=post_data['title'] or post_data['name']
                 )
 
-        def create_static_page_data(data: list):
+        def create_static_pages(data: list):
             navigation = Page.objects.create(slug='navi')
-            Page.objects.create(**custom_page_data['obekty'], parent=navigation)
-            Page.objects.create(**custom_page_data['index'], parent=navigation)
             Page.objects.create(**custom_page_data['category_tree'])
+            Page.objects.create(**custom_page_data['index'], parent=navigation)
             Page.objects.create(**custom_page_data['search'])
 
             for static_page_data in data:
@@ -336,16 +317,29 @@ class Command(BaseCommand):
                     static_page.position = self.navigation_items_positions[static_page.slug]
                     static_page.save()
 
-        create_category_data(data['categories'])
-        create_product_data(data['products'])
-        create_post_data(data['posts'])
-        create_static_page_data(data['static_pages'])
+        def create_regions():
+            file_path = os.path.join(settings.BASE_DIR, 'templates/pages/index/regions.json')
+
+            with open(file_path) as json_data:
+                json_data = json.load(json_data)
+
+            for i in json_data:
+                Region.objects.create(
+                    name=json_data[i]['name'],
+                )
+
+        create_categories(data['categories'])
+        create_products(data['products'])
+        create_posts(data['posts'])
+        create_static_pages(data['static_pages'])
+        create_regions()
         fill_images_data()
 
-        print('Was created {} categories, {} products, {} pages'.format(
+        print('Was created {} categories, {} products, {} pages, {} regions'.format(
             Category.objects.count(),
             Product.objects.count(),
             Page.objects.count(),
+            Region.objects.count(),
         ))
 
     def connect_to_the_mysql_db(self) -> pymysql.connect:
@@ -365,4 +359,4 @@ class Command(BaseCommand):
         Category.objects.all().delete()
         Product.objects.all().delete()
         Page.objects.all().delete()
-        Territory.objects.all().delete()
+        Region.objects.all().delete()

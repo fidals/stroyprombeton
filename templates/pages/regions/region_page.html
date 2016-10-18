@@ -1,0 +1,21 @@
+{% extends 'pages/inner_page.html' %}
+
+{% load pages_extras %}
+
+{% block content %}
+  {% include 'layout/breadcrumbs.html' %}
+
+  {% include 'layout/page_h1.html' with page=page only %}
+
+  <div class="container container-fluid">
+    <div class="row">
+      {% for object in page.children.all %}
+        <ul>
+          <li>
+            <a href="{{ object.url }}">{{ object.menu_title }}</a>
+          </li>
+        </ul>
+      {% endfor %}
+    </div>
+  </div>
+{% endblock %}

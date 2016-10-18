@@ -1,3 +1,5 @@
+{% load images %}
+{% load thumbnail %}
 {% load stb_extras %}
 
 <section class="mainpage-news">
@@ -6,9 +8,18 @@
   <ul>
     {% for item in news %}
       <li class="mainpage-news-item">
-        <a href="{{ item.get_absolute_url }}">
-          <img class="mainpage-news-item-img"
-               src="{{ MEDIA_URL }}news/{{ item.date_published|date:'d-m-y' }}/165x165.jpg">
+        <a href="{{ item.url }}">
+          {% if page.main_image %}
+            {% thumbnail page.main_image '164x165' as image %}
+              <img class="mainpage-news-item-img"
+                   src="{{ image.url }}" alt="{% get_img_alt product.page %}">
+            {% endthumbnail %}
+          {% else %}
+            {% placeholder_image_url as image_url %}
+              <img class="mainpage-news-item-img"
+                   src="{{ image.url }}" alt="{% get_img_alt product.page %}">
+          {% endif %}
+
           <p class="mainpage-news-item-title">{{ item.h1 }}</p>
           <p class="mainpage-news-item-short">{{ item.description }}</p>
         </a>

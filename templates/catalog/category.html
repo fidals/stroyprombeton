@@ -5,13 +5,7 @@
 {% block content %}
   {% include 'layout/breadcrumbs.html' %}
 
-  <div class="container container-fluid">
-    <div class="row">
-      <div class="col-xs-12">
-        <h1 class="title-h1">{{ page.h1 }}</h1>
-      </div>
-    </div>
-  </div>
+  {% include 'layout/page_h1.html' with page=page only %}
 
   <section class="category-search">
     <div class="container container-fluid">

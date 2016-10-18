@@ -4,11 +4,6 @@ from django.conf.urls.static import static
 
 from stroyprombeton import views
 
-build_objects_url = [
-    url(r'^$', views.TerritoryMapPage.as_view(), name='territory_page'),
-    url(r'^([\w-]+)/$', views.RegionFlatPage.as_view(), name='region_flat_page'),
-]
-
 catalog_urls = [
     url(r'^$', views.CategoryTree.as_view(), name='category_tree'),
     url(r'^categories/(?P<category_id>[0-9]+)/$', views.CategoryPage.as_view(), name='category'),
@@ -33,11 +28,11 @@ urlpatterns = [
     url(r'^drawing-success/', views.OrderDrawingSuccess.as_view(), name='order_drawing_success'),
     url(r'^gbi/', include(catalog_urls)),
     url(r'^fetch-products/$', views.fetch_products, name='fetch_products'),
-    url(r'^obekty/', include(build_objects_url)),
     url(r'^order-drawing/', views.OrderDrawing.as_view(), name='order_drawing'),
     url(r'^order-price/', views.OrderPrice.as_view(), name='order_price'),
     url(r'^page/', include('pages.urls')),
     url(r'^price-success/', views.OrderPriceSuccess.as_view(), name='order_price_success'),
+    url(r'^regions/^([\w-]+)/$', views.RegionFlatPage.as_view(), name='region_flat_page'),
     url(r'^search/', include(search_urls)),
     url(r'^shop/', include(ecommerce_urls)),
     url(r'^shop/', include('ecommerce.urls')),

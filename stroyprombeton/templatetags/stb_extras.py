@@ -1,5 +1,7 @@
 from django import template
 
+from images.models import ImageMixin
+
 from stroyprombeton.models import Category
 
 register = template.Library()
@@ -40,3 +42,20 @@ def format_price(price):
 @register.simple_tag
 def get_root_categories():
     return Category.objects.root_nodes().filter(page__is_active=True).order_by('position', 'name')
+
+
+# Not good code, but duker at 06/10/2016 don't know how to fix it.
+# It makes Image model very complex.
+@register.simple_tag
+def get_img_alt(entity: ImageMixin):
+    product_alt = 'Фотография {}'
+    logo_alt = 'Логотип компании Shopelectro'
+
+    if not hasattr(entity, 'images') or not entity.images.all():
+        return logo_alt
+
+    # try one of this attributes to get pages name
+    name_attrs = ['h1', 'title', 'name']
+    entity_name = next(
+        filter(None, (getattr(entity, attr, None) for attr in name_attrs)))
+    return product_alt.format(entity_name)

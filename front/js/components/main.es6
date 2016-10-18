@@ -12,12 +12,14 @@
     popover: '.js-popover',
     $btnScrollTop: $('#btn-scroll-to-top'),
     bannerClass: 'searchbar-banner',
+    $gbiTooltip: $('.js-object-tooltip.active'),
   };
 
   const searchbarInitTopValue = parseInt(DOM.$searchBar.css('top'), 10);
 
   const init = () => {
     setUpListeners();
+    pluginsInit();
   };
 
   function setUpListeners() {
@@ -27,6 +29,31 @@
     DOM.$btnContactUs.click(showBackcallModal);
     DOM.$modalClose.click(closeBackcallModal);
     DOM.$reviewsNavItems.click(reviewsSlideTo);
+  }
+
+  function pluginsInit() {
+    DOM.$gbiTooltip.tooltipster({
+      anchor: 'bottom-center',
+      contentAsHTML: true,
+      interactive: true,
+      maxWidth: 300,
+      offset: [0, 20],
+      trigger: 'custom',
+      // close tooltip when element is clicked again, tapped or when the mouse leaves it
+      triggerClose: {
+        click: true,
+        // ensuring that scrolling mobile is not tapping
+        scroll: false,
+        tap: true,
+        mouseleave: true,
+      },
+      // open tooltip when element is clicked, tapped (mobile) or hovered
+      triggerOpen: {
+        click: true,
+        tap: true,
+        mouseenter: true,
+      },
+    });
   }
 
   /**
@@ -46,7 +73,7 @@
   }
 
   /**
-   * Slide reviews minicarousel.
+   * Slide reviews carousel.
    */
   function reviewsSlideTo(event) {
     const reviewID = $(event.target).data('slide-to');
