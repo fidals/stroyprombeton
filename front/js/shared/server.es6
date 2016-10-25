@@ -8,10 +8,10 @@ const server = (() => {
 
   /**
    * Add product to backend's Cart.
-   * @param productId
-   * @param quantity
+   * @param {number} productId
+   * @param {number} quantity
    */
-  const addToCart = (productId, quantity) => {
+  function addToCart(productId, quantity) {
     return $.post(
       config.addToCartUrl,
       {
@@ -19,25 +19,25 @@ const server = (() => {
         quantity,
       }
     );
-  };
+  }
 
   /**
-   * Flush (clear) the cart on backend.
+   * Flush (clear) Cart on backend.
    */
   const flushCart = () => $.post(config.flushCartUrl);
 
   /**
-   * Remove given product from Cart.
-   * @param productId
+   * Remove given Product from Cart.
+   * @param {string} productId
    */
   const removeFromCart = productId => $.post(config.removeFromCartUrl, { product: productId });
 
   /**
-   * Return $.post request, which changes quantity of a given Product in Cart.
-   * @param productId
-   * @param quantity - new quantity of a product
+   * Change Product quantity in Cart.
+   * @param {string} productId
+   * @param {string} quantity - new quantity of a Product
    */
-  const changeInCart = (productId, quantity) => {
+  function changeInCart(productId, quantity) {
     return $.post(
       config.changeCartUrl,
       {
@@ -45,7 +45,7 @@ const server = (() => {
         quantity,
       }
     );
-  };
+  }
 
   return {
     addToCart,

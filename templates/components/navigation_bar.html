@@ -14,8 +14,11 @@
 
       <div class="col-md-9 col-lg-offset-2 col-lg-7">
         <ul class="nav">
-          {% include 'layout/navigation.html' %}
-          {% include 'ecommerce/header_cart.html' %}
+          {% include 'components/navigation.html' %}
+
+          <li class="nav-item cart-wrapper js-cart-wrapper">
+            {% include 'ecommerce/header_cart.html' %}
+          </li>
         </ul>
       </div>
     </div>

@@ -1,11 +1,11 @@
-{% extends 'pages/inner_page.html' %}
+{% extends 'layout/inner_page.html' %}
 
 {% load staticfiles %}
 
 {% block content %}
-  {% include 'layout/breadcrumbs.html' %}
+  {% include 'components/breadcrumbs.html' %}
 
-  {% include 'layout/page_h1.html' with page=page only %}
+  {% include 'components/page_h1.html' with page=page only %}
 
   <section class="category-search">
     <div class="container container-fluid">
@@ -57,7 +57,7 @@
           </tbody>
         </table>
 
-        {% include 'layout/show_more_button.html' %}
+        {% include 'components/show_more_button.html' %}
       </div>
     </div>
   </div>

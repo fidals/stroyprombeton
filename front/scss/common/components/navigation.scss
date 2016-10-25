@@ -36,40 +36,44 @@
     }
   }
 
-  &-cart-link {
+  .active &-cart-link {
     color: $c-nav-link-chart;
 
     &:hover {
       color: $c-nav-link-chart-hover;
     }
   }
-
-  &-cart-button:hover {
-    .cart {
-      display: block;
-    }
-  }
 }
 
 .cart {
-  display: none;
-  position: absolute;
-  right: 15px;
-  top: 45px;
-  padding: 12px 16px 16px;
-  width: 324px;
   background-color: $c-white;
   border-radius: 2px;
   box-shadow: $sh-modal;
+  opacity: 0;
+  padding: 12px 10px 16px 16px;
+  position: absolute;
+  right: 15px;
+  top: 45px;
+  transition: opacity 0.5s ease;
+  visibility: hidden;
+  width: 324px;
+  z-index: -1;
+
+  &.active,
+  .cart-wrapper:hover & {
+    opacity: 1;
+    visibility: visible;
+    z-index: 100;
+  }
 
   &-clear {
-    margin-bottom: 21px;
+    color: $c-nav-chart-clear;
+    cursor: pointer;
     font-size: $f-size-base - 3;
     font-weight: 600;
     line-height: 1.23;
+    margin-bottom: 15px;
     text-align: right;
-    color: $c-nav-chart-clear;
-    cursor: pointer;
     transition: all 0.2s ease;
 
     &:hover {
@@ -78,6 +82,38 @@
 
     &:active {
       color: $c-nav-chart-clear-active;
+    }
+  }
+
+  &-empty-text {
+    padding: 0 0 15px;
+  }
+
+  &-item-list {
+    max-height: 250px;
+    overflow-x: hidden;
+    overflow-y: visible;
+    padding: 0 20px 15px 0;
+    position: relative;
+  }
+
+  &-sum {
+    border-top: 1px solid $c-text;
+    padding: 15px 0;
+  }
+
+  &-item-list-after {
+    margin: 0 0 10px;
+    position: relative;
+
+    &::after {
+      background: linear-gradient(to bottom, transparent, $c-white);
+      content: "";
+      bottom: 0;
+      height: 20px;
+      left: 0;
+      position: absolute;
+      right: 0;
     }
   }
 
@@ -107,21 +143,21 @@
     }
 
     &-remove {
-      position: absolute;
-      right: -6px;
-      top: 0;
-      padding: 2px;
-      color: $c-nav-chart-item-remove;
+      color: $c-icon-remove;
       cursor: pointer;
+      padding: 2px;
+      position: absolute;
+      right: -15px;
+      top: 0;
+
+      &:hover {
+        color: $c-black;
+      }
     }
   }
 
   &-order {
-    padding-top: 19px;
-    text-align: right;
-
     &-btn {
-      padding: 4px 18px 6px;
       font-size: $f-size-base;
     }
   }
@@ -132,8 +168,8 @@
   border-radius: 2px;
   box-shadow: $sh-modal;
   display: none;
-  left: 2px;
-  padding: 16px 12px;
+  left: 0;
+  padding: 14px;
   position: absolute;
   transition: opacity 0.3s ease;
   top: 42px;
@@ -144,18 +180,24 @@
   }
 
   &-item {
-    margin-bottom: 4px;
+    &:not(:last-child) {
+      margin-bottom: 10px;
+    }
 
     &-link {
-      font-size: $f-size-base - 2;
-      font-weight: 300;
-      line-height: 1.14;
-      letter-spacing: -0.2px;
       color: $c-nav-subnav-link;
     }
 
     &-link:hover {
       color: $c-nav-subnav-link-hover;
+    }
+
+    &-remove {
+      transition: all 0.3s ease;
+
+      &:hover {
+        color: $c-black;
+      }
     }
   }
 }

@@ -1,8 +1,7 @@
 (() => {
   const DOM = {
-    // TODO: Doesn't work cause of new layout
-    $addToCart: $('.js-add-basket'),
-    $counter: $('.js-product-count'),
+    $addToCart: $('#buy-product'),
+    $counter: $('.js-count-input'),
     $sliderContent: $('.js-slider-content'),
     $sliderNavLeft: $('.js-slider-nav-left'),
     $sliderNavRight: $('.js-slider-nav-right'),
@@ -18,7 +17,7 @@
     itemsWidth: DOM.$sliderItem.eq(0).outerWidth(true),
   };
 
-  const productId = () => DOM.$addToCart.attr('product-id');
+  const productId = () => DOM.$addToCart.attr('data-product-id');
 
   const init = () => {
     setUpListeners();
@@ -37,7 +36,7 @@
     };
 
     server.addToCart(id, count)
-      .then(data => mediator.publish('onCartUpdate', data));
+      .then(data => mediator.publish('onCartUpdate', { html: data }));
   }
 
   const isDisabled = $sliderBtn => $sliderBtn.hasClass(slider.disabledClass);

@@ -1,14 +1,12 @@
-{% extends 'pages/inner_page.html' %}
+{% extends 'layout/inner_page.html' %}
 
 {% load staticfiles %}
 {% load mptt_tags %}
 
 {% block content %}
-  {% include 'layout/breadcrumbs.html' %}
+  {% include 'components/breadcrumbs.html' %}
 
-  <div class="container container-fluid">
-    <h1 class="title-h1 catalog-h1">Каталог ЖБИ</h1>
-  </div>
+  {% include 'components/page_h1.html' with page=page only %}
 
   <div class="container container-fluid">
     <div class="catalog-ul-wrapper">

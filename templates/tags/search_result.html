@@ -8,7 +8,7 @@
       <td class="table-td table-picture text-center">
         <div class="table-picture-ico icon-picture"></div>
       </td>
-      <td class="table-td table-code">{{ item.code|default:'' }}</td>
+      <td class="table-td table-code">{{ item.code|default:'-' }}</td>
       <td class="table-td table-name">
         <a class="table-link" href="{{ item.get_absolute_url }}">
           {{ item.specification }} {{ item.name }} {{ item.mark }}

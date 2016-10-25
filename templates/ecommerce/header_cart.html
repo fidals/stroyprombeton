@@ -1,28 +1,37 @@
 {% load stb_extras %}
 
-<li class="nav-item nav-cart-button js-cart-trigger {% if cart|length %}active{% endif %}">
+<div class="{% if cart|length %}active{% endif %}">
   <a class="nav-link nav-cart-link" href="{% url 'ecommerce:order_page' %}">Корзина</a>
 
-  <div class="cart">
-    <div class="cart-clear js-clear-cart">Очистить корзину</div>
-    <ul>
-      {% for id, product in cart %}
-        <li class="cart-item">
-          <a class="cart-item-name" href="{{ product.url }}">
-            {{ product.name }}
-          </a>
+  <div class="cart js-cart">
+    <div class="cart-clear js-flush-cart">Очистить корзину</div>
 
-          <div class="cart-item-sum">
-            <span class="cart-item-price">{{ product.price|format_price }}</span>
-            <span class="cart-item-count js-header-prod-count">x {{ product.quantity }} шт.</span>
-          </div>
-          <i class="fa fa-close cart-item-remove js-remove" aria-hidden="true" title="Удалить"></i>
-        </li>
-      {% endfor %}
-    </ul>
+    {% if cart|length %}
+      <ul class="cart-item-list">
+        {% for id, product in cart %}
+          <li class="cart-item">
+            <a class="cart-item-name" href="{{ product.url }}">
+              {{ product.name }}
+            </a>
 
-    <div class="cart-order">
+            <div class="cart-item-sum">
+              <span class="cart-item-price">{{ product.price|format_price }}</span>
+              <span class="cart-item-count js-header-product-count">x {{ product.quantity }} шт.</span>
+            </div>
+            <i class="fa fa-close cart-item-remove icon-remove js-remove"
+               data-product-id="{{ id }}" aria-hidden="true" title="Удалить товар"></i>
+          </li>
+        {% endfor %}
+      </ul>
+      <div class="cart-item-list-after"></div>
+
+      <p class="cart-sum text-right"><strong>Итог: {{ cart.total_price|format_price }}</strong></p>
+    {% else %}
+      <h5 class="cart-empty-text text-center">Пока в корзине нет товаров.</h5>
+    {% endif %}
+
+    <div class="text-right">
       <a href="{% url 'ecommerce:order_page' %}" class="btn cart-order-btn">Оформить заказ</a>
     </div>
   </div>
-</li>
+</div>

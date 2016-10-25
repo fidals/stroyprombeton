@@ -16,7 +16,7 @@
     font-weight: 300;
     line-height: 1.18;
     text-align: center;
-    color: $c-series-h1;
+    color: $c-specs-h1;
   }
 }
 
@@ -50,7 +50,7 @@
     line-height: 1.33;
     text-align: center;
     vertical-align: middle;
-    color: $c-series-categories-item;
+    color: $c-specs-categories-item;
     cursor: pointer;
     transition: all 0.2s ease;
 
@@ -67,7 +67,7 @@
       top: 0;
       bottom: 0;
       margin: auto;
-      background-color: $c-series-categories-border;
+      background-color: $c-specs-categories-border;
     }
 
     &::before {
@@ -79,19 +79,19 @@
     }
 
     &:hover {
-      color: $c-series-categories-item-hover;
+      color: $c-specs-categories-item-hover;
     }
   }
 
   &-item.active {
-    color: $c-series-categories-item-active;
+    color: $c-specs-categories-item-active;
     font-weight: bold;
     z-index: 1;
 
     &::after,
     &::before,
     &:last-child::after {
-      background-color: $c-series-categories-item-active;
+      background-color: $c-specs-categories-item-active;
     }
   }
 }
@@ -110,14 +110,14 @@
 .series-list {
   padding: 28px 29px;
   min-height: 290px;
-  background-color: $c-series-list-bg;
-  border-top: 1px solid $c-series-list-border;
+  background-color: $c-specs-list-bg;
+  border-top: 1px solid $c-specs-list-border;
 
   &-item {
     font-size: $f-size-base + 2;
     font-weight: 600;
     line-height: 1.67;
-    color: $c-series-list-item;
+    color: $c-specs-list-item;
 
     &::before {
       content: "•";
@@ -126,7 +126,7 @@
   }
 
   &-link {
-    color: $c-series-list-link;
+    color: $c-specs-list-link;
     transition: all 0.2s ease;
 
     &:hover {
@@ -143,5 +143,5 @@
   font-size: $f-size-base + 2;
   font-weight: 300;
   line-height: 1.33;
-  color: $c-series-about;
+  color: $c-specs-about;
 }

@@ -1,19 +1,11 @@
-{% extends 'pages/inner_page.html' %}
+{% extends 'layout/inner_page.html' %}
 
 {% load stb_extras %}
 
 {% block content %}
-  {% include 'layout/breadcrumbs.html' %}
+  {% include 'components/breadcrumbs.html' %}
 
-  <section class="search-header">
-    <div class="container container-fluid">
-      <div class="row">
-        <div class="col-xs-12">
-          <h1 class="title-h1 search-h1">Результаты поиска по вашему запросу</h1>
-        </div>
-      </div>
-    </div>
-  </section>
+  {% include 'components/page_h1.html' with page=page only %}
 
   <section class="search-content">
     <div class="container container-fluid">
@@ -59,5 +51,5 @@
     </div>
   </section>
 
-  {% include 'layout/backcall_button.html' %}
+  {% include 'components/backcall_button.html' %}
 {% endblock %}

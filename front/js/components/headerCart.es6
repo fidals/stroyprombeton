@@ -1,7 +1,8 @@
 (() => {
   const DOM = {
-    $cart: $('.js-cart-trigger'),
-    clearCartClass: '.js-clear-cart',
+    $cartWrapper: $('.js-cart-wrapper'),
+    $orderTable: $('.js-order-contain'),
+    flushCart: '.js-flush-cart',
     removeFromCart: '.js-remove',
   };
 
@@ -10,40 +11,52 @@
   };
 
   function setUpListeners() {
-    mediator.subscribe('onCartUpdate', render);
+    mediator.subscribe('onCartUpdate', render, showCart);
 
-    // Since product's list in cart dropdown is dynamic, we bind events on static parent
-    DOM.$cart.on('click', DOM.clearCartClass, () => clearCart());
-    DOM.$cart.on('click', DOM.removeFromCart, event => {
-      removeCartProduct(event.target.getAttribute('productId'));
+    // Bind events on static parent cause of dynamic product list in Cart.
+    DOM.$cartWrapper.on('click', DOM.flushCart, () => flushCart());
+    DOM.$cartWrapper.on('click', DOM.removeFromCart, (event) => {
+      removeFromCart(event.target.getAttribute('data-product-id'));
     });
   }
 
   /**
-   * Remove product from cart by given id.
-   * Trigger 'onCartUpdate' event afterwards.
-   * @param productId
+   * Remove Product from Cart by given id.
+   * @param {string} productId
    */
-  function removeCartProduct(productId) {
+  function removeFromCart(productId) {
     server.removeFromCart(productId)
-      .then(data => mediator.publish('onCartUpdate', data));
+      .then(data => mediator.publish('onCartUpdate', { html: data }));
   }
 
   /**
-   * Remove all products from cart.
-   * Trigger 'onCartUpdate' event afterwards.
+   * Remove all Products from Cart.
    */
-  function clearCart() {
+  function flushCart() {
     server.flushCart()
-      .then(data => mediator.publish('onCartUpdate', data));
+      .then(data => mediator.publish('onCartUpdate', { html: data }));
   }
 
   /**
-   * Render new cart's html.
-   * @param data
+   * Render new Cart's html.
+   * @param {string} data - html form server
    */
-  function render(data) {
-    DOM.$cart.html(data.header);
+  function render(_, data) {
+    DOM.$cartWrapper.html(data.html.header);
+  }
+
+  /**
+   * Perform header Cart dropdown animation for every page, except order page.
+   */
+  function showCart() {
+    if (DOM.$orderTable.size() > 0) return;
+
+    const $cartProductsList = DOM.$cartWrapper.find('.js-cart');
+    $cartProductsList.addClass('active');
+
+    setTimeout(() => {
+      $cartProductsList.removeClass('active');
+    }, 3000);
   }
 
   init();

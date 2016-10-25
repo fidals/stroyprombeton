@@ -1,14 +1,17 @@
-{% extends 'layout/base.html' %}
-
-{% block title %}Оформление заказа на ЖБИ продукцию{% endblock %}
+{% extends 'layout/inner_page.html' %}
 
 {% block content %}
-  <h1>Ваш заказ принят</h1>
+  <div class="container container-fluid">
+    <h1 class="heading-h1">Ваш заказ принят</h1>
 
-  <p>
-    Ваш email: <a id="user-email" href="mailto:{{ order.email }}">{{ order.email }}</a>. Для уточнения деталей заказа
-    менеджер свяжется с вами по номеру <span id="user-phone">{{ order.phone }}</span>.
-  </p>
+    <p class="order-success-text">
+      Ваш email: <a id="user-email" href="mailto:{{ order.email }}">{{ order.email }}</a>. <br>
+      Для уточнения деталей заказа менеджер свяжется с вами по номеру
+      <span id="user-phone">{{ order.phone }}</span>.
+    </p>
 
-  <a href="/">Вернуться на главную</a>
+    <p class="text-center">
+      <a href="/" class="btn">Вернуться на главную</a>
+    </p>
+  </div>
 {% endblock %}

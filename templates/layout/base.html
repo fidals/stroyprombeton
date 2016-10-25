@@ -3,7 +3,7 @@
 <html lang="ru">
 <head>
   {% if page %}
-    {% include 'layout/metadata.html' with page=page only %}
+    {% include 'components/metadata.html' with page=page only %}
   {% endif %}
 
   <link rel="icon" type="image/x-icon" href="{% static 'images/favicon.ico' %}">
@@ -15,11 +15,11 @@
 
 <body class="{% block body_class %}{% endblock %}">
   <header class="header">
-    {% include 'layout/navigation_bar.html' %}
+    {% include 'components/navigation_bar.html' %}
 
     {% block search_bar %}
       <div class="searchbar js-searchbar">
-        {% include 'layout/search_bar.html' %}
+        {% include 'components/search_bar.html' %}
       </div>
     {% endblock %}
   </header>
@@ -33,7 +33,7 @@
   {% endblock %}
 
   {% block backcall_modal %}
-    {% include 'layout/backcall_modal.html' %}
+    {% include 'components/backcall_modal.html' %}
   {% endblock %}
 
   <div class="btn btn-scroll-to-top" id="btn-scroll-to-top">Наверх</div>

@@ -1,5 +1,5 @@
 // ================================================================
-// We use only woff & woff2 formats.
+// We use only woff & woff2 font formats
 // ================================================================
 @font-face {
   font-family: "FontAwesome";
@@ -7,4 +7,13 @@
        url("#{$font-path}/fontawesome-webfont.woff?v=4.6.3") format("woff");
   font-weight: normal;
   font-style: normal;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 300;
 }

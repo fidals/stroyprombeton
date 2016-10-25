@@ -1,16 +1,16 @@
 import time
 
-from selenium.webdriver.common.keys import Keys
-from seleniumrequests import Chrome  # We use this instead of standard selenium
 from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.remote.webelement import WebElement
+from seleniumrequests import Chrome  # We use this instead of standard selenium
 
 from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.db.models import Count
 from django.test import LiveServerTestCase
 
-from stroyprombeton.models import Category
+from stroyprombeton.models import Category, Product
 
 
 def wait(seconds=1):
@@ -60,148 +60,153 @@ click_and_wait = Action.click_and_wait
 send_keys_and_wait = Action.send_keys_and_wait
 
 
-class BuyMixin:
-    """Allow to add products to cart."""
-
-    def buy(self, *, product_id=1, quantity=None, waiting_time=1):
+class CartMixin:
+    def buy_on_product_page(self, *, product_id=1, quantity=None, waiting_time=1):
         product_page = (self.live_server_url + reverse('product', args=(product_id,)))
         self.browser.get(product_page)
+
         if quantity:
-            q = self.browser.find_element_by_class_name('js-product-count')
+            q = self.browser.find_element_by_class_name('js-count-input')
             q.clear()
             send_keys_and_wait(q, quantity, waiting_time=waiting_time)
-        click_and_wait(self.browser.find_element_by_class_name('js-add-basket'),
-                       waiting_time=waiting_time)
+
+        click_and_wait(self.browser.find_element_by_id('buy-product'), waiting_time=waiting_time)
+
+    def buy_on_category_page(self):
+        click_and_wait(self.browser.find_element_by_class_name('js-category-buy'))
+
+    def cart(self):
+        return self.browser.find_element_by_class_name('cart-wrapper')
+
+    def show_cart(self):
+        hover(self.browser, self.cart())
+
+    def positions(self):
+        return self.browser.find_elements_by_class_name('cart-item')
+
+    def positions_count(self):
+        self.show_cart()
+        return len(self.positions())
 
 
-class HeaderCart(SeleniumTestCase, BuyMixin):
+class HeaderCart(SeleniumTestCase, CartMixin):
     def setUp(self):
         super(HeaderCart, self).setUp()
         self.browser.get(self.live_server_url)
 
-    @property
-    def cart(self):
-        return self.browser.find_element_by_class_name('js-cart-trigger')
+    def assert_cart_is_empty(self):
+        self.show_cart()
+        cart_list = self.browser.find_element_by_class_name('js-cart').text
 
-    @property
-    def positions(self):
-        return self.browser.find_element_by_class_name('basket-content').text
-
-    def show_cart(self):
-        hover(self.browser, self.cart)
+        self.assertIn('Пока в корзине нет товаров', cart_list)
 
     def test_empty_cart_dropdown(self):
+        self.assert_cart_is_empty()
+
+    def test_add_to_cart_updates_header(self):
+        self.buy_on_product_page()
+
+        self.assertEqual(self.positions_count(), 1)
+
+        product_in_database = Product.objects.get(id=1).name
+        product_in_cart_name = self.browser.find_element_by_class_name('cart-item-name').text
+
+        self.assertEqual(product_in_database, product_in_cart_name)
+
+    def test_delete_from_header_cart(self):
+        self.buy_on_product_page()
+        self.buy_on_product_page(product_id=2)
         self.show_cart()
-        cart_wrapper = self.browser.find_element_by_class_name('js-cart-trigger')
-        cart_wrapper_classes = cart_wrapper.get_attribute('class')
+        click_and_wait(self.browser.find_element_by_class_name('js-remove'))
 
-        self.assertNotIn('active', cart_wrapper_classes)
+        self.assertEqual(self.positions_count(), 1)
 
-    # TODO: Doesn't work cause new Cart dropdown layout
-    # def test_add_to_cart_updates_header(self):
-    #     self.buy(product_id=1)
-    #     self.show_cart()
-    #     self.assertIn('1', self.positions)
-    #     self.assertIn(self.product1.name, self.browser.find_element_by_class_name(
-    #         'mbasket-items').text)
+    def test_flush_cart(self):
+        self.buy_on_product_page()
+        self.buy_on_product_page(product_id=2)
+        self.show_cart()
+        click_and_wait(self.browser.find_element_by_class_name('js-flush-cart'))
 
-    # TODO: Doesn't work cause new Cart dropdown layout
-    # def test_delete_from_header_cart(self):
-    #     self.buy(product_id=1)
-    #     self.buy(product_id=2)
-    #     self.show_cart()
-    #     click_and_wait(self.browser.find_element_by_xpath(
-    #         '//*[@id="dropdown-basket"]/table/tbody/tr[1]/td[4]/a/i'
-    #     ))
-    #     self.assertIn('1', self.positions)
-
-    # TODO: Doesn't work cause new Cart dropdown layout
-    # def test_flush_cart(self):
-    #     self.buy(product_id=1)
-    #     self.buy(product_id=2)
-    #     self.show_cart()
-    #     click_and_wait(self.browser.find_element_by_class_name('js-reset'))
-    #     self.assertCartEmpty()
+        self.assert_cart_is_empty()
 
 
-# class ProductPage(SeleniumTestCase, BuyMixin):
-    # TODO: Doesn't work cause new Cart dropdown layout
-    # def test_buy_product(self):
-    #     self.buy()
-    #     self.assertIn('1', self.browser.find_element_by_class_name(
-    #         'basket-content').text)
+class ProductPage(SeleniumTestCase, CartMixin):
+    def test_buy_product(self):
+        self.buy_on_product_page()
 
-    # TODO: Doesn't work cause new Cart dropdown layout
-    # def test_buy_two_products(self):
-    #     self.buy()
-    #     self.buy(product_id=2)
-    #     self.assertIn('2', self.browser.find_element_by_class_name(
-    #         'basket-content').text)
+        self.assertEqual(self.positions_count(), 1)
 
-    # TODO: Doesn't work cause new Cart dropdown layout
-    # def test_buy_product_with_count(self):
-    #     self.buy(quantity=42)
-    #     hover(
-    #         self.browser,
-    #         self.browser.find_element_by_id('cartInner')
-    #     )
-    #     self.assertIn('42', self.browser.find_element_by_xpath(
-    #         '//*[@id="dropdown-basket"]/table/tbody/tr[1]/td[3]'
-    #     ).text)
+    def test_buy_two_products(self):
+        self.buy_on_product_page()
+        self.buy_on_product_page(product_id=2)
 
-    # TODO: Doesn't work cause new Cart dropdown layout
-    # def test_tooltip(self):
-    #     self.buy(waiting_time=0)
-    #     tooltip = self.browser.find_element_by_id('tooltip')
-    #     self.assertTrue(tooltip.is_displayed())
+        self.assertEqual(self.positions_count(), 2)
 
-# TODO: This tests wouldn't work cause of new HTML
-# class OrderPage(SeleniumTestCase, BuyMixin):
-#     def proceed_order_page(self):
-#         self.browser.get(self.live_server_url + reverse('ecommerce:order_page'))
-#
-#     def test_order_page_actual_count_of_rows(self):
-#         self.buy()
-#         self.buy(product_id=2)
-#         self.proceed_order_page()
-#         products_in_table = self.browser.find_elements_by_class_name('js-product-row')
-#         self.assertEqual(len(products_in_table), 2)
-#
-#     def test_order_page_remove_row(self):
-#         self.buy()
-#         self.buy(product_id=2)
-#         self.proceed_order_page()
-#         click_and_wait(self.browser.find_element_by_xpath(
-#             '/html/body/div[2]/div[2]/div[2]/div/div[2]/div/table/tbody/tr[1]/td[5]/a/i'))
-#         products_in_table = self.browser.find_elements_by_class_name('js-product-row')
-#         self.assertEqual(len(products_in_table), 1)
-#
-#     def test_order_page_remove_all_products(self):
-#         self.buy()
-#         self.proceed_order_page()
-#         click_and_wait(self.browser.find_element_by_xpath(
-#             '/html/body/div[2]/div[2]/div[2]/div/div[2]/div/table/tbody/tr[1]/td[5]/a/i'))
-#         self.assertIn('Нет выбранных позиций', self.browser.find_element_by_class_name(
-#             'js-order-contain').text)
-#
-#     def test_change_count_in_cart(self):
-#         self.buy()
-#         self.proceed_order_page()
-#         counter = self.browser.find_element_by_class_name('js-prod-count')
-#         counter.clear()
-#         send_keys_and_wait(counter, 42)
-#         click_and_wait(self.browser.find_element_by_class_name(
-#             'js-order-contain'))  # Hack
-#         self.assertIn(str(self.product1.price * 42),
-#                       self.browser.find_element_by_class_name('js-order-total').text)
+    def test_buy_product_with_count(self):
+        self.buy_on_product_page(quantity=42)
+        self.show_cart()
+
+        product_count = self.browser.find_element_by_class_name('js-header-product-count').text
+
+        self.assertIn('42', product_count)
 
 
-class CategoryPage(SeleniumTestCase):
+class OrderPage(SeleniumTestCase, CartMixin):
+    def setUp(self):
+        super(OrderPage, self).setUp()
+        self.product_row = 'js-product-row'
+        self.product_remove = 'js-remove'
+
+    def proceed_order_page(self):
+        self.browser.get(self.live_server_url + reverse('ecommerce:order_page'))
+
+    def test_order_page_actual_count_of_rows(self):
+        self.buy_on_product_page()
+        self.buy_on_product_page(product_id=2)
+        self.proceed_order_page()
+
+        products_in_table = self.browser.find_elements_by_class_name(self.product_row)
+        self.assertEqual(len(products_in_table), 2)
+
+    def test_order_page_remove_row(self):
+        self.buy_on_product_page()
+        self.buy_on_product_page(product_id=2)
+        self.proceed_order_page()
+
+        product_row = self.browser.find_element_by_class_name(self.product_row)
+        click_and_wait(product_row.find_element_by_class_name(self.product_remove))
+        products_in_table = self.browser.find_elements_by_class_name(self.product_row)
+
+        self.assertEqual(len(products_in_table), 1)
+
+    def test_order_page_remove_all_products(self):
+        self.buy_on_product_page()
+        self.proceed_order_page()
+
+        product_row = self.browser.find_element_by_class_name(self.product_row)
+        click_and_wait(product_row.find_element_by_class_name(self.product_remove))
+        order_wrapper_text = self.browser.find_element_by_class_name('js-order-contain').text
+
+        self.assertIn('Нет выбранных позиций', order_wrapper_text)
+
+    def test_change_count_in_cart(self):
+        self.buy_on_product_page()
+        self.proceed_order_page()
+
+        counter = self.browser.find_element_by_class_name('js-count-input')
+        counter.clear()
+        send_keys_and_wait(counter, 42)
+        product_price = Product.objects.get(id=1).price
+        total_price = self.browser.find_element_by_class_name('order-total-val').text
+
+        self.assertIn(str(product_price * 42), total_price)
+
+
+class CategoryPage(SeleniumTestCase, CartMixin):
     @classmethod
     def setUpClass(cls):
         super(CategoryPage, cls).setUpClass()
-        cls.buy_button = 'js-category-buy'
-        cls.quantity = 'js-product-count'
+        cls.quantity = 'js-count-input'
 
     def setUp(self):
         server = self.live_server_url
@@ -218,8 +223,7 @@ class CategoryPage(SeleniumTestCase):
         self.deep_children_category = self.testing_url(
             category_with_product_less_then_load_limit.id)
 
-    def click_buy_button(self):
-        click_and_wait(self.browser.find_element_by_class_name('js-category-buy'))
+        self.browser.get(self.root_category)
 
     def get_tables_rows_count(self):
         return len(self.browser.find_elements_by_class_name('table-tr'))
@@ -228,46 +232,43 @@ class CategoryPage(SeleniumTestCase):
         return self.browser.find_element_by_id('load-more-products')
 
     def get_load_more_button_classes(self):
-        return self.browser.find_element_by_id('load-more-products').get_attribute('class')
+        return self.get_load_more_button().get_attribute('class')
 
-    # TODO: Doesn't work cause new Cart dropdown layout
-    # def test_buy_product(self):
-    #     self.click_buy_button()
-    #     self.assertIn('1', self.browser.find_element_by_class_name(
-    #         'basket-content').text)
+    def test_buy_product(self):
+        self.buy_on_category_page()
 
-    # TODO: Doesn't work cause new Cart dropdown layout
-    # def test_buy_two_product(self):
-    #     self.click_buy_button()
-    #     self.click_buy_button()
-    #     self.assertIn('2', self.browser.find_element_by_class_name(
-    #         'basket-content').text)
+        self.assertEqual(self.positions_count(), 1)
 
-    # TODO: Doesn't work cause new Cart dropdown layout
-    # def test_buy_product_with_quantity(self):
-    #     first_product_count = self.browser.find_element_by_class_name('js-count-input')
-    #     first_product_count.clear()
-    #     send_keys_and_wait(first_product_count, '42')
-    #     self.click_buy_button()
+    def test_buy_two_product(self):
+        self.buy_on_category_page()
+        self.buy_on_category_page()
 
-    #     self.assertIn('1', self.browser.find_element_by_class_name(
-    #         'basket-content').text)
-    #     hover(self.browser, self.browser.find_element_by_id('cartInner'))
-    #     self.assertIn('42', self.browser.find_element_by_class_name(
-    #         'js-header-prod-count').text)
+        product_count = self.browser.find_element_by_class_name('js-header-product-count').text
 
-    def test_tooltip(self):
+        self.assertIn('2', product_count)
+
+    def test_buy_product_with_quantity(self):
+        first_product_count = self.browser.find_element_by_class_name(self.quantity)
+        first_product_count.clear()
+        send_keys_and_wait(first_product_count, '42')
+        self.buy_on_category_page()
+
+        self.assertEqual(self.positions_count(), 1)
+
+        product_count = self.browser.find_element_by_class_name('js-header-product-count').text
+        self.assertIn('42', product_count)
+
+    def test_category_tooltip(self):
         """We should see tooltip after clicking on `Заказать` button."""
 
-        self.browser.get(self.root_category)
-        click_and_wait(self.browser.find_element_by_class_name('js-category-buy'))
+        self.buy_on_category_page()
         tooltip = self.browser.find_element_by_class_name('js-popover')
+
         self.assertTrue(tooltip.is_displayed())
 
     def test_load_more_products(self):
-        """We able to load more products by clicking on `Показать ещё` link."""
+        """We able to load more products by clicking on `Load more` link."""
 
-        self.browser.get(self.root_category)
         before_load_products = self.get_tables_rows_count()
         click_and_wait(self.get_load_more_button())
         after_load_products = self.get_tables_rows_count()
@@ -276,7 +277,7 @@ class CategoryPage(SeleniumTestCase):
 
     def test_load_more_button_disabled_state_with_few_products(self):
         """
-        `Показать ещё` link should be disabled by default if there are less
+        `Load more` link should be disabled by default if there are less
         than settings.PRODUCTS_TO_LOAD products on page.
         """
 
@@ -296,7 +297,6 @@ class CategoryPage(SeleniumTestCase):
     def test_filter_products(self):
         """We are able to filter products by typing in filter field."""
 
-        self.browser.get(self.root_category)
         filter_field = self.browser.find_element_by_id('search-filter')
         before_filter_products = self.get_tables_rows_count()
         send_keys_and_wait(filter_field, '#10')
@@ -307,11 +307,10 @@ class CategoryPage(SeleniumTestCase):
     def test_filter_products_and_disabled_state(self):
         """
         If we filter products and load more products several times - we should
-        see that `Показать ещё` link becomes disabled. That means that there are
+        see that `Load more` link becomes disabled. That means that there are
         no more filtered products to load from server.
         """
 
-        self.browser.get(self.root_category)
         filter_field = self.browser.find_element_by_id('search-filter')
         send_keys_and_wait(filter_field, '#10')
 

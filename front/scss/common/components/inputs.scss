@@ -5,7 +5,7 @@ input {
   color: $c-table-input;
   font-size: $f-size-base;
   font-weight: 400;
-  padding: 4px 0;
+  padding: 4px;
 }
 
 .input {
@@ -39,4 +39,37 @@ input {
       bottom: 6px;
     }
   }
+
+  &-status.fa {
+    display: none;
+    margin-left: 5px;
+    font-size: $f-size-base - 5;
+    vertical-align: 2px;
+  }
+
+  &-status-check {
+    color: $c-order-contacts-input-check;
+  }
+
+  &-status-fail {
+    color: $c-order-contacts-input-fail;
+  }
+
+  &-rectangular {
+    border-radius: 4px;
+    border: 1px solid $c-order-contacts-input-border;
+    padding: 8px 14px;
+  }
+}
+
+textarea {
+  border: 1px solid $c-order-contacts-input-border;
+  border-radius: 4px;
+  font-size: $f-size-base;
+  padding: 8px 14px;
+}
+
+.errorlist {
+  color: $c-error-text;
+  padding: 10px 0;
 }

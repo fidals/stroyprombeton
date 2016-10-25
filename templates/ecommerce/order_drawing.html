@@ -1,18 +1,17 @@
-{% extends 'pages/inner_page.html' %}
+{% extends 'layout/inner_page.html' %}
 
 {% load widget_tweaks %}
 
 {% block content %}
   {# TODO: `breadcrumbs` doesn't work #}
+  {# 'str' object has no attribute 'get_path' #}
   {# {% include 'layout/breadcrumbs.html' %}#}
 
-  <div class="container container-fluid">
-    <h1 class="title-h1 catalog-h1">{{ page.h1 }}</h1>
-  </div>
+  {% include 'components/page_h1.html' with page=page only %}
 
   <div class="container container-fluid">
     <p>Для заказа изделий по индивидуальным чертежам воспользуйтесь формой ниже:</p>
-    <form action="" method="post" class="drawing-order-form" id="drawing-order-form">
+    <form class="drawing-order-form" id="drawing-order-form" method="post">
       {% csrf_token %}
       {% for field in form %}
         <tr>

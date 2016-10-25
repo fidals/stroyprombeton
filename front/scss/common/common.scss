@@ -51,8 +51,7 @@ a {
 .heading {
   &-h1 {
     font-size: $f-size-base + 18;
-    font-weight: 300;
-    line-height: 1.18;
+    line-height: 1.2;
     margin-bottom: 50px;
     text-align: center;
   }
@@ -233,5 +232,16 @@ a {
     &-link {
       color: $c-copyright;
     }
+  }
+}
+
+.icon-remove.fa {
+  color: $c-icon-remove;
+  cursor: pointer;
+  font-size: $f-size-base;
+  position: absolute;
+
+  &:hover {
+    color: $c-black;
   }
 }

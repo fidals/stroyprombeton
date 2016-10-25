@@ -1,13 +1,13 @@
-{% extends 'pages/inner_page.html' %}
+{% extends 'layout/inner_page.html' %}
 
 {% load staticfiles %}
 {% load pages_extras %}
 {% load stb_extras %}
 
 {% block content %}
-  {% include 'layout/breadcrumbs.html' %}
+  {% include 'components/breadcrumbs.html' %}
 
-  {% include 'layout/page_h1.html' with page=page %}
+  {% include 'components/page_h1.html' with page=page %}
 
   <section class="product-serial text-center">
     <div class="container container-fluid">
@@ -74,7 +74,8 @@
               </tr>
             </table>
             <div class="product-order-submit text-right">
-              <input class="btn product-order-submit-btn" type="submit" value="Заказать">
+              <input class="btn" id="buy-product" data-product-id="{{ product.id }}"
+                     type="submit" value="Заказать">
             </div>
           </div>
 

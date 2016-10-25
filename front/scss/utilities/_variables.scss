@@ -7,6 +7,7 @@ $font-path: "../fonts";
 
 // Theme colors:
 $c-black: #000;
+$c-error-text: #ed0b00;
 $c-orange: #fc7126;
 $c-text-orange: #fc7126;
 $c-selection: #fc7126;
@@ -23,6 +24,9 @@ $c-btn-orange-hover: #bd6739;
 $c-btn-orange-active: #904f2b;
 $c-btn-white-active: #9b9b9b;
 $c-btn-white-bg-hover: #c3c3c3;
+
+$c-icon-remove: #9b9b9b;
+
 $c-link: #47a1d2;
 $c-link-hover: #07d;
 
@@ -37,7 +41,6 @@ $c-nav-chart-clear-active: #904f2b;
 $c-nav-chart-item-name: #434343;
 $c-nav-chart-item-price: #2c2c2c;
 $c-nav-chart-item-count: #434343;
-$c-nav-chart-item-remove: #9b9b9b;
 $c-nav-subnav-link: #434343;
 $c-nav-subnav-link-hover: #979797;
 $c-searchbar-bg: #fc7126;
@@ -128,31 +131,26 @@ $c-table-btn-hover: #bd6739;
 $c-table-btn-active: #904f2b;
 
 // Page Specs
-$c-series-h1: #171237;
-$c-series-categories-item: #212121;
-$c-series-categories-item-hover: #fc7126;
-$c-series-categories-item-active: #fc7126;
-$c-series-categories-border: #ababab;
-$c-series-list-bg: #dde3e8;
-$c-series-list-border: #ababab;
-$c-series-list-item: #2c2c2c;
-$c-series-list-link: #212121;
-$c-series-about: #212121;
+$c-specs-h1: #171237;
+$c-specs-categories-item: #212121;
+$c-specs-categories-item-hover: #fc7126;
+$c-specs-categories-item-active: #fc7126;
+$c-specs-categories-border: #ababab;
+$c-specs-list-bg: #dde3e8;
+$c-specs-list-border: #ababab;
+$c-specs-list-item: #2c2c2c;
+$c-specs-list-link: #212121;
+$c-specs-about: #212121;
 
 // Page Order
 $c-order-header: #171237;
 $c-order-order-bg: #fbfbfb;
-$c-order-order-header: #171237;
 $c-order-order-title: #acacac;
-$c-order-order-val: #263238;
 $c-order-table-border: #979797;
 $c-order-table-th: #fc7126;
 $c-order-table-name: #404040;
 $c-order-table-name-hover: #9b9b9b;
-$c-order-table-name-del: #9b9b9b;
 $c-order-table-count: #979797;
-$c-order-table-price: #263238;
-$c-order-contacts-title: #171237;
 $c-order-contacts-label: #acacac;
 $c-order-contacts-label-asterisk: #fc7126;
 $c-order-contacts-input: #404040;

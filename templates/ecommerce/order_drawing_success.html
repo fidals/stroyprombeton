@@ -1,10 +1,15 @@
-{% extends 'layout/base.html' %}
-
-{% block title %}Оформление заказа на изготовление по индивидуальным чертежам{% endblock %}
+{% extends 'layout/inner_page.html' %}
 
 {% block content %}
-  <h1>Ваш заказ принят</h1>
-  <p>Спасибо за обращение! Мы рассмотрим вашу заявку и свяжемся с вами по почте или по телефону.</p>
+  <div class="container container-fluid">
+    <h1 class="heading-h1">Ваш заказ принят</h1>
 
-  <a href="{% url 'index' %}">Вернуться на главную</a>
+    <p class="order-success-text">
+      Спасибо за обращение! Мы рассмотрим вашу заявку и свяжемся с вами по почте или по телефону.
+    </p>
+
+    <p class="text-center">
+      <a href="/" class="btn">Вернуться на главную</a>
+    </p>
+  </div>
 {% endblock %}

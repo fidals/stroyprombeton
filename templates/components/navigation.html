@@ -11,7 +11,7 @@
   <ul class="nav-subnav js-nav-subnav">
     {% for item in root_categories %}
       <li class="nav-subnav-item">
-        <a class="nav-subnav-item-link" href="{{ item.get_absolute_url }}">
+        <a class="nav-subnav-item-link" href="{{ item.url }}">
           {{ item.name }}
         </a>
       </li>

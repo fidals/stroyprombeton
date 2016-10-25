@@ -9,7 +9,6 @@
     $modalClose: $('.js-modal-close'),
     $reviewsItem: $('.js-reviews-item'),
     $reviewsNavItems: $('.js-reviews-nav-item'),
-    popover: '.js-popover',
     $btnScrollTop: $('#btn-scroll-to-top'),
     bannerClass: 'searchbar-banner',
     $gbiTooltip: $('.js-object-tooltip.active'),

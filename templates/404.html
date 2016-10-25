@@ -1,11 +1,7 @@
-{% extends 'layout/base.html' %}
-{% load mptt_tags %}
-{% load staticfiles %}
+{% extends 'layout/inner_page.html' %}
 
-{% block stylesheets %}
-  {{ block.super }}
-  <link rel="stylesheet" href="{% static 'css/pages.min.css' %}">
-{% endblock %}
+{% load staticfiles %}
+{% load mptt_tags %}
 
 {% block content %}
   <section class="page-404">
@@ -16,7 +12,7 @@
           <h1 class="page-404-h1">Страница не найдена</h1>
           <p class="page-404-info">
             Такой страницы не существует.
-            <a class="page-404-callus js-btn-contact-us" href="#">Связаться с нами.</a>
+            <span class="page-404-callus js-btn-contact-us">Связаться с нами.</span>
           </p>
           <a href="{% url 'index' %}" class="btn">На главную</a>
         </div>

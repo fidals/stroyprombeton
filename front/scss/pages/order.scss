@@ -1,0 +1,130 @@
+.order {
+  background-color: $c-order-order-bg;
+  padding: 20px 0 30px;
+
+  &-title {
+    font-size: $f-size-base + 18;
+    font-weight: 300;
+    line-height: 1.18;
+    padding-bottom: 22px;
+  }
+
+  &-total {
+    padding: 20px 0 20px 70px;
+
+    &-title {
+      color: $c-order-order-title;
+      font-size: $f-size-base;
+      font-weight: 600;
+      margin-right: 23px;
+    }
+
+    &-val {
+      font-size: $f-size-base + 4;
+      font-weight: 600;
+    }
+  }
+
+  &-success-text {
+    font-size: $f-size-base + 3;
+    margin: 0 0 30px;
+  }
+
+  &-icon-remove.fa {
+    margin: -10px 0 0;
+    top: 50%;
+    right: 10px;
+  }
+}
+
+// ================================================================
+// TABLE
+// ================================================================
+.order-table {
+  border-collapse: collapse;
+  border-bottom: 1px solid $c-order-table-border;
+
+  &-name {
+    border-right: 1px solid $c-order-table-border;
+    font-size: $f-size-base;
+    font-weight: 400;
+    padding: 15px 30px 14px 98px;
+    position: relative;
+    transition: all 0.2s ease;
+    width: 572px;
+
+    a {
+      color: $c-order-table-name;
+
+      &:hover {
+        color: $c-order-table-name-hover;
+      }
+    }
+  }
+
+  &-count {
+    border-right: 1px solid $c-order-table-count;
+    text-align: center;
+    width: 129px;
+  }
+
+  &-price {
+    font-size: $f-size-base + 4;
+    font-weight: 600;
+    padding-left: 23px;
+    position: relative;
+    width: 244px;
+  }
+
+  &-th {
+    font-size: $f-size-base - 3;
+    font-weight: 600;
+    line-height: 1.23;
+    text-align: left;
+    color: $c-order-table-th;
+    border-bottom: 1px solid $c-order-table-border;
+
+    &-name {
+      padding: 7px 0 8px 98px;
+    }
+
+    &-price {
+      padding: 7px 0 8px 22px;
+    }
+  }
+}
+
+// ================================================================
+// CONTACTS
+// ================================================================
+.order-contacts {
+  padding: 20px 0 0;
+
+  &-heading {
+    font-size: $f-size-base + 18;
+    padding-bottom: 40px;
+  }
+
+  &-label {
+    color: $c-order-contacts-label;
+    margin-bottom: 10px;
+
+    &-asterisk {
+      color: $c-order-contacts-label-asterisk;
+      font-size: $f-size-base - 1;
+    }
+  }
+
+  &-input {
+    margin: 0 0 31px 98px;
+
+    &-field {
+      width: 340px;
+    }
+  }
+
+  &-textarea {
+    height: 100px;
+    width: 90%;
+  }
+}

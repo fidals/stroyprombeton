@@ -1,14 +1,15 @@
-const order = (() => {
+(() => {
   const DOM = {
     $order: $('.js-order-contain'),
-    seSubmit: '#btn-send-se',
-    productCount: '.js-prod-count',
+    productCount: '.js-count-input',
     remove: '.js-remove',
     orderForm: {
       name: '#id_name',
       phone: '#id_phone',
       email: '#id_email',
       company: '#id_company',
+      address: '#id_address',
+      comment: '#id_comment',
     },
   };
 
@@ -17,12 +18,23 @@ const order = (() => {
     fillSavedInputs();
   };
 
+  function setUpListeners() {
+    mediator.subscribe('onCartUpdate', renderTable, fillSavedInputs);
+
+    $(DOM.$order).on('keyup', 'input', storeInput);
+    $(DOM.$order).on('keyup', 'textarea', storeInput);
+    $(DOM.$order).on('input', DOM.productCount, changeProductCount);
+    $(DOM.$order).on('click', DOM.remove, removeProduct);
+  }
+
+  const getProductId = $target => $target.closest('.js-product-row').data('product-id');
+
   /**
    * Fill inputs, which have saved to localstorage value.
    * Runs on page load, and on every cart's update.
    */
-  const fillSavedInputs = () => {
-    const getFieldByName = (name) => $(`#id_${name}`);
+  function fillSavedInputs() {
+    const getFieldByName = name => $(`#id_${name}`);
 
     for (const fieldName in DOM.orderForm) {
       if ({}.hasOwnProperty.call(DOM.orderForm, fieldName)) {
@@ -34,66 +46,49 @@ const order = (() => {
         }
       }
     }
-  };
+  }
 
   /**
-   * Event handler for changing product's count in Cart.
-   * We wait at least 100ms every time the user pressed the button.
+   * Change Product's count in Cart with delay for better UX.
    */
-  const changeProductCount = (event) => {
-    const productID = event.target.getAttribute('productId');
-    const newCount = event.target.value;
+  function changeProductCount(event) {
+    helpers.delay(() => {
+      const $target = $(event.target);
+      const productID = getProductId($target);
+      const newCount = $target.closest('.js-product-row').find(DOM.productCount).val();
 
-    setTimeout(
-      () => server.changeInCart(productID, newCount)
-        .then(data => mediator.publish('onCartUpdate', data)),
-      100
-    );
-  };
-
-  const setUpListeners = () => {
-    /**
-     * Bind events to parent's elements, because we can't bind event to dynamically added element.
-     * @param eventName - standard event name
-     * @param element - element, which is a child of parent's element (DOM.$order)
-     * @param handler - callable which will be dispatched on event
-     */
-    const subscribeOrderEvent = (eventName, element, handler) => {
-      DOM.$order.on(eventName, element, handler);
-    };
-    const getEventTarget = event => $(event.target);
-
-    subscribeOrderEvent('change', DOM.productCount, event => changeProductCount(event));
-    subscribeOrderEvent('click', DOM.remove, event => remove(event.target.getAttribute('productId')));
-    subscribeOrderEvent('keyup', 'input', event => storeInput(getEventTarget(event)));
-
-    mediator.subscribe('onCartUpdate', renderTable);
-  };
+      server.changeInCart(productID, newCount)
+        .then(data => mediator.publish('onCartUpdate', { html: data }));
+    }, 300);
+  }
 
   /**
-   * Store inputted value into LocalStorage.
+   * Store inputted value into localStorage.
    */
-  const storeInput = target => {
-    localStorage.setItem(target.attr('name'), target.val());
-  };
+  function storeInput(event) {
+    const $target = $(event.target);
+
+    localStorage.setItem($target.attr('name'), $target.val());
+  }
 
   /**
-   * Remove product from cart's table and dispatches 'onCartUpdate' event.
+   * Remove product from Cart's table.
    */
-  const remove = productId => {
-    server.removeFromCart(productId).then(data => {
-      mediator.publish('onCartUpdate', data);
-    });
-  };
+  function removeProduct(event) {
+    const productID = getProductId($(event.target));
+
+    server.removeFromCart(productID)
+      .then((data) => {
+        mediator.publish('onCartUpdate', { html: data });
+      });
+  }
 
   /**
-   * Render table and form.
-   * After that, fill in saved form data.
+   * Add order's table and form html into the page.
    */
-  const renderTable = (event, data) => {
-    DOM.$order.html(data.table);
-    fillSavedInputs();
-  };
+  function renderTable(_, data) {
+    DOM.$order.html(data.html.table);
+  }
 
   init();
 })();
