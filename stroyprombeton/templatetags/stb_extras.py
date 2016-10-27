@@ -1,6 +1,8 @@
 from django import template
+from django.core.urlresolvers import reverse
 
 from images.models import ImageMixin
+from pages.models import Page
 
 from stroyprombeton.models import Category
 
@@ -41,7 +43,7 @@ def format_price(price):
 
 @register.simple_tag
 def get_root_categories():
-    return Category.objects.root_nodes().filter(page__is_active=True).order_by('position', 'name')
+    return Category.objects.root_nodes().filter(page__is_active=True).order_by('page__position', 'name')
 
 
 # Not good code, but duker at 06/10/2016 don't know how to fix it.

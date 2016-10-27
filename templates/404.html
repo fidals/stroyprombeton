@@ -1,5 +1,6 @@
 {% extends 'layout/inner_page.html' %}
 
+{% load pages_extras %}
 {% load staticfiles %}
 {% load mptt_tags %}
 
@@ -14,7 +15,7 @@
             Такой страницы не существует.
             <span class="page-404-callus js-btn-contact-us">Связаться с нами.</span>
           </p>
-          <a href="{% url 'index' %}" class="btn">На главную</a>
+          <a href="/" class="btn">На главную</a>
         </div>
       </div>
     </div>

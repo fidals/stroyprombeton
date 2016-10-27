@@ -1,4 +1,5 @@
 {% extends 'layout/base.html' %}
+{% load pages_extras %}
 
 {% block body_class %}index{% endblock %}
 
@@ -58,7 +59,7 @@
             <img class="img-responsive img-centered" src="{{ STATIC_URL }}images/catalog-gbi.png" alt="Каталог ЖБИ">
           </div>
           <div class="catalog-section-btn">
-            <a href="{% url 'category_tree' %}" class="btn btn-catalog">Каталог ЖБИ</a>
+            <a href="{% custom_url 'gbi' %}" class="btn btn-catalog">Каталог ЖБИ</a>
           </div>
         </div>
 

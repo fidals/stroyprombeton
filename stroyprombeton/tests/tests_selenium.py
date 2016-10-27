@@ -12,6 +12,8 @@ from django.test import LiveServerTestCase
 
 from stroyprombeton.models import Category, Product
 
+from pages.models import Page
+
 
 def wait(seconds=1):
     """Simple wrapper on time.sleep() method."""
@@ -158,7 +160,7 @@ class OrderPage(SeleniumTestCase, CartMixin):
         self.product_remove = 'js-remove'
 
     def proceed_order_page(self):
-        self.browser.get(self.live_server_url + reverse('ecommerce:order_page'))
+        self.browser.get(self.live_server_url + reverse(Page.CUSTOM_PAGES_URL_NAME, args=('order', )))
 
     def test_order_page_actual_count_of_rows(self):
         self.buy_on_product_page()
@@ -325,10 +327,9 @@ class Search(SeleniumTestCase):
     """Selenium-based tests for Search"""
 
     def setUp(self):
-        super(Search, self).setUp()
         self.browser.get(self.live_server_url)
         wait()
-        self.query = 'Test'
+        self.query = 'category'
         self.fill_input()
 
     @property
@@ -382,8 +383,8 @@ class Search(SeleniumTestCase):
         button_submit = self.browser.find_element_by_class_name('search-btn')
         click_and_wait(button_submit)
 
-        self.assertTrue(self.browser.find_element_by_link_text('Test Root Category'))
-        self.assertTrue(self.browser.find_element_by_link_text('Test Child Category'))
+        self.assertTrue(self.browser.find_element_by_link_text('Category #0'))
+        self.assertTrue(self.browser.find_element_by_link_text('Category #0 of #Category #0'))
 
     def test_search_results_empty(self):
         """Search results for wrong term should contain empty result set"""

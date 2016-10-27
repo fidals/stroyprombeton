@@ -13,9 +13,11 @@ from django.core.files.images import ImageFile
 from django.core.management.base import BaseCommand
 from django.utils.text import slugify
 
-from stroyprombeton.models import Category, Product, Region
-from pages.models import Page
+from stroyprombeton.models import Category, Product, Region, CategoryPage, ProductPage
+
+from pages.models import Page, FlatPage, CustomPage
 from images.models import Image
+
 
 custom_page_data = {
     'news': {
@@ -25,16 +27,14 @@ custom_page_data = {
         'menu_title': 'Новости компании'
     },
     'index': {
-        'slug': 'index',
-        'route': 'index',
+        'slug': '',
         'title': 'Завод ЖБИ «СТК-ПромБетон» | Производство ЖБИ в Санкт-Петербурге, железобетонные изделия СПб',
         'h1': 'Завод железобетонных изделий «СТК-Промбетон»',
         'menu_title': 'Главная',
         'type': Page.CUSTOM_TYPE,
     },
     'category_tree': {
-        'slug': 'category_tree',
-        'route': 'category_tree',
+        'slug': 'gbi',
         'title': 'Каталог товаров',
         'h1': 'Все категории',
         'type': Page.CUSTOM_TYPE,
@@ -64,6 +64,12 @@ custom_page_data = {
         'slug': 'search',
         'type': Page.CUSTOM_TYPE,
         'title': 'Результаты поиска',
+    },
+    'order': {
+        'slug': 'order',
+        'type': Page.CUSTOM_TYPE,
+        '_title': 'Корзина Интернет-магазин СТК-ПромБетон',
+        'h1': 'Оформление заказа',
     },
 }
 
@@ -219,10 +225,10 @@ class Command(BaseCommand):
 
         to_datetime = (lambda date:
                        datetime.strptime(date, '%Y-%m-%dT%H:%M:%S')
-                       if date and not isinstance(date, datetime) else date)
+                       if date and not isinstance(date, datetime) else datetime.now())
 
-        to_int = (lambda obj: int(obj) if obj else obj)
-        to_float = (lambda obj: float(obj) if obj else obj)
+        to_int = (lambda obj: int(obj) if obj else 0)
+        to_float = (lambda obj: float(obj) if obj else 0)
         is_exist = lambda obj: obj if obj else ''
 
         def create_categories(data: list):
@@ -230,28 +236,33 @@ class Command(BaseCommand):
                 category = Category.objects.create(
                     id=to_int(category_data['id']),
                     name=category_data['name'],
-                    position=to_int(category_data['ord']),
                     specification=category_data['mark'] or '',
+                    page=None
                 )
-                category.page.content = category_data['text']
-                category.page._date_published = to_datetime(category_data['date'])
-                category.page.h1 = is_exist(category_data['h1'])
-                category.page.menu_title = category_data['title']
-                category.page.is_active = bool(category_data['is_active'])
-                category.save()
-
-            get_category = (lambda id_: Category.objects.all().get(id=to_int(id_)))
-
-            def create_parent(category):
-                current = get_category(category['id'])
-                current.parent = get_category(category['parent_id'])
-                current.save()
+                page = CategoryPage.objects.create(
+                    position=to_int(category_data['ord']),
+                    content=is_exist(category_data['text']),
+                    date_published=to_datetime(category_data['date']),
+                    h1=is_exist(category_data['h1']),
+                    menu_title=is_exist(category_data['title']),
+                    is_active=bool(category_data['is_active']),
+                )
+                try:
+                    category.page = page
+                    category.save()
+                except:
+                    page.slug = '{}-{}'.format(page.slug, category.id)
+                    page.save()
+                    category.page = page
+                    category.save()
 
             def has_parent(category):
                 return bool(category['parent_id'])
 
-            for category in filter(has_parent, data):
-                create_parent(category)
+            for data in filter(has_parent, data):
+                child = Category.objects.get(id=to_int(data['id']))
+                child.parent = Category.objects.get(id=to_int(data['parent_id']))
+                child.save()
 
         def create_products(data: list):
             for product_data in data:
@@ -271,22 +282,33 @@ class Command(BaseCommand):
                     volume=to_float(product_data['volume']),
                     weight=to_float(product_data['weight']),
                     width=to_int(product_data['width']),
-                    length=to_int(product_data['length'])
+                    length=to_int(product_data['length']),
+                    page=None,
                 )
-                product.page.content = product_data['text']
-                product.page._date_published = to_datetime(product_data['date'])
-                product.page.keywords = is_exist(product_data['keywords'])
-                product.save()
+                page = ProductPage.objects.create(
+                    content=is_exist(product_data['text']),
+                    h1=is_exist(product_data['title']),
+                    date_published=to_datetime(product_data['date']),
+                    keywords=is_exist(product_data['keywords']),
+                )
+                try:
+                    product.page = page
+                    product.save()
+                except:
+                    page.slug = '{}-{}'.format(page.slug, product.id)
+                    page.save()
+                    product.page = page
+                    product.save()
 
         def create_posts(data: list):
-            news = Page.objects.create(**custom_page_data['news'])
+            news = FlatPage.objects.create(**custom_page_data['news'])
 
             for post_data in data:
-                Page.objects.create(
+                FlatPage.objects.create(
                     slug=slugify(unidecode(post_data['name'])),
                     content=is_exist(post_data['text']),
                     parent=news,
-                    _date_published=to_datetime(post_data['date']),
+                    date_published=to_datetime(post_data['date']),
                     description=is_exist(post_data['description']),
                     h1=is_exist(post_data['h1']),
                     is_active=bool(post_data['is_active']),
@@ -296,14 +318,15 @@ class Command(BaseCommand):
 
         def create_static_pages(data: list):
             navigation = Page.objects.create(slug='navi')
-            Page.objects.create(**custom_page_data['category_tree'])
-            Page.objects.create(**custom_page_data['index'], parent=navigation)
-            Page.objects.create(**custom_page_data['search'])
+            CustomPage.objects.create(**custom_page_data['category_tree'])
+            CustomPage.objects.create(**custom_page_data['index'], parent=navigation)
+            CustomPage.objects.create(**custom_page_data['search'])
+            CustomPage.objects.create(**custom_page_data['order'])
 
             for static_page_data in data:
                 static_page = Page.objects.create(
                     content=static_page_data['text'],
-                    _date_published=to_datetime(static_page_data['date']),
+                    date_published=to_datetime(static_page_data['date']),
                     description=is_exist(static_page_data['description']),
                     h1=is_exist(static_page_data['h1']),
                     is_active=bool(static_page_data['is_active']),

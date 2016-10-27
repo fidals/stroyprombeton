@@ -4,8 +4,10 @@ from django.conf.urls.static import static
 
 from stroyprombeton import views
 
+from pages.models import Page
+
+
 catalog_urls = [
-    url(r'^$', views.CategoryTree.as_view(), name='category_tree'),
     url(r'^categories/(?P<category_id>[0-9]+)/$', views.CategoryPage.as_view(), name='category'),
     url(r'^products/(?P<product_id>[0-9]+)/$', views.ProductPage.as_view(), name='product'),
 ]
@@ -19,12 +21,18 @@ ecommerce_urls = [
 ]
 
 search_urls = [
-    url(r'^$', views.Search.as_view(), name='search'),
     url(r'^autocomplete/$', views.Autocomplete.as_view(), name='autocomplete'),
 ]
 
+custom_pages = [
+    url(r'^(?P<page>)$', views.IndexPage.as_view(), name=Page.CUSTOM_PAGES_URL_NAME),
+    url(r'^(?P<page>gbi)/$', views.CategoryTree.as_view(), name=Page.CUSTOM_PAGES_URL_NAME),
+    url(r'^(?P<page>order)/$', views.OrderPage.as_view(), name=Page.CUSTOM_PAGES_URL_NAME),
+    url(r'^(?P<page>search)/$', views.Search.as_view(), name=Page.CUSTOM_PAGES_URL_NAME),
+]
+
 urlpatterns = [
-    url(r'^$', views.IndexPage.as_view(), name='index'),
+    url(r'', include(custom_pages)),
     url(r'^drawing-success/', views.OrderDrawingSuccess.as_view(), name='order_drawing_success'),
     url(r'^gbi/', include(catalog_urls)),
     url(r'^fetch-products/$', views.fetch_products, name='fetch_products'),

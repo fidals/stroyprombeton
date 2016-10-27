@@ -1,4 +1,5 @@
 {% load stb_extras %}
+{% load pages_extras %}
 {% get_root_categories as root_categories %}
 
 <li class="nav-item">
@@ -6,7 +7,7 @@
 </li>
 
 <li class="nav-item">
-  <a class="nav-link" href="{% url 'category_tree' %}">Каталог</a>
+  <a class="nav-link" href="{% custom_url 'gbi' %}">Каталог</a>
 
   <ul class="nav-subnav js-nav-subnav">
     {% for item in root_categories %}

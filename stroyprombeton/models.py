@@ -9,39 +9,40 @@ from django.db import models
 from django.core.urlresolvers import reverse
 
 from catalog.models import AbstractProduct, AbstractCategory
-from pages.models import PageConnectorMixin
+from pages.models import PageMixin, ModelPage, CustomPage
 from ecommerce.models import Order as ecOrder
 
 
 class Order(ecOrder):
     """Extended Order model."""
     company = models.CharField(max_length=255)
-    address = models.TextField(blank=True, null=True)
-    comment = models.TextField(blank=True, null=True)
+    address = models.TextField(default='', blank=True)
+    comment = models.TextField(default='', blank=True)
 
 
-class Category(AbstractCategory):
+class Category(AbstractCategory, PageMixin):
     """Extended Category model."""
-    specification = models.TextField(default='', blank=True, null=True)
-    link_to_metal = models.URLField(null=True, blank=True)
-    product_relation = 'product'
+    specification = models.TextField(default='', blank=True)
+    link_to_metal = models.URLField(default='', blank=True)
+
+    @classmethod
+    def get_default_parent(cls):
+        return CustomPage.objects.filter(slug='gbi').first()
 
     def get_absolute_url(self):
         """Return url for model."""
         return reverse('category', args=(self.id,))
 
 
-class Product(AbstractProduct):
+class Product(AbstractProduct, PageMixin):
     """Extended Product model."""
-    category = models.ForeignKey(Category,
-                                 on_delete=models.CASCADE,
-                                 related_name='products')
-    _slug = models.SlugField(max_length=400)
+    category = models.ForeignKey(
+        Category, on_delete=models.CASCADE, related_name='products')
     is_new_price = models.NullBooleanField(blank=True, null=True)
     date_price_updated = models.DateField(auto_now_add=True)
     code = models.BigIntegerField(null=True, blank=True)
-    mark = models.CharField(default='', max_length=500, null=True, blank=True)
-    specification = models.TextField(default='', null=True, blank=True)
+    mark = models.CharField(default='', max_length=500, blank=True)
+    specification = models.TextField(default='', blank=True)
     length = models.IntegerField(null=True, blank=True)
     width = models.IntegerField(null=True, blank=True)
     height = models.IntegerField(null=True, blank=True)
@@ -63,25 +64,38 @@ class Product(AbstractProduct):
         return reverse('product', args=(self.id,))
 
 
-class Region(PageConnectorMixin):
+class Region(models.Model):
     """Region model - is a region on map (ex: Chelyabinsk region)"""
 
     name = models.CharField(max_length=255, unique=True)
-    slug = models.SlugField(max_length=255)
-
-    @property
-    def h1(self):
-        return self.name
-
-    @h1.setter
-    def h1(self, value):
-        # ORM requires any setter
-        pass
-
-    def save(self, *args, **kwargs):
-        if self.name and not self.slug:
-            self.slug = slugify(unidecode(self.name))
-        super(Region, self).save(*args, **kwargs)
 
     def get_absolute_url(self):
-        return reverse('region_flat_page', args=(self.slug,))
+        return reverse('region_flat_page', args=(self.page.slug,))
+
+
+class CategoryPageManager(models.Manager):
+    def get_queryset(self):
+        return super(CategoryPageManager, self).get_queryset().filter(
+            related_model_name=Category.related_model_name)
+
+
+class CategoryPage(ModelPage):
+    """Proxy model for Admin"""
+    class Meta(ModelPage.Meta):
+        proxy = True
+
+    objects = CategoryPageManager()
+
+
+class ProductPageManager(models.Manager):
+    def get_queryset(self):
+        return super(ProductPageManager, self).get_queryset().filter(
+            related_model_name=Product.related_model_name)
+
+
+class ProductPage(ModelPage):
+    """Proxy model for Admin"""
+    class Meta(ModelPage.Meta):
+        proxy = True
+
+    objects = ProductPageManager()

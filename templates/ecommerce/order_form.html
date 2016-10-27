@@ -1,6 +1,7 @@
 {% load widget_tweaks %}
+{% load pages_extras %}
 
-<form action="{% url 'order_page' %}" method="post" id="shop-order-form"> {% csrf_token %}
+<form action="{% custom_url 'order' %}" method="post" id="shop-order-form"> {% csrf_token %}
   <div class="order-contacts-label">
     Имя
   </div>

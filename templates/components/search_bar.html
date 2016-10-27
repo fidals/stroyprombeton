@@ -1,7 +1,9 @@
+{% load pages_extras %}
+
 <div class="container container-fluid">
   <div class="row">
     <div class="col-xs-4 col-lg-offset-1 searchbar-wrap">
-      <form class="search" action="{% url 'search' %}" method="get">
+      <form class="search" action="{% custom_url 'search' %}" method="get">
         <input class="search-field js-search-field" name="term" type="text">
 
         <button class="search-btn" type="submit">

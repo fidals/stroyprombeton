@@ -11,7 +11,8 @@ from datetime import datetime
 
 from django.test import TestCase
 
-from pages.models import Page
+from pages.models import Page, ModelPage
+
 from stroyprombeton.management.commands.transfer import custom_page_data
 from stroyprombeton.models import Category, Product
 from stroyprombeton.tests.tests_forms import PriceFormTest, DrawingFormTest
@@ -34,12 +35,14 @@ class CategoryTree(TestCase):
         cls.child_name = 'Test child category'
 
         root_category = Category.objects.create(
-            name=cls.root_name
+            name=cls.root_name,
+            page=ModelPage.objects.create(h1='Category h1')
         )
 
         Category.objects.create(
             name=cls.child_name,
-            parent=root_category
+            parent=root_category,
+            page=ModelPage.objects.create(h1='Child category h1')
         )
 
     def setUp(self):
@@ -79,7 +82,7 @@ class CategoryTile(TestCase):
         cls.root_data = {
             'name': 'Test root category',
             'id': 1,
-            'page': Page.objects.create(
+            'page': ModelPage.objects.create(
                 content='Козырьки устанавливают над входами зданий.',
                 h1='Козырьки',
             ),
@@ -91,7 +94,7 @@ class CategoryTile(TestCase):
             'name': 'Test child category',
             'id': 2,
             'parent': cls.root_category,
-            'page': Page.objects.create(
+            'page': ModelPage.objects.create(
                 content='Козырьки применяют при строительстве зданий.',
                 h1='Козырьки входов, плиты парапетные.',
             )
@@ -145,7 +148,7 @@ class CategoryTable(TestCase):
         cls.root_data = {
             'name': 'Test root category',
             'id': 1,
-            'page': Page.objects.create(
+            'page': ModelPage.objects.create(
                 h1='Козырьки',
                 content='Козырьки устанавливают над входами зданий.',
             )
@@ -158,7 +161,11 @@ class CategoryTable(TestCase):
             'code': 350,
             'name': 'Test product name',
             'date_price_updated': datetime.now(),
-            'category': root_category
+            'category': root_category,
+            'page': ModelPage.objects.create(
+                h1='Козырьки',
+                content='Козырьки устанавливают над входами зданий.',
+            )
         }
 
         Product.objects.create(**cls.product_data)
@@ -218,6 +225,7 @@ class Product_(TestCase):
         root_data = {
             'id': 1,
             'name': 'Test root category',
+            'page': ModelPage.objects.create(h1='Category')
         }
 
         root_category = Category.objects.create(**root_data)
@@ -238,7 +246,7 @@ class Product_(TestCase):
             'weight': 1111,
             'volume': 2222,
             'date_price_updated': datetime.now(),
-            'page': Page.objects.create(
+            'page': ModelPage.objects.create(
                 content='Козырьки устанавливают над входами зданий.',
                 h1='Козырьки',
             )

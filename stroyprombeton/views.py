@@ -16,11 +16,13 @@ from django.views.decorators.csrf import ensure_csrf_cookie
 from catalog.views import catalog, search
 from catalog.models import search as filter_
 from ecommerce import views as ec_views
-from pages.views import CustomPage, FlatPage, get_or_create_struct_page
+from pages.views import CustomPageView, FlatPageView
+from pages.models import FlatPage
 
 from stroyprombeton import mailer, config
 from stroyprombeton.forms import OrderForm, PriceForm, DrawingForm
 from stroyprombeton.models import Category, Product
+
 
 # Helpers
 # Sets CSRF-cookie to CBVs.
@@ -47,7 +49,7 @@ def fetch_products(request):
     filtered = request.POST.get('filtered')
 
     category = Category.objects.get(id=category_id)
-    products = Product.objects.get_products_by_category_id(category, ordering=('name', 'mark'))
+    products = Product.objects.get_products_by_category(category, ordering=('name', 'mark'))
 
     if filtered == 'true':
         lookups = ['name__icontains', 'code__icontains', 'mark__icontains']
@@ -58,7 +60,7 @@ def fetch_products(request):
         left_product_count = products.count() - offset
         size = left_product_count if left_product_count < size else size
 
-        products = products[offset:offset + size]
+        products = products.get_offset(offset, size)
 
     return render(request, 'catalog/category_products.html', {'products': products})
 
@@ -90,18 +92,12 @@ class AdminAutocomplete(search.AdminAutocomplete):
 
 class Search(search.Search):
     """Override model references to STB-specific ones."""
-
     model_map = MODEL_MAP
-
-
-class OrderFormMixin:
-    order_form = OrderForm
 
 
 class CategoryTree(catalog.CategoryTree):
     """Override model attribute to STB-specific Category."""
-
-    model = Category
+    category_model = Category
 
 
 @set_csrf_cookie
@@ -111,22 +107,24 @@ class CategoryPage(catalog.CategoryPage):
 
     Extend get_object and get_context_data.
     """
-
     model = Category
-    url_lookup_field = 'category_id'
-    db_lookup_field = 'id'
+    context_object_name = 'category'
+    pk_url_kwarg = 'category_id'
+    query_pk_and_slug = 'pk'
 
     def get_context_data(self, **kwargs):
         """Extend method. Use new get_object method."""
-
-        self.template_name = 'catalog/category.html'
-        context = super(CategoryPage, self).get_context_data(**kwargs)
-        products = Product.objects.get_products_by_category_id(kwargs['object'], ordering=('name', 'mark'))
-        sliced_products = products[:settings.PRODUCTS_TO_LOAD]
+        context = super(catalog.CategoryPage, self).get_context_data(**kwargs)
+        category = context[self.context_object_name]
+        products = Product.objects.get_products_by_category(
+            category, ordering=('name', 'mark')
+        )
 
         return {
             **context,
-            'products': sliced_products,
+            'page': category.page,
+            'children': category.get_children(),
+            'products': products.get_offset(0, 30),
         }
 
 
@@ -140,7 +138,7 @@ class ProductPage(catalog.ProductPage):
         """Extend Product page context."""
 
         context = super(ProductPage, self).get_context_data(**kwargs)
-        product = self.get_object()
+        product = context[self.context_object_name]
         siblings = Product.objects.filter(specification=product.specification).exclude(id=product.id)
 
         return {
@@ -150,24 +148,28 @@ class ProductPage(catalog.ProductPage):
 
 
 # We inherit eCommerce CBVs to override its order_form attribute.
-class OrderPage(OrderFormMixin, ec_views.OrderPage):
-    pass
+class OrderPage(ec_views.OrderPage):
+    order_form = OrderForm
 
 
-class AddToCart(OrderFormMixin, ec_views.AddToCart):
-    pass
+class AddToCart(ec_views.AddToCart):
+    order_form = OrderForm
+    product_model = Product
 
 
-class RemoveFromCart(OrderFormMixin, ec_views.RemoveFromCart):
-    pass
+class RemoveFromCart(ec_views.RemoveFromCart):
+    order_form = OrderForm
+    product_model = Product
 
 
-class FlushCart(OrderFormMixin, ec_views.FlushCart):
-    pass
+class FlushCart(ec_views.FlushCart):
+    order_form = OrderForm
+    product_model = Product
 
 
-class ChangeCount(OrderFormMixin, ec_views.ChangeCount):
-    pass
+class ChangeCount(ec_views.ChangeCount):
+    order_form = OrderForm
+    product_model = Product
 
 
 # STB-specific views #
@@ -207,21 +209,21 @@ class OrderPrice(FormView):
         return super(OrderPrice, self).form_valid(form)
 
 
-class IndexPage(CustomPage):
+class IndexPage(CustomPageView):
     """Custom view for Index page."""
 
     template_name = 'pages/index/index.html'
     slug = 'index'
 
     context = {
-        'news': get_or_create_struct_page(slug='news').children.all().filter(is_active=True)[:2],
+        'news': FlatPage.objects.filter(parent__slug='news', is_active=True)[:2],
         'partners': config.PARTNERS,
         'reviews': config.REVIEWS,
         'regions': get_regions(),
     }
 
 
-class RegionFlatPage(FlatPage):
+class RegionFlatPage(FlatPageView):
     """Custom view for regions and it's flat_pages."""
 
     template_name = 'pages/regions/region_page.html'
