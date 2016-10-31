@@ -26,7 +26,7 @@
     mediator.subscribe('onProductsFilter', updateLoadMoreLink, refreshProductsList);
     mediator.subscribe('onProductsLoad', updateLoadMoreLink, appendToProductsList);
 
-    $(document).on('click', DOM.$addToCart, buyProduct);
+    $(DOM.$productsTable).on('click', DOM.$addToCart, buyProduct);
     DOM.$showMoreLink.click(loadProducts);
     DOM.$searchFilter.keyup(filterProducts);
   }

@@ -46,6 +46,7 @@ const PATH = {
       ],
 
       vendorsPages: [
+        'front/js/vendors/featherlight.min.js',
       ],
 
       common: [
@@ -89,7 +90,7 @@ const PATH = {
 };
 
 // ================================================================
-// BUILD
+// Build : Run all build tasks in production mode.
 // ================================================================
 gulp.task('build', (callback) => {
   ENV.development = false;
@@ -110,7 +111,7 @@ gulp.task('build', (callback) => {
 });
 
 // ================================================================
-// Styles : Build all stylesheets
+// Styles : Build all stylesheets.
 // ================================================================
 gulp.task('styles', () => {
   gulp.src(PATH.src.styles)
@@ -132,112 +133,79 @@ gulp.task('styles', () => {
 });
 
 // ================================================================
-// JS : Build common vendors js only
+// JS : Concat & minify vendor js.
+// ================================================================
+function vendorJS(source, destination, fileName) {
+  gulp.src(source)
+    .pipe($.changed(PATH.build.js, { extension: '.js' }))
+    .pipe($.concat(`${fileName}.js`))
+    .pipe($.rename({
+      suffix: '.min',
+    }))
+    .pipe($.uglify())
+    .pipe(gulp.dest(destination));
+}
+
+function appJS(source, destination, fileName) {
+  gulp.src(source)
+    .pipe($.changed(destination, { extension: '.js' }))
+    .pipe($.if(ENV.development, $.sourcemaps.init()))
+    .pipe($.plumber())
+    .pipe($.babel({
+      presets: ['es2015'],
+    }))
+    .pipe($.concat(`${fileName}.js`))
+    .pipe($.rename({
+      suffix: '.min',
+    }))
+    .pipe($.if(ENV.production, $.uglify()))
+    .pipe($.if(ENV.development, $.sourcemaps.write('.')))
+    .pipe(gulp.dest(destination))
+    .pipe($.livereload());
+}
+
+// ================================================================
+// JS : Build common vendors js only.
 // ================================================================
 gulp.task('js-vendors', () => {
-  gulp.src(PATH.src.js.vendors)
-    .pipe($.changed(PATH.build.js, { extension: '.js' }))
-    .pipe($.concat('vendors.js'))
-    .pipe($.rename({
-      suffix: '.min',
-    }))
-    .pipe($.uglify())
-    .pipe(gulp.dest(PATH.build.js));
+  vendorJS(PATH.src.js.vendors, PATH.build.js, 'vendors');
 });
 
 // ================================================================
-// JS : Build common vendors-pages js only
+// JS : Build common vendors js only for inner pages.
 // ================================================================
 gulp.task('js-vendors-pages', () => {
-  gulp.src(PATH.src.js.vendorsPages)
-    .pipe($.changed(PATH.build.js, { extension: '.js' }))
-    .pipe($.concat('vendors-pages.js'))
-    .pipe($.rename({
-      suffix: '.min',
-    }))
-    .pipe($.uglify())
-    .pipe(gulp.dest(PATH.build.js));
+  vendorJS(PATH.src.js.vendorsPages, PATH.build.js, 'vendors-pages');
 });
 
 // ================================================================
-// JS : Build common scripts
+// JS : Build common js.
 // ================================================================
 gulp.task('js-common', () => {
-  gulp.src(PATH.src.js.common)
-    .pipe($.changed(PATH.build.js, { extension: '.js' }))
-    .pipe($.if(ENV.development, $.sourcemaps.init()))
-    .pipe($.plumber())
-    .pipe($.babel({
-      presets: ['es2015'],
-    }))
-    .pipe($.concat('main.js'))
-    .pipe($.rename({
-      suffix: '.min',
-    }))
-    .pipe($.if(ENV.production, $.uglify()))
-    .pipe($.if(ENV.development, $.sourcemaps.write('.')))
-    .pipe(gulp.dest(PATH.build.js))
-    .pipe($.livereload());
+  appJS(PATH.src.js.common, PATH.build.js, 'main');
 });
 
 // ================================================================
-// JS : Build all pages scripts
+// JS : Build js for all inner pages.
 // ================================================================
 gulp.task('js-pages', () => {
-  gulp.src(PATH.src.js.pages)
-    .pipe($.changed(PATH.build.js, { extension: '.js' }))
-    .pipe($.if(ENV.development, $.sourcemaps.init()))
-    .pipe($.plumber())
-    .pipe($.babel({
-      presets: ['es2015'],
-    }))
-    .pipe($.concat('pages.js'))
-    .pipe($.rename({
-      suffix: '.min',
-    }))
-    .pipe($.if(ENV.production, $.uglify()))
-    .pipe($.if(ENV.development, $.sourcemaps.write('.')))
-    .pipe(gulp.dest(PATH.build.js))
-    .pipe($.livereload());
+  appJS(PATH.src.js.pages, PATH.build.js, 'pages');
 });
 
 // ================================================================
-// JS : Build admin page scripts
+// JS : Build js for admin page only.
 // ================================================================
 gulp.task('js-admin', () => {
-  gulp.src(PATH.src.js.admin)
-    .pipe($.changed(PATH.build.js, { extension: '.js' }))
-    .pipe($.if(ENV.development, $.sourcemaps.init()))
-    .pipe($.plumber())
-    .pipe($.babel({
-      presets: ['es2015'],
-    }))
-    .pipe($.concat('admin.js'))
-    .pipe($.rename({
-      suffix: '.min',
-    }))
-    .pipe($.if(ENV.production, $.uglify()))
-    .pipe($.if(ENV.development, $.sourcemaps.write('.')))
-    .pipe(gulp.dest(PATH.build.js))
-    .pipe($.livereload());
+  appJS(PATH.src.js.admin, PATH.build.js, 'admin');
 });
 
 // ================================================================
-// Images : Copy images
+// Images : Copy images.
 // ================================================================
 gulp.task('images', () => {
   gulp.src(PATH.src.images)
     .pipe($.changed(PATH.build.images))
     .pipe(gulp.dest(PATH.build.images));
-});
-
-// ================================================================
-// Fonts : Copy fonts
-// ================================================================
-gulp.task('fonts', () => {
-  gulp.src(PATH.src.fonts)
-    .pipe($.changed(PATH.build.fonts))
-    .pipe(gulp.dest(PATH.build.fonts));
 });
 
 // ================================================================
@@ -273,6 +241,15 @@ gulp.task('sprites', () => {
       extname: '.scss',
     }))
     .pipe(gulp.dest(PATH.build.sprites.scss.pages));
+});
+
+// ================================================================
+// Fonts : Copy fonts.
+// ================================================================
+gulp.task('fonts', () => {
+  gulp.src(PATH.src.fonts)
+    .pipe($.changed(PATH.build.fonts))
+    .pipe(gulp.dest(PATH.build.fonts));
 });
 
 // ================================================================

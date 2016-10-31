@@ -1,3 +1,4 @@
+{% load staticfiles %}
 {% load stb_extras %}
 
 <div style="width:100%; margin-bottom: 10px;">
@@ -11,8 +12,8 @@
   </span>
 
   <div style="padding: 0 0 8px;">
-    <a href="http://www.stroyprombeton.ru/" target="_blank">
-      <img src="http://www.stroyprombeton.ru/static/images/logo.png" title="На главную" alt="Логотип">
+    <a href="{{ base_url }}" target="_blank">
+      <img src="{% static 'images/stk-prombeton.png' %}" title="На главную" alt="Логотип">
     </a>
     <div style="color: #515151; font-size: 13px; margin: -5px 0 0;">Завод железобетонных изделий</div>
   </div>

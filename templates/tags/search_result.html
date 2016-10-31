@@ -6,7 +6,7 @@
       <td class="table-td table-type">{{ type_ }}</td>
       <!--TODO Need to create logic for images and empty thumb.-->
       <td class="table-td table-picture text-center">
-        <div class="table-picture-ico icon-picture"></div>
+        {% include 'catalog/category_product_image.html' with product=item page=page only %}
       </td>
       <td class="table-td table-code">{{ item.code|default:'-' }}</td>
       <td class="table-td table-name">

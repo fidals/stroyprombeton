@@ -1,0 +1,128 @@
+// Featherlight – ultra slim jQuery lightbox
+// Version 1.5.0 - http://noelboss.github.io/featherlight/
+//
+// Copyright 2016, Noël Raoul Bossart (http://www.noelboss.com)
+// MIT Licensed.
+
+@media all {
+  .featherlight {
+    display: none;
+
+    // dimensions: spanning the background from edge to edge
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 100; // z-index needs to be >= elements on the site
+
+    // position: centering content
+    text-align: center;
+
+    // insures that the ::before pseudo element
+    // doesn't force wrap with fixed width content;
+    white-space: nowrap;
+
+    // styling */
+    cursor: pointer;
+    background: #333;
+
+    // IE8 "hack" for nested featherlights
+    background: rgba(0, 0, 0, 0);
+
+    // support for nested featherlights. Does not work in IE8 (use JS to fix)
+    &:last-of-type {
+      background: rgba(0, 0, 0, 0.8);
+    }
+
+    &:before {
+      // position: trick to center content vertically
+      content: '';
+      display: inline-block;
+      height: 100%;
+      vertical-align: middle;
+      margin-right: -0.25em;
+    }
+
+    iframe {
+      border: none;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+  }
+
+  .featherlight-content {
+    display: inline-block;
+    border-radius: 2px;
+    box-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.25);
+    position: relative;
+    vertical-align: middle;
+
+    // dimensions: cut off images
+    overflow: auto;
+    padding: 25px;
+
+    // dimensions: handling large content
+    margin-left: 5%;
+    margin-right: 5%;
+    max-height: 95%;
+
+    // styling
+    background: #fff;
+    cursor: auto;
+
+    // reset white-space wrapping
+    white-space: normal;
+  }
+
+  // contains the content
+  .featherlight-inner {
+    // make sure its visible
+    display: block;
+  }
+
+  .featherlight-close-icon {
+    display: inline-block;
+    font: normal normal normal 14px/1 FontAwesome;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    color: #9b9b9b;
+    cursor: pointer;
+    font-size: 0;
+    position: absolute;
+    right: 6px;
+    top: 5px;
+    z-index: 100;
+
+    &::before {
+      content: "\f00d";
+      font-size: 16px;
+    }
+  }
+
+  .featherlight-image {
+    width: 100%;
+  }
+
+  .featherlight-iframe .featherlight-content {
+    // removed the border for image croping since iframe is edge to edge
+    border-bottom: 0;
+    padding: 0;
+  }
+}
+
+// handling phones and small screens
+@media only screen and (max-width: 1024px) {
+  .featherlight .featherlight-content {
+    // dimensions: maximize lightbox with for small screens
+    margin-left: 10px;
+    margin-right: 10px;
+    max-height: 98%;
+
+    padding: 10px 10px 0;
+    border-bottom: 10px solid transparent;
+  }
+}

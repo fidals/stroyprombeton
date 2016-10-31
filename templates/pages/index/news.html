@@ -3,31 +3,37 @@
 {% load stb_extras %}
 
 <section class="mainpage-news">
-  <h2 class="mainpage-news-h2 main-h2">Новости</h2>
+  <h2 class="news-h2 main-h2">Новости</h2>
 
   <ul>
     {% for item in news %}
-      <li class="mainpage-news-item">
+      <li class="news-item">
         <a href="{{ item.url }}">
-          {% if page.main_image %}
-            {% thumbnail page.main_image '164x165' as image %}
-              <img class="mainpage-news-item-img"
-                   src="{{ image.url }}" alt="{% get_img_alt product.page %}">
-            {% endthumbnail %}
-          {% else %}
-            {% placeholder_image_url as image_url %}
-              <img class="mainpage-news-item-img"
-                   src="{{ image.url }}" alt="{% get_img_alt product.page %}">
-          {% endif %}
+          <div class="row">
+            <div class="col-xs-4 news-img-wrapper">
+              {% if item.page.main_image %}
+                {% thumbnail item.page.main_image '164x165' as image %}
+                  <img class="img-responsive" src="{{ image.url }}"
+                       alt="{% get_img_alt item.page %}">
+                {% endthumbnail %}
+              {% else %}
+                {% placeholder_image_url as image_url %}
+                  <img class="img-responsive" src="{{ image_url }}"
+                       alt="{% get_img_alt item.page %}">
+              {% endif %}
+            </div>
 
-          <p class="mainpage-news-item-title">{{ item.h1 }}</p>
-          <p class="mainpage-news-item-short">{{ item.description }}</p>
+            <div class="col-xs-8 news-text-wrapper">
+              <p class="news-item-title">{{ item.h1 }}</p>
+              <p class="news-item-short">{{ item.description }}</p>
+            </div>
+          </div>
         </a>
       </li>
     {% endfor %}
   </ul>
 
-  <div class="mainpage-news-about">
+  <div class="news-about">
     <a class="more-link" href="{% url 'pages:flat_page' 'news' %}">
       Все новости
       <i class="fa fa-arrow-right more-link-arrow" aria-hidden="true"></i>

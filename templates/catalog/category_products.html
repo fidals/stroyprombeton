@@ -4,7 +4,7 @@
   {% if product.page.is_active %}
     <tr class="table-tr" id="{{ product.id }}">
       <td class="table-td table-picture text-center">
-        <div class="table-picture-ico icon-picture"></div>
+        {% include 'catalog/category_product_image.html' with product=product page=page only %}
       </td>
       {# TODO Needed create logic for images and empty thumb. #}
       {# http://youtrack.stkmail.ru/issue/dev-811 #}

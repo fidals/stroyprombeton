@@ -10,21 +10,13 @@
   {% include 'components/page_h1.html' with page=page %}
 
   <section class="product-serial text-center">
-    <div class="container container-fluid">
-      <div class="row">
-        <div class="col-xs-offset-2 col-xs-8">
-          <div class="product-serial-content">
-            <span class="product-serial-title">Код</span>
-            <span class="product-serial-val">{{ product.code }}</span>
-            <span class="product-serial-title">Серия</span>
-            {# TODO: `specification` should be replaced by `spec` #}
-            <span class="product-serial-val">{{ product.specification }}</span>
-            <span class="product-serial-title">Марка</span>
-            <span class="product-serial-val">{{ product.mark }}</span>
-          </div>
-        </div>
-      </div>
-    </div>
+    <span class="product-serial-title">Код</span>
+    <span class="product-serial-val">{{ product.code }}</span>
+    <span class="product-serial-title">Серия</span>
+    {# TODO: `specification` should be replaced by `spec` #}
+    <span class="product-serial-val">{{ product.specification }}</span>
+    <span class="product-serial-title">Марка</span>
+    <span class="product-serial-val">{{ product.mark }}</span>
   </section>
 
   <section class="product-info">
@@ -32,11 +24,12 @@
       <div class="row">
         <div class="col-xs-offset-1 col-xs-6">
           <div class="product-image">
-            <img class="img-responsive img-centered" src="{{ product.image }}" alt="{{ product.name }}">
+            {% include 'catalog/product_image.html' with product=product page=page only %}
           </div>
+
           <div class="product-characteristics">
             <h2 class="product-characteristics-title">Характеристики</h2>
-            <table class="product-characteristics-table">
+            <table class="product-characteristics-table table">
               {% show_field_if_exist product.category 'Тип' %}
               {# TODO: `specification` should be replaced by `spec` #}
               {% show_field_if_exist product.specification 'Рабочая документация' %}
@@ -53,7 +46,7 @@
 
         <div class="col-xs-5">
           <div class="product-order">
-            <table class="product-order-table">
+            <table class="product-order-table table">
               <tr>
                 <th class="product-order-table-th">Цена</th>
                 <th class="product-order-table-th">Кол-во</th>
@@ -79,14 +72,12 @@
             </div>
           </div>
 
-          <div class="product-describe">
-            <h2 class="product-describe-title">
-              Производство ЖБИ: {{ page.h1 }} {{ product.mark }}
-            </h2>
-            <div class="product-describe-text">
-              {# TODO: https://goo.gl/arjtqq #}
-              {% autoescape off %}{{ page.content }}{% endautoescape %}
-            </div>
+          <h2 class="product-describe-title">
+            Производство ЖБИ: {{ page.h1 }} {{ product.mark }}
+          </h2>
+          <div class="product-describe-text">
+            {# TODO: https://goo.gl/arjtqq #}
+            {% autoescape off %}{{ page.content }}{% endautoescape %}
           </div>
         </div>
       </div>

@@ -210,17 +210,20 @@ class OrderPrice(FormView):
 
 
 class IndexPage(CustomPageView):
-    """Custom view for Index page."""
 
     template_name = 'pages/index/index.html'
-    slug = 'index'
 
-    context = {
-        'news': FlatPage.objects.filter(parent__slug='news', is_active=True)[:2],
-        'partners': config.PARTNERS,
-        'reviews': config.REVIEWS,
-        'regions': get_regions(),
-    }
+    def get_context_data(self, **kwargs):
+        """Extended method. Add product's images to context."""
+        context = super(IndexPage, self).get_context_data(**kwargs)
+
+        return {
+            **context,
+            'news': FlatPage.objects.filter(parent__slug='news', is_active=True)[:2],
+            'partners': config.PARTNERS,
+            'reviews': config.REVIEWS,
+            'regions': get_regions(),
+        }
 
 
 class RegionFlatPage(FlatPageView):

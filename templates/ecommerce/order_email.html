@@ -5,7 +5,7 @@
   <span style="float: right; color: #767A7B; margin-top: 32px;">
     <span style="font-size: 13px;">(812)</span>
     <span style="font-size: 25px;" class="ya-opt-phone">
-      <a style="color: #000; text-decoration: none;" href="tel:{{ site_info.phone.spb_1_url }}">
+      <a href="tel:{{ site_info.phone.spb_1_url }}" style="color: #000; text-decoration: none;">
         {{ site_info.phone.spb_1 }}
       </a>
     </span>
@@ -71,7 +71,7 @@
 {% customer_info order.email 'Ваш email' %}
 {% customer_info order.company 'Ваша компания' %}
 {% customer_info order.address 'Адрес поставки' %}
-{% customer_info order.comment 'Сообщение' %}
+{% customer_info order.comment 'Комментарий к заказу' %}
 
 <p>Если у Вас остались вопросы, Вы можете связаться с нашими менеджерами по телефонам:
   <a href="{{ site_info.phone.moscow_1_url }}">{{ site_info.phone.spb1 }}</a>,

@@ -1,20 +1,4 @@
 // ================================================================
-// HEADER
-// ================================================================
-.product-header {
-  padding: 21px 0 48px;
-
-  &-h1 {
-    padding-left: 14px;
-    font-size: $f-size-base + 18;
-    font-weight: 300;
-    line-height: 1.18;
-    text-align: center;
-    color: $c-product-header;
-  }
-}
-
-// ================================================================
 // SERIAL
 // ================================================================
 .product-serial {
@@ -40,39 +24,33 @@
 // ================================================================
 // CHARACTERISTICS
 // ================================================================
-.product-characteristics {
-  padding: 0 0 85px;
+.product {
+  &-info {
+    padding: 0 0 85px;
+  }
 
+  &-td {
+    border-bottom: 1px solid $c-product-table-border;
+    font-size: $f-size-base;
+    font-weight: 400;
+    min-width: 204px;
+    padding: 11px 20px 11px 0;
+  }
+}
+
+.product-characteristics {
   &-title {
-    margin-bottom: 21px;
     font-size: $f-size-base;
     font-weight: 700;
-    line-height: 1.25;
-    color: $c-product-characteristics-title;
+    margin-bottom: 20px;
   }
 
   &-table {
-    border-collapse: collapse;
-    border-top: 1px solid $c-product-characteristics-table-border;
-  }
-
-  &-name {
-    padding: 11px 30px 11px 0;
-    width: 194px;
-    font-size: $f-size-base;
-    font-weight: 400;
-    color: $c-product-characteristics-table-name;
-    border-bottom: 1px solid $c-product-characteristics-table-border;
-    line-height: 1.4;
+    border-top: 1px solid $c-product-table-border;
   }
 
   &-val {
-    padding: 11px 0;
-    font-size: $f-size-base;
     font-weight: 700;
-    line-height: 1.4;
-    color: $c-product-characteristics-table-val;
-    border-bottom: 1px solid $c-product-characteristics-table-border;
   }
 }
 
@@ -85,7 +63,7 @@
   &-table {
     margin-bottom: 22px;
     border-collapse: collapse;
-    border-bottom: 1px solid $c-product-characteristics-table-border;
+    border-bottom: 1px solid $c-product-table-border;
 
     &-th {
       padding-bottom: 14px;
@@ -93,8 +71,7 @@
       font-weight: 700;
       line-height: 1.25;
       text-align: center;
-      color: $c-product-order-table;
-      border-bottom: 1px solid $c-product-characteristics-table-border;
+      border-bottom: 1px solid $c-product-table-border;
     }
 
     &-col-price,
@@ -104,7 +81,6 @@
       font-size: $f-size-base + 4;
       font-weight: 600;
       text-align: center;
-      color: $c-product-order-table;
     }
 
     &-col-count {
@@ -119,11 +95,9 @@
 // ================================================================
 .product-describe {
   &-title {
-    padding-bottom: 21px;
     font-size: $f-size-base;
     font-weight: 700;
-    line-height: 1.25;
-    color: $c-product-describe-title;
+    padding-bottom: 20px;
   }
 
   &-text {
@@ -136,19 +110,13 @@
 // ================================================================
 .product-siblings {
   &-title {
-    color: $c-product-series-title;
     font-size: $f-size-base + 18;
-    font-weight: 300;
-    line-height: 1.18;
     margin-bottom: 18px;
-    padding-left: 8px;
-    text-align: center;
   }
 
   &-text {
     font-size: $f-size-base + 2;
     margin-bottom: 40px;
-    text-align: center;
   }
 }
 
@@ -170,29 +138,25 @@
 
   &-item {
     display: inline-block;
-    margin-right: 31px;
+    margin-right: 30px;
     width: 360px;
 
     &-title {
-      margin-bottom: 16px;
+      color: $c-text;
       font-size: $f-size-base;
       font-weight: 700;
       line-height: 1.25;
-      color: $c-slider-title;
+      margin-bottom: 16px;
     }
 
     &-image {
+      height: 238px;
       margin-bottom: 15px;
-      height: 240px;
       overflow: hidden;
-    }
-
-    &-image-img {
-      width: 100%;
+      position: relative;
     }
 
     &-price {
-      color: $c-slider-price;
       font-size: $f-size-base + 4;
       font-weight: 600;
       margin-bottom: 9px;
@@ -200,19 +164,19 @@
   }
 
   &-nav {
+    background-color: $c-black;
+    bottom: 32px;
+    cursor: pointer;
+    height: 53px;
+    margin: auto 0;
     position: absolute;
     top: 0;
-    bottom: 32px;
-    margin: auto 0;
-    width: 47px;
-    height: 53px;
-    background-color: $c-black;
-    cursor: pointer;
     transition: all 0.2s ease;
+    width: 47px;
 
     &-disable {
-      opacity: .5;
       cursor: default;
+      opacity: 0.5;
     }
 
     &:hover {
