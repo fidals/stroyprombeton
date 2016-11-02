@@ -87,7 +87,7 @@
    * @param {string} products - HTML string of fetched products
    */
   function updateLoadMoreLink(_, products) {
-    const oldCount = parseInt(DOM.$showMoreLink.attr('data-load-count'), 10);
+    const oldCount = getLoadedProducts();
     const newCount = oldCount + config.productsToFetch;
     const productsLoaded = countWord(products, 'table-tr');
 

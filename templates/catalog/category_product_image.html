@@ -3,7 +3,7 @@
 {% load stb_extras %}
 
 {% if product.page.main_image %}
-  {% thumbnail product.page.main_image '554x416' as image %}
+  {% thumbnail product.page.main_image '554x416' crop='center' as image %}
     <a class="table-picture-ico icon-picture" href="#" data-featherlight="{{ image.url }}"></a>
   {% endthumbnail %}
 {% else %}

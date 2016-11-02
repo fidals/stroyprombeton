@@ -13,11 +13,11 @@ from django.views.generic import FormView, TemplateView
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import ensure_csrf_cookie
 
-from catalog.views import catalog, search
 from catalog.models import search as filter_
+from catalog.views import catalog, search
 from ecommerce import views as ec_views
-from pages.views import CustomPageView, FlatPageView
 from pages.models import FlatPage
+from pages.views import CustomPageView, FlatPageView
 
 from stroyprombeton import mailer, config
 from stroyprombeton.forms import OrderForm, PriceForm, DrawingForm
@@ -221,7 +221,7 @@ class IndexPage(CustomPageView):
             **context,
             'news': FlatPage.objects.filter(parent__slug='news', is_active=True)[:2],
             'partners': config.PARTNERS,
-            'reviews': config.REVIEWS,
+            'reviews': FlatPage.objects.filter(parent__slug='user-feedbacks')[:3],
             'regions': get_regions(),
         }
 

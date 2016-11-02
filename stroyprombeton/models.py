@@ -9,7 +9,7 @@ from django.db import models
 from django.core.urlresolvers import reverse
 
 from catalog.models import AbstractProduct, AbstractCategory
-from pages.models import PageMixin, ModelPage, CustomPage
+from pages.models import PageMixin, ModelPage, CustomPage, FlatPage
 from ecommerce.models import Order as ecOrder
 
 

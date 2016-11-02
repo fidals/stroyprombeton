@@ -55,7 +55,6 @@ class CategoryTree(TestCase):
         self.assertEqual(status_code, 200)
 
     def test_root_catalog_name(self):
-        """Test """
         name = self.response.context['nodes'][0].name
 
         self.assertEqual(name, self.root_name)
@@ -72,8 +71,10 @@ class CategoryTree(TestCase):
 
 
 class CategoryTile(TestCase):
-    """Test for CategoryPage view under the condition,that using CategoryTile
-    template."""
+    """
+    Test for CategoryPage view under the condition, that using CategoryTile
+    template.
+    """
 
     @classmethod
     def setUpTestData(cls):
@@ -138,8 +139,10 @@ class CategoryTile(TestCase):
 
 
 class CategoryTable(TestCase):
-    """Test for CategoryPage view under the condition, that using CategoryTable
-    template."""
+    """
+    Test for CategoryPage view under the condition, that using CategoryTable
+    template.
+    """
 
     @classmethod
     def setUpTestData(cls):
@@ -382,3 +385,24 @@ class OrderDrawing(AbstractFormViewTest, TestCase):
     SUCCESS_URL = '/drawing-success/'
     FORM_TEST = DrawingFormTest
     FIELDS = copy(DrawingFormTest.FIELDS)
+
+
+class IndexPage(TestCase):
+    """Tests for Index page view."""
+
+    @classmethod
+    def setUpTestData(cls):
+        create_custom_pages()
+
+    def setUp(self):
+        self.response = self.client.get('/')
+        self.content = self.response.content.decode('utf-8')
+
+    def test_news_on_page(self):
+        self.assertIn('news-item', self.content)
+
+    def test_reviews_on_page(self):
+        self.assertIn('js-reviews-item', self.content)
+
+    def test_active_regions_on_page(self):
+        self.assertIn('<a href="/regions/', self.content)

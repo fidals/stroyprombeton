@@ -1,18 +1,34 @@
-<ul class="informer">
+{% load images %}
+{% load thumbnail %}
+{% load stb_extras %}
+
+<ul>
   {% for page in pages %}
-    <li>
-      <div class="news_img">
-        <a href="{{ page.get_absolute_url }}">
-          <img src="{{ MEDIA_URL }}news/{{ page.date_published|date:'d-m-y' }}/100x100.jpg" alt="{{ page.h1 }}">
-        </a>
-      </div>
-      <i>{{ page.date_published|date:'d.m.Y' }}</i>
-      <br>
-      <a href="{{ page.get_absolute_url }}">{{ page.h1 }}</a>
-      <div class="inf_intro">
+    <li class="newslist-item">
+      <a class="newslist-item-img" href="{{ page.url }}">
+        {% if page.main_image %}
+          {% thumbnail page.main_image '262x240' crop='center' as image %}
+            <img class="img-responsive img-stretched" src="{{ image.url }}"
+                 alt="{% get_img_alt page %}">
+          {% endthumbnail %}
+        {% else %}
+          {% placeholder_image_url as image_url %}
+            <img class="img-responsive img-stretched" src="{{ image_url }}"
+                 alt="{% get_img_alt page %}">
+        {% endif %}
+      </a>
+      <div class="newslist-item-title">{{ page.title }}</div>
+      <div class="newslist-item-date">{{ page.date_published|date:'d.m.Y' }}</div>
+      <div class="newslist-item-text">
         {{ page.description }}
       </div>
-    </li>
 
+      <div class="newslist-item-more">
+        <a href="{{ page.get_absolute_url }}" class="more-link">
+          Читать далее
+          <i class="fa fa-arrow-right more-link-arrow" aria-hidden="true"></i>
+        </a>
+      </div>
+    </li>
   {% endfor %}
 </ul>

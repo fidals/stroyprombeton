@@ -13,13 +13,14 @@ from django.core.files.images import ImageFile
 from django.core.management.base import BaseCommand
 from django.utils.text import slugify
 
+from stroyprombeton import config
 from stroyprombeton.models import Category, Product, Region, CategoryPage, ProductPage
 
 from pages.models import Page, FlatPage, CustomPage
 from images.models import Image
 
 
-custom_page_data = {
+CUSTOM_PAGES = {
     'news': {
         'slug': 'news',
         'h1': 'Новости компании',
@@ -300,43 +301,53 @@ class Command(BaseCommand):
                     product.page = page
                     product.save()
 
-        def create_posts(data: list):
-            news = FlatPage.objects.create(**custom_page_data['news'])
+        def create_flat_pages(data: list):
+            news = CustomPage.objects.create(**CUSTOM_PAGES['news'])
+            user_feedbacks = CustomPage.objects.create(slug='user-feedbacks')
 
-            for post_data in data:
+            for page_data in data:
                 FlatPage.objects.create(
-                    slug=slugify(unidecode(post_data['name'])),
-                    content=is_exist(post_data['text']),
+                    slug=slugify(unidecode(page_data['name'])),
+                    content=is_exist(page_data['text']),
                     parent=news,
-                    date_published=to_datetime(post_data['date']),
-                    description=is_exist(post_data['description']),
-                    h1=is_exist(post_data['h1']),
-                    is_active=bool(post_data['is_active']),
-                    keywords=is_exist(post_data['keywords']),
-                    title=post_data['title'] or post_data['name']
+                    date_published=to_datetime(page_data['date']),
+                    description=is_exist(page_data['description']),
+                    h1=page_data['h1'] or page_data['title'] or page_data['name'],
+                    is_active=bool(page_data['is_active']),
+                    keywords=is_exist(page_data['keywords']),
+                    title=page_data['title'] or page_data['name']
+                )
+
+            # TODO: https://goo.gl/WsyhMo
+            for item in config.USER_FEEDBACKS:
+                FlatPage.objects.create(
+                    slug=slugify(unidecode(item['title'])),
+                    content=item['content'],
+                    parent=user_feedbacks,
+                    title=item['title'],
                 )
 
         def create_static_pages(data: list):
             navigation = Page.objects.create(slug='navi')
-            CustomPage.objects.create(**custom_page_data['category_tree'])
-            CustomPage.objects.create(**custom_page_data['index'], parent=navigation)
-            CustomPage.objects.create(**custom_page_data['search'])
-            CustomPage.objects.create(**custom_page_data['order'])
+            CustomPage.objects.create(**CUSTOM_PAGES['category_tree'])
+            CustomPage.objects.create(**CUSTOM_PAGES['index'], parent=navigation)
+            CustomPage.objects.create(**CUSTOM_PAGES['search'])
+            CustomPage.objects.create(**CUSTOM_PAGES['order'])
 
-            for static_page_data in data:
+            for static_pages in data:
                 static_page = Page.objects.create(
-                    content=static_page_data['text'],
-                    date_published=to_datetime(static_page_data['date']),
-                    description=is_exist(static_page_data['description']),
-                    h1=is_exist(static_page_data['h1']),
-                    is_active=bool(static_page_data['is_active']),
-                    keywords=is_exist(static_page_data['keywords']),
-                    slug=static_page_data['alias'],
-                    title=static_page_data['title'] or static_page_data['name']
+                    content=static_pages['text'],
+                    date_published=to_datetime(static_pages['date']),
+                    description=is_exist(static_pages['description']),
+                    h1=is_exist(static_pages['h1']),
+                    is_active=bool(static_pages['is_active']),
+                    keywords=is_exist(static_pages['keywords']),
+                    slug=static_pages['alias'],
+                    title=static_pages['title'] or static_pages['name']
                 )
                 if static_page.slug in self.navigation_items_positions:
                     static_page.parent = navigation
-                    static_page.menu_title = static_page_data['title'] or static_page_data['name']
+                    static_page.menu_title = static_pages['title'] or static_pages['name']
                     static_page.position = self.navigation_items_positions[static_page.slug]
                     static_page.save()
 
@@ -353,7 +364,7 @@ class Command(BaseCommand):
 
         create_categories(data['categories'])
         create_products(data['products'])
-        create_posts(data['posts'])
+        create_flat_pages(data['posts'])
         create_static_pages(data['static_pages'])
         create_regions()
         fill_images_data()

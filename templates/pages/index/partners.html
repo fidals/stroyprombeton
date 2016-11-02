@@ -1,14 +1,14 @@
 <section class="partners">
-  <h2 class="partners-h2">Наши партнеры</h2>
+  <h2 class="partners-h2 heading-h2">Наши партнеры</h2>
+
   <ul>
     {% for partner in partners %}
       <li class="partners-item">
-        <p>
-          <a href="{{ partner.url }}" target="_blank">
-            <img src="{{ STATIC_URL }}{{ partner.logo }}" alt="{{ partner.alt }}">
-          </a>
-        </p>
-        <p class="partners-item-title">{{ partner.text }}</p>
+        <a href="{{ partner.url }}" target="_blank">
+          <img class="img-responsive" src="{{ STATIC_URL }}{{ partner.logo }}"
+               alt="{{ partner.alt }}">
+          <p class="partners-item-title">{{ partner.text }}</p>
+        </a>
       </li>
     {% endfor %}
   </ul>

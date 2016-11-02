@@ -7,12 +7,14 @@ $c-black: #000;
 $c-error-text: #ed0b00;
 $c-orange: #fc7126;
 $c-text-orange: #fc7126;
+$c-text-grey: #acacac;
 $c-selection: #fc7126;
 $c-show-more-border: #ababab;
 $c-show-more-hover: #bd6739;
 $c-show-more-active: #904f2b;
 $c-show-more-disabled: #bababa;
 $c-table-row-bg: #f2f2f2;
+$c-teaser-bg: #f8f8f8;
 $c-text: #212121;
 $c-white: #fff;
 
@@ -87,9 +89,7 @@ $c-offer-title-hover: #979797;
 $c-about-bg: #fbfbfb;
 $c-about-h2: #171237;
 
-$c-news-item-bg: #f8f8f8;
 $c-news-item-bg-hover: #fbfbfb;
-$c-news-title: #263238;
 
 $c-reviews: #1c2e36;
 $c-reviews-title: #2e2e2e;
@@ -163,16 +163,10 @@ $c-order-contacts-attachment-info: #acacac;
 $c-product-table-border: #979797;
 
 // Page newslist
-$c-newslist-title: #171237;
 $c-newslist-item-bg: rgba(243, 243, 243, .6);
-$c-newslist-item-title: #263238;
-$c-newslist-item-date: #acacac;
-$c-newslist-item-text: #212121;
 
 // Single news
 $c-news-date: #acacac;
-$c-news-title: #171237;
-$c-news-text: #212121;
 $c-news-back-link: #fc7126;
 $c-news-back-link-hover: #bd6739;
 $c-news-back-link-active: #904f2b;

@@ -3,30 +3,28 @@
 {% load stb_extras %}
 
 <section class="mainpage-news">
-  <h2 class="news-h2 main-h2">Новости</h2>
+  <h2 class="news-h2 heading-h2">Новости</h2>
 
   <ul>
     {% for item in news %}
       <li class="news-item">
-        <a href="{{ item.url }}">
-          <div class="row">
-            <div class="col-xs-4 news-img-wrapper">
-              {% if item.page.main_image %}
-                {% thumbnail item.page.main_image '164x165' as image %}
-                  <img class="img-responsive" src="{{ image.url }}"
-                       alt="{% get_img_alt item.page %}">
-                {% endthumbnail %}
-              {% else %}
-                {% placeholder_image_url as image_url %}
-                  <img class="img-responsive" src="{{ image_url }}"
-                       alt="{% get_img_alt item.page %}">
-              {% endif %}
-            </div>
+        <a class="news-item-link" href="{{ item.url }}">
+          <div class="news-img-wrapper">
+            {% if item.main_image %}
+              {% thumbnail item.main_image '165x165' crop='center' as image %}
+                <img class="img-responsive img-stretched" src="{{ image.url }}"
+                     alt="{% get_img_alt item %}">
+              {% endthumbnail %}
+            {% else %}
+              {% placeholder_image_url as image_url %}
+                <img class="img-responsive img-stretched" src="{{ image_url }}"
+                     alt="{% get_img_alt item %}">
+            {% endif %}
+          </div>
 
-            <div class="col-xs-8 news-text-wrapper">
-              <p class="news-item-title">{{ item.h1 }}</p>
-              <p class="news-item-short">{{ item.description }}</p>
-            </div>
+          <div class="news-text-wrapper">
+            <p class="news-item-title">{{ item.h1 }}</p>
+            <p class="news-item-short">{{ item.description }}</p>
           </div>
         </a>
       </li>

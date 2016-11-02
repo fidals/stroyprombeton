@@ -1,8 +1,6 @@
 from django import template
-from django.core.urlresolvers import reverse
 
 from images.models import ImageMixin
-from pages.models import Page
 
 from stroyprombeton.models import Category
 

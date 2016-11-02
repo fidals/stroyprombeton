@@ -1,36 +1,37 @@
 <div class="container container-fluid">
-<div class="row middle-xs">
-  <div class="col-xs-offset-1 col-xs-3">
-    <h2 class="main-h2">Отзывы</h2>
-  </div>
-  <div class="col-xs-6">
-    <ul class="reviews-content">
-      {% for review in reviews %}
-        <li class="reviews-content-item js-reviews-item {% if forloop.first %}active{% endif %}">
-          <p class="reviews-content-item-title">{{ review.title }}</p>
-          <p>{{ review.text }}</p>
-        </li>
-      {% endfor %}
-    </ul>
+  <div class="row middle-xs">
+    <div class="col-xs-offset-1 col-xs-3">
+      <h2 class="main-h2">Отзывы</h2>
+    </div>
+    <div class="col-xs-6">
+      <ul class="reviews-content">
+        {% for review in reviews %}
+          <li class="reviews-content-item js-reviews-item {% if forloop.first %}active{% endif %}">
+            <p class="reviews-content-item-title">{{ review.title }}</p>
+            <p>{{ review.content }}</p>
+          </li>
+        {% endfor %}
+      </ul>
 
-    <div class="reviews-nav">
-      <div class="reviews-nav-item js-reviews-nav-item active" data-slide-to="0"></div>
-      <div class="reviews-nav-item js-reviews-nav-item" data-slide-to="1"></div>
-      <div class="reviews-nav-item js-reviews-nav-item" data-slide-to="2"></div>
+      <div class="reviews-nav">
+        {% for review in reviews %}
+          <div class="reviews-nav-item js-reviews-nav-item {% if forloop.first %}active{% endif %}"
+               data-slide-to="{{ forloop.counter0 }}"></div>
+        {% endfor %}
+      </div>
     </div>
   </div>
-</div>
 
-<div class="row">
-  <div class="col-xs-offset-4 col-xs-7">
-    <div class="reviews-more">
-      <p>
-        <a class="more-link" href="#">
-          Благодарственное письмо
-          <i class="fa fa-arrow-down more-link-arrow" aria-hidden="true"></i>
-        </a>
-      </p>
+  <div class="row">
+    <div class="col-xs-offset-4 col-xs-7">
+      <div class="reviews-more">
+        <p>
+          <a class="more-link" href="#">
+            Благодарственное письмо
+            <i class="fa fa-arrow-down more-link-arrow" aria-hidden="true"></i>
+          </a>
+        </p>
+      </div>
     </div>
   </div>
-</div>
 </div>
