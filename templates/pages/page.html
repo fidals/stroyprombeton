@@ -17,7 +17,7 @@
           {% endif %}
         {% endautoescape %}
 
-        {% if page.is_root %}
+        {% if page.children %}
           {% include 'pages/pages.html' with pages=page.children.all only %}
         {% endif %}
       </div>

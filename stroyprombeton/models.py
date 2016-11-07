@@ -1,27 +1,18 @@
-"""Models which are specific for stroyprombeton.ru"""
-
-from random import randint
-from sys import maxsize
-from unidecode import unidecode
-
 from django.core.urlresolvers import reverse
 from django.db import models
-from django.utils.text import slugify
 
 from catalog.models import AbstractProduct, AbstractCategory
 from ecommerce.models import Order as ecOrder
-from pages.models import PageMixin, ModelPage, CustomPage, FlatPage
+from pages.models import PageMixin, ModelPage, CustomPage
 
 
 class Order(ecOrder):
-    """Extended Order model."""
     company = models.CharField(max_length=255)
     address = models.TextField(default='', blank=True)
     comment = models.TextField(default='', blank=True)
 
 
 class Category(AbstractCategory, PageMixin):
-    """Extended Category model."""
     specification = models.TextField(default='', blank=True)
     link_to_metal = models.URLField(default='', blank=True)
 
@@ -35,7 +26,6 @@ class Category(AbstractCategory, PageMixin):
 
 
 class Product(AbstractProduct, PageMixin):
-    """Extended Product model."""
     category = models.ForeignKey(
         Category, on_delete=models.CASCADE, related_name='products')
     is_new_price = models.NullBooleanField(blank=True, null=True)
@@ -51,26 +41,8 @@ class Product(AbstractProduct, PageMixin):
     diameter_out = models.IntegerField(null=True, blank=True)
     diameter_in = models.IntegerField(null=True, blank=True)
 
-    def save(self, *args, **kwargs):
-        # product slug should be unique, we don't use slug in product url
-        self._slug = slugify(unidecode(self.name)) + str(randint(0, maxsize))[1:10]
-        super(Product, self).save(*args, **kwargs)
-
-    @property
-    def slug(self):
-        return self._slug
-
     def get_absolute_url(self):
         return reverse('product', args=(self.id,))
-
-
-class Region(models.Model):
-    """Region model - is a region on map (ex: Chelyabinsk region)"""
-
-    name = models.CharField(max_length=255, unique=True)
-
-    def get_absolute_url(self):
-        return reverse('region_flat_page', args=(self.page.slug,))
 
 
 class CategoryPage(ModelPage):

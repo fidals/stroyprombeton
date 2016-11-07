@@ -10,77 +10,15 @@ from unidecode import unidecode
 from django.db import transaction
 from django.conf import settings
 from django.core.files.images import ImageFile
+from django.core.management import call_command
 from django.core.management.base import BaseCommand
 from django.utils.text import slugify
 
 from images.models import Image
-from pages.models import Page, FlatPage, CustomPage
+from pages.utils import save_custom_pages
+from pages.models import CustomPage, FlatPage, Page
+from stroyprombeton.models import Category, Product, CategoryPage, ProductPage
 
-from stroyprombeton import config
-from stroyprombeton.models import Category, Product, Region, CategoryPage, ProductPage
-
-CUSTOM_PAGES = {
-    'news': {
-        'slug': 'news',
-        'h1': 'Новости компании',
-        'title': 'Завод ЖБИ «СТК-ПромБетон»',
-        'menu_title': 'Новости компании'
-    },
-    'index': {
-        'slug': '',
-        'title': '''
-            Завод ЖБИ «СТК-ПромБетон» | Производство ЖБИ в Санкт-Петербурге,
-            железобетонные изделия СПб
-            ''',
-        'h1': 'Завод железобетонных изделий «СТК-Промбетон»',
-        'menu_title': 'Главная',
-        'type': Page.CUSTOM_TYPE,
-    },
-    'category_tree': {
-        'slug': 'gbi',
-        'title': 'Каталог товаров',
-        'h1': 'Все категории',
-        'type': Page.CUSTOM_TYPE,
-        'menu_title': 'Каталог',
-        'content': '''
-            <p class="about-catalog-p">В этом году наш завод в течение 1-го
-            квартала активно работал по производству и поставке мостовых
-            железобетонных конструкций по заказу нефтедобывающих компаний. Это
-            блоки шкафных стенок, блоки насадок, диафрагмы и ригели. Вся
-            продукция «несерийная» и производилась по чертежам Заказчика.
-            Поставка изделий осуществлялась по железной дороге для
-            строительства объектов на полуострове Ямал. Следует отметить, что
-            мы изначально ориентированы на выпуск продукции для транспортного
-            строитеьства в широком спектре изделий, включая индивидуальные
-            заказы.</p>
-            <p class="about-catalog-p">В апреле наше предприятие выпускало
-            изделия для реконструкции мостов на Октябрьской железной дороге
-            (короба, шкафные блоки, элементы лестничных сходов). Специфика
-            поставок на объекты дороги имеет особенность – работу необходимо
-            выполнять строго по графику, так как установка конструкций
-            осуществляется в так называемые «окна». Мы уже не первый год
-            работаем на этом направлении, что позволяет нам успешно справляться
-            со взятыми на себя обязательствами.</p>
-            ''',
-    },
-    'search': {
-        'slug': 'search',
-        'type': Page.CUSTOM_TYPE,
-        'title': 'Результаты поиска',
-    },
-    'order': {
-        'slug': 'order',
-        'type': Page.CUSTOM_TYPE,
-        '_title': 'Корзина Интернет-магазин СТК-ПромБетон',
-        'h1': 'Оформление заказа',
-    },
-    'order-success': {
-        'slug': 'order-success',
-        'type': Page.CUSTOM_TYPE,
-        '_title': 'Спасибо за Ваш заказ',
-        'h1': 'Заказ принят',
-    },
-}
 
 IMAGES_ROOT_FOLDER_NAME = os.path.join(settings.MEDIA_ROOT, 'products')
 
@@ -167,9 +105,13 @@ class Command(BaseCommand):
             default=False
         )
 
+    @staticmethod
+    def purge_tables():
+        call_command('flush', '--noinput')
+
     @transaction.atomic
     def handle(self, *args, **options):
-        self.truncate_data()
+        self.purge_tables()
         if options['liveserver']:
             with self.connect_to_the_mysql_db() as cursor:
                 data = self.get_data_from_db(cursor)
@@ -184,20 +126,16 @@ class Command(BaseCommand):
 
     def get_data_from_db(self, cur: pymysql):
         tables = {
-            'categories': ' '.join([
-                'id, parent_id, mark, name, title, h1, date, text, ord'
-            ]),
-            'posts': ' '.join([
-                'name, title, h1, keywords, description, is_active, date, text'
-            ]),
-            'products': ' '.join([
-                'section_id, nomen, mark, length, width, height, weight,',
-                'volume, diameter_out, diameter_in, price, title,',
-                'keywords, description, date, text, price_date',
-            ]),
-            'static_pages': ' '.join([
-                'alias, name, title, h1, keywords, description, is_active, date, text'
-            ]),
+            'categories': 'id, parent_id, mark, name, title, h1, date, text, ord, is_active',
+            'posts': 'name, title, h1, keywords, description, is_active, date, text',
+            'products': (
+                'section_id, nomen, mark, length, '
+                'width, height, weight, volume, diameter_out, diameter_in, '
+                'price, title, keywords, description, date, text, price_date'
+            ),
+            'static_pages': 'alias, name, title, h1, keywords, description, is_active, date, text',
+            'territories': 'id, translit_name, name',
+            'objects': 'territory_id, alias, name, text',
         }
 
         def get_data(table: str) -> tuple:
@@ -310,14 +248,11 @@ class Command(BaseCommand):
                     product.save()
 
         def create_flat_pages(data: list):
-            news = CustomPage.objects.create(**CUSTOM_PAGES['news'])
-            user_feedbacks = CustomPage.objects.create(slug='user-feedbacks')
-
             for page_data in data:
                 FlatPage.objects.create(
                     slug=slugify(unidecode(page_data['name'])),
                     content=is_exist(page_data['text']),
-                    parent=news,
+                    parent=CustomPage.objects.get(slug='news'),
                     date_published=to_datetime(page_data['date']),
                     description=is_exist(page_data['description']),
                     h1=page_data['h1'] or page_data['title'] or page_data['name'],
@@ -326,25 +261,9 @@ class Command(BaseCommand):
                     title=page_data['title'] or page_data['name']
                 )
 
-            # TODO: https://goo.gl/WsyhMo
-            for item in config.USER_FEEDBACKS:
-                FlatPage.objects.create(
-                    slug=slugify(unidecode(item['title'])),
-                    content=item['content'],
-                    parent=user_feedbacks,
-                    title=item['title'],
-                )
-
         def create_pages(data: list):
-            navigation = Page.objects.create(slug='navi')
-            CustomPage.objects.create(**CUSTOM_PAGES['category_tree'])
-            CustomPage.objects.create(**CUSTOM_PAGES['index'], parent=navigation)
-            CustomPage.objects.create(**CUSTOM_PAGES['search'])
-            CustomPage.objects.create(**CUSTOM_PAGES['order'])
-            CustomPage.objects.create(**CUSTOM_PAGES['order-success'])
-
             for static_pages in data:
-                static_page = Page.objects.create(
+                FlatPage.objects.create(
                     content=static_pages['text'],
                     date_published=to_datetime(static_pages['date']),
                     description=is_exist(static_pages['description']),
@@ -354,35 +273,52 @@ class Command(BaseCommand):
                     slug=static_pages['alias'],
                     title=static_pages['title'] or static_pages['name']
                 )
-                if static_page.slug in self.navigation_items_positions:
-                    static_page.parent = navigation
-                    static_page.menu_title = static_pages['title'] or static_pages['name']
-                    static_page.position = self.navigation_items_positions[static_page.slug]
-                    static_page.save()
 
-        def create_regions():
-            file_path = os.path.join(settings.BASE_DIR, 'templates/pages/index/regions.json')
+        def create_regions(regions):
+            regions_page = CustomPage.objects.get(
+                slug=settings.CUSTOM_PAGES['regions']['slug'])
 
-            with open(file_path) as json_data:
-                json_data = json.load(json_data)
+            created_regions = {}
+            for region in regions:
+                slug = slugify(region['translit_name'])
+                position = settings.REGIONS[slug]
+                region_page = FlatPage.objects.create(
+                    h1=region['name'],
+                    slug=slugify(region['translit_name']),
+                    parent=regions_page,
+                    position=position,
+                    is_active=bool(position < 1000)
+                )
+                old_id = region['id']
+                created_regions.update({old_id: region_page})
+            return created_regions
 
-            for i in json_data:
-                Region.objects.create(
-                    name=json_data[i]['name'],
+        def create_region_objects(region_pages, region_objects_data):
+            for object_data in region_objects_data:
+                old_id = object_data['territory_id']
+                FlatPage.objects.create(
+                    h1=object_data['name'],
+                    slug=slugify(object_data['alias']),
+                    content=object_data['text'],
+                    parent=region_pages[old_id]
                 )
 
-        create_categories(data['categories'])
-        create_products(data['products'])
+        save_custom_pages()
         create_flat_pages(data['posts'])
         create_pages(data['static_pages'])
-        create_regions()
+        region_pages = create_regions(data['territories'])
+        create_region_objects(
+            region_pages=region_pages,
+            region_objects_data=data['objects']
+        )
+        create_categories(data['categories'])
+        create_products(data['products'])
         fill_images_data()
 
-        print('Was created {} categories, {} products, {} pages, {} regions'.format(
+        print('Was created {} categories, {} products, {} pages'.format(
             Category.objects.count(),
             Product.objects.count(),
-            Page.objects.count(),
-            Region.objects.count(),
+            FlatPage.objects.count(),
         ))
 
     def connect_to_the_mysql_db(self) -> pymysql.connect:
@@ -397,9 +333,3 @@ class Command(BaseCommand):
         except pymysql.err.OperationalError:
             print('Entered incorrect password.')
             self.connect_to_the_mysql_db()
-
-    def truncate_data(self):
-        Category.objects.all().delete()
-        Product.objects.all().delete()
-        Page.objects.all().delete()
-        Region.objects.all().delete()

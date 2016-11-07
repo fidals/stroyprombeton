@@ -1,5 +1,4 @@
-from stroyprombeton.config import SITE_INFO
-from stroyprombeton.settings.base import BASE_URL
+from django.conf import settings
 
 
 def site_info(request):
@@ -10,6 +9,6 @@ def site_info(request):
     emails, phones, API-integrations.
     """
     return {
-        'site_info': SITE_INFO,
-        'base_url': BASE_URL,
+        'site_info': settings.SITE_INFO,
+        'base_url': settings.BASE_URL,
     }

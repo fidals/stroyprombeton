@@ -11,42 +11,26 @@ from datetime import datetime
 
 from django.test import TestCase
 
-from pages.models import ModelPage, Page
+from pages.models import CustomPage, FlatPage, ModelPage
 
-from stroyprombeton.management.commands.transfer import CUSTOM_PAGES
 from stroyprombeton.models import Category, Product
 from stroyprombeton.tests.tests_forms import PriceFormTest, DrawingFormTest
 
 
-def create_custom_pages():
-    """Create index, category_tree, news and region pages."""
-    for fields in CUSTOM_PAGES.values():
-        Page.objects.create(**fields)
-
-
 class CategoryTree(TestCase):
-    """Tests for CategoryTree view """
+
     fixtures = ['dump.json']
 
+    @classmethod
+    def setUpTestData(cls):
+        cls.root_name = 'Category root #0'
+        cls.child_name = 'Category #0 of #1'
+
     def setUp(self):
-        """Create root and child category."""
-        self.root_name = 'Test root category'
-        self.child_name = 'Test child category'
+        catalog_page = CustomPage.objects.get(slug='gbi')
+        self.response = self.client.get(catalog_page.url)
 
-        root_category = Category.objects.create(
-            name=self.root_name,
-            page=ModelPage.objects.create(h1='Test Category h1')
-        )
-
-        Category.objects.create(
-            name=self.child_name,
-            parent=root_category,
-            page=ModelPage.objects.create(h1='Test child category h1')
-        )
-
-        self.response = self.client.get('/gbi/')
-
-    def test_response_status_code(self):
+    def test_root_category_response(self):
         status_code = self.response.status_code
 
         self.assertEqual(status_code, 200)
@@ -66,7 +50,7 @@ class CategoryTree(TestCase):
     def test_catalogs_quantity(self):
         quantity = len(self.response.context['nodes'])
 
-        self.assertEqual(quantity, 16)
+        self.assertEqual(quantity, 14)
 
 
 class CategoryTile(TestCase):
@@ -78,6 +62,7 @@ class CategoryTile(TestCase):
 
     def setUp(self):
         """Create root and child category."""
+        # TODO - move it in test_db. http://bit.ly/tail_2_test_db
         self.root_data = {
             'name': 'Test root category',
             'page': ModelPage.objects.create(
@@ -375,7 +360,6 @@ class OrderDrawing(AbstractFormViewTest, TestCase):
 
 
 class IndexPage(TestCase):
-    """Tests for Index page view."""
 
     fixtures = ['dump.json']
 
@@ -383,11 +367,15 @@ class IndexPage(TestCase):
         self.response = self.client.get('/')
         self.content = self.response.content.decode('utf-8')
 
-    def test_news_on_page(self):
+    def test_has_news(self):
         self.assertIn('news-item', self.content)
 
-    def test_reviews_on_page(self):
+    def test_has_reviews(self):
         self.assertIn('js-reviews-item', self.content)
 
-    def test_active_regions_on_page(self):
-        self.assertIn('<a href="/regions/', self.content)
+    def test_has_link_on_region(self):
+        """Index page should contain correct link to region"""
+        region = FlatPage.objects.get(slug='empire-center-state')
+        self.assertIn(region.url, self.content)
+        response = self.client.get(region.url)
+        self.assertEqual(response.status_code, 200)

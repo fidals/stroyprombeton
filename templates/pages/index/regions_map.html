@@ -1,15 +1,16 @@
 <svg version="1.1" id="Russia-map" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
      viewBox="0 0 1059 624">
 
-  {# Чукотский автономный округ #}
   <g transform="translate(72.000000, 1642.000000)">
-    <a href="/regions/{{ regions.0.slug }}">
+
+    {# Чукотский автономный округ #}
+    <a href="{{ regions.0.url }}">
       <path
-        class="map-region js-object-tooltip {{ regions.0.is_active }} }}"
+        class="map-region js-object-tooltip {{ regions.0.is_active|yesno:'active,' }}"
         title="
           <div class='tooltipster-header'>{{ regions.0.name }}</div>
           <div class='tooltipster-footer'>
-            <a href='/regions/{{ regions.0.slug }}'>
+            <a href='{{ regions.0.url }}'>
               Подробнее <i class='fa fa-arrow-right more-link-arrow' aria-hidden='true'></i>
             </a>
           </div>
@@ -17,15 +18,14 @@
         d="M786.5-1601.5c-2.2-2.4-2.5-3.1-2.5-6.4c0-3.2,0.2-3.7,1.5-4.1c0.8-0.3,2.3-1,3.3-1.8c0.9-0.7,2.1-1.2,
         2.5-1.2c1.7,0,0.1,15.4-1.7,16C789.2-1598.9,787.8-1600,786.5-1601.5"></path>
     </a>
-
     <g transform="translate(845.000000, 0.000000)">
-      <a href="/regions/{{ regions.0.slug }}">
+      <a href="{{ regions.0.url }}">
         <path
-          class="map-region js-object-tooltip {{ regions.0.is_active }}"
+          class="map-region js-object-tooltip {{ regions.0.is_active|yesno:'active,' }}"
           title="
             <div class='tooltipster-header'>{{ regions.0.name }}</div>
             <div class='tooltipster-footer'>
-              <a href='/regions/{{ regions.0.slug }}'>
+              <a href='{{ regions.0.url }}'>
                 Подробнее <i class='fa fa-arrow-right more-link-arrow' aria-hidden='true'></i>
               </a>
             </div>
@@ -51,13 +51,13 @@
     </g>
 
     {# Забайкальский край #}
-    <a href="/regions/{{ regions.1.slug }}">
+    <a href="{{ regions.1.url }}">
       <path
-        class="map-region js-object-tooltip {{ regions.1.is_active }}"
+        class="map-region js-object-tooltip {{ regions.1.is_active|yesno:'active,' }}"
         title="
           <div class='tooltipster-header'>{{ regions.1.name }}</div>
           <div class='tooltipster-footer'>
-            <a href='/regions/{{ regions.1.slug }}'>
+            <a href='{{ regions.1.url }}'>
               Подробнее <i class='fa fa-arrow-right more-link-arrow' aria-hidden='true'></i>
             </a>
           </div>
@@ -83,13 +83,13 @@
     </a>
 
     {# Новосибирская область #}
-    <a href="/regions/{{ regions.2.slug }}">
+    <a href="{{ regions.2.url }}">
       <path
-        class="map-region js-object-tooltip {{ regions.2.is_active }}"
+        class="map-region js-object-tooltip {{ regions.2.is_active|yesno:'active,' }}"
         title="
           <div class='tooltipster-header'>{{ regions.2.name }}</div>
           <div class='tooltipster-footer'>
-            <a href='/regions/{{ regions.2.slug }}'>
+            <a href='{{ regions.2.url }}'>
               Подробнее <i class='fa fa-arrow-right more-link-arrow' aria-hidden='true'></i>
             </a>
           </div>
@@ -105,13 +105,13 @@
     </a>
 
     {# Тюменская область #}
-    <a href="/regions/{{ regions.3.slug }}">
+    <a href="{{ regions.3.url }}">
       <path
-        class="map-region js-object-tooltip {{ regions.3.is_active }}"
+        class="map-region js-object-tooltip {{ regions.3.is_active|yesno:'active,' }}"
         title="
           <div class='tooltipster-header'>{{ regions.3.name }}</div>
           <div class='tooltipster-footer'>
-            <a href='/regions/{{ regions.3.slug }}'>
+            <a href='{{ regions.3.url }}'>
               Подробнее <i class='fa fa-arrow-right more-link-arrow' aria-hidden='true'></i>
             </a>
           </div>
@@ -126,13 +126,13 @@
     </a>
 
     {# Омская область #}
-    <a href="/regions/{{ regions.4.slug }}">
+    <a href="{{ regions.4.url }}">
       <path
-        class="map-region js-object-tooltip {{ regions.4.is_active }}"
+        class="map-region js-object-tooltip {{ regions.4.is_active|yesno:'active,' }}"
         title="
           <div class='tooltipster-header'>{{ regions.4.name }}</div>
           <div class='tooltipster-footer'>
-            <a href='/regions/{{ regions.4.slug }}'>
+            <a href='{{ regions.4.url }}'>
               Подробнее <i class='fa fa-arrow-right more-link-arrow' aria-hidden='true'></i>
             </a>
           </div>
@@ -146,13 +146,13 @@
     </a>
 
     {# Челябинская область #}
-    <a href="/regions/{{ regions.5.slug }}">
+    <a href="{{ regions.5.url }}">
       <path
-        class="map-region js-object-tooltip {{ regions.5.is_active }}"
+        class="map-region js-object-tooltip {{ regions.5.is_active|yesno:'active,' }}"
         title="
           <div class='tooltipster-header'>{{ regions.5.name }}</div>
           <div class='tooltipster-footer'>
-            <a href='/regions/{{ regions.5.slug }}'>
+            <a href='{{ regions.5.url }}'>
               Подробнее <i class='fa fa-arrow-right more-link-arrow' aria-hidden='true'></i>
             </a>
           </div>
@@ -167,13 +167,13 @@
     </a>
 
     {# Оренбургская область #}
-    <a href="/regions/{{ regions.6.slug }}">
+    <a href="{{ regions.6.url }}">
       <path
-        class="map-region js-object-tooltip {{ regions.6.is_active }}"
+        class="map-region js-object-tooltip {{ regions.6.is_active|yesno:'active,' }}"
         title="
           <div class='tooltipster-header'>{{ regions.6.name }}</div>
           <div class='tooltipster-footer'>
-            <a href='/regions/{{ regions.6.slug }}'>
+            <a href='{{ regions.6.url }}'>
               Подробнее <i class='fa fa-arrow-right more-link-arrow' aria-hidden='true'></i>
             </a>
           </div>
@@ -190,13 +190,13 @@
     </a>
 
     {# Рязанская область #}
-    <a href="/regions/{{ regions.7.slug }}">
+    <a href="{{ regions.7.url }}">
       <path
-        class="map-region js-object-tooltip {{ regions.7.is_active }}"
+        class="map-region js-object-tooltip {{ regions.7.is_active|yesno:'active,' }}"
         title="
           <div class='tooltipster-header'>{{ regions.7.name }}</div>
           <div class='tooltipster-footer'>
-            <a href='/regions/{{ regions.7.slug }}'>
+            <a href='{{ regions.7.url }}'>
               Подробнее <i class='fa fa-arrow-right more-link-arrow' aria-hidden='true'></i>
             </a>
           </div>
@@ -207,13 +207,13 @@
     </a>
 
     {# Самарская область #}
-    <a href="/regions/{{ regions.8.slug }}">
+    <a href="{{ regions.8.url }}">
       <path
-        class="map-region js-object-tooltip {{ regions.8.is_active }}"
+        class="map-region js-object-tooltip {{ regions.8.is_active|yesno:'active,' }}"
         title="
           <div class='tooltipster-header'>{{ regions.8.name }}</div>
           <div class='tooltipster-footer'>
-            <a href='/regions/{{ regions.8.slug }}'>
+            <a href='{{ regions.8.url }}'>
               Подробнее <i class='fa fa-arrow-right more-link-arrow' aria-hidden='true'></i>
             </a>
           </div>
@@ -225,13 +225,13 @@
     </a>
 
     {# Астраханская область #}
-    <a href="/regions/{{ regions.9.slug }}">
+    <a href="{{ regions.9.url }}">
       <path
-        class="map-region js-object-tooltip {{ regions.9.is_active }}"
+        class="map-region js-object-tooltip {{ regions.9.is_active|yesno:'active,' }}"
         title="
           <div class='tooltipster-header'>{{ regions.9.name }}</div>
           <div class='tooltipster-footer'>
-            <a href='/regions/{{ regions.9.slug }}'>
+            <a href='{{ regions.9.url }}'>
               Подробнее <i class='fa fa-arrow-right more-link-arrow' aria-hidden='true'></i>
             </a>
           </div>
@@ -245,13 +245,13 @@
     </a>
 
     {# Республика Адыгея #}
-    <a href="/regions/{{ regions.10.slug }}">
+    <a href="{{ regions.10.url }}">
       <path
-        class="map-region js-object-tooltip {{ regions.10.is_active }}"
+        class="map-region js-object-tooltip {{ regions.10.is_active|yesno:'active,' }}"
         title="
           <div class='tooltipster-header'>{{ regions.10.name }}</div>
           <div class='tooltipster-footer'>
-            <a href='/regions/{{ regions.10.slug }}'>
+            <a href='{{ regions.10.url }}'>
               Подробнее <i class='fa fa-arrow-right more-link-arrow' aria-hidden='true'></i>
             </a>
           </div>
@@ -263,13 +263,13 @@
     </a>
 
     {# Краснодарский край #}
-    <a href="/regions/{{ regions.11.slug }}">
+    <a href="{{ regions.11.url }}">
       <path
-        class="map-region js-object-tooltip {{ regions.11.is_active }}"
+        class="map-region js-object-tooltip {{ regions.11.is_active|yesno:'active,' }}"
         title="
           <div class='tooltipster-header'>{{ regions.11.name }}</div>
           <div class='tooltipster-footer'>
-            <a href='/regions/{{ regions.11.slug }}'>
+            <a href='{{ regions.11.url }}'>
               Подробнее <i class='fa fa-arrow-right more-link-arrow' aria-hidden='true'></i>
             </a>
           </div>
@@ -286,13 +286,13 @@
     </a>
 
     {# Калининградская область #}
-    <a href="/regions/{{ regions.12.slug }}">
+    <a href="{{ regions.12.url }}">
       <path
-        class="map-region js-object-tooltip {{ regions.12.is_active }}"
+        class="map-region js-object-tooltip {{ regions.12.is_active|yesno:'active,' }}"
         title="
           <div class='tooltipster-header'>{{ regions.12.name }}</div>
           <div class='tooltipster-footer'>
-            <a href='/regions/{{ regions.12.slug }}'>
+            <a href='{{ regions.12.url }}'>
               Подробнее <i class='fa fa-arrow-right more-link-arrow' aria-hidden='true'></i>
             </a>
           </div>
@@ -303,13 +303,13 @@
     </a>
 
     {# Курская область #}
-    <a href="/regions/{{ regions.13.slug }}">
+    <a href="{{ regions.13.url }}">
       <path
-        class="map-region js-object-tooltip {{ regions.13.is_active }}"
+        class="map-region js-object-tooltip {{ regions.13.is_active|yesno:'active,' }}"
         title="
           <div class='tooltipster-header'>{{ regions.13.name }}</div>
           <div class='tooltipster-footer'>
-            <a href='/regions/{{ regions.13.slug }}'>
+            <a href='{{ regions.13.url }}'>
               Подробнее <i class='fa fa-arrow-right more-link-arrow' aria-hidden='true'></i>
             </a>
           </div>
@@ -320,13 +320,13 @@
     </a>
 
     {# Воронежская область #}
-    <a href="/regions/{{ regions.14.slug }}">
+    <a href="{{ regions.14.url }}">
       <path
-        class="map-region js-object-tooltip {{ regions.14.is_active }}"
+        class="map-region js-object-tooltip {{ regions.14.is_active|yesno:'active,' }}"
         title="
           <div class='tooltipster-header'>{{ regions.14.name }}</div>
           <div class='tooltipster-footer'>
-            <a href='/regions/{{ regions.14.slug }}'>
+            <a href='{{ regions.14.url }}'>
               Подробнее <i class='fa fa-arrow-right more-link-arrow' aria-hidden='true'></i>
             </a>
           </div>
@@ -338,13 +338,13 @@
     </a>
 
     {# Ямало-Ненецкий автономный округ #}
-    <a href="/regions/{{ regions.15.slug }}">
+    <a href="{{ regions.15.url }}">
       <path
-        class="map-region js-object-tooltip {{ regions.15.is_active }}"
+        class="map-region js-object-tooltip {{ regions.15.is_active|yesno:'active,' }}"
         title="
           <div class='tooltipster-header'>{{ regions.15.name }}</div>
           <div class='tooltipster-footer'>
-            <a href='/regions/{{ regions.15.slug }}'>
+            <a href='{{ regions.15.url }}'>
               Подробнее <i class='fa fa-arrow-right more-link-arrow' aria-hidden='true'></i>
             </a>
           </div>
@@ -375,13 +375,13 @@
     </a>
 
     {# Архангельская область #}
-    <a href="/regions/{{ regions.16.slug }}">
+    <a href="{{ regions.16.url }}">
       <path
-        class="map-region js-object-tooltip {{ regions.16.is_active }}"
+        class="map-region js-object-tooltip {{ regions.16.is_active|yesno:'active,' }}"
         title="
           <div class='tooltipster-header'>{{ regions.16.name }}</div>
           <div class='tooltipster-footer'>
-            <a href='/regions/{{ regions.16.slug }}'>
+            <a href='{{ regions.16.url }}'>
               Подробнее <i class='fa fa-arrow-right more-link-arrow' aria-hidden='true'></i>
             </a>
           </div>
@@ -401,13 +401,13 @@
         3.6,1.5c1,1.5,0.9,1.7-4.5,7.1c-4.8,4.7-5.5,5.8-5.3,7.2C168.5-1284.7,165.1-1283,160.2-1284.5"></path>
     </a>
 
-    <a href="/regions/{{ regions.16.slug }}">
+    <a href="{{ regions.16.url }}">
       <path
-        class="map-region js-object-tooltip {{ regions.16.is_active }}"
+        class="map-region js-object-tooltip {{ regions.16.is_active|yesno:'active,' }}"
         title="
           <div class='tooltipster-header'>{{ regions.16.name }}</div>
           <div class='tooltipster-footer'>
-            <a href='/regions/{{ regions.16.slug }}'>
+            <a href='{{ regions.16.url }}'>
               Подробнее <i class='fa fa-arrow-right more-link-arrow' aria-hidden='true'></i>
             </a>
           </div>
@@ -420,13 +420,13 @@
         3.1-1.3,10.8c0.2,4.4,0.5,8.5,0.6,9.3C279.5-1383.1,278.1-1383.6,273.1-1387.5"></path>
     </a>
 
-    <a href="/regions/{{ regions.16.slug }}">
+    <a href="{{ regions.16.url }}">
       <path
-        class="map-region js-object-tooltip {{ regions.16.is_active }}"
+        class="map-region js-object-tooltip {{ regions.16.is_active|yesno:'active,' }}"
         title="
           <div class='tooltipster-header'>{{ regions.16.name }}</div>
           <div class='tooltipster-footer'>
-            <a href='/regions/{{ regions.16.slug }}'>
+            <a href='{{ regions.16.url }}'>
               Подробнее <i class='fa fa-arrow-right more-link-arrow' aria-hidden='true'></i>
             </a>
           </div>
@@ -434,13 +434,13 @@
         d="M360.4-1524.1c-1.3-3.4,1-5.9,4.1-4.6c2,1,2,1.5,0.2,3.8C363.1-1522.7,361-1522.4,360.4-1524.1"></path>
     </a>
 
-    <a href="/regions/{{ regions.16.slug }}">
+    <a href="{{ regions.16.url }}">
       <path
-        class="map-region js-object-tooltip {{ regions.16.is_active }}"
+        class="map-region js-object-tooltip {{ regions.16.is_active|yesno:'active,' }}"
         title="
           <div class='tooltipster-header'>{{ regions.16.name }}</div>
           <div class='tooltipster-footer'>
-            <a href='/regions/{{ regions.16.slug }}'>
+            <a href='{{ regions.16.url }}'>
               Подробнее <i class='fa fa-arrow-right more-link-arrow' aria-hidden='true'></i>
             </a>
           </div>
@@ -449,13 +449,13 @@
         1C374-1523.1,373-1523.5,371.8-1524.1"></path>
     </a>
 
-    <a href="/regions/{{ regions.16.slug }}">
+    <a href="{{ regions.16.url }}">
       <path
-        class="map-region js-object-tooltip {{ regions.16.is_active }}"
+        class="map-region js-object-tooltip {{ regions.16.is_active|yesno:'active,' }}"
         title="
           <div class='tooltipster-header'>{{ regions.16.name }}</div>
           <div class='tooltipster-footer'>
-            <a href='/regions/{{ regions.16.slug }}'>
+            <a href='{{ regions.16.url }}'>
               Подробнее <i class='fa fa-arrow-right more-link-arrow' aria-hidden='true'></i>
             </a>
           </div>
@@ -463,13 +463,13 @@
         d="M353-1524.7c0-2.9,4.9-3.1,5-0.2c0,0.5-3.1,1.9-4.4,1.9C353.3-1523,353-1523.7,353-1524.7"></path>
     </a>
 
-    <a href="/regions/{{ regions.16.slug }}">
+    <a href="{{ regions.16.url }}">
       <path
-        class="map-region js-object-tooltip {{ regions.16.is_active }}"
+        class="map-region js-object-tooltip {{ regions.16.is_active|yesno:'active,' }}"
         title="
           <div class='tooltipster-header'>{{ regions.16.name }}</div>
           <div class='tooltipster-footer'>
-            <a href='/regions/{{ regions.16.slug }}'>
+            <a href='{{ regions.16.url }}'>
               Подробнее <i class='fa fa-arrow-right more-link-arrow' aria-hidden='true'></i>
             </a>
           </div>
@@ -477,13 +477,13 @@
         d="M351.6-1532.6c-1.3-4.9-0.8-5.2,4.6-3.2c2.8,1,3,1.2,2.8,3.2c-0.2,2.1-0.3,2.2-3.5,2.4l-3.3,0.2L351.6-1532.6z"></path>
     </a>
 
-    <a href="/regions/{{ regions.16.slug }}">
+    <a href="{{ regions.16.url }}">
       <path
-        class="map-region js-object-tooltip {{ regions.16.is_active }}"
+        class="map-region js-object-tooltip {{ regions.16.is_active|yesno:'active,' }}"
         title="
           <div class='tooltipster-header'>{{ regions.16.name }}</div>
           <div class='tooltipster-footer'>
-            <a href='/regions/{{ regions.16.slug }}'>
+            <a href='{{ regions.16.url }}'>
               Подробнее <i class='fa fa-arrow-right more-link-arrow' aria-hidden='true'></i>
             </a>
           </div>
@@ -492,13 +492,13 @@
           0-2.4,0.4-5.2,0.9C327.9-1534.7,328.1-1534.7,326.7-1536.1"></path>
     </a>
 
-    <a href="/regions/{{ regions.16.slug }}">
+    <a href="{{ regions.16.url }}">
       <path
-        class="map-region js-object-tooltip {{ regions.16.is_active }}"
+        class="map-region js-object-tooltip {{ regions.16.is_active|yesno:'active,' }}"
         title="
           <div class='tooltipster-header'>{{ regions.16.name }}</div>
           <div class='tooltipster-footer'>
-            <a href='/regions/{{ regions.16.slug }}'>
+            <a href='{{ regions.16.url }}'>
               Подробнее <i class='fa fa-arrow-right more-link-arrow' aria-hidden='true'></i>
             </a>
           </div>
@@ -506,13 +506,13 @@
         d="M357-1538.9l-2-1l3.7-1.3c3.2-1,3.8-1.1,4.7-0.1c0.8,0.9,0.8,1.3,0.1,2.2C362.4-1537.7,359.8-1537.7,357-1538.9"></path>
     </a>
 
-    <a href="/regions/{{ regions.16.slug }}">
+    <a href="{{ regions.16.url }}">
       <path
-        class="map-region js-object-tooltip {{ regions.16.is_active }}"
+        class="map-region js-object-tooltip {{ regions.16.is_active|yesno:'active,' }}"
         title="
           <div class='tooltipster-header'>{{ regions.16.name }}</div>
           <div class='tooltipster-footer'>
-            <a href='/regions/{{ regions.16.slug }}'>
+            <a href='{{ regions.16.url }}'>
               Подробнее <i class='fa fa-arrow-right more-link-arrow' aria-hidden='true'></i>
             </a>
           </div>
@@ -522,13 +522,13 @@
     </a>
 
     {# Ненецкий автономный округ #}
-    <a href="/regions/{{ regions.17.slug }}">
+    <a href="{{ regions.17.url }}">
       <path
-        class="map-region js-object-tooltip {{ regions.17.is_active }}"
+        class="map-region js-object-tooltip {{ regions.17.is_active|yesno:'active,' }}"
         title="
           <div class='tooltipster-header'>{{ regions.17.name }}</div>
           <div class='tooltipster-footer'>
-            <a href='/regions/{{ regions.17.slug }}'>
+            <a href='{{ regions.17.url }}'>
               Подробнее <i class='fa fa-arrow-right more-link-arrow' aria-hidden='true'></i>
             </a>
           </div>
@@ -547,13 +547,13 @@
     </a>
 
     {# Республика Коми #}
-    <a href="/regions/{{ regions.18.slug }}">
+    <a href="{{ regions.18.url }}">
       <path
-        class="map-region js-object-tooltip {{ regions.18.is_active }}"
+        class="map-region js-object-tooltip {{ regions.18.is_active|yesno:'active,' }}"
         title="
           <div class='tooltipster-header'>{{ regions.18.name }}</div>
           <div class='tooltipster-footer'>
-            <a href='/regions/{{ regions.18.slug }}'>
+            <a href='{{ regions.18.url }}'>
               Подробнее <i class='fa fa-arrow-right more-link-arrow' aria-hidden='true'></i>
             </a>
           </div>
@@ -574,13 +574,13 @@
     </a>
 
     {# Мурманская область #}
-    <a href="/regions/{{ regions.19.slug }}">
+    <a href="{{ regions.19.url }}">
       <path
-        class="map-region js-object-tooltip {{ regions.19.is_active }}"
+        class="map-region js-object-tooltip {{ regions.19.is_active|yesno:'active,' }}"
         title="
           <div class='tooltipster-header'>{{ regions.19.name }}</div>
           <div class='tooltipster-footer'>
-            <a href='/regions/{{ regions.19.slug }}'>
+            <a href='{{ regions.19.url }}'>
               Подробнее <i class='fa fa-arrow-right more-link-arrow' aria-hidden='true'></i>
             </a>
           </div>
@@ -593,13 +593,13 @@
     </a>
 
     {# Республика Карелия #}
-    <a href="/regions/{{ regions.20.slug }}">
+    <a href="{{ regions.20.url }}">
       <path
-        class="map-region js-object-tooltip {{ regions.20.is_active }}"
+        class="map-region js-object-tooltip {{ regions.20.is_active|yesno:'active,' }}"
         title="
           <div class='tooltipster-header'>{{ regions.20.name }}</div>
           <div class='tooltipster-footer'>
-            <a href='/regions/{{ regions.20.slug }}'>
+            <a href='{{ regions.20.url }}'>
               Подробнее <i class='fa fa-arrow-right more-link-arrow' aria-hidden='true'></i>
             </a>
           </div>
@@ -615,13 +615,13 @@
     </a>
 
     {# Вологодская область #}
-    <a href="/regions/{{ regions.21.slug }}">
+    <a href="{{ regions.21.url }}">
       <path
-        class="map-region js-object-tooltip {{ regions.21.is_active }}"
+        class="map-region js-object-tooltip {{ regions.21.is_active|yesno:'active,' }}"
         title="
           <div class='tooltipster-header'>{{ regions.21.name }}</div>
           <div class='tooltipster-footer'>
-            <a href='/regions/{{ regions.21.slug }}'>
+            <a href='{{ regions.21.url }}'>
               Подробнее <i class='fa fa-arrow-right more-link-arrow' aria-hidden='true'></i>
             </a>
           </div>
@@ -638,13 +638,13 @@
     </a>
 
     {# Ярославская область #}
-    <a href="/regions/{{ regions.22.slug }}">
+    <a href="{{ regions.22.url }}">
       <path
-        class="map-region js-object-tooltip {{ regions.22.is_active }}"
+        class="map-region js-object-tooltip {{ regions.22.is_active|yesno:'active,' }}"
         title="
           <div class='tooltipster-header'>{{ regions.22.name }}</div>
           <div class='tooltipster-footer'>
-            <a href='/regions/{{ regions.22.slug }}'>
+            <a href='{{ regions.22.url }}'>
               Подробнее <i class='fa fa-arrow-right more-link-arrow' aria-hidden='true'></i>
             </a>
           </div>
@@ -655,13 +655,13 @@
     </a>
 
     {# Ивановская область #}
-    <a href="/regions/{{ regions.23.slug }}">
+    <a href="{{ regions.23.url }}">
       <path
-        class="map-region js-object-tooltip {{ regions.23.is_active }}"
+        class="map-region js-object-tooltip {{ regions.23.is_active|yesno:'active,' }}"
         title="
           <div class='tooltipster-header'>{{ regions.23.name }}</div>
           <div class='tooltipster-footer'>
-            <a href='/regions/{{ regions.23.slug }}'>
+            <a href='{{ regions.23.url }}'>
               Подробнее <i class='fa fa-arrow-right more-link-arrow' aria-hidden='true'></i>
             </a>
           </div>
@@ -673,13 +673,13 @@
     </a>
 
     {# Нижегородская область #}
-    <a href="/regions/{{ regions.24.slug }}">
+    <a href="{{ regions.24.url }}">
       <path
-        class="map-region js-object-tooltip {{ regions.24.is_active }}"
+        class="map-region js-object-tooltip {{ regions.24.is_active|yesno:'active,' }}"
         title="
           <div class='tooltipster-header'>{{ regions.24.name }}</div>
           <div class='tooltipster-footer'>
-            <a href='/regions/{{ regions.24.slug }}'>
+            <a href='{{ regions.24.url }}'>
               Подробнее <i class='fa fa-arrow-right more-link-arrow' aria-hidden='true'></i>
             </a>
           </div>
@@ -692,13 +692,13 @@
     </a>
 
     {# Республика Мордовия #}
-    <a href="/regions/{{ regions.25.slug }}">
+    <a href="{{ regions.25.url }}">
       <path
-        class="map-region js-object-tooltip {{ regions.25.is_active }}"
+        class="map-region js-object-tooltip {{ regions.25.is_active|yesno:'active,' }}"
         title="
           <div class='tooltipster-header'>{{ regions.25.name }}</div>
           <div class='tooltipster-footer'>
-            <a href='/regions/{{ regions.25.slug }}'>
+            <a href='{{ regions.25.url }}'>
               Подробнее <i class='fa fa-arrow-right more-link-arrow' aria-hidden='true'></i>
             </a>
           </div>
@@ -709,13 +709,13 @@
     </a>
 
     {# Калужская область #}
-    <a href="/regions/{{ regions.26.slug }}">
+    <a href="{{ regions.26.url }}">
       <path
-        class="map-region js-object-tooltip {{ regions.26.is_active }}"
+        class="map-region js-object-tooltip {{ regions.26.is_active|yesno:'active,' }}"
         title="
           <div class='tooltipster-header'>{{ regions.26.name }}</div>
           <div class='tooltipster-footer'>
-            <a href='/regions/{{ regions.26.slug }}'>
+            <a href='{{ regions.26.url }}'>
               Подробнее <i class='fa fa-arrow-right more-link-arrow' aria-hidden='true'></i>
             </a>
           </div>
@@ -725,14 +725,14 @@
         2c1.4,0,3,2.6,3,5.1c0,1.6-0.5,2.7-2,4.2c-2.3,2.2-3.7,2.3-7.8,0.9l-3-1.1l-4.2,2.7C8.4-1262.6,6.9-1262.4,2-1264"></path>
     </a>
 
-    {# Калужская область #}
-    <a href="/regions/{{ regions.27.slug }}">
+    {# Тверская область #}
+    <a href="{{ regions.27.url }}">
       <path
-        class="map-region js-object-tooltip {{ regions.27.is_active }}"
+        class="map-region js-object-tooltip {{ regions.27.is_active|yesno:'active,' }}"
         title="
           <div class='tooltipster-header'>{{ regions.27.name }}</div>
           <div class='tooltipster-footer'>
-            <a href='/regions/{{ regions.27.slug }}'>
+            <a href='{{ regions.27.url }}'>
               Подробнее <i class='fa fa-arrow-right more-link-arrow' aria-hidden='true'></i>
             </a>
           </div>
@@ -743,13 +743,13 @@
     </a>
 
     {# Псковская область #}
-    <a href="/regions/{{ regions.28.slug }}">
+    <a href="{{ regions.28.url }}">
       <path
-        class="map-region js-object-tooltip {{ regions.28.is_active }}"
+        class="map-region js-object-tooltip {{ regions.28.is_active|yesno:'active,' }}"
         title="
           <div class='tooltipster-header'>{{ regions.28.name }}</div>
           <div class='tooltipster-footer'>
-            <a href='/regions/{{ regions.28.slug }}'>
+            <a href='{{ regions.28.url }}'>
               Подробнее <i class='fa fa-arrow-right more-link-arrow' aria-hidden='true'></i>
             </a>
           </div>
@@ -761,13 +761,13 @@
     </a>
 
     {# Санкт-Петербург #}
-    <a href="/regions/{{ regions.29.slug }}">
+    <a href="{{ regions.29.url }}">
       <path
-        class="map-region js-object-tooltip {{ regions.29.is_active }}"
+        class="map-region js-object-tooltip {{ regions.29.is_active|yesno:'active,' }}"
         title="
           <div class='tooltipster-header'>{{ regions.29.name }}</div>
           <div class='tooltipster-footer'>
-            <a href='/regions/{{ regions.29.slug }}'>
+            <a href='{{ regions.29.url }}'>
               Подробнее <i class='fa fa-arrow-right more-link-arrow' aria-hidden='true'></i>
             </a>
           </div>
@@ -777,13 +777,13 @@
     </a>
 
     {# Ленинградская область #}
-    <a href="/regions/{{ regions.30.slug }}">
+    <a href="{{ regions.30.url }}">
       <path
-        class="map-region js-object-tooltip {{ regions.30.is_active }}"
+        class="map-region js-object-tooltip {{ regions.30.is_active|yesno:'active,' }}"
         title="
           <div class='tooltipster-header'>{{ regions.30.name }}</div>
           <div class='tooltipster-footer'>
-            <a href='/regions/{{ regions.30.slug }}'>
+            <a href='{{ regions.30.url }}'>
               Подробнее <i class='fa fa-arrow-right more-link-arrow' aria-hidden='true'></i>
             </a>
           </div>
@@ -800,13 +800,13 @@
     </a>
 
     {# Новгородская область #}
-    <a href="/regions/{{ regions.31.slug }}">
+    <a href="{{ regions.31.url }}">
       <path
-        class="map-region js-object-tooltip {{ regions.31.is_active }}"
+        class="map-region js-object-tooltip {{ regions.31.is_active|yesno:'active,' }}"
         title="
           <div class='tooltipster-header'>{{ regions.31.name }}</div>
           <div class='tooltipster-footer'>
-            <a href='/regions/{{ regions.31.slug }}'>
+            <a href='{{ regions.31.url }}'>
               Подробнее <i class='fa fa-arrow-right more-link-arrow' aria-hidden='true'></i>
             </a>
           </div>
@@ -819,13 +819,13 @@
     </a>
 
     {# Тверская область #}
-    <a href="/regions/{{ regions.32.slug }}">
+    <a href="{{ regions.32.url }}">
       <path
-        class="map-region js-object-tooltip {{ regions.32.is_active }}"
+        class="map-region js-object-tooltip {{ regions.32.is_active|yesno:'active,' }}"
         title="
           <div class='tooltipster-header'>{{ regions.32.name }}</div>
           <div class='tooltipster-footer'>
-            <a href='/regions/{{ regions.32.slug }}'>
+            <a href='{{ regions.32.url }}'>
               Подробнее <i class='fa fa-arrow-right more-link-arrow' aria-hidden='true'></i>
             </a>
           </div>
@@ -838,13 +838,13 @@
     </a>
 
     {# Москва #}
-    <a href="/regions/{{ regions.33.slug }}">
+    <a href="{{ regions.33.url }}">
       <path
-        class="map-region js-object-tooltip {{ regions.33.is_active }}"
+        class="map-region js-object-tooltip {{ regions.33.is_active|yesno:'active,' }}"
         title="
           <div class='tooltipster-header'>{{ regions.33.name }}</div>
           <div class='tooltipster-footer'>
-            <a href='/regions/{{ regions.33.slug }}'>
+            <a href='{{ regions.33.url }}'>
               Подробнее <i class='fa fa-arrow-right more-link-arrow' aria-hidden='true'></i>
             </a>
           </div>
@@ -854,13 +854,13 @@
     </a>
 
     {# Московская область #}
-    <a href="/regions/{{ regions.34.slug }}">
+    <a href="{{ regions.34.url }}">
       <path
-        class="map-region js-object-tooltip {{ regions.34.is_active }}"
+        class="map-region js-object-tooltip {{ regions.34.is_active|yesno:'active,' }}"
         title="
           <div class='tooltipster-header'>{{ regions.34.name }}</div>
           <div class='tooltipster-footer'>
-            <a href='/regions/{{ regions.34.slug }}'>
+            <a href='{{ regions.34.url }}'>
               Подробнее <i class='fa fa-arrow-right more-link-arrow' aria-hidden='true'></i>
             </a>
           </div>
@@ -872,14 +872,14 @@
         2.6-1.3,2.7-6,3.6c-2.7,0.5-6.6,1.2-8.8,1.7C36.7-1253.1,34.7-1252.9,34.5-1253"></path>
     </a>
 
-    {# Тульская область #}
-    <a href="/regions/{{ regions.35.slug }}">
+    {# --- область #}
+    <a href="{{ regions.35.url }}">
       <path
-        class="map-region js-object-tooltip {{ regions.35.is_active }}"
+        class="map-region js-object-tooltip {{ regions.35.is_active|yesno:'active,' }}"
         title="
           <div class='tooltipster-header'>{{ regions.35.name }}</div>
           <div class='tooltipster-footer'>
-            <a href='/regions/{{ regions.35.slug }}'>
+            <a href='{{ regions.35.url }}'>
               Подробнее <i class='fa fa-arrow-right more-link-arrow' aria-hidden='true'></i>
             </a>
           </div>

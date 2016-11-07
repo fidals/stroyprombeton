@@ -385,8 +385,8 @@ class Search(SeleniumTestCase):
         button_submit = self.browser.find_element_by_class_name('search-btn')
         click_and_wait(button_submit)
 
-        self.assertTrue(self.browser.find_element_by_link_text('Category #0'))
-        self.assertTrue(self.browser.find_element_by_link_text('Category #0 of #Category #0'))
+        self.assertTrue(self.browser.find_element_by_link_text('Category root #0'))
+        self.assertTrue(self.browser.find_element_by_link_text('Category #0 of #1'))
 
     def test_search_results_empty(self):
         """Search results for wrong term should contain empty result set"""

@@ -138,19 +138,8 @@ DATABASES = {
     )
 }
 
-# refarm-blog config
-# Each post type can have it's own alias
-# For config below, page types will have different urls:
-# - article: /blog/1/
-# - news: /blog/news/1/
-# - navigation: /blog/navigation/1/
-# All aliases in config will be trimmed with "/" symbol
-APP_BLOG_POST_TYPES = {
-    'navigation': {'name': 'Контакты, реквизиты, услуги', 'alias': '', 'default': True},
-    'article': {'name': 'Статьи', 'alias': 'article'},
-    'news': {'name': 'Новости', 'alias': 'news'},
-}
 
+# -------- SITE DATA -------- #
 PAYMENT_OPTIONS = (('cash', 'Наличные'),
                    ('cashless', 'Безналичные и денежные переводы'))
 
@@ -171,12 +160,6 @@ SITE_DOMAIN_NAME = 'www.stroyprombeton.ru'
 # Uncomment for http->https change
 # os.environ['HTTPS'] = 'on'
 
-CRUMBS = {
-    'main': 'Главная',
-    'catalog': 'Каталог',
-    'blog': 'Список страниц',
-}
-
 EMAIL_SUBJECTS = {
     'order': 'Stroyprombeton | Новый заказ',
     'backcall': 'Stroyprombeton | Заказ обратного звонка',
@@ -184,5 +167,141 @@ EMAIL_SUBJECTS = {
 
 # Used mostly in breadcrumbs to generate URL for catalog's root.
 CATEGORY_TREE_URL = 'category_tree'
+
+SITE_INFO = {
+    'email': 'info@stroyprombeton.ru',
+    'phone': {
+        'moscow_1': '8 (499) 322-31-98',
+        'moscow_1_url': '+74993223198',
+        'spb_1': '8 (812) 648-13-80',
+        'spb_1_url': '+78126481380'
+    },
+}
+
+CUSTOM_PAGES = {
+    'category_tree': {
+        'slug': 'gbi',
+        '_title': 'Каталог товаров',
+        'h1': 'Все категории',
+        '_menu_title': 'Каталог',
+        'content': '''
+            <p class="about-catalog-p">В этом году наш завод в течение 1-го
+            квартала активно работал по производству и поставке мостовых
+            железобетонных конструкций по заказу нефтедобывающих компаний. Это
+            блоки шкафных стенок, блоки насадок, диафрагмы и ригели. Вся
+            продукция «несерийная» и производилась по чертежам Заказчика.
+            Поставка изделий осуществлялась по железной дороге для
+            строительства объектов на полуострове Ямал. Следует отметить, что
+            мы изначально ориентированы на выпуск продукции для транспортного
+            строитеьства в широком спектре изделий, включая индивидуальные
+            заказы.</p>
+            <p class="about-catalog-p">В апреле наше предприятие выпускало
+            изделия для реконструкции мостов на Октябрьской железной дороге
+            (короба, шкафные блоки, элементы лестничных сходов). Специфика
+            поставок на объекты дороги имеет особенность – работу необходимо
+            выполнять строго по графику, так как установка конструкций
+            осуществляется в так называемые «окна». Мы уже не первый год
+            работаем на этом направлении, что позволяет нам успешно справляться
+            со взятыми на себя обязательствами.</p>
+            ''',
+    },
+    'client_feedbacks': {
+        'slug': 'client-feedbacks',
+        '_title': 'Отзывы',
+        'h1': 'Отзывы',
+    },
+    'index': {
+        'slug': '',
+        '_title': 'Завод ЖБИ «СТК-ПромБетон» | Производство ЖБИ в Санкт-Петербурге, железобетонные изделия СПб',
+        'h1': 'Завод железобетонных изделий «СТК-Промбетон»',
+        '_menu_title': 'Главная',
+    },
+    'news': {
+        'slug': 'news',
+        'h1': 'Новости компании',
+        '_title': 'Завод ЖБИ «СТК-ПромБетон»',
+        '_menu_title': 'Новости компании'
+    },
+    'order': {
+        'slug': 'order',
+        '_title': 'Корзина Интернет-магазин СТК-ПромБетон',
+        'h1': 'Оформление заказа',
+    },
+    'order-success': {
+        'slug': 'order-success',
+        '_title': 'Спасибо за Ваш заказ',
+        'h1': 'Заказ принят',
+    },
+    'regions': {
+        'slug': 'regions',
+        '_title': 'Регионы, в которые поставлялась продукция СТК-ПромБетон',
+        'h1': 'Регионы, в которые поставлялась продукция СТК-ПромБетон',
+    },
+    'search': {
+        'slug': 'search',
+        '_title': 'Результаты поиска',
+    },
+}
+
+# region-coordinates mapping
+REGIONS = {
+    'chukot-autonomous-area': 0,
+    'zabaykalsky-territory': 1,
+    'novosibirsk-region': 2,
+    'tyumen-region': 3,
+    'omsk-region': 4,
+    'chelyabinsk-region': 5,
+    'orenburg-region': 6,
+    'ryazan-region': 7,
+    'samara-region': 8,
+    'astrakhan-region': 9,
+    'republic-of-adygea': 10,
+    'krasnodar-territory': 11,
+    'kaliningrad-region': 12,
+    'kursk-region': 13,
+    'voronezh-region': 14,
+    'yamalo-nenets-autonomous-area': 15,
+    'arkhangelsk-region': 16,
+    'nenets-autonomus-area': 17,
+    'komi-republic': 18,
+    'murmansk-region': 19,
+    'republic-of-karelia': 20,
+    'vologda-region': 21,
+    'yaroslavl-region': 22,
+    'ivanovo-region': 23,
+    'nizhny-novgorod-region': 24,
+    'republic-of-mordovia': 25,
+    'kaluga-region': 26,
+    'tula-region': 28,
+    'pskov-region': 29,
+    'saint-petersburg': 30,
+    'leningrad-region': 31,
+    'novgorod-region': 32,
+    'tver-region': 33,
+    'moscow': 34,
+    'moscow-region': 35,
+    'smolensk-region': 1000,
+}
+
+PARTNERS = [
+    {
+        'url': 'http://xn----htbqgdmrio5g.xn--p1ai/',
+        'logo': 'images/partner-stkmodul-logo.png',
+        'text': 'Нерудные материалы',
+        'alt': 'СТК-Модуль',
+    },
+    {
+        'url': 'http://stkm-energo.ru/',
+        'logo': 'images/partner-modulenergo-logo.png',
+        'text': 'Модуль энерго',
+        'alt': 'Монтаж и строительство энергообъектов',
+    },
+    {
+        'url': 'http://www.stk-metal.ru/',
+        'logo': 'images/partner-stkmetall-logo.png',
+        'text': 'СТК-Металл',
+        'alt': 'Поставка металлоконструкций',
+    },
+]
 
 from .local import *
