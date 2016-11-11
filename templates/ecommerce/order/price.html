@@ -1,0 +1,39 @@
+{% extends 'layout/inner_page.html' %}
+
+{% load staticfiles %}
+{% load widget_tweaks %}
+
+{% block title %}Оформление запроса на прайс ЖБИ{% endblock %}
+{% block keywords %}прайс лист жби{% endblock %}
+{% block description %}Оформить заявку на прайслист ЖБИ завода СТК-Промбетон{% endblock %}
+
+{% block content %}
+  {# TODO: `breadcrumbs` doesn't work #}
+  {# 'str' object has no attribute 'get_path' #}
+  {# {% include 'layout/breadcrumbs.html' %}#}
+
+  {% include 'components/page_h1.html' with page=page only %}
+
+  <div class="container container-fluid">
+    <h1 class="heading-h1">Оформление запроса на прайс ЖБИ</h1>
+
+    <div class="row">
+      <div class="col-xs-offset-2 col-xs-7">
+      <form method="post">{% csrf_token %}
+        {% for field in form %}
+          <div class="input-label">{{ field.label_tag }}</div>
+          <div class="input-field">
+            {{ field }}
+            {% include 'components/input_validation_icons.html' %}
+            {{ field.errors }}
+          </div>
+        {% endfor %}
+
+        <div class="text-right">
+          <button class="btn" type="submit">Заказать</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+{% endblock %}

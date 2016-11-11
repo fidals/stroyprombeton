@@ -1,4 +1,4 @@
-(() => {
+{
   const DOM = {
     $catalogLink: $('.js-catalog-title'),
     categoryList: '.js-catalog-ul',
@@ -28,4 +28,4 @@
   }
 
   init();
-})();
+}

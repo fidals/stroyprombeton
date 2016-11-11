@@ -105,19 +105,7 @@
     padding-bottom: 40px;
   }
 
-  &-label {
-    color: $c-order-contacts-label;
-    margin-bottom: 10px;
-
-    &-asterisk {
-      color: $c-order-contacts-label-asterisk;
-      font-size: $f-size-base - 1;
-    }
-  }
-
   &-input {
-    margin: 0 0 31px 98px;
-
     &-field {
       width: 340px;
     }

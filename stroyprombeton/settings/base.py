@@ -154,8 +154,6 @@ APP_BLOG_POST_TYPES = {
 PAYMENT_OPTIONS = (('cash', 'Наличные'),
                    ('cashless', 'Безналичные и денежные переводы'))
 
-PRODUCTS_TO_LOAD = 30
-
 PRODUCT_MODEL = 'stroyprombeton.Product'
 CART_ID = 'cart'
 
@@ -181,6 +179,7 @@ CRUMBS = {
 
 EMAIL_SUBJECTS = {
     'order': 'Stroyprombeton | Новый заказ',
+    'backcall': 'Stroyprombeton | Заказ обратного звонка',
 }
 
 # Used mostly in breadcrumbs to generate URL for catalog's root.

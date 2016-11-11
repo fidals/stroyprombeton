@@ -1,4 +1,4 @@
-(() => {
+{
   const config = {
     url: '/search/autocomplete/',
     searchInput: '.js-search-field',
@@ -59,7 +59,7 @@
   }
 
   /**
-   * Constructor arguments for autoComplete lib.
+   * Construct arguments for autoComplete lib.
    * @link http://goo.gl/haZzhv
    */
   const isInclude = value => ['category', 'product'].includes(value);
@@ -68,7 +68,7 @@
     selector: config.searchInput,
     minChars: config.minChars,
     source: (term, response) => {
-      $.getJSON(config.url, { term }, namesArray => {
+      $.getJSON(config.url, { term }, (namesArray) => {
         response(namesArray);
       });
     },
@@ -84,4 +84,4 @@
   };
 
   init();
-})();
+}

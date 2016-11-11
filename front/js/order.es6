@@ -1,4 +1,4 @@
-(() => {
+{
   const DOM = {
     $order: $('.js-order-contain'),
     productCount: '.js-count-input',
@@ -30,15 +30,13 @@
   const getProductId = $target => $target.closest('.js-product-row').data('product-id');
 
   /**
-   * Fill inputs, which have saved to localstorage value.
-   * Runs on page load, and on every cart's update.
+   * Fill inputs, which have saved localstorage value.
+   * Runs on page load, and on every Cart's update.
    */
   function fillSavedInputs() {
-    const getFieldByName = name => $(`#id_${name}`);
-
     for (const fieldName in DOM.orderForm) {
       if ({}.hasOwnProperty.call(DOM.orderForm, fieldName)) {
-        const $field = getFieldByName(fieldName);
+        const $field = $(`#id_${fieldName}`);
         const savedValue = localStorage.getItem(fieldName);
 
         if ($field && savedValue) {
@@ -91,4 +89,4 @@
   }
 
   init();
-})();
+}

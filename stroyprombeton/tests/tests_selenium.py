@@ -10,9 +10,11 @@ from django.core.urlresolvers import reverse
 from django.db.models import Count
 from django.test import LiveServerTestCase
 
+from pages.models import Page
+
 from stroyprombeton.models import Category, Product
 
-from pages.models import Page
+PRODUCTS_TO_LOAD = 30
 
 
 def wait(seconds=1):
@@ -100,7 +102,7 @@ class HeaderCart(SeleniumTestCase, CartMixin):
         self.show_cart()
         cart_list = self.browser.find_element_by_class_name('js-cart').text
 
-        self.assertIn('Пока в корзине нет товаров', cart_list)
+        self.assertIn('В корзине пока нет товаров', cart_list)
 
     def test_empty_cart_dropdown(self):
         self.assert_cart_is_empty()
@@ -218,7 +220,7 @@ class CategoryPage(SeleniumTestCase, CartMixin):
         children_category = Category.objects.filter(parent=root_category).first()
         category_with_product_less_then_load_limit = Category.objects.annotate(
             prod_count=Count('products')).exclude(prod_count=0).filter(
-                prod_count__lt=settings.PRODUCTS_TO_LOAD).first()
+                prod_count__lt=PRODUCTS_TO_LOAD).first()
 
         self.root_category = self.testing_url(root_category.id)
         self.children_category = self.testing_url(children_category.id)
@@ -280,7 +282,7 @@ class CategoryPage(SeleniumTestCase, CartMixin):
     def test_load_more_button_disabled_state_with_few_products(self):
         """
         `Load more` link should be disabled by default if there are less
-        than settings.PRODUCTS_TO_LOAD products on page.
+        than PRODUCTS_TO_LOAD products on page.
         """
 
         self.browser.get(self.deep_children_category)
@@ -395,3 +397,30 @@ class Search(SeleniumTestCase):
         h1 = self.browser.find_element_by_tag_name('h1')
 
         self.assertTrue(h1.text == 'По вашему запросу ничего не найдено')
+
+
+class IndexPage(SeleniumTestCase):
+    def setUp(self):
+        super(IndexPage, self).setUp()
+        self.browser.get(self.live_server_url)
+
+    def test_backcall_request(self):
+        self.browser.find_element_by_class_name('js-open-modal').click()
+        modal = self.browser.find_element_by_class_name('js-modal')
+
+        self.assertTrue(modal.is_displayed())
+
+        name_field = self.browser.find_element_by_id('id_name')
+        phone_field = self.browser.find_element_by_id('id_phone')
+
+        send_keys_and_wait(name_field, 'Yo')
+        send_keys_and_wait(phone_field, '+22222222222')
+
+        send_btn = self.browser.find_element_by_class_name('js-send-backcall')
+        send_btn.click()
+
+        self.assertTrue(send_btn.get_attribute('disabled'))
+
+        wait()
+
+        self.assertFalse(modal.is_displayed())

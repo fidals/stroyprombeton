@@ -1,6 +1,6 @@
-(() => {
+{
   const DOM = {
-    $addToCart: $('.js-category-buy'),
+    addToCart: 'js-category-buy',
     $cart: $('.js-cart'),
     $showMoreLink: $('#load-more-products'),
     $productsTable: $('#products-wrapper'),
@@ -26,7 +26,7 @@
     mediator.subscribe('onProductsFilter', updateLoadMoreLink, refreshProductsList);
     mediator.subscribe('onProductsLoad', updateLoadMoreLink, appendToProductsList);
 
-    $(DOM.$productsTable).on('click', DOM.$addToCart, buyProduct);
+    $(DOM.$productsTable).on('click', buyProduct);
     DOM.$showMoreLink.click(loadProducts);
     DOM.$searchFilter.keyup(filterProducts);
   }
@@ -55,6 +55,8 @@
    * Add product to Cart and update it.
    */
   function buyProduct(event) {
+    if (!$(event.target).hasClass(DOM.addToCart)) return;
+
     const { id, count } = getProductInfo(event);
 
     server.addToCart(id, count)
@@ -198,4 +200,4 @@
   }
 
   init();
-})();
+}

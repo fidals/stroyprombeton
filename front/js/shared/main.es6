@@ -1,58 +1,26 @@
-(() => {
+{
   const DOM = {
     $nav: $('.js-nav'),
     navSubnav: '.js-nav-subnav',
     $application: $('.js-application'),
     $searchBar: $('.js-searchbar'),
-    $btnContactUs: $('.js-btn-contact-us'),
-    $modal: $('.js-modal'),
-    $modalClose: $('.js-modal-close'),
     $reviewsItem: $('.js-reviews-item'),
     $reviewsNavItems: $('.js-reviews-nav-item'),
     $btnScrollTop: $('#btn-scroll-to-top'),
     bannerClass: 'searchbar-banner',
-    $gbiTooltip: $('.js-object-tooltip.active'),
   };
 
   const searchbarInitTopValue = parseInt(DOM.$searchBar.css('top'), 10);
 
   const init = () => {
     setUpListeners();
-    pluginsInit();
   };
 
   function setUpListeners() {
     $(window).scroll(toggleScrollToTopBtn);
     $(window).scroll(moveSearchBar);
     DOM.$btnScrollTop.click(scrollToTop);
-    DOM.$btnContactUs.click(showBackcallModal);
-    DOM.$modalClose.click(closeBackcallModal);
     DOM.$reviewsNavItems.click(reviewsSlideTo);
-  }
-
-  function pluginsInit() {
-    DOM.$gbiTooltip.tooltipster({
-      anchor: 'bottom-center',
-      contentAsHTML: true,
-      interactive: true,
-      maxWidth: 300,
-      offset: [0, 20],
-      trigger: 'custom',
-      // close tooltip when element is clicked again, tapped or when the mouse leaves it
-      triggerClose: {
-        click: true,
-        // ensuring that scrolling mobile is not tapping
-        scroll: false,
-        tap: true,
-        mouseleave: true,
-      },
-      // open tooltip when element is clicked, tapped (mobile) or hovered
-      triggerOpen: {
-        click: true,
-        tap: true,
-        mouseenter: true,
-      },
-    });
   }
 
   /**
@@ -94,6 +62,7 @@
    */
   function moveSearchBar() {
     if (!DOM.$application.length) return;
+
     const scrollTop = $(window).scrollTop();
     const offset = DOM.$application.offset().top - DOM.$nav.height();
 
@@ -106,13 +75,5 @@
     }
   }
 
-  function showBackcallModal() {
-    DOM.$modal.fadeIn();
-  }
-
-  function closeBackcallModal() {
-    DOM.$modal.fadeOut();
-  }
-
   init();
-})();
+}

@@ -5,6 +5,37 @@ import gulp from 'gulp';
 import sequence from 'run-sequence';
 
 const $ = require('gulp-load-plugins')();
+const spawnSync = require('child_process').spawnSync;
+
+// ================================================================
+// Utils
+// ================================================================
+/**
+ * Get src paths from given appName.
+ * Usage:
+ *   appPath = getAppSrcPath('pages');
+ *
+ *   const PATH = {
+ *     src: {
+ *       styles: [
+ *         'front/less/admin.less',
+ *         'front/less/styles.less',
+ *         'front/less/pages.less',
+ *         ...appPath.styles,
+ *       ],
+ * @param {string} appName
+ * @returns {Object} - app's source file paths
+ * (ex. {styles: ['~/app_name/front/styles/style.less'], ...})
+ */
+function getAppSrcPaths(appName) {
+  const processData = spawnSync('python3', ['manage.py', 'get_app_path_for_gulp', appName]);
+  const err = processData.stderr.toString().trim();
+  if (err) throw Error(err);
+
+  const appPath = processData.stdout.toString().trim();
+
+  return require(`${appPath}/front/paths.js`);
+}
 
 // ================================================================
 // CONSTS
@@ -13,6 +44,8 @@ const ENV = {
   development: true,
   production: false,
 };
+
+const ecommercePaths = getAppSrcPaths('ecommerce');
 
 const PATH = {
   src: {
@@ -28,32 +61,21 @@ const PATH = {
 
     js: {
       vendors: [
-        'front/js/vendors/jquery-2.2.4.min.js',
-        'front/js/vendors/bootstrap.min.js', // should be removed;
-        'front/js/vendors/cookie.js',
-        'front/js/vendors/jquery.mask.min.js',
-        'front/js/vendors/auto-complete.min.js',
-        'front/js/vendors/tooltipster.bundle.min.js',
-      ],
-
-      pages: [
-        'front/js/components/innerPages.es6',
-        'front/js/components/productCountInput.es6',
-        'front/js/components/product.es6',
-        'front/js/components/category.es6',
-        'front/js/components/catalog.es6',
-        'front/js/components/order.es6',
+        'front/js/vendors/shared/*.js',
       ],
 
       vendorsPages: [
-        'front/js/vendors/featherlight.min.js',
+        'front/js/vendors/*.js',
       ],
 
       common: [
+        'front/js/shared/services/*.es6',
+        ecommercePaths.backcall,
         'front/js/shared/*.es6',
-        'front/js/components/main.es6',
-        'front/js/components/autocomplete.es6',
-        'front/js/components/headerCart.es6',
+      ],
+
+      pages: [
+        'front/js/*.es6',
       ],
     },
 
@@ -82,7 +104,10 @@ const PATH = {
 
   watch: {
     styles: 'front/scss/**/*.scss',
-    js: 'front/js/**/*',
+    js: [
+      'front/js/**/*',
+      ecommercePaths.watch,
+    ],
     images: 'front/src/images/**/*',
     fonts: 'front/src/fonts/**/*',
     html: 'templates/**/*',

@@ -1,5 +1,6 @@
 from django import forms
-from .models import Order
+
+from stroyprombeton.models import Order
 
 
 def generate_activities():
@@ -23,13 +24,13 @@ def generate_activities():
 class BaseContactForm(forms.Form):
     """Define basic information about customer."""
 
-    name = forms.CharField(label='Ваше имя *', max_length=100, required=False)
-    phone = forms.CharField(label='Контактный телефон *', max_length=100)
-    email = forms.EmailField(label='Электронный адрес (E-mail) *')
+    name = forms.CharField(label='Имя *', max_length=100, required=False)
+    phone = forms.CharField(label='Телефон *', max_length=100)
+    email = forms.EmailField(label='Электронная почта *')
 
 
 class PriceForm(BaseContactForm):
-    """Form for price ordering."""
+    """Form for Price List ordering."""
 
     company = forms.CharField(label='Полное название организации *',
                               max_length=100)
@@ -43,9 +44,11 @@ class PriceForm(BaseContactForm):
 class DrawingForm(BaseContactForm):
     """Form for order drawing."""
 
-    comment = forms.CharField(label='Комментарий',
-                              widget=forms.Textarea,
-                              required=False)
+    comment = forms.CharField(
+        label='Комментарий',
+        widget=forms.Textarea,
+        required=False
+    )
 
 
 class OrderForm(forms.ModelForm):
@@ -57,4 +60,11 @@ class OrderForm(forms.ModelForm):
 
     class Meta:
         model = Order
-        fields = ['name', 'email', 'phone', 'company', 'address', 'comment']
+        fields = [
+            'name',
+            'email',
+            'phone',
+            'company',
+            'address',
+            'comment'
+        ]

@@ -31,8 +31,6 @@
   }
 
   &-name {
-    text-align: center;
-
     &-h1 {
       margin-bottom: 19px;
       font-size: $f-size-base + 36;
@@ -75,7 +73,6 @@
 // ================================================================
 .catalog-section {
   padding: 42px 0 48px;
-  text-align: center;
 
   &-image {
     height: 290px;
@@ -91,7 +88,6 @@
 
   &-item {
     display: block;
-    text-align: center;
 
     &-image {
       left: 0;
@@ -114,10 +110,9 @@
       white-space: nowrap;
     }
 
-    &-title-chevron {
-      margin-left: 7px;
+    &-title-chevron.fa {
       font-size: $f-size-base + 2;
-      vertical-align: middle;
+      margin: -1px 0 0 7px;
     }
   }
 
@@ -355,14 +350,5 @@
     margin-top: 15px;
     padding-bottom: 20px;
     text-align: right;
-  }
-}
-
-// ================================================================
-// CONTACT US
-// ================================================================
-.contact-us {
-  &-btn {
-    text-align: center;
   }
 }

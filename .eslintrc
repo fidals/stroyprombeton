@@ -9,6 +9,7 @@
     "localStorage": true,
     "location": true,
     "mediator": true,
+    "modals": true,
     "server": true,
     "helpers": true,
     "window": true

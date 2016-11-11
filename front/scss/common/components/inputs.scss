@@ -1,11 +1,13 @@
-input {
+input,
+textarea {
   -moz-appearance: textfield;
-  border: 1px solid $c-table-input-border;
-  border-radius: 2px;
+  border: 1px solid $c-input-border-color;
+  border-radius: 4px;
   color: $c-table-input;
+  font-family: $f-family;
   font-size: $f-size-base;
   font-weight: 400;
-  padding: 4px;
+  padding: 8px 14px;
 }
 
 .input {
@@ -16,9 +18,9 @@ input {
 
   &-caret {
     background-color: $c-white;
-    color: $c-table-caret;
+    color: $c-input-caret;
     cursor: pointer;
-    height: 12px;
+    height: 13px;
     font-size: $f-size-base - 2;
     line-height: 0.8;
     position: absolute;
@@ -28,45 +30,53 @@ input {
     width: 20px;
 
     &:hover {
-      color: $c-table-caret-hover;
+      color: $c-input-caret-hover;
     }
 
     &-up {
-      top: 2px;
+      top: 6px;
     }
 
     &-down {
-      bottom: 6px;
+      bottom: 9px;
+      height: 13px;
     }
   }
 
   &-status.fa {
+    align-self: center;
     display: none;
+    font-size: $f-size-base - 3;
     margin-left: 5px;
-    font-size: $f-size-base - 5;
-    vertical-align: 2px;
   }
 
-  &-status-check {
-    color: $c-order-contacts-input-check;
+  &-status-valid {
+    color: $c-input-valid;
   }
 
-  &-status-fail {
-    color: $c-order-contacts-input-fail;
+  &-status-not-valid {
+    color: $c-input-not-valid;
   }
 
-  &-rectangular {
-    border-radius: 4px;
-    border: 1px solid $c-order-contacts-input-border;
-    padding: 8px 14px;
-  }
-}
+  &-label {
+    color: $c-form-label;
+    margin-bottom: 10px;
 
-textarea {
-  border: 1px solid $c-order-contacts-input-border;
-  border-radius: 4px;
-  font-size: $f-size-base;
-  padding: 8px 14px;
+    &-asterisk {
+      color: $c-input-required;
+      font-size: $f-size-base - 1;
+    }
+  }
+
+  &-field {
+    display: flex;
+    margin: 0 0 30px 90px;
+
+    textarea {
+      height: 100px;
+      width: 90%;
+    }
+  }
 }
 
 .errorlist {

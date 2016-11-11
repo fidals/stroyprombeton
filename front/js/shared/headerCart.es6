@@ -1,4 +1,4 @@
-(() => {
+{
   const DOM = {
     $cartWrapper: $('.js-cart-wrapper'),
     $orderTable: $('.js-order-contain'),
@@ -60,4 +60,4 @@
   }
 
   init();
-})();
+}

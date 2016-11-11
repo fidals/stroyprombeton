@@ -248,3 +248,10 @@ a {
     color: $c-black;
   }
 }
+
+.success-page {
+  &-text {
+    font-size: $f-size-base + 3;
+    margin: 0 0 30px;
+  }
+}

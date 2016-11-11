@@ -5,6 +5,7 @@
 const configs = (() => {
   const DOM = {
     $phoneInputs: $('.js-masked-phone'),
+    $gbiTooltip: $('.js-object-tooltip.active'),
   };
 
   const labels = {
@@ -20,9 +21,33 @@ const configs = (() => {
     DOM.$phoneInputs
       .attr('placeholder', '+7 (999) 000 00 00')
       .mask('+9 (999) 999 99 99')
-      .on('keyup', event => {
+      .on('keyup', (event) => {
         localStorage.setItem(labels.phone, $(event.target).val());
       });
+
+    DOM.$gbiTooltip.tooltipster({
+      anchor: 'bottom-center',
+      contentAsHTML: true,
+      interactive: true,
+      maxWidth: 300,
+      offset: [0, 20],
+      trigger: 'custom',
+      // close tooltip when element is clicked again,
+      // tapped or when the mouse leaves it
+      triggerClose: {
+        click: true,
+        // ensuring that scrolling mobile is not tapping
+        scroll: false,
+        tap: true,
+        mouseleave: true,
+      },
+      // open tooltip when element is clicked, tapped (mobile) or hovered
+      triggerOpen: {
+        click: true,
+        tap: true,
+        mouseenter: true,
+      },
+    });
   }
 
   /**
@@ -42,5 +67,7 @@ const configs = (() => {
 
   init();
 
-  return { labels };
+  return {
+    labels,
+  };
 })();

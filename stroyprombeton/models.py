@@ -1,16 +1,16 @@
 """Models which are specific for stroyprombeton.ru"""
 
-from unidecode import unidecode
 from random import randint
 from sys import maxsize
+from unidecode import unidecode
 
-from django.utils.text import slugify
-from django.db import models
 from django.core.urlresolvers import reverse
+from django.db import models
+from django.utils.text import slugify
 
 from catalog.models import AbstractProduct, AbstractCategory
-from pages.models import PageMixin, ModelPage, CustomPage, FlatPage
 from ecommerce.models import Order as ecOrder
+from pages.models import PageMixin, ModelPage, CustomPage, FlatPage
 
 
 class Order(ecOrder):

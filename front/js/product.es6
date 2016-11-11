@@ -1,4 +1,4 @@
-(() => {
+{
   const DOM = {
     $addToCart: $('#buy-product'),
     $counter: $('.js-count-input'),
@@ -78,4 +78,4 @@
   }
 
   init();
-})();
+}

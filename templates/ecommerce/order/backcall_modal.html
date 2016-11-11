@@ -1,0 +1,40 @@
+{% load widget_tweaks %}
+
+<div class="modal js-modal" id="backcall-modal">
+  <div class="modal-row row middle-xs center-xs">
+    <div class="modal-call">
+      <h3 class="modal-h3">Заказ обратного звонка</h3>
+
+      <form action="{% url 'order_backcall' %}" method="post">
+        {% csrf_token %}
+        <div class="modal-line">
+          <span class="modal-line-label">Имя</span>
+
+          {{ backcall_form.name.errors }}
+          {{ backcall_form.name|add_class:"modal-line-input js-backcall-field" }}
+
+          <i class="fa fa-check modal-line-status modal-line-status-check" aria-hidden="true"></i>
+          <i class="fa fa-times modal-line-status modal-line-status-fail" aria-hidden="true"></i>
+        </div>
+
+        <div class="modal-line">
+          <span class="modal-line-label">
+            Телефон <span class="modal-line-label-asterisk">*</span>
+          </span>
+
+          {{ backcall_form.phone.errors }}
+          {{ backcall_form.phone|add_class:"modal-line-input js-backcall-field js-masked-phone" }}
+
+          <i class="fa fa-check modal-line-status modal-line-status-check" aria-hidden="true"></i>
+          <i class="fa fa-times modal-line-status modal-line-status-fail" aria-hidden="true"></i>
+        </div>
+
+        <div>
+          <button type="button" class="btn js-send-backcall">Отправить</button>
+        </div>
+      </form>
+
+      <i class="fa fa-close modal-close js-modal-close" aria-hidden="true"></i>
+    </div>
+  </div>
+</div>

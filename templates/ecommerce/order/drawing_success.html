@@ -1,15 +1,13 @@
 {% extends 'layout/inner_page.html' %}
-{% load pages_extras %}
 
 {% block content %}
-  <div class="container container-fluid">
+  <div class="container container-fluid text-center">
     <h1 class="heading-h1">Ваш заказ принят</h1>
 
-    <p class="order-success-text">
+    <p class="success-page-text">
       Спасибо за обращение! Мы рассмотрим вашу заявку и свяжемся с вами по почте или по телефону.
     </p>
-    <p class="text-center">
-      <a href="{% custom_url '' %}" class="btn">Вернуться на главную</a>
-    </p>
+
+    <a href="/" class="btn">Вернуться на главную</a>
   </div>
 {% endblock %}

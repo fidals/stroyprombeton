@@ -1,13 +1,13 @@
 /**
  * We implements mediator pattern via jQuery's global events
- * on empty object (it could be a window or a documents, also)
+ * on empty object (it could be a window or a document also).
  */
 const mediator = {
   // Inner object, which used to bind and trigger events on it.
   M: {},
 
   /**
-   * Subscribes given collection of handlers to an event with a given name.
+   * Subscribe given collection of handlers to an event with a given name.
    *
    * @param {string} eventName
    * @param handlers
@@ -19,7 +19,7 @@ const mediator = {
   },
 
   /**
-   * Publishes event with a given name, passes context to its subscribers.
+   * Publish event with a given name, pass context to it's subscribers.
    *
    * @param eventName
    * @param context

@@ -11,10 +11,17 @@ from datetime import datetime
 
 from django.test import TestCase
 
-from pages.models import ModelPage
+from pages.models import ModelPage, Page
 
+from stroyprombeton.management.commands.transfer import CUSTOM_PAGES
 from stroyprombeton.models import Category, Product
 from stroyprombeton.tests.tests_forms import PriceFormTest, DrawingFormTest
+
+
+def create_custom_pages():
+    """Create index, category_tree, news and region pages."""
+    for fields in CUSTOM_PAGES.values():
+        Page.objects.create(**fields)
 
 
 class CategoryTree(TestCase):

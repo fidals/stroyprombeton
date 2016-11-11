@@ -5,6 +5,7 @@
   color: $c-btn-orange;
   cursor: pointer;
   display: inline-block;
+  font-family: $f-family;
   font-size: $f-size-base + 4;
   line-height: 1.2;
   font-weight: 300;
@@ -22,6 +23,12 @@
     border: solid 2px $c-btn-orange-active;
   }
 
+  &:disabled {
+    border-color: $c-btn-disabled;
+    color: $c-btn-disabled;
+    cursor: default;
+  }
+
   &-white {
     background-color: $c-application-bg;
     border-color: $c-white;
@@ -35,9 +42,9 @@
     }
 
     &:active {
-      color: $c-btn-white-active;
-      border: solid 2px $c-white;
       background-color: $c-btn-white-bg-hover;
+      border: solid 2px $c-white;
+      color: $c-btn-white-active;
     }
   }
 }

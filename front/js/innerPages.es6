@@ -1,4 +1,4 @@
-(() => {
+{
   const init = () => {
     pasteSearchTerm();
   };
@@ -14,4 +14,4 @@
   }
 
   init();
-})();
+}

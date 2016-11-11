@@ -1,4 +1,4 @@
-(() => {
+{
   const DOM = {
     countInput: '.js-count-input',
     countUp: '.js-count-input-up',
@@ -48,4 +48,4 @@
   }
 
   init();
-})();
+}

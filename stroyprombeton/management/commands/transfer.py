@@ -13,12 +13,11 @@ from django.core.files.images import ImageFile
 from django.core.management.base import BaseCommand
 from django.utils.text import slugify
 
+from images.models import Image
+from pages.models import Page, FlatPage, CustomPage
+
 from stroyprombeton import config
 from stroyprombeton.models import Category, Product, Region, CategoryPage, ProductPage
-
-from pages.models import Page, FlatPage, CustomPage
-from images.models import Image
-
 
 CUSTOM_PAGES = {
     'news': {
@@ -29,7 +28,10 @@ CUSTOM_PAGES = {
     },
     'index': {
         'slug': '',
-        'title': 'Завод ЖБИ «СТК-ПромБетон» | Производство ЖБИ в Санкт-Петербурге, железобетонные изделия СПб',
+        'title': '''
+            Завод ЖБИ «СТК-ПромБетон» | Производство ЖБИ в Санкт-Петербурге,
+            железобетонные изделия СПб
+            ''',
         'h1': 'Завод железобетонных изделий «СТК-Промбетон»',
         'menu_title': 'Главная',
         'type': Page.CUSTOM_TYPE,
@@ -71,6 +73,12 @@ CUSTOM_PAGES = {
         'type': Page.CUSTOM_TYPE,
         '_title': 'Корзина Интернет-магазин СТК-ПромБетон',
         'h1': 'Оформление заказа',
+    },
+    'order-success': {
+        'slug': 'order-success',
+        'type': Page.CUSTOM_TYPE,
+        '_title': 'Спасибо за Ваш заказ',
+        'h1': 'Заказ принят',
     },
 }
 
@@ -327,12 +335,13 @@ class Command(BaseCommand):
                     title=item['title'],
                 )
 
-        def create_static_pages(data: list):
+        def create_pages(data: list):
             navigation = Page.objects.create(slug='navi')
             CustomPage.objects.create(**CUSTOM_PAGES['category_tree'])
             CustomPage.objects.create(**CUSTOM_PAGES['index'], parent=navigation)
             CustomPage.objects.create(**CUSTOM_PAGES['search'])
             CustomPage.objects.create(**CUSTOM_PAGES['order'])
+            CustomPage.objects.create(**CUSTOM_PAGES['order-success'])
 
             for static_pages in data:
                 static_page = Page.objects.create(
@@ -365,7 +374,7 @@ class Command(BaseCommand):
         create_categories(data['categories'])
         create_products(data['products'])
         create_flat_pages(data['posts'])
-        create_static_pages(data['static_pages'])
+        create_pages(data['static_pages'])
         create_regions()
         fill_images_data()
 
