@@ -32,7 +32,8 @@ class Command(BaseCommand):
         children = self.create_children(2, roots)
         deep_children = self.create_children(2, children)
         self.create_products(list(deep_children))
-        self.create_pages()
+        self.create_custom_pages()
+        self.create_flat_pages()
         self.save_dump()
 
     @staticmethod
@@ -97,8 +98,8 @@ class Command(BaseCommand):
         create_product(deep_children[:4], 50)
 
     @staticmethod
-    def create_pages():
-        """Create only one page with type=FLAT_PAGE"""
+    def create_custom_pages():
+        """Create only one page with type=CUSTOM_TYPE"""
         CustomPage.objects.create(
             slug=''
         )
@@ -106,14 +107,33 @@ class Command(BaseCommand):
             slug='search'
         )
         CustomPage.objects.create(
+            slug='gbi'
+        )
+        CustomPage.objects.create(
             slug='order'
         )
-        FlatPage.objects.create(
-            slug='flat',
-        )
-        FlatPage.objects.create(
+        CustomPage.objects.create(
             slug='news',
         )
+        CustomPage.objects.create(
+            slug='user-feedbacks',
+        )
+
+    @staticmethod
+    def create_flat_pages():
+        """Create only one page with type=FLAT_PAGE"""
+        news = CustomPage.objects.get(slug='news')
+        reviews = CustomPage.objects.get(slug='user-feedbacks')
+
+        for i in range(3):
+            FlatPage.objects.create(
+                h1='News #{}'.format(i),
+                parent=news
+            )
+            FlatPage.objects.create(
+                h1='Review #{}'.format(i),
+                parent=reviews
+            )
 
     @staticmethod
     def clear_tables():

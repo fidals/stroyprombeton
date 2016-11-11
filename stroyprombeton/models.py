@@ -73,24 +73,12 @@ class Region(models.Model):
         return reverse('region_flat_page', args=(self.page.slug,))
 
 
-class CategoryPageManager(models.Manager):
-    def get_queryset(self):
-        return super(CategoryPageManager, self).get_queryset().filter(
-            related_model_name=Category.related_model_name)
-
-
 class CategoryPage(ModelPage):
     """Proxy model for Admin"""
     class Meta(ModelPage.Meta):
         proxy = True
 
-    objects = CategoryPageManager()
-
-
-class ProductPageManager(models.Manager):
-    def get_queryset(self):
-        return super(ProductPageManager, self).get_queryset().filter(
-            related_model_name=Product.related_model_name)
+    objects = ModelPage.create_model_page_managers(Category)
 
 
 class ProductPage(ModelPage):
@@ -98,4 +86,4 @@ class ProductPage(ModelPage):
     class Meta(ModelPage.Meta):
         proxy = True
 
-    objects = ProductPageManager()
+    objects = ModelPage.create_model_page_managers(Product)

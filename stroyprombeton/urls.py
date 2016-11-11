@@ -2,10 +2,15 @@ from django.conf import settings
 from django.conf.urls import url, include
 from django.conf.urls.static import static
 
-from stroyprombeton import views
-
 from pages.models import Page
 
+from stroyprombeton import views
+from stroyprombeton.admin import stb_admin_site
+
+
+admin_urls = [
+    url(r'^', stb_admin_site.urls),
+]
 
 catalog_urls = [
     url(r'^categories/(?P<category_id>[0-9]+)/$', views.CategoryPage.as_view(), name='category'),
@@ -33,6 +38,7 @@ custom_pages = [
 
 urlpatterns = [
     url(r'', include(custom_pages)),
+    url(r'admin/', include(admin_urls)),
     url(r'^drawing-success/', views.OrderDrawingSuccess.as_view(), name='order_drawing_success'),
     url(r'^gbi/', include(catalog_urls)),
     url(r'^fetch-products/$', views.fetch_products, name='fetch_products'),

@@ -11,42 +11,32 @@ from datetime import datetime
 
 from django.test import TestCase
 
-from pages.models import Page, ModelPage
+from pages.models import ModelPage
 
-from stroyprombeton.management.commands.transfer import custom_page_data
 from stroyprombeton.models import Category, Product
 from stroyprombeton.tests.tests_forms import PriceFormTest, DrawingFormTest
 
 
-def create_custom_pages():
-    """Create index, category_tree, news and region pages."""
-    for fields in custom_page_data.values():
-        Page.objects.create(**fields)
-
-
 class CategoryTree(TestCase):
     """Tests for CategoryTree view """
+    fixtures = ['dump.json']
 
-    @classmethod
-    def setUpTestData(cls):
+    def setUp(self):
         """Create root and child category."""
-        create_custom_pages()
-        cls.root_name = 'Test root category'
-        cls.child_name = 'Test child category'
+        self.root_name = 'Test root category'
+        self.child_name = 'Test child category'
 
         root_category = Category.objects.create(
-            name=cls.root_name,
-            page=ModelPage.objects.create(h1='Category h1')
+            name=self.root_name,
+            page=ModelPage.objects.create(h1='Test Category h1')
         )
 
         Category.objects.create(
-            name=cls.child_name,
+            name=self.child_name,
             parent=root_category,
-            page=ModelPage.objects.create(h1='Child category h1')
+            page=ModelPage.objects.create(h1='Test child category h1')
         )
 
-    def setUp(self):
-        """Get response from /gbi/"""
         self.response = self.client.get('/gbi/')
 
     def test_response_status_code(self):
@@ -55,19 +45,21 @@ class CategoryTree(TestCase):
         self.assertEqual(status_code, 200)
 
     def test_root_catalog_name(self):
-        name = self.response.context['nodes'][0].name
+        in_context = any(
+            map(lambda node: node.name == self.root_name, self.response.context['nodes']))
 
-        self.assertEqual(name, self.root_name)
+        self.assertTrue(in_context)
 
     def test_child_catalog_name(self):
-        name = self.response.context['nodes'][1].name
+        in_context = any(
+            map(lambda node: node.name == self.child_name, self.response.context['nodes']))
 
-        self.assertEqual(name, self.child_name)
+        self.assertTrue(in_context)
 
     def test_catalogs_quantity(self):
         quantity = len(self.response.context['nodes'])
 
-        self.assertEqual(quantity, 2)
+        self.assertEqual(quantity, 16)
 
 
 class CategoryTile(TestCase):
@@ -75,37 +67,32 @@ class CategoryTile(TestCase):
     Test for CategoryPage view under the condition, that using CategoryTile
     template.
     """
+    fixtures = ['dump.json']
 
-    @classmethod
-    def setUpTestData(cls):
+    def setUp(self):
         """Create root and child category."""
-        create_custom_pages()
-        cls.root_data = {
+        self.root_data = {
             'name': 'Test root category',
-            'id': 1,
             'page': ModelPage.objects.create(
                 content='Козырьки устанавливают над входами зданий.',
                 h1='Козырьки',
             ),
         }
 
-        cls.root_category = Category.objects.create(**cls.root_data)
+        self.root_category = Category.objects.create(**self.root_data)
 
-        cls.child_data = {
+        self.child_data = {
             'name': 'Test child category',
-            'id': 2,
-            'parent': cls.root_category,
+            'parent': self.root_category,
             'page': ModelPage.objects.create(
                 content='Козырьки применяют при строительстве зданий.',
                 h1='Козырьки входов, плиты парапетные.',
             )
         }
 
-        Category.objects.create(**cls.child_data)
+        Category.objects.create(**self.child_data)
 
-    def setUp(self):
-        """Get response from /gbi/categories/1/"""
-        self.response = self.client.get('/gbi/categories/' + str(self.root_data['id']) + '/')
+        self.response = self.client.get('/gbi/categories/{}/'.format(self.root_category.id))
 
     def test_response_status_code(self):
         status_code = self.response.status_code
@@ -143,23 +130,21 @@ class CategoryTable(TestCase):
     Test for CategoryPage view under the condition, that using CategoryTable
     template.
     """
+    fixtures = ['dump.json']
 
-    @classmethod
-    def setUpTestData(cls):
+    def setUp(self):
         """Create category and product."""
-        create_custom_pages()
-        cls.root_data = {
+        self.root_data = {
             'name': 'Test root category',
-            'id': 1,
             'page': ModelPage.objects.create(
                 h1='Козырьки',
                 content='Козырьки устанавливают над входами зданий.',
             )
         }
 
-        root_category = Category.objects.create(**cls.root_data)
+        root_category = Category.objects.create(**self.root_data)
 
-        cls.product_data = {
+        self.product_data = {
             'price': 1447.21,
             'code': 350,
             'name': 'Test product name',
@@ -171,11 +156,9 @@ class CategoryTable(TestCase):
             )
         }
 
-        Product.objects.create(**cls.product_data)
+        Product.objects.create(**self.product_data)
 
-    def setUp(self):
-        """Get response from /gbi/categories/1/"""
-        self.response = self.client.get('/gbi/categories/1/')
+        self.response = self.client.get('/gbi/categories/{}/'.format(root_category.id))
 
     def test_response_status_code(self):
         status_code = self.response.status_code
@@ -221,20 +204,18 @@ class CategoryTable(TestCase):
 class Product_(TestCase):
     """Test for ProductPage view."""
 
-    @classmethod
-    def setUpTestData(cls):
+    fixtures = ['dump.json']
+
+    def setUp(self):
         """Create category and product."""
-        create_custom_pages()
         root_data = {
-            'id': 1,
             'name': 'Test root category',
             'page': ModelPage.objects.create(h1='Category')
         }
 
         root_category = Category.objects.create(**root_data)
 
-        cls.product_data = {
-            'id': 1,
+        self.product_data = {
             'category': root_category,
             'name': 'Test product name',
             'price': 1447.21,
@@ -255,10 +236,9 @@ class Product_(TestCase):
             )
         }
 
-        Product.objects.create(**cls.product_data)
+        product = Product.objects.create(**self.product_data)
 
-    def setUp(self):
-        self.response = self.client.get('/gbi/products/1/')
+        self.response = self.client.get('/gbi/products/{}/'.format(product.id))
 
     def test_response_status_code(self):
         status_code = self.response.status_code
@@ -390,9 +370,7 @@ class OrderDrawing(AbstractFormViewTest, TestCase):
 class IndexPage(TestCase):
     """Tests for Index page view."""
 
-    @classmethod
-    def setUpTestData(cls):
-        create_custom_pages()
+    fixtures = ['dump.json']
 
     def setUp(self):
         self.response = self.client.get('/')
