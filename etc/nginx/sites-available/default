@@ -1,0 +1,19 @@
+gzip_types text/plain text/css application/json application/javascript image/svg+xml;
+
+server {
+    listen 80;
+    location / {
+        include proxy_params;
+        proxy_pass http://127.0.0.1:8000;
+    }
+    location /static/ {
+        root /opt/stroyprombeton/app/;
+        access_log off;
+        expires 14d;
+    }
+    location /media/ {
+        root /opt/stroyprombeton/app/;
+        access_log off;
+        expires 14d;
+    }
+}

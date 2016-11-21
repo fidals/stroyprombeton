@@ -5,7 +5,7 @@ from django.views.decorators.http import require_POST
 from django.views.generic import FormView, TemplateView
 
 from ecommerce import views as ec_views
-from ecommerce.mailer import order_backcall as send_backcall
+from ecommerce.mailer import send_backcall
 from pages.models import Page
 
 from stroyprombeton import mailer

@@ -17,16 +17,14 @@ import dj_database_url
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-# Quick-start development settings - unsuitable for production
-# See https://goo.gl/GBVo6Q
-
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'gl9syc68r%rmb*1&yzz(4%cotfpb$dy&wkb_y5_d0*be0pfulq'
+SECRET_KEY = 'my_cool_key'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+# setting from docker example: https://github.com/satyrius/paid/
+ALLOWED_HOSTS = [h.strip() for h in os.getenv('ALLOWED_HOSTS', '').split(',')]
 
 # Application definition
 
@@ -129,8 +127,7 @@ STATICFILES_DIRS = [
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-DATABASE_URL = 'postgres://postgres:11@db/stroyprombeton'
-
+DATABASE_URL = 'postgres://user:pass@host/db_name'
 DATABASES = {
     'default': dj_database_url.config(
         env='DATABASE_URL',
@@ -156,6 +153,17 @@ SEARCH_SEE_ALL_LABEL = 'Смотреть все результаты'
 
 SITE_ID = 1
 SITE_DOMAIN_NAME = 'www.stroyprombeton.ru'
+
+# Email configs
+# It is fake-pass. Correct pass will be created on `docker-compose up` stage from `docker/.env`
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', 'so_secret_pass')
+EMAIL_HOST_USER = 'mailer@stroyprombeton.ru'
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.yandex.ru'
+EMAIL_PORT = 587
+EMAIL_SENDER = 'mailer@stroyprombeton.ru'
+EMAIL_RECIPIENT = 'info@stroyprombeton.ru'
+SHOP_EMAIL = 'info@stroyprombeton.ru'
 
 # Uncomment for http->https change
 # os.environ['HTTPS'] = 'on'
@@ -303,5 +311,3 @@ PARTNERS = [
         'alt': 'Поставка металлоконструкций',
     },
 ]
-
-from .local import *

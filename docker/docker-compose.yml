@@ -1,0 +1,46 @@
+version: "2"
+
+services:
+  stb_prod:
+    extends:
+      file: common-services.yml
+      service: webapp
+    restart: always
+    container_name: stb_prod
+    environment:
+      DJANGO_SETTINGS_MODULE: stroyprombeton.settings.prod
+      DATABASE_URL: postgres://postgres:$DB_PASS@stb_db_prod/stb_prod
+    ports:
+      - "8020:80"
+    depends_on:  # can't be inherited
+      - stb_db_prod
+
+  stb_db_prod:
+    extends:
+      file: common-services.yml
+      service: db
+    container_name: stb_db_prod
+    restart: always
+    environment:
+      POSTGRES_DB: "stb_prod"
+
+  stb_dev:
+    extends:
+      file: common-services.yml
+      service: webapp
+    container_name: stb_dev
+    environment:
+      DJANGO_SETTINGS_MODULE: stroyprombeton.settings.dev
+      DATABASE_URL: postgres://postgres:$DB_PASS@stb_db_dev/stb_dev
+    ports:
+      - "8021:80"
+    depends_on:  # can't be inherited
+      - stb_db_dev
+
+  stb_db_dev:
+    extends:
+      file: common-services.yml
+      service: db
+    container_name: stb_db_dev
+    environment:
+      POSTGRES_DB: "stb_dev"

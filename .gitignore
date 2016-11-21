@@ -10,3 +10,4 @@ static/
 media/
 stroyprombeton/settings/local.py
 stb.json
+docker/.env

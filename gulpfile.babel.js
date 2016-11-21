@@ -177,7 +177,7 @@ function appJS(source, destination, fileName) {
     .pipe($.if(ENV.development, $.sourcemaps.init()))
     .pipe($.plumber())
     .pipe($.babel({
-      presets: ['es2015'],
+      presets: [require('babel-preset-es2015')],
     }))
     .pipe($.concat(`${fileName}.js`))
     .pipe($.rename({

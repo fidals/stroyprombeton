@@ -20,18 +20,18 @@
   </ul>
 </li>
 
+{#<li class="nav-item">#}
+{#  <a class="nav-link" href="#">Серии</a>#}
+{#</li>#}
+
 <li class="nav-item">
-  <a class="nav-link" href="#">Серии</a>
+  <a class="nav-link" href="{% url 'pages:flat_page' 'delivery' %}">Доставка</a>
 </li>
 
 <li class="nav-item">
-  <a class="nav-link" href="{% url 'pages:flat_page' 'navi' 'delivery' %}">Доставка</a>
+  <a class="nav-link" href="{% url 'pages:flat_page' 'req' %}">Реквизиты</a>
 </li>
 
 <li class="nav-item">
-  <a class="nav-link" href="#">Реквизиты</a>
-</li>
-
-<li class="nav-item">
-  <a class="nav-link" href="{% url 'pages:flat_page' 'navi' 'contacts' %}">Контакты</a>
+  <a class="nav-link" href="{% url 'pages:flat_page' 'contacts' %}">Контакты</a>
 </li>

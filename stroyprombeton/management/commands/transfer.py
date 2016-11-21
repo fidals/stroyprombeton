@@ -129,7 +129,7 @@ class Command(BaseCommand):
             'categories': 'id, parent_id, mark, name, title, h1, date, text, ord, is_active',
             'posts': 'name, title, h1, keywords, description, is_active, date, text',
             'products': (
-                'section_id, nomen, mark, length, '
+                'id, section_id, nomen, mark, length, '
                 'width, height, weight, volume, diameter_out, diameter_in, '
                 'price, title, keywords, description, date, text, price_date'
             ),
@@ -214,6 +214,7 @@ class Command(BaseCommand):
         def create_products(data: list):
             for product_data in data:
                 product = Product.objects.create(
+                    id=product_data['id'],
                     category=Category.objects.get(
                         id=to_int(product_data['section_id'])
                     ),
