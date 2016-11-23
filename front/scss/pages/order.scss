@@ -95,24 +95,21 @@
 }
 
 // ================================================================
-// CONTACTS
+// FORM
 // ================================================================
-.order-contacts {
+.order-form {
   padding: 20px 0 0;
 
   &-heading {
     font-size: $f-size-base + 18;
     padding-bottom: 40px;
   }
+}
 
+.order {
   &-input {
     &-field {
       width: 340px;
     }
-  }
-
-  &-textarea {
-    height: 100px;
-    width: 90%;
   }
 }

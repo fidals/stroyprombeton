@@ -5,7 +5,8 @@
   <span style="float: right; color: #767A7B; margin-top: 32px;">
     <span style="font-size: 13px;">(812)</span>
     <span style="font-size: 25px;" class="ya-opt-phone">
-      <a href="tel:{{ site_info.phone.spb_1_url }}" style="color: #000; text-decoration: none;">
+      <a href="tel:{{ site_info.phone.spb_1_url }}"
+         style="color: #000; text-decoration: none;">
         {{ site_info.phone.spb_1 }}
       </a>
     </span>
@@ -26,46 +27,50 @@
   <span>{% if order.name %}Уважаемый(ая) {{ order.name }}. {% endif %}<b>Ваш заказ:</b></span>
 </p>
 
-{% if order.items %}
-  <table width="100%" border="1" style="border: none; font-size: 16px;">
-    <tr align="center">
-      <th width="10%" style="border-color: #E4E4E4; padding: 10px; font-weight:bold;">Код</th>
-      <th width="50%" style="border-color: #E4E4E4; padding: 10px; font-weight:bold;">Наименование и марка</th>
-      <th width="15%" style="border-color: #E4E4E4; padding: 10px; font-weight:bold;">Кол-во</th>
-      <th width="15%" style="border-color: #E4E4E4; padding: 10px; font-weight:bold;">Цена</th>
-    </tr>
-    {% for position in order.items %}
-      {% with product=position.product %}
-        <tr align="center" style="background: #F9F9F9;">
-          <td style="border-color: #E4E4E4; padding: 10px;">{{ product.id }}</td>
-          <td style="border-color: #E4E4E4; padding: 10px;">
-            <a style="color: #C90000; text-decoration: none;"
-               href="{{ product.get_absolute_url }}">{{ product.name }}</a>
-          </td>
-          <td style="border-color: #E4E4E4; padding: 10px;">{{ position.quantity }} шт.</td>
-          <td style="border-color: #E4E4E4; padding: 10px;">
-            {% if position.price %}
-              {{ position.price }} руб.
-            {% else %}
-              По запросу
-            {% endif %}
-          </td>
-        </tr>
-      {% endwith %}
-    {% endfor %}
-    <tr align="center">
-      <td></td>
-      <td></td>
-      <td style="border-color: #E4E4E4; padding: 10px; font-weight: bold;">Итог:</td>
-      <td style="border-color: #E4E4E4; padding: 10px; font-weight: bold;">
-        {{ order.price|format_price }}
+<table width="100%" border="1" style="border: none; font-size: 16px;">
+  <tr align="center">
+    <th width="10%" style="border-color: #E4E4E4; padding: 10px; font-weight:bold;">Код</th>
+    <th width="50%" style="border-color: #E4E4E4; padding: 10px; font-weight:bold;">Наименование и марка</th>
+    <th width="15%" style="border-color: #E4E4E4; padding: 10px; font-weight:bold;">Кол-во</th>
+    <th width="15%" style="border-color: #E4E4E4; padding: 10px; font-weight:bold;">Цена</th>
+  </tr>
+
+  {% for position in order.items %}
+    <tr align="center" style="background: #F9F9F9;">
+      <td style="border-color: #E4E4E4; padding: 10px;">
+        {% get_product_field position.product_id 'code' %}
+      </td>
+      <td style="border-color: #E4E4E4; padding: 10px; text-align: left;">
+        <a href="{% full_url 'product' position.product_id %}"
+           style="text-decoration: none;">
+          {{ position.name }} {% get_product_field position.product_id 'mark' %}
+        </a>
+      </td>
+      <td style="border-color: #E4E4E4; padding: 10px;">
+        {{ position.quantity }} шт.
+      </td>
+      <td style="border-color: #E4E4E4; padding: 10px;">
+        {% if position.price %}
+          {{ position.price }} руб.
+        {% else %}
+          По запросу
+        {% endif %}
       </td>
     </tr>
-  </table>
-{% endif %}
+  {% endfor %}
+
+  <tr align="center">
+    <td></td>
+    <td></td>
+    <td style="border-color: #E4E4E4; padding: 10px; font-weight: bold;">Итог:</td>
+    <td style="border-color: #E4E4E4; padding: 10px; font-weight: bold;">
+      {{ order.price|format_price }}
+    </td>
+  </tr>
+</table>
 
 {# TODO: wrap it in inclusion tag #}
-<p>В ближайшее время наш менеджер свяжется с Вами и уточнит детали заказа:</p>
+<p>В ближайшее время наш менеджер свяжется с Вами и уточнит детали заказа.</p>
 {% customer_info order.name 'Ваше имя' %}
 {% customer_info order.phone 'Ваш телефон' %}
 {% customer_info order.email 'Ваш email' %}

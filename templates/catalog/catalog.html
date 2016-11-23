@@ -11,7 +11,7 @@
   <div class="container container-fluid">
     <div class="catalog-ul-wrapper">
       {% recursetree nodes %}
-        <a class="catalog-title {% if not node.parent %}js-catalog-title{% endif %}"
+        <a class="catalog-title"
            href="{{ node.get_absolute_url }}">
           {{ node.name }}
         </a>

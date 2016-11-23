@@ -42,7 +42,6 @@
     &-h2 {
       margin-bottom: 118px;
       font-size: $f-size-base + 18;
-      font-weight: 300;
       line-height: 1.18;
       letter-spacing: .0125em;
     }
@@ -53,14 +52,13 @@
 // APPLICATION
 // ================================================================
 .application {
-  height: 63px;
-  color: $c-white;
   background-color: $c-application-bg;
+  color: $c-white;
+  height: 63px;
 
   &-title {
+    font-size: $f-size-base - 2;
     margin-top: 22px;
-    font-size: $f-size-base - 3;
-    font-weight: 400;
   }
 
   &-btn {

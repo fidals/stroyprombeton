@@ -10,13 +10,21 @@
   {% include 'components/page_h1.html' with page=page %}
 
   <section class="product-serial text-center">
-    <span class="product-serial-title">Код</span>
-    <span class="product-serial-val">{{ product.code }}</span>
-    <span class="product-serial-title">Серия</span>
-    {# TODO: `specification` should be replaced by `spec` #}
-    <span class="product-serial-val">{{ product.specification }}</span>
-    <span class="product-serial-title">Марка</span>
-    <span class="product-serial-val">{{ product.mark }}</span>
+    {% if product.code %}
+      <span class="product-serial-title">Код</span>
+      <span class="product-serial-val">{{ product.code }}</span>
+    {% endif %}
+
+    {% if product.specification %}
+      <span class="product-serial-title">Серия</span>
+      {# TODO: `specification` should be replaced by `spec` #}
+      <span class="product-serial-val">{{ product.specification }}</span>
+    {% endif %}
+
+    {% if product.mark %}
+      <span class="product-serial-title">Марка</span>
+      <span class="product-serial-val">{{ product.mark }}</span>
+    {% endif %}
   </section>
 
   <section class="product-info">

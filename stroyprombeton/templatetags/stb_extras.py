@@ -1,8 +1,11 @@
 from django import template
+from django.conf import settings
+from django.core.urlresolvers import reverse
+from django.template.defaultfilters import floatformat
 
 from images.models import ImageMixin
 
-from stroyprombeton.models import Category
+from stroyprombeton.models import Category, Product
 
 register = template.Library()
 
@@ -24,24 +27,32 @@ def customer_info(value, title):
 
 
 @register.inclusion_tag('tags/search_result.html')
-def search_result(items, type_):
+def search_result(items, item_type):
     return {
         'items': items,
-        'type_': type_
+        'item_type': item_type
+    }
+
+
+@register.inclusion_tag('tags/order_form_field_error.html')
+def order_form_field_error(errors):
+    return {
+        'errors': errors
     }
 
 
 @register.filter
 def format_price(price):
     if price:
-        return str(price) + ' руб.'
+        return floatformat(price, 0) + ' руб.'
     else:
         return 'По запросу'
 
 
 @register.simple_tag
 def get_root_categories():
-    return Category.objects.root_nodes().filter(page__is_active=True).order_by('page__position', 'name')
+    return (Category.objects.root_nodes().filter(page__is_active=True)
+            .order_by('page__position', 'name'))
 
 
 # Not good code, but duker at 06/10/2016 don't know how to fix it.
@@ -59,3 +70,16 @@ def get_img_alt(entity: ImageMixin):
     entity_name = next(
         filter(None, (getattr(entity, attr, None) for attr in name_attrs)))
     return product_alt.format(entity_name)
+
+
+# TODO - move it in pages. Inspired by LP electric
+@register.simple_tag
+def full_url(url_name, *args):
+    return settings.BASE_URL + reverse(url_name, args=args)
+
+
+@register.simple_tag
+def get_product_field(product_id, parameter):
+    product = Product.objects.get(id=product_id)
+
+    return getattr(product, parameter)

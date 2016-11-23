@@ -146,7 +146,7 @@ CART_ID = 'cart'
 BASE_URL = 'http://www.stroyprombeton.ru'
 SITE_CREATED = datetime(2013, 1, 1)
 
-PLACEHOLDER_IMAGE = 'images/common/logo.svg'
+PLACEHOLDER_IMAGE = 'images/common/image-thumb.png'
 PLACEHOLDER_ALT = 'Логотип компании СтройПромБетон'
 
 SEARCH_SEE_ALL_LABEL = 'Смотреть все результаты'
@@ -156,13 +156,13 @@ SITE_DOMAIN_NAME = 'www.stroyprombeton.ru'
 
 # Email configs
 # It is fake-pass. Correct pass will be created on `docker-compose up` stage from `docker/.env`
+EMAIL_HOST = 'smtp.yandex.ru'
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', 'so_secret_pass')
 EMAIL_HOST_USER = 'mailer@stroyprombeton.ru'
-EMAIL_USE_TLS = True
-EMAIL_HOST = 'smtp.yandex.ru'
 EMAIL_PORT = 587
-EMAIL_SENDER = 'mailer@stroyprombeton.ru'
 EMAIL_RECIPIENT = 'info@stroyprombeton.ru'
+EMAIL_SENDER = 'mailer@stroyprombeton.ru'
+EMAIL_USE_TLS = True
 SHOP_EMAIL = 'info@stroyprombeton.ru'
 
 # Uncomment for http->https change
@@ -293,19 +293,18 @@ REGIONS = {
 
 PARTNERS = [
     {
-        'url': 'http://xn----htbqgdmrio5g.xn--p1ai/',
+        'url': 'http://xn----htbqgdmrio5g.xn--p1ai/?utm_source=STB_site&utm_medium=backlink&utm_campaign=backlink_traffic',
         'logo': 'images/partner-stkmodul-logo.png',
-        'text': 'Нерудные материалы',
         'alt': 'СТК-Модуль',
     },
     {
-        'url': 'http://stkm-energo.ru/',
+        'url': 'http://stkm-energo.ru/?utm_source=STB_site&utm_medium=backlink&utm_campaign=backlink_traffic',
         'logo': 'images/partner-modulenergo-logo.png',
         'text': 'Модуль энерго',
         'alt': 'Монтаж и строительство энергообъектов',
     },
     {
-        'url': 'http://www.stk-metal.ru/',
+        'url': 'http://www.stk-metal.ru/?utm_source=STB_site&utm_medium=backlink&utm_campaign=backlink_traffic',
         'logo': 'images/partner-stkmetall-logo.png',
         'text': 'СТК-Металл',
         'alt': 'Поставка металлоконструкций',

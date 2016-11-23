@@ -7,15 +7,11 @@
 
   {% include 'components/page_h1.html' with page=page only %}
 
-  <div class="container container-fluid">
-    <div class="row">
-      {% for object in page.children.all %}
-        <ul>
-          <li>
-            <a href="{{ object.url }}">{{ object.menu_title }}</a>
-          </li>
-        </ul>
-      {% endfor %}
+  <section class="objects">
+    <div class="container container-fluid">
+      <div class="objects-map">
+        {% include 'pages/index/regions_map.html' %}
+      </div>
     </div>
-  </div>
+  </section>
 {% endblock %}

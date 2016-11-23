@@ -10,7 +10,7 @@ body {
   color: $c-text;
   display: flex;
   flex-direction: column;
-  font-weight: 300;
+  font-weight: 400;
   min-height: 100vh;
 }
 
@@ -29,7 +29,7 @@ a {
 }
 
 .separator {
-  border-bottom: 1px solid $c-show-more-border;
+  border-bottom: 1px solid $c-separator-grey;
   padding: 0 0 30px;
   margin: 0 0 30px;
 }
@@ -165,7 +165,7 @@ a {
     }
 
     &-link {
-      color: $c-search-link;
+      color: $c-search-text;
       display: flex;
       font-size: $f-size-base - 2;
       font-weight: 300;

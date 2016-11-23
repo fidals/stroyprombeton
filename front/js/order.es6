@@ -3,23 +3,14 @@
     $order: $('.js-order-contain'),
     productCount: '.js-count-input',
     remove: '.js-remove',
-    orderForm: {
-      name: '#id_name',
-      phone: '#id_phone',
-      email: '#id_email',
-      company: '#id_company',
-      address: '#id_address',
-      comment: '#id_comment',
-    },
   };
 
   const init = () => {
     setUpListeners();
-    fillSavedInputs();
   };
 
   function setUpListeners() {
-    mediator.subscribe('onCartUpdate', renderTable, fillSavedInputs);
+    mediator.subscribe('onCartUpdate', renderTable);
 
     $(DOM.$order).on('keyup', 'input', storeInput);
     $(DOM.$order).on('keyup', 'textarea', storeInput);
@@ -28,23 +19,6 @@
   }
 
   const getProductId = $target => $target.closest('.js-product-row').data('product-id');
-
-  /**
-   * Fill inputs, which have saved localstorage value.
-   * Runs on page load, and on every Cart's update.
-   */
-  function fillSavedInputs() {
-    for (const fieldName in DOM.orderForm) {
-      if ({}.hasOwnProperty.call(DOM.orderForm, fieldName)) {
-        const $field = $(`#id_${fieldName}`);
-        const savedValue = localStorage.getItem(fieldName);
-
-        if ($field && savedValue) {
-          $field.val(savedValue);
-        }
-      }
-    }
-  }
 
   /**
    * Change Product's count in Cart with delay for better UX.

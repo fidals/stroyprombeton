@@ -20,7 +20,7 @@
 
               <div class="slider-item-image">
                 {% if item.page.main_image %}
-                  {% thumbnail item.page.main_image '360x238' crop='center' as image %}
+                  {% thumbnail item.page.main_image '360x238' as image %}
                     <img class="img-responsive img-stretched"
                          src="{{ image.url }}"
                          alt="{% get_img_alt item.page %}">

@@ -11,10 +11,8 @@
           <span class="modal-line-label">Имя</span>
 
           {{ backcall_form.name.errors }}
-          {{ backcall_form.name|add_class:"modal-line-input js-backcall-field" }}
-
-          <i class="fa fa-check modal-line-status modal-line-status-check" aria-hidden="true"></i>
-          <i class="fa fa-times modal-line-status modal-line-status-fail" aria-hidden="true"></i>
+          {{ backcall_form.name|add_class:"modal-line-input input-field js-input-field js-backcall-field" }}
+          {% include 'components/input_validation_icons.html' %}
         </div>
 
         <div class="modal-line">
@@ -23,10 +21,8 @@
           </span>
 
           {{ backcall_form.phone.errors }}
-          {{ backcall_form.phone|add_class:"modal-line-input js-backcall-field js-masked-phone" }}
-
-          <i class="fa fa-check modal-line-status modal-line-status-check" aria-hidden="true"></i>
-          <i class="fa fa-times modal-line-status modal-line-status-fail" aria-hidden="true"></i>
+          {{ backcall_form.phone|add_class:"modal-line-input input-field js-input-field js-backcall-field js-masked-phone" }}
+          {% include 'components/input_validation_icons.html' %}
         </div>
 
         <div>

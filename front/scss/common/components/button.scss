@@ -8,14 +8,13 @@
   font-family: $f-family;
   font-size: $f-size-base + 4;
   line-height: 1.2;
-  font-weight: 300;
   outline: none;
   padding: 9px 30px 10px;
   transition: all 0.3s ease;
 
   &:hover {
-    color: $c-btn-orange-hover;
     border: solid 2px $c-btn-orange-hover;
+    color: $c-btn-orange-hover;
   }
 
   &:active {
@@ -89,8 +88,6 @@
   transition: all 0.2s ease;
 
   &-wrapper {
-    border-bottom: 1px solid $c-show-more-border;
-    margin: 0 0 40px;
     padding: 30px 0;
     position: relative;
     text-align: center;

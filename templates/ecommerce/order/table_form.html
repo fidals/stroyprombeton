@@ -31,7 +31,9 @@
               {% for id, product in cart %}
                 <tr class="js-product-row" data-product-id="{{ id }}">
                   <td class="order-table-name">
-                    <a href="{{ product.url }}">{{ product.name }}</a>
+                    <a href="{{ product.url }}">
+                      {{ product.name }} {% get_product_field id 'mark'%}
+                    </a>
                   </td>
                   <td class="order-table-count">
                     {% include 'catalog/count_input.html' %}
@@ -59,11 +61,11 @@
     </div>
   </section>
 
-  <section class="order-contacts">
+  <section class="order-form">
     <div class="container container-fluid">
       <div class="row">
         <div class="col-xs-offset-1 col-xs-10">
-          <h2 class="order-contacts-heading">Контакты</h2>
+          <h2 class="order-form-heading">Контакты</h2>
         </div>
       </div>
 

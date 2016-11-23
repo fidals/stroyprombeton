@@ -20,10 +20,7 @@ const configs = (() => {
   function pluginsInit() {
     DOM.$phoneInputs
       .attr('placeholder', '+7 (999) 000 00 00')
-      .mask('+9 (999) 999 99 99')
-      .on('keyup', (event) => {
-        localStorage.setItem(labels.phone, $(event.target).val());
-      });
+      .mask('+0 (000) 000 00 00');
 
     DOM.$gbiTooltip.tooltipster({
       anchor: 'bottom-center',

@@ -5,8 +5,7 @@
   padding: 21px 0;
 
   &-ul {
-    display: none;
-    margin: 0 0 30px 50px;
+    margin: 0 0 30px 40px;
   }
 
   &-title {
@@ -37,37 +36,15 @@
     color: $c-white;
     cursor: pointer;
     display: flex;
-    font-size: $f-size-base + 18;
+    font-size: $f-size-base + 6;
     font-weight: 300;
-    margin: 0 0 30px;
-    min-height: 120px;
-    padding: 15px 70px 20px 32px;
+    margin: 0 0 20px;
+    padding: 10px 20px 15px;
     position: relative;
     transition: all 0.2s ease;
 
     &:hover {
       background-color: $c-catalog-title-hover-bg;
-    }
-
-    &::after {
-      border-right: 2px solid $c-white;
-      border-bottom: 2px solid $c-white;
-      content: "";
-      display: block;
-      height: 23px;
-      left: auto;
-      position: absolute;
-      right: 32px;
-      top: 49px;
-      transform: rotate(-45deg);
-      transition: all 0.2s ease;
-      width: 23px;
-    }
-
-    &.active::after {
-      right: 25px;
-      top: 42px;
-      transform: rotate(45deg);
     }
   }
 }

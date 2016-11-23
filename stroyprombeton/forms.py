@@ -1,4 +1,5 @@
 from django import forms
+from django.forms import TextInput, Textarea
 
 from stroyprombeton.models import Order
 
@@ -62,9 +63,18 @@ class OrderForm(forms.ModelForm):
         model = Order
         fields = [
             'name',
-            'email',
             'phone',
+            'email',
             'company',
             'address',
             'comment'
         ]
+
+        widgets = {
+            'name': TextInput(attrs={'class': 'input-field order-input-field js-input-field'}),
+            'phone': TextInput(attrs={'class': 'input-field order-input-field js-input-field'}),
+            'email': TextInput(attrs={'class': 'input-field order-input-field js-input-field'}),
+            'company': TextInput(attrs={'class': 'input-field order-input-field js-input-field'}),
+            'address': Textarea(attrs={'class': 'js-input-field'}),
+            'comment': Textarea(attrs={'class': 'js-input-field'}),
+        }

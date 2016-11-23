@@ -22,14 +22,14 @@
   }
 
   &-link {
-    color: $c-category-filter-item;
+    color: $c-text-muted;
     display: block;
     font-size: $f-size-base - 4;
     font-weight: 600;
     transition: all 0.2s ease;
 
     &:hover {
-      color: $c-category-filter-item-hover;
+      color: $c-text-muted;
     }
   }
 }
@@ -38,17 +38,9 @@
 // ABOUT
 // ================================================================
 .category-about {
-  padding: 0 0 60px;
-
-  &-serial {
-    border: 1px solid $c-category-about-border;
-    font-size: $f-size-base + 2;
-    padding: 8px;
-    position: relative;
-    text-align: center;
-  }
-
   &-text {
+    border-top: 1px solid $c-separator-grey;
     font-size: $f-size-base + 2;
+    padding: 40px 0 0;
   }
 }

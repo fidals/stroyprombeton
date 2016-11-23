@@ -1,11 +1,18 @@
 class StbBackcall extends Backcall {
+  constructor(sendBtnClass) {
+    super(sendBtnClass);
+
+    this.modal = $('#backcall-modal');
+  }
+
   sendOrderCallback() {
     modals.closeModal();
   }
 
   isValid() {
-    // TODO: Validation required.
-    return true;
+    const phoneNumber = $(this.modal).find('#id_phone').val();
+
+    return helpers.isPhoneValid(phoneNumber);
   }
 }
 

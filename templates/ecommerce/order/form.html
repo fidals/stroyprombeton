@@ -1,61 +1,55 @@
 {% load widget_tweaks %}
 {% load pages_extras %}
+{% load stb_extras %}
 
 <form action="{% custom_url 'order' %}" method="post" id="shop-order-form"> {% csrf_token %}
   <div class="input-label">
     Имя
   </div>
-  <div class="input-field">
-    {{ form.name|add_class:'order-contacts-input-field' }}
-    {% include 'components/input_validation_icons.html' %}
+  <div class="input-field-wrapper">
+    {{ form.name }}
   </div>
 
   <div class="input-label">
     Телефон
     <span class="input-label-asterisk">*</span>
   </div>
-  <div class="input-field">
-    {{ form.phone|add_class:'order-contacts-input-field js-masked-phone' }}
+  <div class="input-field-wrapper {% if form.phone.errors %}not-valid{% endif %}">
+    {{ form.phone|add_class:'js-masked-phone' }}
     {% include 'components/input_validation_icons.html' %}
-    {{ form.phone.errors }}
+    {% order_form_field_error form.phone.errors %}
   </div>
 
   <div class="input-label">
     Электронная почта
     <span class="input-label-asterisk">*</span>
   </div>
-  <div class="input-field">
-    {{ form.email|add_class:'order-contacts-input-field' }}
-    {% include 'components/input_validation_icons.html' %}
-    {{ form.email.errors }}
+  <div class="input-field-wrapper {% if form.email.errors %}not-valid{% endif %}">
+    {{ form.email }}
+    {% order_form_field_error form.email.errors %}
   </div>
 
   <div class="input-label">
     Полное название организации
     <span class="input-label-asterisk">*</span>
   </div>
-  <div class="input-field">
-    {{ form.company|add_class:'order-contacts-input-field' }}
-    {% include 'components/input_validation_icons.html' %}
-    {{ form.company.errors }}
+  <div class="input-field-wrapper {% if form.company.errors %}not-valid{% endif %}">
+    {{ form.company }}
+    {% order_form_field_error form.company.errors %}
   </div>
 
   <div class="input-label">
     Адрес поставки
-    <span class="input-label-asterisk">*</span>
   </div>
-  <div class="input-field">
+  <div class="input-field-wrapper">
     {{ form.address }}
-    {% include 'components/input_validation_icons.html' %}
-    {{ form.address.errors }}
   </div>
 
   <div class="input-label">
     Комментарий к заказу
   </div>
-  <div class="input-field">
+  <div class="input-field-wrapper">
     {{ form.comment }}
-    {{ form.comment.errors }}
   </div>
 
   <div class="text-right">

@@ -47,22 +47,9 @@
     }
 
     &-input {
+      display: initial;
+      margin: 0;
       width: 340px;
-    }
-
-    &-status {
-      display: none;
-      margin-left: 9px;
-      font-size: $f-size-base - 5;
-      vertical-align: 2px;
-    }
-
-    &-status-check {
-      color: $c-modal-status-check;
-    }
-
-    &-status-fail {
-      color: $c-modal-status-fail;
     }
   }
 

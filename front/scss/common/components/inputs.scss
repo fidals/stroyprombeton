@@ -45,17 +45,28 @@ textarea {
 
   &-status.fa {
     align-self: center;
-    display: none;
-    font-size: $f-size-base - 3;
-    margin-left: 5px;
+    opacity: 0;
+    font-size: $f-size-base - 2;
+    left: 10px;
+    position: absolute;
+    transition: all 0.3s ease;
   }
 
   &-status-valid {
     color: $c-input-valid;
+
+    .valid & {
+      opacity: 1;
+    }
   }
 
   &-status-not-valid {
     color: $c-input-not-valid;
+
+    &.active,
+    .not-valid & {
+      opacity: 1;
+    }
   }
 
   &-label {
@@ -69,12 +80,32 @@ textarea {
   }
 
   &-field {
-    display: flex;
-    margin: 0 0 30px 90px;
+    .valid & {
+      border-color: $c-input-valid;
+    }
 
-    textarea {
-      height: 100px;
-      width: 90%;
+    .not-valid & {
+      border-color: $c-input-not-valid;
+    }
+
+    &-wrapper {
+      display: flex;
+      margin: 0 0 30px 90px;
+
+      textarea {
+        height: 100px;
+        width: 90%;
+      }
+    }
+  }
+
+  &-validation-icon-wrapper {
+    display: inline-block;
+    position: relative;
+    top: -13px;
+
+    .input-field-wrapper & {
+      top: 13px;
     }
   }
 }

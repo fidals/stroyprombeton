@@ -3,8 +3,7 @@
 {% if items %}
   {% for item in items %}
     <tr class="table-tr" id="{{ item.id }}">
-      <td class="table-td table-type">{{ type_ }}</td>
-      <!--TODO Need to create logic for images and empty thumb.-->
+      <td class="table-td table-type">{{ item_type }}</td>
       <td class="table-td table-picture text-center">
         {% include 'catalog/category_product_image.html' with product=item page=page only %}
       </td>
@@ -14,7 +13,7 @@
           {{ item.specification }} {{ item.name }} {{ item.mark }}
         </a>
       </td>
-      {% if type_ == 'Раздел' %}
+      {% if item_type == 'Раздел' %}
         <td class="table-td table-price text-center">
           {{ item.price|default:'-' }}
       {% else %}

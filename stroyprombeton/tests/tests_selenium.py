@@ -8,6 +8,7 @@ from seleniumrequests import Chrome  # We use this instead of standard selenium
 from django.conf import settings
 from django.core.urlresolvers import reverse
 from django.db.models import Count
+from django.template.defaultfilters import floatformat
 from django.test import LiveServerTestCase
 
 from pages.models import Page
@@ -201,9 +202,10 @@ class OrderPage(SeleniumTestCase, CartMixin):
         counter.clear()
         send_keys_and_wait(counter, 42)
         product_price = Product.objects.get(id=1).price
+        expected_price = floatformat(str(product_price * 42), 0) + ' руб.'
         total_price = self.browser.find_element_by_class_name('order-total-val').text
 
-        self.assertIn(str(product_price * 42), total_price)
+        self.assertEqual(expected_price, total_price)
 
 
 class CategoryPage(SeleniumTestCase, CartMixin):

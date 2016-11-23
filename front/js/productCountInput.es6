@@ -17,8 +17,8 @@
    * Subscribing on events using mediator.
    */
   function setUpListeners() {
-    mediator.subscribe('onProductsCountUp', countIncrease, triggerInputChange, productPriceSum);
-    mediator.subscribe('onProductsCountDown', countDecrease, triggerInputChange, productPriceSum);
+    mediator.subscribe('onProductsCountUp', countIncrease, triggerInputChange);
+    mediator.subscribe('onProductsCountDown', countDecrease, triggerInputChange);
 
     $(document)
       .on('click', DOM.countUp, function countUp() {
@@ -40,7 +40,8 @@
   }
 
   function productPriceSum() {
-    $(DOM.$productPriceSum).text(`${productPrice * $(DOM.countInput).val()} руб.`);
+    if (isNaN(productPrice)) return;
+    DOM.$productPriceSum.text(`${productPrice * $(DOM.countInput).val()} руб.`);
   }
 
   function triggerInputChange(_, target) {
