@@ -9,10 +9,11 @@ All Selenium-tests should be located in tests_selenium.
 from copy import copy
 from datetime import datetime
 
+from django.core.urlresolvers import reverse
+from django.http import QueryDict
 from django.test import TestCase
 
 from pages.models import CustomPage, FlatPage, ModelPage
-
 from stroyprombeton.models import Category, Product
 from stroyprombeton.tests.tests_forms import PriceFormTest, DrawingFormTest
 
@@ -379,3 +380,26 @@ class IndexPage(TestCase):
         self.assertIn(region.url, self.content)
         response = self.client.get(region.url)
         self.assertEqual(response.status_code, 200)
+
+
+class Search(TestCase):
+
+    fixtures = ['dump.json']
+    RIGHT_TERM = 'category #'
+    WRONG_TERM = 'bugaga wrong term'
+
+    def get_search_url(self, term=''):
+        term = term or self.RIGHT_TERM
+        # Use QueryDict to safely encode get params to url
+        get_params = QueryDict(mutable=True)
+        get_params.update({'term': term})
+        return '{url}?{get_params}'.format(
+            url=reverse('custom_page', args=('search',)),
+            get_params=get_params.urlencode()
+        )
+
+    def test_result_page_contains_query(self):
+        """Search results page should contain it's search query"""
+        url = self.get_search_url(term=self.WRONG_TERM)
+        self.response = self.client.get(url)
+        self.assertContains(self.response, self.WRONG_TERM)

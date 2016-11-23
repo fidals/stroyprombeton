@@ -4,7 +4,7 @@
   <div class="row">
     <div class="col-xs-4 col-lg-offset-1 searchbar-wrap">
       <form class="search" action="{% custom_url 'search' %}" method="get">
-        <input class="search-field js-search-field" name="term" type="text">
+        <input class="search-field js-search-field" name="term" value="{{ query }}" type="text">
 
         <button class="search-btn" type="submit">
           <i class="fa fa-search" aria-hidden="true"></i>

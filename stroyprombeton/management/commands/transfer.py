@@ -135,7 +135,7 @@ class Command(BaseCommand):
             ),
             'static_pages': 'alias, name, title, h1, keywords, description, is_active, date, text',
             'territories': 'id, translit_name, name',
-            'objects': 'territory_id, alias, name, text',
+            'objects': 'territory_id, alias, name, text, date',
         }
 
         def get_data(table: str) -> tuple:
@@ -301,6 +301,7 @@ class Command(BaseCommand):
                     h1=object_data['name'],
                     slug=slugify(object_data['alias']),
                     content=object_data['text'],
+                    date_published=object_data['date'],
                     parent=region_pages[old_id]
                 )
 

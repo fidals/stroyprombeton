@@ -331,7 +331,8 @@ class Search(SeleniumTestCase):
     def setUp(self):
         self.browser.get(self.live_server_url)
         wait()
-        self.query = 'category'
+        # query contains whitespace to prevent urlencoding errors
+        self.query = 'category #'
         self.fill_input()
 
     @property
