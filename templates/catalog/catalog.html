@@ -15,12 +15,6 @@
            href="{{ node.get_absolute_url }}">
           {{ node.name }}
         </a>
-
-        {% if not node.is_leaf_node %}
-          <ul class="catalog-ul js-catalog-ul">
-            {{ children }}
-          </ul>
-        {% endif %}
       {% endrecursetree %}
     </div>
   </div>
