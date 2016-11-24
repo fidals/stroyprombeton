@@ -13,4 +13,4 @@ dj-database-url==0.4.1
 sorl-thumbnail==12.4a1
 -e git+https://github.com/fidals/refarm-catalog.git#egg=refarm-catalog
 -e git+https://github.com/fidals/refarm-site.git#egg=refarm-site
--e git+https://github.com/fidals/refarm-ecommerce.git@816_stb_release#egg=refarm-ecommerce
+-e git+https://github.com/fidals/refarm-ecommerce.git#egg=refarm-ecommerce
