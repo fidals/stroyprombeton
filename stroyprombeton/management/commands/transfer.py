@@ -169,10 +169,9 @@ class Command(BaseCommand):
 
     def insert_data_to_DB(self, data: dict):
         """Insert data in category, product, post and static_page tables."""
-
-        to_datetime = (lambda date:
-                       datetime.strptime(date, '%Y-%m-%dT%H:%M:%S')
-                       if date and not isinstance(date, datetime) else datetime.now())
+        
+        def get_date(date):
+            return date if date else datetime.now()
 
         to_int = (lambda obj: int(obj) if obj else 0)
         to_float = (lambda obj: float(obj) if obj else 0)
@@ -189,7 +188,7 @@ class Command(BaseCommand):
                 page = CategoryPage.objects.create(
                     position=to_int(category_data['ord']),
                     content=is_exist(category_data['text']),
-                    date_published=to_datetime(category_data['date']),
+                    date_published=get_date(category_data['date']),
                     h1=is_exist(category_data['h1']),
                     menu_title=is_exist(category_data['title']),
                     is_active=bool(category_data['is_active']),
@@ -219,7 +218,7 @@ class Command(BaseCommand):
                         id=to_int(product_data['section_id'])
                     ),
                     code=to_int(product_data['nomen']),
-                    date_price_updated=to_datetime(product_data['price_date']),
+                    date_price_updated=get_date(product_data['price_date']),
                     diameter_in=to_int(product_data['diameter_in']),
                     diameter_out=to_int(product_data['diameter_out']),
                     height=to_int(product_data['height']),
@@ -236,7 +235,7 @@ class Command(BaseCommand):
                 page = ProductPage.objects.create(
                     content=is_exist(product_data['text']),
                     h1=is_exist(product_data['title']),
-                    date_published=to_datetime(product_data['date']),
+                    date_published=get_date(product_data['date']),
                     keywords=is_exist(product_data['keywords']),
                 )
                 try:
@@ -248,25 +247,25 @@ class Command(BaseCommand):
                     product.page = page
                     product.save()
 
-        def create_flat_pages(data: list):
-            for page_data in data:
+        def create_news(data: list):
+            for page in data:
                 FlatPage.objects.create(
-                    slug=slugify(unidecode(page_data['name'])),
-                    content=is_exist(page_data['text']),
+                    slug=slugify(unidecode(page['name'])),
+                    content=is_exist(page['text']),
                     parent=CustomPage.objects.get(slug='news'),
-                    date_published=to_datetime(page_data['date']),
-                    description=is_exist(page_data['description']),
-                    h1=page_data['h1'] or page_data['title'] or page_data['name'],
-                    is_active=bool(page_data['is_active']),
-                    keywords=is_exist(page_data['keywords']),
-                    title=page_data['title'] or page_data['name']
+                    date_published=get_date(page['date']),
+                    description=is_exist(page['description']),
+                    h1=page['h1'] or page['title'] or page['name'],
+                    is_active=bool(page['is_active']),
+                    keywords=is_exist(page['keywords']),
+                    title=page['title'] or page['name']
                 )
 
         def create_pages(data: list):
             for static_pages in data:
                 FlatPage.objects.create(
                     content=static_pages['text'],
-                    date_published=to_datetime(static_pages['date']),
+                    date_published=get_date(static_pages['date']),
                     description=is_exist(static_pages['description']),
                     h1=is_exist(static_pages['h1']),
                     is_active=bool(static_pages['is_active']),
@@ -301,12 +300,12 @@ class Command(BaseCommand):
                     h1=object_data['name'],
                     slug=slugify(object_data['alias']),
                     content=object_data['text'],
-                    date_published=object_data['date'],
+                    date_published=get_date(object_data['date']),
                     parent=region_pages[old_id]
                 )
 
         save_custom_pages()
-        create_flat_pages(data['posts'])
+        create_news(data['posts'])
         create_pages(data['static_pages'])
         region_pages = create_regions(data['territories'])
         create_region_objects(
