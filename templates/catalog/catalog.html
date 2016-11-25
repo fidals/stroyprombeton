@@ -10,12 +10,12 @@
 
   <div class="container container-fluid">
     <div class="catalog-ul-wrapper">
-      {% recursetree nodes %}
+      {% for category in categories %}
         <a class="catalog-title"
-           href="{{ node.get_absolute_url }}">
-          {{ node.name }}
+           href="{{ category.url }}">
+          {{ category.name }}
         </a>
-      {% endrecursetree %}
+      {% endfor %}
     </div>
   </div>
 

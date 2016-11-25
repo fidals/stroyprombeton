@@ -1,9 +1,11 @@
 """STB catalog views."""
 from django.shortcuts import render
+from django.views.generic.list import ListView
 
 from catalog.models import search as filter_
 from catalog.views import catalog
 
+from pages.models import CustomPage
 from stroyprombeton.models import Product, Category
 from stroyprombeton.views.helpers import set_csrf_cookie, get_keys_from_post
 
@@ -33,9 +35,20 @@ def fetch_products(request):
     return render(request, 'catalog/category_products.html', {'products': products})
 
 
-class CategoryTree(catalog.CategoryTree):
-    """Override model attribute to STB-specific Category."""
-    category_model = Category
+class CategoryTree(ListView):
+    """Show list of root categories"""
+    template_name = 'catalog/catalog.html'
+    context_object_name = 'categories'
+
+    def get_queryset(self):
+        return Category.objects.filter(parent=None, page__is_active=True)
+
+    def get_context_data(self, **kwargs):
+        context = super(CategoryTree, self).get_context_data(**kwargs)
+        return {
+            **context,
+            'page': CustomPage.objects.get(slug='gbi')
+        }
 
 
 @set_csrf_cookie
