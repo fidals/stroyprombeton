@@ -15,8 +15,6 @@ from pages.models import Page
 
 from stroyprombeton.models import Category, Product
 
-PRODUCTS_TO_LOAD = 30
-
 
 def wait(seconds=1):
     """Simple wrapper on time.sleep() method."""
@@ -209,6 +207,9 @@ class OrderPage(SeleniumTestCase, CartMixin):
 
 
 class CategoryPage(SeleniumTestCase, CartMixin):
+
+    PRODUCTS_TO_LOAD = 30
+
     @classmethod
     def setUpClass(cls):
         super(CategoryPage, cls).setUpClass()
@@ -222,7 +223,7 @@ class CategoryPage(SeleniumTestCase, CartMixin):
         children_category = Category.objects.filter(parent=root_category).first()
         category_with_product_less_then_load_limit = Category.objects.annotate(
             prod_count=Count('products')).exclude(prod_count=0).filter(
-                prod_count__lt=PRODUCTS_TO_LOAD).first()
+                prod_count__lt=self.PRODUCTS_TO_LOAD).first()
 
         self.root_category = self.testing_url(root_category.id)
         self.children_category = self.testing_url(children_category.id)
