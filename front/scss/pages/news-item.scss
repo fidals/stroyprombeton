@@ -17,41 +17,31 @@
 // ================================================================
 .news {
   &-date {
-    margin-bottom: 19px;
+    color: $c-news-date;
     font-size: $f-size-base;
     font-weight: 400;
-    color: $c-news-date;
+    margin-bottom: 19px;
   }
 
-  &-title {
-    color: $c-text;
-    margin-bottom: 24px;
-    font-size: $f-size-base + 18;
-    font-weight: 300;
-    line-height: 1.18;
-    text-align: center;
-  }
-
-  &-image {
-    &-head {
-      margin-bottom: 32px;
-      font-size: 0;
-    }
-
-    &-small {
-      margin-bottom: 56px;
+  &-wrapper {
+    ul {
+      margin: 0 0 25px;
     }
   }
 
-  &-text {
-    color: $c-text;
-    font-size: $f-size-base + 2;
-    font-weight: 300;
-    line-height: 1.3;
+  &-images {
+    margin: 0 0 25px;
 
-    &-p {
-      margin-bottom: 25px;
+    img {
+      display: block;
+      height: auto;
+      max-width: 100%;
+      margin: 0 auto 10px;
     }
+  }
+
+  &-text p {
+    margin-bottom: 25px;
   }
 
   &-back {

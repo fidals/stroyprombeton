@@ -9,18 +9,21 @@ $c-icon-remove: #9b9b9b;
 $c-link: #47a1d2;
 $c-link-hover: #07d;
 $c-orange: #fc7126;
-$c-text-orange: #fc7126;
-$c-text-grey: #acacac;
-$c-text-muted: #bababa;
 $c-selection: #fc7126;
 $c-separator-grey: #bababa;
 $c-show-more-hover: #bd6739;
 $c-show-more-active: #904f2b;
 $c-show-more-disabled: #bababa;
 $c-table-row-bg: #f2f2f2;
-$c-teaser-bg: #f8f8f8;
 $c-text: #212121;
+$c-text-orange: #fc7126;
+$c-text-grey: #acacac;
+$c-text-muted: #bababa;
+$c-link-grey: #404040;
+$c-link-grey-hovered: #979797;
 $c-white: #fff;
+$c-teaser-bg: #f8f8f8;
+$c-teaser-bg-hover: #fbfbfb;
 
 // Buttons
 $c-btn-disabled: #bababa;
@@ -51,7 +54,6 @@ $c-product-table-border: #979797;
 
 // Navigation
 $c-nav-bg: #f3f3f3;
-$c-nav-link: #404040;
 $c-nav-link-hover: #979797;
 $c-nav-link-chart: #fc7126;
 $c-nav-link-chart-hover: #bd6739;
@@ -108,7 +110,6 @@ $c-offer-title: #1c2e36;
 $c-offer-title-hover: #979797;
 $c-about-bg: #fbfbfb;
 $c-about-h2: #171237;
-$c-news-item-bg-hover: #fbfbfb;
 $c-reviews: #1c2e36;
 $c-reviews-title: #2e2e2e;
 $c-reviews-nav-item: #bdc3c7;
@@ -166,10 +167,10 @@ $h-header: $h-nav + $h-searchbar + $h-header-top-padding;
 
 // Shadows
 $c-shadow: rgba($c-black, 0.25);
+$sh-modal: 0 2px 8px 0 $c-shadow;
 $sh-search: 0 1px 5px 0 $c-shadow;
 $sh-search-focus: 0 2px 10px 1px rgba($c-black, 0.2);
-$sh-news-item: 0 2px 4px 0 $c-shadow;
-$sh-modal: 0 2px 8px 0 $c-shadow;
+$sh-teaser: 0 2px 4px 0 $c-shadow;
 
 // Fonts
 $f-size-base: 16px;

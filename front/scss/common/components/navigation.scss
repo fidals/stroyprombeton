@@ -24,15 +24,11 @@
   }
 
   &-link {
-    color: $c-nav-link;
+    @include grey-link;
     display: block;
     font-size: $f-size-base;
     line-height: 1.25;
     padding: 18px 14px;
-
-    &:hover {
-      color: $c-nav-link-hover;
-    }
   }
 
   .active &-cart-link {

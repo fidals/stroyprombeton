@@ -17,7 +17,9 @@
                  alt="{% get_img_alt page %}">
         {% endif %}
       </a>
-      <div class="newslist-item-title">{{ page.title }}</div>
+      <div class="newslist-item-title">
+        <a class="newslist-title-link" href="{{ page.url }}">{{ page.title }}</a>
+      </div>
       <div class="newslist-item-date">{{ page.date_published|date:'d.m.Y' }}</div>
       <div class="newslist-item-text">
         {{ page.description }}

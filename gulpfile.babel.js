@@ -283,7 +283,7 @@ gulp.task('fonts', () => {
 gulp.task('watch', () => {
   $.livereload.listen();
   gulp.watch(PATH.watch.styles, ['styles']);
-  gulp.watch(PATH.watch.js, ['js-common', 'js-pages']);
+  gulp.watch(PATH.watch.js, ['js-common', 'js-vendors-pages', 'js-pages']);
   gulp.watch(PATH.watch.images, ['images']);
   gulp.watch(PATH.watch.fonts, ['fonts']);
   gulp.watch(PATH.watch.html, $.livereload.changed);

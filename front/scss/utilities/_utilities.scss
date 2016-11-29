@@ -14,3 +14,22 @@
 // ================================================================
 // PLACEHOLDERS
 // ================================================================
+@mixin grey-link {
+  color: $c-link-grey;
+  transition: color 0.3s ease;
+
+  &:hover {
+    color: $c-link-grey-hovered;
+  }
+}
+
+@mixin teaser-box {
+  background-color: $c-teaser-bg;
+  position: relative;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background-color: $c-teaser-bg-hover;
+    box-shadow: $sh-teaser;
+  }
+}

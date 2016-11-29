@@ -30,11 +30,15 @@ class IndexPage(pages.views.CustomPageView):
         }
 
 
-class CustomPageView(pages.views.CustomPageView):
+class NewsPageView(pages.views.CustomPageView):
+    template_name = 'pages/page.html'
+
+
+class RegionsPageView(pages.views.CustomPageView):
     template_name = 'pages/regions/region_page.html'
 
     def get_context_data(self, **kwargs):
-        context = super(CustomPageView, self).get_context_data(**kwargs)
+        context = super(RegionsPageView, self).get_context_data(**kwargs)
 
         return {
             **context,

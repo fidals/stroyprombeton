@@ -5,7 +5,7 @@
 const configs = (() => {
   const DOM = {
     $phoneInputs: $('.js-masked-phone'),
-    $gbiTooltip: $('.js-object-tooltip.active'),
+    $tooltipTarget: $('.js-object-tooltip.active'),
   };
 
   const labels = {
@@ -22,7 +22,7 @@ const configs = (() => {
       .attr('placeholder', '+7 (999) 000 00 00')
       .mask('+0 (000) 000 00 00');
 
-    DOM.$gbiTooltip.tooltipster({
+    DOM.$tooltipTarget.tooltipster({
       anchor: 'bottom-center',
       contentAsHTML: true,
       interactive: true,

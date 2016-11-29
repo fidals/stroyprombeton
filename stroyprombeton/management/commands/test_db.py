@@ -14,6 +14,7 @@ from django.core.management.base import BaseCommand
 
 from pages.models import CustomPage, FlatPage, ModelPage, Page
 from pages.utils import save_custom_pages
+
 from stroyprombeton.models import Product, Category
 
 CATEGORY_PATTERN = 'Category #{} of #{}'

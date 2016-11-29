@@ -250,16 +250,9 @@
   }
 
   &-item {
-    background-color: $c-teaser-bg;
+    @include teaser-box;
     margin-bottom: 33px;
     height: 165px;
-    position: relative;
-    transition: all 0.2s ease;
-
-    &:hover {
-      background-color: $c-news-item-bg-hover;
-      box-shadow: $sh-news-item;
-    }
 
     &:last-child {
       margin-bottom: 0;
