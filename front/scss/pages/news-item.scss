@@ -1,15 +1,5 @@
-// ================================================================
-// NEWS PAGE
-// ================================================================
 .page-news {
   padding: $h-header 0 58px;
-}
-
-// ================================================================
-// BREADCRUMBS
-// ================================================================
-.breadcrumbs-news {
-  padding-bottom: 38px;
 }
 
 // ================================================================
@@ -17,7 +7,7 @@
 // ================================================================
 .news {
   &-date {
-    color: $c-news-date;
+    color: $c-text-grey;
     font-size: $f-size-base;
     font-weight: 400;
     margin-bottom: 19px;
@@ -27,39 +17,16 @@
     ul {
       margin: 0 0 25px;
     }
-  }
-
-  &-images {
-    margin: 0 0 25px;
 
     img {
       display: block;
       height: auto;
-      max-width: 100%;
       margin: 0 auto 10px;
+      max-width: 100%;
     }
   }
 
   &-text p {
     margin-bottom: 25px;
-  }
-
-  &-back {
-    margin-bottom: 60px;
-
-    &-link {
-      color: $c-news-back-link;
-      font-size: $f-size-base - 3;
-      font-weight: 600;
-      line-height: 1.23;
-    }
-
-    &-link:hover {
-      color: $c-news-back-link-hover;
-    }
-
-    &-link:active {
-      color: $c-news-back-link-active;
-    }
   }
 }
