@@ -14,6 +14,7 @@ from django.http import QueryDict
 from django.test import TestCase
 
 from pages.models import CustomPage, FlatPage, ModelPage
+
 from stroyprombeton.models import Category, Product
 from stroyprombeton.tests.tests_forms import PriceFormTest, DrawingFormTest
 
@@ -33,25 +34,11 @@ class CategoryTree(TestCase):
 
     def test_root_category_response(self):
         status_code = self.response.status_code
-
         self.assertEqual(status_code, 200)
 
-    def test_root_catalog_name(self):
-        in_context = any(
-            map(lambda node: node.name == self.root_name, self.response.context['nodes']))
-
-        self.assertTrue(in_context)
-
-    def test_child_catalog_name(self):
-        in_context = any(
-            map(lambda node: node.name == self.child_name, self.response.context['nodes']))
-
-        self.assertTrue(in_context)
-
-    def test_catalogs_quantity(self):
-        quantity = len(self.response.context['nodes'])
-
-        self.assertEqual(quantity, 14)
+    def test_catalog_links(self):
+        quantity = len(self.response.context['categories'])
+        self.assertTrue(quantity > 0)
 
 
 class CategoryTile(TestCase):

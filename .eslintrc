@@ -12,6 +12,7 @@
     "modals": true,
     "server": true,
     "helpers": true,
+    "ymaps": true,
     "window": true
   },
   "rules": {

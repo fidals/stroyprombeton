@@ -2,7 +2,7 @@
 {% load thumbnail %}
 {% load stb_extras %}
 
-<ul>
+<ul class="news-list">
   {% for page in pages %}
     <li class="newslist-item">
       <a class="newslist-item-img" href="{{ page.url }}">
@@ -20,7 +20,7 @@
       <div class="newslist-item-title">
         <a class="newslist-title-link" href="{{ page.url }}">{{ page.title }}</a>
       </div>
-      <div class="newslist-item-date">{{ page.date_published|date:'d.m.Y' }}</div>
+      <div class="news-date">{{ page.date_published|date:'d.m.Y' }}</div>
       <div class="newslist-item-text">
         {{ page.description }}
       </div>

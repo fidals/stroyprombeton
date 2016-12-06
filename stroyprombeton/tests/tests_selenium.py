@@ -335,7 +335,7 @@ class Search(SeleniumTestCase):
         self.browser.get(self.live_server_url)
         wait()
         # query contains whitespace to prevent urlencoding errors
-        self.query = 'category #'
+        self.query = 'category'
         self.fill_input()
 
     @property
@@ -348,7 +348,6 @@ class Search(SeleniumTestCase):
 
     def fill_input(self):
         """Enter correct search term"""
-
         send_keys_and_wait(self.input, self.query)
 
     def test_autocomplete_can_expand_and_collapse(self):

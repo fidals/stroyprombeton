@@ -240,13 +240,13 @@
   &-img-wrapper {
     display: flex;
     flex: 0 0 165px;
-    margin-right: 30px;
+    margin-right: 10px;
     position: relative;
   }
 
   &-text-wrapper {
     color: $c-text;
-    padding: 10px 20px 10px 0;
+    padding: 20px;
   }
 
   &-item {
@@ -269,9 +269,14 @@
     }
 
     &-short {
-      font-size: $f-size-base + 1;
       padding: 0 0 10px;
     }
+  }
+
+  &-date {
+    color: $c-text-grey;
+    font-size: $f-size-base - 2;
+    margin-bottom: 10px;
   }
 
   &-about {

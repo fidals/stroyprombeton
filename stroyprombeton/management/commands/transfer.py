@@ -155,7 +155,7 @@ class Command(BaseCommand):
                 for obj in data
             ]
 
-        def make_dict(data: list, table: str) -> dict:
+        def make_dict(data: list, table: str) -> list:
             columns_names = tables[table].split(', ')
             return [
                 {columns_names[i]: obj[i] for i in range(len(obj))}
