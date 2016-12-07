@@ -14,15 +14,15 @@
           <p class="news-date">{{ page.date_published|date:'d.m.Y' }}</p>
         {% endif %}
 
+        {% if page.children.all %}
+          {% include 'pages/pages.html' with pages=page.children.all only %}
+        {% endif %}
+
         {% autoescape off %}
           {% if page.content %}
             {{ page.content }}
           {% endif %}
         {% endautoescape %}
-
-        {% if page.children.all %}
-          {% include 'pages/pages.html' with pages=page.children.all only %}
-        {% endif %}
       </div>
     </div>
   </div>
