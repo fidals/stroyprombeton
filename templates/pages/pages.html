@@ -3,7 +3,7 @@
 {% load stb_extras %}
 
 <ul class="news-list">
-  {% for page in pages %}
+  {% for page in pages|dictsortreversed:'date_published' %}
     <li class="newslist-item">
       <a class="newslist-item-img" href="{{ page.url }}">
         {% if page.main_image %}

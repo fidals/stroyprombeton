@@ -20,7 +20,7 @@
           {% endif %}
         {% endautoescape %}
 
-        {% if page.children.all|dictsort:'date_published' %}
+        {% if page.children.all %}
           {% include 'pages/pages.html' with pages=page.children.all only %}
         {% endif %}
       </div>
