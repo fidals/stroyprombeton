@@ -90,8 +90,8 @@ class Command(BaseCommand):
 
     MYSQL_CONFIG = {
         'user': 'proger',
-        'password': '',
-        'db': 'stroyprombeton',
+        'password': '1fe92635845th',
+        'db': 'stb_prod',
         'host': 'serv.fidals.ru',
         'port': 3306,
         'charset': 'utf8mb4'
@@ -304,17 +304,17 @@ class Command(BaseCommand):
                     parent=region_pages[old_id]
                 )
 
-        save_custom_pages()
-        create_news(data['posts'])
-        create_pages(data['static_pages'])
-        region_pages = create_regions(data['territories'])
-        create_region_objects(
-            region_pages=region_pages,
-            region_objects_data=data['objects']
-        )
+        # save_custom_pages()
+        # create_news(data['posts'])
+        # create_pages(data['static_pages'])
+        # region_pages = create_regions(data['territories'])
+        # create_region_objects(
+        #     region_pages=region_pages,
+        #     region_objects_data=data['objects']
+        # )
         create_categories(data['categories'])
         create_products(data['products'])
-        fill_images_data()
+        # fill_images_data()
 
         print('Was created {} categories, {} products, {} pages'.format(
             Category.objects.count(),
@@ -324,9 +324,6 @@ class Command(BaseCommand):
 
     def connect_to_the_mysql_db(self) -> pymysql.connect:
         """Connection to the database and create the cursor."""
-        self.MYSQL_CONFIG['password'] = getpass(
-            prompt='Enter password for stroyprombeton database: ')
-
         try:
             conn = pymysql.connect(**self.MYSQL_CONFIG)
             return conn
