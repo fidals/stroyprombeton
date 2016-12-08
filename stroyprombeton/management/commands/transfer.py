@@ -97,14 +97,6 @@ class Command(BaseCommand):
         'charset': 'utf8mb4'
     }
 
-    def add_arguments(self, parser):
-        parser.add_argument(
-            '--liveserver',
-            action='store_true',
-            dest='liveserver',
-            default=False
-        )
-
     @staticmethod
     def purge_tables():
         call_command('flush', '--noinput')
@@ -112,12 +104,8 @@ class Command(BaseCommand):
     @transaction.atomic
     def handle(self, *args, **options):
         self.purge_tables()
-        if options['liveserver']:
-            with self.connect_to_the_mysql_db() as cursor:
-                data = self.get_data_from_db(cursor)
-                self.insert_data_to_DB(data)
-        else:
-            data = self.get_data_from_json()
+        with self.connect_to_the_mysql_db() as cursor:
+            data = self.get_data_from_db(cursor)
             self.insert_data_to_DB(data)
 
     def get_data_from_json(self) -> dict:
