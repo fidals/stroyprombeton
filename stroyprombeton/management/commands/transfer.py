@@ -116,11 +116,12 @@ class Command(BaseCommand):
         tables = {
             'categories': 'id, parent_id, mark, name, title, h1, date, text, ord, is_active',
             'posts': 'name, title, h1, keywords, description, is_active, date, text',
-            'products': (
-                'id, section_id, nomen, mark, length, '
-                'width, height, weight, volume, diameter_out, diameter_in, '
-                'price, title, keywords, description, date, text, price_date'
-            ),
+            'products':
+                '''
+                id, section_id, nomen, mark, length,
+                width, height, weight, volume, diameter_out, diameter_in,
+                price, title, keywords, description, date, text, price_date, name
+                '''.replace('\n', ''),
             'static_pages': 'alias, name, title, h1, keywords, description, is_active, date, text',
             'territories': 'id, translit_name, name',
             'objects': 'territory_id, alias, name, text, date',
@@ -144,7 +145,7 @@ class Command(BaseCommand):
             ]
 
         def make_dict(data: list, table: str) -> list:
-            columns_names = tables[table].split(', ')
+            columns_names = [field.strip() for field in tables[table].split(', ')]
             return [
                 {columns_names[i]: obj[i] for i in range(len(obj))}
                 for obj in data
@@ -177,7 +178,7 @@ class Command(BaseCommand):
                     position=to_int(category_data['ord']),
                     content=is_exist(category_data['text']),
                     date_published=get_date(category_data['date']),
-                    h1=is_exist(category_data['h1']),
+                    h1=is_exist(category_data['h1']) or is_exist(category_data['name']),
                     menu_title=is_exist(category_data['title']),
                     is_active=bool(category_data['is_active']),
                 )
@@ -211,9 +212,9 @@ class Command(BaseCommand):
                     diameter_out=to_int(product_data['diameter_out']),
                     height=to_int(product_data['height']),
                     mark=product_data['mark'],
-                    name=product_data['title'],
+                    name=is_exist(product_data['title']) or is_exist(product_data['name']),
                     price=to_float(product_data['price']),
-                    specification=product_data['description'],
+                    specification=is_exist(product_data['description']),
                     volume=to_float(product_data['volume']),
                     weight=to_float(product_data['weight']),
                     width=to_int(product_data['width']),
@@ -222,7 +223,7 @@ class Command(BaseCommand):
                 )
                 page = ProductPage.objects.create(
                     content=is_exist(product_data['text']),
-                    h1=is_exist(product_data['title']),
+                    h1=is_exist(product_data['title']) or is_exist(product_data['name']),
                     date_published=get_date(product_data['date']),
                     keywords=is_exist(product_data['keywords']),
                 )
@@ -292,17 +293,17 @@ class Command(BaseCommand):
                     parent=region_pages[old_id]
                 )
 
-        # save_custom_pages()
-        # create_news(data['posts'])
-        # create_pages(data['static_pages'])
-        # region_pages = create_regions(data['territories'])
-        # create_region_objects(
-        #     region_pages=region_pages,
-        #     region_objects_data=data['objects']
-        # )
+        save_custom_pages()
+        create_news(data['posts'])
+        create_pages(data['static_pages'])
+        region_pages = create_regions(data['territories'])
+        create_region_objects(
+            region_pages=region_pages,
+            region_objects_data=data['objects']
+        )
         create_categories(data['categories'])
         create_products(data['products'])
-        # fill_images_data()
+        fill_images_data()
 
         print('Was created {} categories, {} products, {} pages'.format(
             Category.objects.count(),

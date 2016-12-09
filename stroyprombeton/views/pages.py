@@ -22,7 +22,8 @@ class IndexPage(pages.views.CustomPageView):
 
         return {
             **context,
-            'news': FlatPage.objects.filter(parent__slug='news', is_active=True)[:2],
+            'news': FlatPage.objects.filter(parent__slug='news', is_active=True)
+                        .order_by('-date_published')[:2],
             'partners': settings.PARTNERS,
             'reviews': FlatPage.objects.filter(parent__slug='client-feedbacks')[:3],
             'regions': get_regions,
