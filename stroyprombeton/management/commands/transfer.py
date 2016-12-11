@@ -293,17 +293,17 @@ class Command(BaseCommand):
                     parent=region_pages[old_id]
                 )
 
-        save_custom_pages()
-        create_news(data['posts'])
-        create_pages(data['static_pages'])
-        region_pages = create_regions(data['territories'])
-        create_region_objects(
-            region_pages=region_pages,
-            region_objects_data=data['objects']
-        )
+        # save_custom_pages()
+        # create_news(data['posts'])
+        # create_pages(data['static_pages'])
+        # region_pages = create_regions(data['territories'])
+        # create_region_objects(
+        #     region_pages=region_pages,
+        #     region_objects_data=data['objects']
+        # )
         create_categories(data['categories'])
         create_products(data['products'])
-        fill_images_data()
+        # fill_images_data()
 
         print('Was created {} categories, {} products, {} pages'.format(
             Category.objects.count(),
