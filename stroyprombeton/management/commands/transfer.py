@@ -99,7 +99,12 @@ class Command(BaseCommand):
 
     @staticmethod
     def purge_tables():
-        call_command('flush', '--noinput')
+        def delete(*models):
+            for model in models:
+                for entity in model.objects.all():
+                    entity.delete()
+
+        delete(CategoryPage, ProductPage, Product, Category)
 
     @transaction.atomic
     def handle(self, *args, **options):
