@@ -55,7 +55,7 @@ class CategoryTile(TestCase):
             'name': 'Test root category',
             'page': ModelPage.objects.create(
                 content='Козырьки устанавливают над входами зданий.',
-                h1='Козырьки',
+                name='Козырьки',
             ),
         }
 
@@ -66,7 +66,7 @@ class CategoryTile(TestCase):
             'parent': self.root_category,
             'page': ModelPage.objects.create(
                 content='Козырьки применяют при строительстве зданий.',
-                h1='Козырьки входов, плиты парапетные.',
+                name='Козырьки входов, плиты парапетные.',
             )
         }
 
@@ -117,7 +117,7 @@ class CategoryTable(TestCase):
         self.root_data = {
             'name': 'Test root category',
             'page': ModelPage.objects.create(
-                h1='Козырьки',
+                name='Козырьки',
                 content='Козырьки устанавливают над входами зданий.',
             )
         }
@@ -131,7 +131,7 @@ class CategoryTable(TestCase):
             'date_price_updated': datetime.now(),
             'category': root_category,
             'page': ModelPage.objects.create(
-                h1='Козырьки',
+                name='Козырьки',
                 content='Козырьки устанавливают над входами зданий.',
             )
         }
@@ -212,7 +212,7 @@ class Product_(TestCase):
             'date_price_updated': datetime.now(),
             'page': ModelPage.objects.create(
                 content='Козырьки устанавливают над входами зданий.',
-                h1='Козырьки',
+                name='Козырьки',
             )
         }
 

@@ -29,7 +29,6 @@ ALLOWED_HOSTS = [h.strip() for h in os.getenv('ALLOWED_HOSTS', '').split(',')]
 # Application definition
 
 INSTALLED_APPS = [
-    'django.contrib.admin',
     'django.contrib.contenttypes',
     'django.contrib.auth',
     'django.contrib.messages',
@@ -43,6 +42,7 @@ INSTALLED_APPS = [
     'widget_tweaks',
     'sorl.thumbnail',
     'generic_admin',
+    'django.contrib.admin',
     'images',
     'pages',
     'catalog',
@@ -189,45 +189,44 @@ SITE_INFO = {
 CUSTOM_PAGES = {
     'category_tree': {
         'slug': 'gbi',
-        '_title': 'Каталог товаров',
-        'h1': 'Все категории',
-        '_menu_title': 'Каталог',
+        'title': 'Каталог товаров',
+        'name': 'Все категории',
+        'menu_title': 'Каталог',
     },
     'client_feedbacks': {
         'slug': 'client-feedbacks',
-        '_title': 'Отзывы',
-        'h1': 'Отзывы',
+        'name': 'Отзывы',
     },
     'index': {
         'slug': '',
-        '_title': 'Завод ЖБИ «СТК-ПромБетон» | Производство ЖБИ в Санкт-Петербурге, железобетонные изделия СПб',
-        'h1': 'Завод железобетонных изделий «СТК-Промбетон»',
-        '_menu_title': 'Главная',
+        'title': 'Завод ЖБИ «СТК-ПромБетон» | Производство ЖБИ в Санкт-Петербурге, железобетонные изделия СПб',
+        'name': 'Завод железобетонных изделий «СТК-Промбетон»',
+        'menu_title': 'Главная',
     },
     'news': {
         'slug': 'news',
-        'h1': 'Новости компании',
-        '_title': 'Завод ЖБИ «СТК-ПромБетон»',
-        '_menu_title': 'Новости компании'
+        'name': 'Новости компании',
+        'title': 'Завод ЖБИ «СТК-ПромБетон»',
+        'menu_title': 'Новости компании'
     },
     'order': {
         'slug': 'order',
-        '_title': 'Корзина Интернет-магазин СТК-ПромБетон',
-        'h1': 'Оформление заказа',
+        'title': 'Корзина Интернет-магазин СТК-ПромБетон',
+        'name': 'Оформление заказа',
     },
     'order-success': {
         'slug': 'order-success',
-        '_title': 'Спасибо за Ваш заказ',
-        'h1': 'Заказ принят',
+        'title': 'Спасибо за Ваш заказ',
+        'name': 'Заказ принят',
     },
     'regions': {
         'slug': 'regions',
-        '_title': 'Регионы, в которые поставлялась продукция СТК-ПромБетон',
-        'h1': 'Регионы, в которые поставлялась продукция СТК-ПромБетон',
+        'name': 'Регионы, в которые поставлялась продукция СТК-ПромБетон',
     },
     'search': {
         'slug': 'search',
-        '_title': 'Результаты поиска',
+        'title': 'Результаты поиска',
+        'name': 'Результаты поиска',
     },
 }
 

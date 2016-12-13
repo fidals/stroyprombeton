@@ -23,7 +23,7 @@ CATEGORY_PATTERN = 'Category #{} of #{}'
 def create_pages():
     def create_regions():
         FlatPage.objects.create(
-            h1='Empire center state',
+            name='Empire center state',
             slug='empire-center-state',
             # from settings.CUSTOM_PAGES
             parent=CustomPage.objects.get(slug='regions'),
@@ -33,7 +33,7 @@ def create_pages():
 
     def create_news():
         FlatPage.objects.create(
-            h1='GBI for Krishnas temple',
+            name='GBI for Krishnas temple',
             slug='krishnas-temple',
             # from settings.CUSTOM_PAGES
             parent=CustomPage.objects.get(slug='news'),
@@ -44,7 +44,7 @@ def create_pages():
 
     def create_reviews():
         FlatPage.objects.create(
-            h1='Krishnas like Viktor\'s GBI',
+            name='Krishnas like Viktor\'s GBI',
             slug='krishnas-gbi',
             # from settings.CUSTOM_PAGES
             parent=CustomPage.objects.get(slug='client-feedbacks'),
@@ -96,7 +96,7 @@ class Command(BaseCommand):
     def create_root(count):
         get_name = 'Category root #{}'.format
         return [
-            Category.objects.create(name=get_name(i), page=ModelPage.objects.create(h1=get_name(i)))
+            Category.objects.create(name=get_name(i), page=ModelPage.objects.create(name=get_name(i)))
             for i in range(count)
         ]
 
@@ -110,7 +110,7 @@ class Command(BaseCommand):
         def create_category(index, parent):
             name = CATEGORY_PATTERN.format(index, parent.id)
             return Category.objects.create(
-                name=name, parent=parent, page=ModelPage.objects.create(h1=name))
+                name=name, parent=parent, page=ModelPage.objects.create(name=name))
 
         return list(
             create_category(index, parent)
@@ -128,7 +128,7 @@ class Command(BaseCommand):
                         name=name,
                         price=i * 100,
                         category=category,
-                        page=ModelPage.objects.create(h1=name)
+                        page=ModelPage.objects.create(name=name)
                     )
         # Create 25 products for
         # tests_selenium.CategoryPage.test_load_more_hidden_in_fully_loaded_categories

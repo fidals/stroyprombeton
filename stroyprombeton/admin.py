@@ -1,14 +1,15 @@
 from django.contrib.redirects.models import Redirect
-from django.contrib.admin import AdminSite
 
 from pages.models import CustomPage, FlatPage
-from generic_admin import models, inlines
+from generic_admin import models, inlines, sites
 
 from stroyprombeton.models import ProductPage, CategoryPage, Category, Product
+from stroyprombeton.views import TableEditor
 
 
-class StbAdminSite(AdminSite):
+class StbAdminSite(sites.SiteWithTableEditor):
     site_header = 'Stroyprombeton administration'
+    table_editor_view = TableEditor
 
 
 class CategoryInline(inlines.CategoryInline):

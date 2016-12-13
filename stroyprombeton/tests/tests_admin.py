@@ -20,15 +20,15 @@ class AdminPage(TestCase):
         cls.password = 'asdfjkl'
 
         cls.list_display = {
-            'page': ['ID', 'H1', 'Parent', 'Is active', ],
-            'product': ['Id', 'H1', 'Category', 'Price', 'Link', 'Is active', ],
-            'category': ['Id', 'H1', 'Parent', 'Is active', ],
+            'page': ['ID', 'Name', 'Parent', 'Is active', ],
+            'product': ['Id', 'Name', 'Category', 'Price', 'Link', 'Is active', ],
+            'category': ['Id', 'Name', 'Parent', 'Is active', ],
         }
 
         cls.fieldsets = {
             'page': [
                 'Position', 'Content', 'title', 'Keywords', 'Description', 'Is active', 'Seo text',
-                'h1'
+                'h1', 'name'
             ],
             'product': [
                 'Name', 'Category', 'Price', 'ID', 'Is popular', 'Length', 'Width', 'Height',

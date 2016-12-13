@@ -183,7 +183,7 @@ class Command(BaseCommand):
                     position=to_int(category_data['ord']),
                     content=is_exist(category_data['text']),
                     date_published=get_date(category_data['date']),
-                    h1=is_exist(category_data['h1']) or is_exist(category_data['name']),
+                    name=is_exist(category_data['h1']) or is_exist(category_data['name']),
                     menu_title=is_exist(category_data['title']),
                     is_active=bool(category_data['is_active']),
                 )
@@ -228,7 +228,7 @@ class Command(BaseCommand):
                 )
                 page = ProductPage.objects.create(
                     content=is_exist(product_data['text']),
-                    h1=is_exist(product_data['title']) or is_exist(product_data['name']),
+                    name=is_exist(product_data['title']) or is_exist(product_data['name']),
                     date_published=get_date(product_data['date']),
                     keywords=is_exist(product_data['keywords']),
                 )
@@ -249,7 +249,8 @@ class Command(BaseCommand):
                     parent=CustomPage.objects.get(slug='news'),
                     date_published=get_date(page['date']),
                     description=is_exist(page['description']),
-                    h1=page['h1'] or page['title'] or page['name'],
+                    h1=page['h1'],
+                    name=page['name'] or page['h1'] or page['title'],
                     is_active=bool(page['is_active']),
                     keywords=is_exist(page['keywords']),
                     title=page['title'] or page['name']
@@ -262,10 +263,11 @@ class Command(BaseCommand):
                     date_published=get_date(static_pages['date']),
                     description=is_exist(static_pages['description']),
                     h1=is_exist(static_pages['h1']),
+                    name=static_pages['name'] or static_pages['h1'] or static_pages['title'],
                     is_active=bool(static_pages['is_active']),
                     keywords=is_exist(static_pages['keywords']),
                     slug=static_pages['alias'],
-                    title=static_pages['title'] or static_pages['name']
+                    title=is_exist(static_pages['title'])
                 )
 
         def create_regions(regions):
@@ -277,7 +279,7 @@ class Command(BaseCommand):
                 slug = slugify(region['translit_name'])
                 position = settings.REGIONS[slug]
                 region_page = FlatPage.objects.create(
-                    h1=region['name'],
+                    name=region['name'],
                     slug=slugify(region['translit_name']),
                     parent=regions_page,
                     position=position,
@@ -291,8 +293,8 @@ class Command(BaseCommand):
             for object_data in region_objects_data:
                 old_id = object_data['territory_id']
                 FlatPage.objects.create(
-                    h1=object_data['name'],
-                    slug=slugify(object_data['alias']),
+                    name=object_data['name'],
+                    slug=slugify(object_data['alias']) or slugify(unidecode(object_data['name'])),
                     content=object_data['text'],
                     date_published=get_date(object_data['date']),
                     parent=region_pages[old_id]
