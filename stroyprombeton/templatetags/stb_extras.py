@@ -4,6 +4,7 @@ from django.core.urlresolvers import reverse
 from django.template.defaultfilters import floatformat
 
 from images.models import ImageMixin
+from pages.models import Page
 
 from stroyprombeton.models import Category, Product
 
@@ -62,7 +63,7 @@ def get_img_alt(entity: ImageMixin):
     product_alt = 'Фотография {}'
     logo_alt = 'Логотип компании Shopelectro'
 
-    if not hasattr(entity, 'images') or not entity.images.all():
+    if not isinstance(entity, Page):
         return logo_alt
 
     # try one of this attributes to get pages name

@@ -156,7 +156,7 @@
         <h2 class="objects-title-h2 main-h2">Наши объекты</h2>
       </div>
       <div class="objects-map">
-        {% include 'pages/index/regions_map.html' %}
+        {% include 'pages/index/regions_map.html' with regions=regions only %}
       </div>
     </div>
   </section>
@@ -169,14 +169,14 @@
         </div>
 
         <div class="col-xs-7">
-          {% include 'pages/index/news.html' %}
+          {% include 'pages/index/news.html' with news=news only %}
         </div>
       </div>
     </div>
   </section>
 
   <section class="reviews">
-    {% include 'pages/index/reviews.html' %}
+    {% include 'pages/index/reviews.html' with reviews=client_feedbacks only %}
   </section>
 
   <section class="contact-us text-center">

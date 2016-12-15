@@ -1,3 +1,5 @@
+from itertools import groupby
+
 from django.conf import settings
 
 import pages.views
@@ -5,29 +7,39 @@ from ecommerce.forms import OrderBackcallForm
 from pages.models import FlatPage
 
 
-def get_regions():
-    return (
-        FlatPage.objects
-        .filter(parent__slug='regions', is_active=True)
-        .order_by('position')
-    )
-
-
 class IndexPage(pages.views.CustomPageView):
     template_name = 'pages/index/index.html'
-    backcall_form = OrderBackcallForm
 
     def get_context_data(self, **kwargs):
         context = super(IndexPage, self).get_context_data(**kwargs)
 
+        def prepare_pages(page_parent_name, pages_):
+            if page_parent_name == 'news':
+                return pages_[:2]
+            if page_parent_name == 'client-feedbacks':
+                return pages_[:3]
+            return sorted(pages_, key=lambda x: x.position)
+
+        # Get entities by one hit on the database.
+        pages_query = (
+            FlatPage.objects
+                .select_related('parent')
+                .filter(parent__slug__in=['news', 'client-feedbacks', 'regions'], is_active=True)
+                .order_by('-date_published')
+                .iterator()
+        )
+
+        pages = {
+            page_parent_name.replace('-', '_'): prepare_pages(page_parent_name, list(pages_))
+            for page_parent_name, pages_ in
+            groupby(pages_query, key= lambda x: x.parent.slug)
+        }
+
         return {
             **context,
-            'news': FlatPage.objects.filter(parent__slug='news', is_active=True)
-                        .order_by('-date_published')[:2],
+            **pages,
             'partners': settings.PARTNERS,
-            'reviews': FlatPage.objects.filter(parent__slug='client-feedbacks')[:3],
-            'regions': get_regions,
-            'backcall_form': self.backcall_form()
+            'backcall_form': OrderBackcallForm(),
         }
 
 
@@ -43,5 +55,10 @@ class RegionsPageView(pages.views.CustomPageView):
 
         return {
             **context,
-            'regions': get_regions
+            'regions': list(  # Evaluate queryset to avoid performance problems.
+                FlatPage.objects
+                    .filter(parent__slug='regions', is_active=True)
+                    .order_by('position')
+                    .select_related('parent')
+            )
         }

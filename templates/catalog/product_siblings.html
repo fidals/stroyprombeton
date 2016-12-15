@@ -11,30 +11,30 @@
 
     <div class="slider js-slider">
       <div class="slider-content js-slider-content">
-        {% for item in siblings %}
+        {% for sibling, image in sibling_with_images %}
           <div class="slider-item js-slider-item">
-            <a href="{{ item.get_absolute_url }}" class="slider-item-link">
+            <a href="{{ sibling.url }}" class="slider-item-link">
               <div class="slider-item-title">
-                {{ item.name }} {{ item.mark }}
+                {{ sibling.name }} {{ sibling.mark }}
               </div>
 
               <div class="slider-item-image">
-                {% if item.page.main_image %}
-                  {% thumbnail item.page.main_image '360x238' as image %}
+                {% if image %}
+                  {% thumbnail image.image '360x238' as cropped_image %}
                     <img class="img-responsive img-stretched"
-                         src="{{ image.url }}"
-                         alt="{% get_img_alt item.page %}">
+                         src="{{ cropped_image.url }}"
+                         alt="{% get_img_alt sibling.page %}">
                   {% endthumbnail %}
                 {% else %}
                   {% placeholder_image_url as image_url %}
                     <img class="img-responsive img-stretched"
                          src="{{ image_url }}"
-                         alt="{% get_img_alt item.page %}">
+                         alt="{% get_img_alt sibling.page %}">
                 {% endif %}
               </div>
             </a>
-            <div class="slider-item-price text-right">{{ item.price|format_price }}</div>
-            <a class="more-link text-right paddingless" href="{{ item.get_absolute_url }}">Заказать</a>
+            <div class="slider-item-price text-right">{{ sibling.price|format_price }}</div>
+            <a class="more-link text-right paddingless" href="{{ sibling.url }}">Заказать</a>
           </div>
         {% endfor %}
       </div>

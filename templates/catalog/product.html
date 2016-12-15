@@ -5,9 +5,9 @@
 {% load stb_extras %}
 
 {% block content %}
-  {% include 'components/breadcrumbs.html' %}
+  {% include 'components/breadcrumbs.html' with page=page only %}
 
-  {% include 'components/page_h1.html' with page=page %}
+  {% include 'components/page_h1.html' with page=page only %}
 
   <section class="product-serial text-center">
     {% if product.code %}
@@ -32,7 +32,7 @@
       <div class="row">
         <div class="col-xs-offset-1 col-xs-6">
           <div class="product-image">
-            {% include 'catalog/product_image.html' with product=product page=page only %}
+            {% include 'catalog/product_image.html' with product=product only %}
           </div>
 
           <div class="product-characteristics">
@@ -92,5 +92,5 @@
     </div>
   </section>
 
-  {% include 'catalog/product_siblings.html' %}
+  {% include 'catalog/product_siblings.html' with sibling_with_images=sibling_with_images only %}
 {% endblock %}

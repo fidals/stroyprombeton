@@ -3,7 +3,7 @@
 {% load staticfiles %}
 
 {% block content %}
-  {% include 'components/breadcrumbs.html' %}
+  {% include 'components/breadcrumbs.html' with page=page only %}
 
   {% include 'components/page_h1.html' with page=page only %}
 
@@ -53,14 +53,14 @@
             </tr>
           </thead>
           <tbody id="products-wrapper">
-            {% include 'catalog/category_products.html' %}
+            {% include 'catalog/category_products.html' with products_with_images=products_with_images only %}
           </tbody>
         </table>
 
-        {% include 'components/show_more_products.html' %}
+        {% include 'components/show_more_products.html' with category=category only %}
       </div>
     </div>
   </div>
 
-  {% include 'catalog/category_about.html' %}
+  {% include 'catalog/category_about.html' with page=page only %}
 {% endblock %}

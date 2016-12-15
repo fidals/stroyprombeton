@@ -1,10 +1,10 @@
 {% load stb_extras %}
 
-{% for product in products %}
+{% for product, image in products_with_images %}
   {% if product.page.is_active %}
     <tr class="table-tr" id="{{ product.id }}">
       <td class="table-td table-picture text-center">
-        {% include 'catalog/category_product_image.html' with product=product page=page only %}
+        {% include 'catalog/category_product_image.html' with image=image.image only %}
       </td>
       {# TODO Needed create logic for images and empty thumb. #}
       {# http://youtrack.stkmail.ru/issue/dev-811 #}

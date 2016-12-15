@@ -1,16 +1,14 @@
 {% extends 'layout/inner_page.html' %}
 
-{% load pages_extras %}
-
 {% block content %}
-  {% include 'components/breadcrumbs.html' %}
+  {% include 'components/breadcrumbs.html' with page=page only %}
 
   {% include 'components/page_h1.html' with page=page only %}
 
   <section class="objects">
     <div class="container container-fluid">
       <div class="objects-map">
-        {% include 'pages/index/regions_map.html' %}
+        {% include 'pages/index/regions_map.html' with regions=regions only %}
       </div>
     </div>
   </section>

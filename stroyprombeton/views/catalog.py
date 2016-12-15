@@ -1,25 +1,41 @@
 """STB catalog views."""
+from itertools import zip_longest
+
 from django.shortcuts import render
 from django.views.generic.list import ListView
 
 from catalog.models import search as filter_
 from catalog.views import catalog
+from pages.models import CustomPage, ModelPage
+from images.models import Image
 
-from pages.models import CustomPage
 from stroyprombeton.models import Product, Category
 from stroyprombeton.views.helpers import set_csrf_cookie, get_keys_from_post
 
 
+def get_products_with_images(products):
+    images = Image.objects.get_main_images_by_pages(product.page for product in products)
+
+    if images:
+        products_with_images = [
+            (product, image if image.object_id == product.page_id else None)
+            for product in products for image in images
+        ]
+    else:
+        products_with_images = list(zip_longest(products, tuple(), fillvalue=None))
+
+    return products_with_images
+
+
 def fetch_products(request):
     """Filter product table on Category page by Name, vendor code, series."""
-
     size = 30
     category_id, term, offset, filtered = get_keys_from_post(
         request, 'categoryId', 'term', 'offset', 'filtered',
     )
 
     category = Category.objects.get(id=category_id)
-    products = Product.objects.get_products_by_category(category, ordering=('name', 'mark'))
+    products = Product.objects.get_by_category(category, ordering=('name', 'mark'))
 
     if filtered == 'true':
         lookups = ['name__icontains', 'code__icontains', 'mark__icontains']
@@ -32,7 +48,11 @@ def fetch_products(request):
 
         products = products.get_offset(offset, size)
 
-    return render(request, 'catalog/category_products.html', {'products': products})
+    return render(
+        request,
+        'catalog/category_products.html',
+        {'products_with_images': get_products_with_images(products)}
+    )
 
 
 class CategoryTree(ListView):
@@ -53,36 +73,47 @@ class CategoryTree(ListView):
 
 @set_csrf_cookie
 class CategoryPage(catalog.CategoryPage):
-    model = Category
-    context_object_name = 'category'
+    related_model_name = Category().related_model_name
+    queryset = ModelPage.objects.prefetch_related(related_model_name)
     pk_url_kwarg = 'category_id'
-    query_pk_and_slug = 'pk'
+    template_name = 'catalog/category.html'
+
+    def get_object(self, queryset=None):
+        category_pk = self.kwargs.get(self.pk_url_kwarg)
+        lookup = '{}__id'.format(self.related_model_name)
+        return self.queryset.filter(**{lookup: category_pk}).get()
 
     def get_context_data(self, **kwargs):
-        context = super(catalog.CategoryPage, self).get_context_data(**kwargs)
-        category = context[self.context_object_name]
-        products = Product.objects.get_products_by_category(
-            category, ordering=('name', 'mark')
-        )
+        context = super(CategoryPage, self).get_context_data(**kwargs)
+        category = context.get('category')
 
+        products = (
+            Product.objects
+                .get_by_category(category, ordering=('name', 'mark'))
+                .select_related('page')
+                .get_offset(0, 30)
+        )
         return {
             **context,
-            'page': category.page,
-            'children': category.get_children(),
-            'products': products.get_offset(0, 30),
+            'products_with_images': get_products_with_images(products),
         }
 
 
 @set_csrf_cookie
 class ProductPage(catalog.ProductPage):
-    model = Product
+    queryset = Product.objects.select_related('page').prefetch_related('page__images')
 
     def get_context_data(self, **kwargs):
         context = super(ProductPage, self).get_context_data(**kwargs)
         product = context[self.context_object_name]
-        siblings = Product.objects.filter(specification=product.specification).exclude(id=product.id)
+        sibling_with_images = (
+            Product.objects
+                .filter(specification=product.specification)
+                .exclude(id=product.id)
+                .select_related('page')
+        )
 
         return {
             **context,
-            'siblings': siblings
+            'sibling_with_images': get_products_with_images(sibling_with_images)
         }

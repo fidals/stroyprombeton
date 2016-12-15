@@ -161,22 +161,22 @@ class CategoryTable(TestCase):
         self.assertEqual(content, self.root_data['page'].content)
 
     def test_products_quantity(self):
-        quantity = len(self.response.context['products'])
+        quantity = len(self.response.context['products_with_images'])
 
         self.assertEqual(quantity, 1)
 
     def test_product_name(self):
-        name = self.response.context['products'][0].name
+        name = self.response.context['products_with_images'][0][0].name
 
         self.assertEqual(name, self.product_data['name'])
 
     def test_product_price(self):
-        price = float(self.response.context['products'][0].price)
+        price = float(self.response.context['products_with_images'][0][0].price)
 
         self.assertEqual(price, self.product_data['price'])
 
     def test_product_code(self):
-        code = self.response.context['products'][0].code
+        code = self.response.context['products_with_images'][0][0].code
 
         self.assertEqual(code, self.product_data['code'])
 
