@@ -1,10 +1,27 @@
 from itertools import groupby
 
 from django.conf import settings
+from mptt.utils import get_cached_trees
 
 import pages.views
 from ecommerce.forms import OrderBackcallForm
-from pages.models import FlatPage
+from pages.models import FlatPage, CustomPage
+
+
+def get_cached_regions():
+    CustomPage.objects.get(slug='regions').get_children()
+    regions_query = (
+        CustomPage.objects
+            .prefetch_related('children')
+            .filter(slug='regions')
+            .first()
+    )
+
+    cached_regions = get_cached_trees(
+        [regions_query, *regions_query.children.all()]
+    )
+
+    return sorted(cached_regions[0].get_children(), key=lambda x: x.position)
 
 
 class IndexPage(pages.views.CustomPageView):
@@ -18,13 +35,11 @@ class IndexPage(pages.views.CustomPageView):
                 return pages_[:2]
             if page_parent_name == 'client-feedbacks':
                 return pages_[:3]
-            return sorted(pages_, key=lambda x: x.position)
 
-        # Get entities by one hit on the database.
         pages_query = (
             FlatPage.objects
                 .select_related('parent')
-                .filter(parent__slug__in=['news', 'client-feedbacks', 'regions'], is_active=True)
+                .filter(parent__slug__in=['news', 'client-feedbacks'], is_active=True)
                 .order_by('-date_published')
                 .iterator()
         )
@@ -38,6 +53,7 @@ class IndexPage(pages.views.CustomPageView):
         return {
             **context,
             **pages,
+            'regions': get_cached_regions(),
             'partners': settings.PARTNERS,
             'backcall_form': OrderBackcallForm(),
         }
@@ -55,10 +71,5 @@ class RegionsPageView(pages.views.CustomPageView):
 
         return {
             **context,
-            'regions': list(  # Evaluate queryset to avoid performance problems.
-                FlatPage.objects
-                    .filter(parent__slug='regions', is_active=True)
-                    .order_by('position')
-                    .select_related('parent')
-            )
+            'regions': get_cached_regions()
         }

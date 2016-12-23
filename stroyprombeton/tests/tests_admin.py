@@ -59,7 +59,7 @@ class AdminPage(TestCase):
         """Pages model's change-page must have all needed fields, which was define in Admin.py"""
         response = self.client.get(
             reverse(
-                'stb_admin:pages_flatpage_change', args=(FlatPage.objects.filter().first().id, )
+                'stb_admin:pages_flatpage_change', args=(FlatPage.objects.all().first().id, )
             )
         )
 

@@ -13,20 +13,6 @@ from stroyprombeton.models import Product, Category
 from stroyprombeton.views.helpers import set_csrf_cookie, get_keys_from_post
 
 
-def get_products_with_images(products):
-    images = Image.objects.get_main_images_by_pages(product.page for product in products)
-
-    if images:
-        products_with_images = [
-            (product, image if image.object_id == product.page_id else None)
-            for product in products for image in images
-        ]
-    else:
-        products_with_images = list(zip_longest(products, tuple(), fillvalue=None))
-
-    return products_with_images
-
-
 def fetch_products(request):
     """Filter product table on Category page by Name, vendor code, series."""
     size = 30
@@ -48,10 +34,17 @@ def fetch_products(request):
 
         products = products.get_offset(offset, size)
 
+    images = Image.objects.get_main_images_by_pages(product.page for product in products)
+
+    products_with_images = [
+        (product, images.get(product.page))
+        for product in products
+    ]
+
     return render(
         request,
         'catalog/category_products.html',
-        {'products_with_images': get_products_with_images(products)}
+        {'products_with_images': products_with_images}
     )
 
 
@@ -93,9 +86,17 @@ class CategoryPage(catalog.CategoryPage):
                 .select_related('page')
                 .get_offset(0, 30)
         )
+
+        images = Image.objects.get_main_images_by_pages(product.page for product in products)
+
+        products_with_images = [
+            (product, images.get(product.page))
+            for product in products
+        ]
+
         return {
             **context,
-            'products_with_images': get_products_with_images(products),
+            'products_with_images': products_with_images,
         }
 
 
@@ -106,14 +107,22 @@ class ProductPage(catalog.ProductPage):
     def get_context_data(self, **kwargs):
         context = super(ProductPage, self).get_context_data(**kwargs)
         product = context[self.context_object_name]
-        sibling_with_images = (
+
+        siblings = (
             Product.objects
                 .filter(specification=product.specification)
                 .exclude(id=product.id)
                 .select_related('page')
         )
 
+        images = Image.objects.get_main_images_by_pages(sibling.page for sibling in siblings)
+
+        siblings_with_images = [
+            (product, images.get(product.page))
+            for product in siblings
+        ]
+
         return {
             **context,
-            'sibling_with_images': get_products_with_images(sibling_with_images)
+            'sibling_with_images': siblings_with_images
         }

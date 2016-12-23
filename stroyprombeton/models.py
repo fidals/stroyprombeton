@@ -3,7 +3,7 @@ from django.db import models
 
 from catalog.models import AbstractProduct, AbstractCategory
 from ecommerce.models import Order as ecOrder
-from pages.models import PageMixin, ModelPage, CustomPage
+from pages.models import PageMixin, ModelPage, CustomPage, FlatPage
 
 
 class Order(ecOrder):
@@ -47,6 +47,7 @@ class Product(AbstractProduct, PageMixin):
 
 class CategoryPage(ModelPage):
     """Proxy model for Admin"""
+
     class Meta(ModelPage.Meta):
         proxy = True
 
@@ -55,6 +56,7 @@ class CategoryPage(ModelPage):
 
 class ProductPage(ModelPage):
     """Proxy model for Admin"""
+
     class Meta(ModelPage.Meta):
         proxy = True
 

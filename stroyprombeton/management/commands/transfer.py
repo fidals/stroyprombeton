@@ -3,14 +3,12 @@
 import os
 import json
 import pymysql
-from getpass import getpass
 from datetime import datetime
 from unidecode import unidecode
 
 from django.db import transaction
 from django.conf import settings
 from django.core.files.images import ImageFile
-from django.core.management import call_command
 from django.core.management.base import BaseCommand
 from django.utils.text import slugify
 
@@ -111,7 +109,9 @@ class Command(BaseCommand):
         self.purge_tables()
         with self.connect_to_the_mysql_db() as cursor:
             data = self.get_data_from_db(cursor)
-            self.insert_data_to_DB(data)
+            with Page.objects.disable_mptt_updates():
+                self.insert_data_to_DB(data)
+            Page.objects.rebuild()
 
     def get_data_from_json(self) -> dict:
         with open(self.path_to_JSON, encoding='utf-8') as stb_json:
@@ -139,8 +139,12 @@ class Command(BaseCommand):
 
         def remove_esc_char(data: tuple) -> list:
             """Make data mutable and remove all escape characters."""
-            remove_esc_char = (lambda string: string.replace('\n', '').
-                               replace('\r', '').replace('\t', ''))
+            remove_esc_char = (
+                lambda string: string
+                    .replace('\n', '')
+                    .replace('\r', '')
+                    .replace('\t', '')
+            )
 
             check = (lambda raw: remove_esc_char(raw) if isinstance(raw, str) else raw)
 
@@ -300,7 +304,7 @@ class Command(BaseCommand):
                     parent=region_pages[old_id]
                 )
 
-        # save_custom_pages()
+        save_custom_pages()
         # create_news(data['posts'])
         # create_pages(data['static_pages'])
         # region_pages = create_regions(data['territories'])
