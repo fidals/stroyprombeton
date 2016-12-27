@@ -12,10 +12,11 @@ register = template.Library()
 
 
 @register.inclusion_tag('tags/product_values.html')
-def show_field_if_exist(value, title):
+def show_field_if_exist(value, title, link=None):
     return {
         'title': title,
-        'value': value
+        'value': value,
+        'link': link
     }
 
 

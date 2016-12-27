@@ -324,7 +324,7 @@ gulp.task('fonts', () => {
 // ================================================================
 gulp.task('watch', () => {
   $.livereload.listen();
-  gulp.watch(path.watch.styles, ['styles']);
+  gulp.watch(path.watch.styles, ['styles-main']);
   gulp.watch(path.watch.js, ['js-common', 'js-vendors-pages', 'js-pages']);
   gulp.watch(path.watch.images, ['images']);
   gulp.watch(path.watch.fonts, ['fonts']);

@@ -1,6 +1,12 @@
 {% if value %}
   <tr>
     <td class="product-td">{{ title }}</td>
-    <td class="product-td product-characteristics-val">{{ value }}</td>
+    {% if link %}
+      <td class="product-td product-characteristics-val">
+        <a class="link-on-top-level" href="{{ link }}">{{ value }}</a>
+      </td>
+    {% else %}
+      <td class="product-td product-characteristics-val">{{ value }}</td>
+    {% endif %}
   </tr>
 {% endif %}

@@ -38,9 +38,11 @@
           <div class="product-characteristics">
             <h2 class="product-characteristics-title">Характеристики</h2>
             <table class="product-characteristics-table table">
-              {% show_field_if_exist product.category 'Тип' %}
-              {# TODO: `specification` should be replaced by `spec` #}
-              {% show_field_if_exist product.specification 'Рабочая документация' %}
+              {% with url=product.category.url %}
+                {% show_field_if_exist product.category 'Тип' url %}
+                {# TODO: `specification` should be replaced by `spec` #}
+                {% show_field_if_exist product.specification 'Рабочая документация' url %}
+              {% endwith %}
               {% show_field_if_exist product.length 'Длина (мм)' %}
               {% show_field_if_exist product.width 'Ширина (мм)' %}
               {% show_field_if_exist product.height 'Высота (мм)' %}
@@ -81,7 +83,7 @@
           </div>
 
           <h2 class="product-describe-title">
-            Производство ЖБИ: {{ page.h1 }} {{ product.mark }}
+            Производство ЖБИ: {{ page.h1 }} марки {{ product.mark }}
           </h2>
           <div class="product-describe-text">
             {# TODO: https://goo.gl/arjtqq #}
@@ -92,5 +94,8 @@
     </div>
   </section>
 
-  {% include 'catalog/product_siblings.html' with sibling_with_images=sibling_with_images only %}
+  {% if sibling_with_images %}
+    {% include 'catalog/product_siblings.html' with sibling_with_images=sibling_with_images only %}
+  {% endif %}
+
 {% endblock %}
