@@ -1,9 +1,22 @@
-<section class="category-about">
-  <div class="container container-fluid">
+{% load thumbnail %}
+{% load images %}
+
+<div class="container container-fluid">
+  <section class="category-about">
+    {% with image=page.main_image  %}
+      {% if image %}
+        {% thumbnail image '204x138' as cropped_image %}
+          <div class="category-about-img">
+            <img src="{{ cropped_image.url }}">
+          </div>
+        {% endthumbnail %}
+      {% endif %}
+    {% endwith %}
+
     <div class="category-about-text">
       {% autoescape off %}
         {{ page.content }}
       {% endautoescape %}
     </div>
-  </div>
-</section>
+  </section>
+</div>

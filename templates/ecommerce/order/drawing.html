@@ -1,34 +1,58 @@
 {% extends 'layout/inner_page.html' %}
 
 {% load widget_tweaks %}
+{% load thumbnail %}
 
 {% block content %}
-  {# TODO: `breadcrumbs` doesn't work #}
-  {# 'str' object has no attribute 'get_path' #}
-  {# {% include 'layout/breadcrumbs.html' %}#}
-
+  {% include 'components/breadcrumbs.html' %}
   {% include 'components/page_h1.html' with page=page only %}
 
   <div class="container container-fluid">
-    <h1 class="heading-h1">Оформление запроса на изготовление по индивидуальным чертежам</h1>
+    <div class="drawing">
 
-    <div class="row">
-      <div class="col-xs-offset-2 col-xs-7">
-        <form method="post">{% csrf_token %}
-          {% for field in form %}
-            <div class="input-label">{{ field.label_tag }}</div>
-            <div class="input-field">
-              {{ field }}
-              {% include 'components/input_validation_icons.html' %}
-              {{ field.errors }}
-            </div>
+      {% if page.content %}
+        {% autoescape off %}
+          {{ page.content }}
+        {% endautoescape %}
+      {% endif %}
+
+      {% if page.images.exists %}
+        <div class="drawing-images">
+          {% for image in page.images.all %}
+            {% thumbnail image.image '200x150' as resize_image %}
+              <img class="drawing-images-item" data-featherlight="{{ image.image.url }}" src="{{ resize_image.url }}">
+            {% endthumbnail %}
           {% endfor %}
+        </div>
+      {% endif %}
 
-          <div class="text-right">
-            <button class="btn" type="submit" name="submit">Отправить заявку</button>
+      <p>Для заказа изделий по индивидуальным чертежам воспользуйтесь формой ниже:</p>
+
+      <form method="post" enctype="multipart/form-data" class="drawing-form">
+        {% csrf_token %}
+        {% for field in form %}
+          <div class="drawing-input {% if field.id_for_label == 'id_file' %}js-drawing-input{% endif %}">
+            <div class="input-label">
+              {{ field.label }}
+              <span class="input-label-asterisk">
+                {% if field.field.required %} *{% endif %}{{ field.required }}
+              </span>
+            </div>
+            {{ field }}
+            {% include 'components/input_validation_icons.html' %}
+            {{ field.errors }}
+            {% if field.help_text %}
+              <div class="input-field-help">
+                {{ field.help_text }}
+              </div>
+            {% endif %}
           </div>
-        </form>
-      </div>
+        {% endfor %}
+
+        <div class="text-right">
+          <button class="btn" type="submit">Отправить заявку</button>
+        </div>
+      </form>
     </div>
   </div>
 {% endblock %}

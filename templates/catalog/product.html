@@ -7,7 +7,7 @@
 {% block content %}
   {% include 'components/breadcrumbs.html' with page=page only %}
 
-  {% include 'components/page_h1.html' with page=page only %}
+  {% include 'components/page_h1.html' with page=page product=product only %}
 
   <section class="product-serial text-center">
     {% if product.code %}

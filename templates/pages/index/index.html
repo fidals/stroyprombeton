@@ -80,7 +80,7 @@
   <section class="offer">
     <div class="container container-fluid">
       <div class="row">
-        <div class="col-xs-6">
+        <div class="col-xs-4">
           <a href="{% url 'order_drawing' %}" class="offer-item text-center">
             <div class="offer-image">
               <div class="offer-item-image offer-item-image-nohover icon-offer-draft"></div>
@@ -93,11 +93,24 @@
           </a>
         </div>
 
-        <div class="col-xs-6">
+        <div class="col-xs-4">
           <a href="{% url 'order_price' %}" class="offer-item text-center">
             <div class="offer-image">
               <div class="offer-item-image offer-item-image-nohover icon-offer-pricelist"></div>
               <div class="offer-item-image offer-item-image-hover icon-offer-pricelist-hover"></div>
+            </div>
+            <div class="offer-item-title">
+              Прайс-листы
+              <i class="fa fa-angle-right offer-item-title-chevron" aria-hidden="true"></i>
+            </div>
+          </a>
+        </div>
+
+        <div class="col-xs-4">
+          <a href="{% url 'pages:flat_page' 'kommercheskoe-predlozhenie' %}" class="offer-item text-center">
+            <div class="offer-image">
+              <div class="offer-item-image offer-item-image-nohover icon-offer-commercial"></div>
+              <div class="offer-item-image offer-item-image-hover icon-offer-commercial-hover"></div>
             </div>
             <div class="offer-item-title">
               Прайс-листы

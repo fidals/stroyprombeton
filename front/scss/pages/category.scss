@@ -35,12 +35,32 @@
 }
 
 // ================================================================
+// PRODUCT LIST
+// ================================================================
+.product-list {
+  border-bottom: 1px solid $c-separator-grey;
+  margin-bottom: 100px;
+
+  .table-th {
+    border-bottom: 1px solid $c-separator-grey;
+  }
+}
+
+
+// ================================================================
 // ABOUT
 // ================================================================
 .category-about {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+
   &-text {
-    border-top: 1px solid $c-separator-grey;
     font-size: $f-size-base + 2;
-    padding: 40px 0 0;
+    width: 55%;
+  }
+
+  &-img {
+    width: 25%;
   }
 }

@@ -24,7 +24,7 @@
 
           <div class="news-text-wrapper">
             <p class="news-item-title">{{ item.h1 }}</p>
-            <p class="news-item-short">{{ item.description }}</p>
+            <p class="news-item-short">{{ item.description|truncatechars:190 }}</p>
           </div>
         </a>
       </li>

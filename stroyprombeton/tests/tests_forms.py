@@ -1,4 +1,5 @@
 from copy import copy
+
 from django.test import TestCase
 
 from stroyprombeton import forms

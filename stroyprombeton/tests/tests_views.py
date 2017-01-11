@@ -323,14 +323,22 @@ class AbstractFormViewTest:
         wrong_fields = {'name': 'Test'}
         response = self.client.post(self.URL, wrong_fields)
         for required_field in self.FORM_TEST.REQUIRED:
-            self.assertFormError(response, 'form', required_field,
-                                 ['This field is required.'])
+            self.assertFormError(
+                response,
+                'form',
+                required_field,
+                ['Пожалуйста, заполните это поле.']
+            )
 
     def test_submit_invalid_email(self):
         wrong_fields = {'email': 'non@a/em.il'}
         response = self.client.post(self.URL, wrong_fields)
-        self.assertFormError(response, 'form', 'email',
-                             ['Enter a valid email address.'])
+        self.assertFormError(
+            response,
+            'form',
+            'email',
+            ['Пожалуйста, введите корректный адрес электроной почты.']
+        )
 
 
 class OrderPrice(AbstractFormViewTest, TestCase):
@@ -345,6 +353,10 @@ class OrderDrawing(AbstractFormViewTest, TestCase):
     SUCCESS_URL = '/drawing-success/'
     FORM_TEST = DrawingFormTest
     FIELDS = copy(DrawingFormTest.FIELDS)
+
+    def setUp(self):
+        CustomPage.objects.create(slug='order-drawing')
+        super(OrderDrawing, self).setUp()
 
 
 class IndexPage(TestCase):

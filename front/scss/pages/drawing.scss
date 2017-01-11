@@ -1,0 +1,36 @@
+// ================================================================
+// Order drawing
+// ================================================================
+.drawing {
+  display: flex;
+  flex-direction: column;
+
+  p {
+    margin: 5px 0;
+  }
+
+  &-form {
+    align-self: center;
+    padding: 30px 0;
+    width: 60%;
+  }
+
+  &-input {
+    margin: 0 0 25px 0;
+  }
+
+  .input-field {
+    width: 99%;
+  }
+
+  &-images {
+    align-self: center;
+    flex-direction: row;
+    margin: 15px 0;
+    width: 70%;
+
+    &-item {
+      margin: 10px 10px;
+    }
+  }
+}

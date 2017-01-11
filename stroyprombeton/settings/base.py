@@ -235,6 +235,10 @@ CUSTOM_PAGES = {
         'title': 'Результаты поиска',
         'name': 'Результаты поиска',
     },
+    'order-drawing': {
+        'slug': 'order-drawing',
+        'name': 'Оформление запроса на изготовление по индивидуальным чертежам',
+    },
 }
 
 # region-coordinates mapping
@@ -279,20 +283,15 @@ REGIONS = {
 
 PARTNERS = [
     {
-        'url': 'http://xn----htbqgdmrio5g.xn--p1ai/?utm_source=STB_site&utm_medium=backlink&utm_campaign=backlink_traffic',
-        'logo': 'images/partner-stkmodul-logo.png',
-        'alt': 'СТК-Модуль',
-    },
-    {
         'url': 'http://stkm-energo.ru/?utm_source=STB_site&utm_medium=backlink&utm_campaign=backlink_traffic',
         'logo': 'images/partner-modulenergo-logo.png',
-        'text': 'Модуль энерго',
-        'alt': 'Монтаж и строительство энергообъектов',
+        'text': 'Проектируют и возводят энергообъекты',
+        'alt': 'Проектируют и возводят энергообъекты',
     },
     {
         'url': 'http://www.stk-metal.ru/?utm_source=STB_site&utm_medium=backlink&utm_campaign=backlink_traffic',
         'logo': 'images/partner-stkmetall-logo.png',
-        'text': 'СТК-Металл',
-        'alt': 'Поставка металлоконструкций',
+        'text': 'Проектируют и производят металлоконструкции',
+        'alt': 'Проектируют и производят металлоконструкции',
     },
 ]

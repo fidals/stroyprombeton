@@ -7,6 +7,7 @@ from django.views.generic import FormView, TemplateView
 from ecommerce import views as ec_views
 from ecommerce.mailer import send_backcall
 from pages.models import Page
+from pages.views import CustomPageView
 
 from stroyprombeton import mailer
 from stroyprombeton.forms import DrawingForm, OrderForm, PriceForm
@@ -15,6 +16,7 @@ from stroyprombeton.models import Product, Order
 
 class OrderPage(ec_views.OrderPage):
     order_form = OrderForm
+    email_extra_context = {'base_url': settings.BASE_URL}
 
 
 class OrderSuccess(ec_views.OrderSuccess):
@@ -42,7 +44,7 @@ class ChangeCount(ec_views.ChangeCount):
 
 
 # -------- STB-specific views -------- #
-class OrderDrawing(FormView):
+class OrderDrawing(FormView, CustomPageView):
     form_class = DrawingForm
     template_name = 'ecommerce/order/drawing.html'
     success_url = reverse_lazy(
@@ -51,14 +53,20 @@ class OrderDrawing(FormView):
         args=('drawing-success',)
     )
 
-    def form_valid(self, form):
-        mailer.send_form(
-            form=form,
-            template='ecommerce/email_drawing.html',
-            subject='Изготовление по индивидуальным чертежам'
-        )
+    def post(self, request, *args, **kwargs):
+        files = request.FILES.getlist('file')
+        form = self.get_form()
 
-        return super(OrderDrawing, self).form_valid(form)
+        if form.is_valid():
+            mailer.send_form_with_files(
+                form=form,
+                files=files,
+                template='ecommerce/email_drawing.html',
+                subject='Изготовление по индивидуальным чертежам',
+            )
+            return self.form_valid(form)
+        else:
+            return self.get(request, args, kwargs)
 
 
 class OrderDrawingSuccess(TemplateView):

@@ -40,7 +40,7 @@
         {% endif %}
       </div>
 
-      <div class="col-xs-9">
+      <div class="col-xs-9 product-list">
         <table class="table">
           <thead>
             <tr>
@@ -62,5 +62,5 @@
     </div>
   </div>
 
-  {% include 'catalog/category_about.html' with page=page only %}
+  {% include 'catalog/category_about.html' with page=page root_page=category.get_root.page only %}
 {% endblock %}

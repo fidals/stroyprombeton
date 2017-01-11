@@ -30,6 +30,7 @@ custom_pages = [
     url(r'^(?P<page>news)/$', views.NewsPageView.as_view(), name=url_name),
     url(r'^(?P<page>price-success)/$', views.OrderPriceSuccess.as_view(), name=url_name),
     url(r'^(?P<page>order)/$', views.OrderPage.as_view(), name=url_name),
+    url(r'^(?P<page>order-drawing)/$', views.OrderDrawing.as_view(), name=url_name),
     url(r'^(?P<page>order-success)/$', views.OrderSuccess.as_view(), name=url_name),
     url(r'^(?P<page>search)/$', views.Search.as_view(), name=url_name),
     url(r'^(?P<page>regions)/$', views.RegionsPageView.as_view(), name=url_name),

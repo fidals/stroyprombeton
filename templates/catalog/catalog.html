@@ -1,6 +1,8 @@
 {% extends 'layout/inner_page.html' %}
 
 {% load staticfiles %}
+{% load images %}
+{% load thumbnail %}
 {% load mptt_tags %}
 
 {% block content %}
@@ -11,10 +13,21 @@
   <div class="container container-fluid">
     <div class="catalog-ul-wrapper">
       {% for category in categories %}
-        <a class="catalog-title"
-           href="{{ category.url }}">
-          {{ category.name }}
-        </a>
+        <div class="catalog-ul-item">
+          {% with image=category.page.main_image  %}
+            {% if image %}
+              {% thumbnail image '494x290' as resized_image %}
+                <img class="catalog-img" src="{{ resized_image.url }}" alt="{{ category.name }}">
+              {% endthumbnail %}
+            {% else %}
+              {% placeholder_image_url as image_url %}
+              <img class="catalog-img" src="{{ image_url }}" alt="{{ category.name }}">
+            {% endif %}
+          {% endwith %}
+          <a class="catalog-title" href="{{ category.url }}">
+            {{ category.name }}
+          </a>
+        </div>
       {% endfor %}
     </div>
   </div>
