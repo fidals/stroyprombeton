@@ -2,10 +2,10 @@ from functools import reduce
 
 from django import forms
 from django.core.exceptions import ValidationError
-from django.forms import TextInput, Textarea
+from django.forms import NumberInput, TextInput, Textarea
 from django.template.defaultfilters import filesizeformat
 
-from stroyprombeton.models import Order
+from stroyprombeton.models import Order, Product
 
 
 def generate_activities():
@@ -136,7 +136,7 @@ class PriceForm(BaseContactForm):
 
 
 class DrawingForm(BaseContactForm):
-    """Form for order drawing."""
+    """Form for Drawing order."""
 
     accept_mime_types = [
         'image/jpeg', 'image/png', 'image/gif', 'image/tiff', 'application/pdf',
@@ -180,7 +180,6 @@ class DrawingForm(BaseContactForm):
 class OrderForm(forms.ModelForm):
     """
     Form for making orders. Based on Order model.
-
     Define required contact information about a customer.
     """
 
@@ -202,4 +201,38 @@ class OrderForm(forms.ModelForm):
             'company': TextInput(attrs={'class': 'input-field order-input-field js-input-field'}),
             'address': Textarea(attrs={'class': 'js-input-field'}),
             'comment': Textarea(attrs={'class': 'js-input-field'}),
+        }
+
+
+class AddProductForm(forms.ModelForm):
+    """Form for adding new Product in Table Editor."""
+
+    class Meta:
+        model = Product
+        fields = [
+            'name',
+            'category',
+            'price'
+        ]
+
+        widgets = {
+            'name': TextInput(
+                attrs={
+                    'id': 'entity-name',
+                    'class': 'form-control js-new-entity js-required'
+                }),
+            'category': TextInput(
+                attrs={
+                    'id': 'entity-category',
+                    'class': 'form-control js-new-entity js-required'
+                }),
+            'price': NumberInput(
+                attrs={
+                    'id': 'entity-price',
+                    'class': 'form-control js-new-entity',
+                    'max': '1000000.00',
+                    'min': '0.00',
+                    'pattern': '[0-9]',
+                    'step': '1.00'
+                })
         }

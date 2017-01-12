@@ -1,4 +1,3 @@
-"""STB catalog views."""
 from itertools import zip_longest
 
 from django.shortcuts import render

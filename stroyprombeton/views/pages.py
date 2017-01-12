@@ -47,7 +47,7 @@ class IndexPage(pages.views.CustomPageView):
         pages = {
             page_parent_name.replace('-', '_'): prepare_pages(page_parent_name, list(pages_))
             for page_parent_name, pages_ in
-            groupby(pages_query, key= lambda x: x.parent.slug)
+            groupby(pages_query, key=lambda x: x.parent.slug)
         }
 
         return {

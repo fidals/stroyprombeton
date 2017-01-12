@@ -2,45 +2,47 @@
 {% load thumbnail %}
 {% load stb_extras %}
 
-<section class="product-siblings">
-  <div class="container container-fluid">
-    <h2 class="product-siblings-title text-center">В этой же серии:</h2>
-    <div class="product-siblings-text text-center">
-      Для вашего проекта могут также подойти такие железобетонные изделия:
-    </div>
-
-    <div class="slider js-slider">
-      <div class="slider-content js-slider-content">
-        {% for sibling, image in sibling_with_images %}
-          <div class="slider-item js-slider-item">
-            <a href="{{ sibling.url }}" class="slider-item-link">
-              <div class="slider-item-title">
-                {{ sibling.mark }}
-              </div>
-
-              <div class="slider-item-image">
-                {% if image %}
-                  {% thumbnail image.image '360x238' as resized_image %}
-                    <img class="img-responsive img-stretched"
-                         src="{{ resized_image.url }}"
-                         alt="{% get_img_alt sibling.page %}">
-                  {% endthumbnail %}
-                {% else %}
-                  {% placeholder_image_url as image_url %}
-                    <img class="img-responsive img-stretched"
-                         src="{{ image_url }}"
-                         alt="{% get_img_alt sibling.page %}">
-                {% endif %}
-              </div>
-            </a>
-            <div class="slider-item-price text-right">{{ sibling.price|format_price }}</div>
-            <a class="more-link text-right paddingless" href="{{ sibling.url }}">Заказать</a>
-          </div>
-        {% endfor %}
+{% if sibling_with_images %}
+  <section class="product-siblings">
+    <div class="container container-fluid">
+      <h2 class="product-siblings-title text-center">В этой же серии:</h2>
+      <div class="product-siblings-text text-center">
+        Для вашего проекта могут также подойти такие железобетонные изделия:
       </div>
 
-      <div class="slider-nav slider-nav-disable slider-nav-left js-slider-nav-left"></div>
-      <div class="slider-nav slider-nav-right js-slider-nav-right"></div>
+      <div class="slider js-slider">
+        <div class="slider-content js-slider-content">
+          {% for sibling, image in sibling_with_images %}
+            <div class="slider-item js-slider-item">
+              <a href="{{ sibling.url }}" class="slider-item-link">
+                <div class="slider-item-title">
+                  {{ sibling.mark }}
+                </div>
+
+                <div class="slider-item-image">
+                  {% if image %}
+                    {% thumbnail image.image '360x238' as resized_image %}
+                      <img class="img-responsive img-stretched"
+                           src="{{ resized_image.url }}"
+                           alt="{% get_img_alt sibling.page %}">
+                    {% endthumbnail %}
+                  {% else %}
+                    {% placeholder_image_url as image_url %}
+                      <img class="img-responsive img-stretched"
+                           src="{{ image_url }}"
+                           alt="{% get_img_alt sibling.page %}">
+                  {% endif %}
+                </div>
+              </a>
+              <div class="slider-item-price text-right">{{ sibling.price|format_price }}</div>
+              <a class="more-link text-right paddingless" href="{{ sibling.url }}">Заказать</a>
+            </div>
+          {% endfor %}
+        </div>
+
+        <div class="slider-nav slider-nav-disable slider-nav-left js-slider-nav-left"></div>
+        <div class="slider-nav slider-nav-right js-slider-nav-right"></div>
+      </div>
     </div>
-  </div>
-</section>
+  </section>
+{% endif %}

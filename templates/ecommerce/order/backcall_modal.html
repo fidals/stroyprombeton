@@ -11,7 +11,7 @@
           <span class="modal-line-label">Имя</span>
 
           {{ backcall_form.name.errors }}
-          {{ backcall_form.name|add_class:"modal-line-input input-field js-input-field js-backcall-field" }}
+          {{ backcall_form.name|add_class:'modal-line-input input-field js-input-field js-backcall-field' }}
           {% include 'components/input_validation_icons.html' %}
         </div>
 
@@ -21,7 +21,7 @@
           </span>
 
           {{ backcall_form.phone.errors }}
-          {{ backcall_form.phone|add_class:"modal-line-input input-field js-input-field js-backcall-field js-masked-phone" }}
+          {{ backcall_form.phone|add_class:'modal-line-input input-field js-input-field js-backcall-field js-masked-phone' }}
           {% include 'components/input_validation_icons.html' %}
         </div>
 

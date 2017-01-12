@@ -1,4 +1,4 @@
-const customColumnModels = [
+const customColModels = [
   {
     name: 'is_new_price',
     label: 'Is new price',
@@ -179,19 +179,22 @@ const customColumnModels = [
         decimalPlaces: 2,
         prefix: '',
         suffix: '',
-        defaultValue: '0.00'
+        defaultValue: '0.00',
       },
       date: {
         dayNames: [
           'Sun', 'Mon', 'Tue', 'Wed', 'Thr', 'Fri', 'Sat',
-          'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'
+          'Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday',
         ],
         monthNames: [
           'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
-          'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'
+          'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August',
+          'September', 'October', 'November', 'December',
         ],
-        AmPm : ['am','pm','AM','PM'],
-        S: function (j) {return j < 11 || j > 13 ? ['st', 'nd', 'rd', 'th'][Math.min((j - 1) % 10, 3)] : 'th'},
+        AmPm: ['am', 'pm', 'AM', 'PM'],
+        S(j) {
+          return j < 11 || j > 13 ? ['st', 'nd', 'rd', 'th'][Math.min((j - 1) % 10, 3)] : 'th';
+        },
         srcformat: 'Y-m-d',
         newformat: 'd/m/Y',
         parseRe: /[Tt\\\/:_;.,\t\s-]/,
@@ -206,34 +209,20 @@ const customColumnModels = [
           LongTime: 'g:i:s A',
           SortableDateTime: 'Y-m-d\\TH:i:s',
           UniversalSortableDateTime: 'Y-m-d H:i:sO',
-          YearMonth: 'F, Y'
+          YearMonth: 'F, Y',
         },
-        reformatAfterEdit : false
+        reformatAfterEdit: false,
       },
       baseLinkUrl: '',
       showAction: '',
       target: '',
-      checkbox : {disabled:true},
-      idName : 'id'
-    }
+      checkbox: { disabled: true },
+      idName: 'id',
+    },
   },
 ];
 
-class TableEditorSE extends TableEditor {
-  constructor(colModel = new TableEditorColumnModel(), dialogBoxes = new TableEditorDialogBoxes()) {
-    super(colModel, dialogBoxes);
-
-    this.filterFields = [
-      'name',
-      'category_name',
-      'price',
-    ];
-  }
-}
-
-new AdminSideBar();
 new AdminCommonPlugins();
-const tableEditorDialogBoxes = new TableEditorDialogBoxes();
-const tableEditorFilters = new TableEditorFilters();
-const tableEditorColumnModel = new TableEditorColumnModel(tableEditorFilters, customColumnModels);
-new TableEditorSE(tableEditorColumnModel, tableEditorDialogBoxes);
+new AdminSidebar();
+const stbColModel = new TableEditorColModel(customColModels);
+new TableEditor(stbColModel);

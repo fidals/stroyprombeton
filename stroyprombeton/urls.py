@@ -3,6 +3,7 @@ from django.conf.urls import url, include
 from django.conf.urls.static import static
 
 from pages.models import Page
+
 from stroyprombeton import views
 from stroyprombeton.admin import stb_admin_site
 

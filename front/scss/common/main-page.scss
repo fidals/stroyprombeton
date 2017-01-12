@@ -246,7 +246,18 @@
 
   &-text-wrapper {
     color: $c-text;
+    overflow: hidden;
     padding: 20px;
+    position: relative;
+
+    &::after {
+      background: linear-gradient(to bottom, rgba($c-teaser-bg, 0.5), $c-teaser-bg 40%);
+      bottom: 0;
+      content: "";
+      height: 45px;
+      position: absolute;
+      width: 100%;
+    }
   }
 
   &-item {

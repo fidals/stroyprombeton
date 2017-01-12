@@ -13,10 +13,10 @@ from django.core.management.base import BaseCommand
 from django.utils.text import slugify
 
 from images.models import Image
-from pages.utils import save_custom_pages
 from pages.models import CustomPage, FlatPage, Page
-from stroyprombeton.models import Category, Product, CategoryPage, ProductPage
+from pages.utils import save_custom_pages
 
+from stroyprombeton.models import Category, Product, CategoryPage, ProductPage
 
 IMAGES_ROOT_FOLDER_NAME = os.path.join(settings.MEDIA_ROOT, 'products')
 

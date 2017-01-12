@@ -115,6 +115,8 @@
   }
 
   function initMap() {
+    if (!$('#map').size()) return;
+
     const myMap = new ymaps.Map('map', {
       center: [64, 48],
       zoom: 3,
@@ -133,7 +135,7 @@
     objectManager.add(mapPoints);
 
     // Set map center on click on text sections:
-    DOM.$mapPoint.click(function() {
+    DOM.$mapPoint.click(function setMapCenter() {
       const city = $(this).data('id');
 
       DOM.$mapPoint.removeClass('active');

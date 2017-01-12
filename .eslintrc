@@ -1,5 +1,5 @@
 {
-  "extends": "airbnb",
+  "extends": "airbnb-base",
   "globals": {
     "$": true,
     "Cookies": true,
@@ -16,9 +16,16 @@
     "window": true
   },
   "rules": {
+    "no-console": ["error", {
+      "allow": ["group", "groupEnd", "info", "error", "warn"]
+    }],
     "no-use-before-define": ["error", {
       "functions": false,
       "classes": false
-    }]
+    }],
+    "no-unused-vars": ["error", {
+      "varsIgnorePattern": "^[A-Z]"
+    }],
+    "no-new": 0
   }
 }

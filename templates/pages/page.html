@@ -11,6 +11,10 @@
     <div class="row">
       <div class="col-lg-offset-1 col-lg-10">
 
+        {% ifequal page.parent|stringformat:'s' 'news' %}
+          <p class="news-date">{{ page.date_published|date:'d.m.Y' }}</p>
+        {% endifequal %}
+
         {% if page.children.all %}
           {% include 'pages/pages.html' with pages=page.children.all only %}
         {% endif %}
