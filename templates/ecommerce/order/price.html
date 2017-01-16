@@ -1,6 +1,7 @@
 {% extends 'layout/inner_page.html' %}
 
 {% load staticfiles %}
+{% load stb_extras %}
 {% load widget_tweaks %}
 
 {% block title %}Оформление запроса на прайс ЖБИ{% endblock %}
@@ -8,32 +9,62 @@
 {% block description %}Оформить заявку на прайслист ЖБИ завода СТК-Промбетон{% endblock %}
 
 {% block content %}
-  {# TODO: `breadcrumbs` doesn't work #}
-  {# 'str' object has no attribute 'get_path' #}
-  {# {% include 'layout/breadcrumbs.html' %}#}
+  {# Using hardcoded breadcrumbs & heading because this Page is not CustomPage. #}
+  <section class="breadcrumbs">
+    <div class="container container-fluid">
+      <div class="row">
+        <div class="col-xs-offset-1 col-xs-10">
+          <div class="breadcrumbs-wrapper" itemscope itemtype="http://schema.org/BreadcrumbList">
+            <span class="breadcrumbs-item" itemprop="itemListElement" itemscope
+                  itemtype="http://schema.org/ListItem">
+                <a href="/" itemscope itemtype="http://schema.org/Thing" itemprop="item" class="breadcrumbs-link">
+                  <span itemprop="name">Главная</span>
+                </a>
+              <meta itemprop="position" content="1">
+              <span class="breadcrumbs-separator">/</span>
+            </span>
 
-  {% include 'components/page_h1.html' with page=page only %}
+            <span class="breadcrumbs-item" itemprop="itemListElement" itemscope
+                  itemtype="http://schema.org/ListItem">
+              <span itemprop="name">Оформление запроса на прайс ЖБИ</span>
+              <meta itemprop="position" content="2">
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
   <div class="container container-fluid">
     <h1 class="heading-h1">Оформление запроса на прайс ЖБИ</h1>
 
     <div class="row">
       <div class="col-xs-offset-2 col-xs-7">
-      <form method="post">{% csrf_token %}
-        {% for field in form %}
-          <div class="input-label">{{ field.label_tag }}</div>
-          <div class="input-field">
-            {{ field }}
-            {% include 'components/input_validation_icons.html' %}
-            {{ field.errors }}
-          </div>
-        {% endfor %}
+        <form method="post">{% csrf_token %}
+          {% for field in form %}
+            <div class="input-label">
+              <label for="{{ field.name }}">{{ field.label }}</label>
+              {% if field.field.widget.attrs.required %}
+                <span class="input-label-asterisk">*</span>
+              {% endif %}
+            </div>
 
-        <div class="text-right">
-          <button class="btn" type="submit">Заказать</button>
-        </div>
-      </form>
+            <div class="input-field-wrapper">
+              {{ field }}
+              {% if field == form.activity %}<i class="fa fa-angle-down input-angle-down"></i>{% endif %}
+
+              {% if field.field.widget.attrs.required %}
+                {% include 'components/input_validation_icons.html' %}
+                {% order_form_field_error field.errors %}
+              {% endif %}
+            </div>
+          {% endfor %}
+
+          <div class="text-right">
+            <button class="btn" type="submit">Заказать</button>
+          </div>
+        </form>
+      </div>
     </div>
   </div>
-</div>
 {% endblock %}

@@ -7,7 +7,13 @@
       <td class="table-td table-picture text-center">
         {% include 'catalog/category_product_image.html' with image=item.page.main_image only %}
       </td>
-      <td class="table-td table-code">{{ item.code|default:'-' }}</td>
+      <td class="table-td table-code">
+        {% if item.code %}
+          {{ item.code }}
+        {% else %}
+          <p class="text-center">-</p>
+        {% endif %}
+      </td>
       <td class="table-td table-name">
         <a class="table-link" href="{{ item.get_absolute_url }}">
           {{ item.specification }} {{ item.name }} {{ item.mark }}

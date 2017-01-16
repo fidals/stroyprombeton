@@ -28,3 +28,8 @@
     </div>
   </div>
 {% endblock %}
+
+{% block jslinks %}
+  <script src="//api-maps.yandex.ru/2.1/?lang=ru-RU"></script>
+  {{ block.super }}
+{% endblock %}

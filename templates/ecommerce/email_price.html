@@ -1,30 +1,25 @@
+{% load stb_extras %}
+
 <table>
   <tr>
-    <td>Имя:</td>
-    <td>{{ form.person }}</td>
+    <td>{% customer_info form.person 'Имя' %}</td>
   </tr>
   <tr>
-    <td>Город:</td>
-    <td>{{ form.city }}</td>
+    <td>{% customer_info form.phone 'Телефон' %}</td>
   </tr>
   <tr>
-    <td>Название организации:</td>
-    <td>{{ form.company }}</td>
+    <td>{% customer_info form.email 'Электронная почта' %}</td>
   </tr>
   <tr>
-    <td>Направление деятельности:</td>
-    <td>{{ form.activity }}</td>
+    <td>{% customer_info form.company 'Полное название организации' %}</td>
   </tr>
   <tr>
-    <td>Сайт:</td>
-    <td><a href="{{ form.site }}">{{ form.site }}</a></td>
+    <td>{% customer_info form.city 'Город' %}</td>
   </tr>
   <tr>
-    <td>Электронный адрес:</td>
-    <td><a href="mailto:{{ form.email }}">{{ form.email }}</a></td>
+    <td>{% customer_info form.activity 'Направление деятельности' %}</td>
   </tr>
   <tr>
-    <td>Телефон:</td>
-    <td>{{ form.phone }}</td>
+    <td>{% customer_info form.site 'Сайт' %}</td>
   </tr>
 </table>

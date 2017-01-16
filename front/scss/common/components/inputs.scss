@@ -1,4 +1,5 @@
 input,
+select,
 textarea {
   -moz-appearance: textfield;
   border: 1px solid $c-input-border-color;
@@ -7,13 +8,35 @@ textarea {
   font-family: $f-family;
   font-size: $f-size-base;
   font-weight: 400;
+  line-height: 1.4;
   padding: 8px 14px;
+}
+
+textarea {
+  height: 100px;
+  width: 100%;
+}
+
+select {
+  -webkit-appearance: button;
+  user-select: none;
+  background-color: $c-input-select;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 370px;
 }
 
 .input {
   &-wrapper {
     display: inline-block;
     position: relative;
+  }
+
+  &-angle-down {
+    position: relative;
+    right: 22px;
+    top: 13px;
   }
 
   &-caret {
@@ -60,11 +83,11 @@ textarea {
     }
   }
 
-  &-status-not-valid {
-    color: $c-input-not-valid;
+  &-status-invalid {
+    color: $c-input-invalid;
 
     &.active,
-    .not-valid & {
+    .invalid & {
       opacity: 1;
     }
   }
@@ -80,28 +103,17 @@ textarea {
   }
 
   &-field {
-    .valid & {
-      border-color: $c-input-valid;
-    }
-
-    .not-valid & {
-      border-color: $c-input-not-valid;
-    }
+    min-width: 340px;
 
     &-wrapper {
       display: flex;
       margin: 0 0 30px 90px;
-
-      textarea {
-        height: 100px;
-        width: 90%;
-      }
     }
 
     &-help {
       color: $c-text-grey;
       font-size: $f-size-base - 3;
-      padding: 5px 0 10px;
+      margin: -15px 0 30px 90px;
     }
   }
 
@@ -112,6 +124,32 @@ textarea {
 
     .input-field-wrapper & {
       top: 13px;
+    }
+  }
+
+  .valid &-file {
+    border-color: $c-input-valid;
+  }
+
+  .invalid &-file {
+    border-color: $c-input-invalid;
+  }
+
+  &-required {
+    &:valid {
+      border-color: $c-input-valid;
+
+      ~ .input-validation-icon-wrapper .input-status-valid {
+        opacity: 1;
+      }
+    }
+
+    &:invalid {
+      border-color: $c-input-invalid;
+
+      ~ .input-validation-icon-wrapper .input-status-invalid {
+        opacity: 1;
+      }
     }
   }
 }

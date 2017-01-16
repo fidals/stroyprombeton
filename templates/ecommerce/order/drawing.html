@@ -28,25 +28,26 @@
 
       <p>Для заказа изделий по индивидуальным чертежам воспользуйтесь формой ниже:</p>
 
-      <form method="post" enctype="multipart/form-data" class="drawing-form">
-        {% csrf_token %}
+      <form method="post" enctype="multipart/form-data" class="drawing-form">{% csrf_token %}
         {% for field in form %}
-          <div class="drawing-input {% if field.id_for_label == 'id_file' %}js-drawing-input{% endif %}">
-            <div class="input-label">
-              {{ field.label }}
-              <span class="input-label-asterisk">
-                {% if field.field.required %} *{% endif %}{{ field.required }}
-              </span>
-            </div>
+          <div class="input-label">
+            {{ field.label }}
+            <span class="input-label-asterisk">
+              {% if field.field.required %} *{% endif %}{{ field.required }}
+            </span>
+          </div>
+
+          <div class="input-field-wrapper {% if field.id_for_label == 'id_file' %}js-drawing-input{% endif %}">
             {{ field }}
             {% include 'components/input_validation_icons.html' %}
             {{ field.errors }}
-            {% if field.help_text %}
-              <div class="input-field-help">
-                {{ field.help_text }}
-              </div>
-            {% endif %}
           </div>
+
+          {% if field.help_text %}
+            <div class="input-field-help">
+              {{ field.help_text }}
+            </div>
+          {% endif %}
         {% endfor %}
 
         <div class="text-right">

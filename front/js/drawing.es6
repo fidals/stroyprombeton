@@ -19,7 +19,7 @@
   function filesValidation(event) {
     function getFilesFromFileList(fileList) {
       const files = [];
-      for (var i = 0; i < fileList.length; i++) {
+      for (let i = 0; i < fileList.length; i += 1) {
         files.push(fileList[i]);
       }
       return files;
@@ -28,14 +28,14 @@
     const fileList = $(event.target).get(0).files;
     const files = getFilesFromFileList(fileList);
 
-    const isValidFilesCount = parseInt(fileList.length) <= 10;
+    const isValidFilesCount = parseInt(fileList.length, 10) <= 10;
     const isValidFilesSize = files
       .every(file => file.size < config.sizeLimit);
 
     if (isValidFilesCount && isValidFilesSize) {
-      DOM.$fileInputWrapper.removeClass('not-valid').addClass('valid')
+      DOM.$fileInputWrapper.removeClass('invalid').addClass('valid');
     } else {
-      DOM.$fileInputWrapper.removeClass('valid').addClass('not-valid');
+      DOM.$fileInputWrapper.removeClass('valid').addClass('invalid');
     }
   }
 

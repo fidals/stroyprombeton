@@ -6,12 +6,37 @@
     itemsTypes: ['see_all', 'category', 'product'],
   };
 
+  /**
+   * Configs for autoComplete library.
+   * @link http://goo.gl/haZzhv
+   */
+  const isInclude = value => ['category', 'product'].includes(value);
+
+  const autoCompleteConfig = {
+    selector: config.searchInput,
+    minChars: config.minChars,
+    source: (term, response) => {
+      $.getJSON(config.url, { term }, (namesArray) => {
+        response(namesArray);
+      });
+    },
+    renderItem(item, term) {
+      return isInclude(item.type) ? renderItem(item, term) : renderShowMoreItem(item);
+    },
+    onSelect(event, _, item) {
+      const isRightClick = () => event.button === 2 || event.which === 3;
+      if (isRightClick(event)) return;
+
+      window.location = $(item).find('a').attr('href');
+    },
+  };
+
   const init = () => {
-    new autoComplete(constructorArgs);
+    new autoComplete(autoCompleteConfig);
   };
 
   /**
-   * Highlight term in search results.
+   * Highlight term in autocompleted search results.
    *
    * @link http://goo.gl/WPpCVj
    * @param name
@@ -25,7 +50,7 @@
     return name.replace(regexp, '<b>$1</b>');
   };
 
-  const renderItem = (item, term) => {
+  function renderItem(item, term) {
     const highlightedText = highlight(item.name, term);
 
     const context = {
@@ -45,7 +70,7 @@
         </a>
       </div>
     `;
-  };
+  }
 
   function renderShowMoreItem(item) {
     return `
@@ -57,31 +82,6 @@
       </div>
     `;
   }
-
-  /**
-   * Construct arguments for autoComplete lib.
-   * @link http://goo.gl/haZzhv
-   */
-  const isInclude = value => ['category', 'product'].includes(value);
-
-  const constructorArgs = {
-    selector: config.searchInput,
-    minChars: config.minChars,
-    source: (term, response) => {
-      $.getJSON(config.url, { term }, (namesArray) => {
-        response(namesArray);
-      });
-    },
-    renderItem(item, term) {
-      return isInclude(item.type) ? renderItem(item, term) : renderShowMoreItem(item);
-    },
-    onSelect(event, _, item) {
-      const isRightClick = () => event.button === 2 || event.which === 3;
-      if (isRightClick(event)) return;
-
-      window.location = $(item).find('a').attr('href');
-    },
-  };
 
   init();
 }

@@ -16,7 +16,10 @@ from stroyprombeton.models import Product, Order
 
 class OrderPage(ec_views.OrderPage):
     order_form = OrderForm
-    email_extra_context = {'base_url': settings.BASE_URL}
+    email_extra_context = {
+        'base_url': settings.BASE_URL,
+        'site_info': settings.SITE_INFO
+    }
 
 
 class OrderSuccess(ec_views.OrderSuccess):

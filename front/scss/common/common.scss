@@ -24,6 +24,7 @@ a {
 }
 
 .content {
+  flex: 1 0;
   padding: $h-header 0;
 }
 
@@ -166,8 +167,6 @@ a {
     &-link {
       color: $c-search-text;
       display: flex;
-      font-size: $f-size-base - 2;
-      font-weight: 300;
       padding: 5px 10px;
       white-space: nowrap;
     }

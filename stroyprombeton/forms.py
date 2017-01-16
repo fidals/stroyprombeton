@@ -7,6 +7,13 @@ from django.template.defaultfilters import filesizeformat
 
 from stroyprombeton.models import Order, Product
 
+phone_validation_pattern = (
+    '(\+\d\s|\+\d)\(?\d{3}(\)|\)\s)?-?\d{1}-?\d{1}-?(\d{1}|\d{1}\s)-?\d{1}-?(\d{1}|\d{'
+    '1}\s)-?\d{1}-?\d{1}'
+)
+css_default_classes = 'input-field js-input-field '
+css_required_classes = css_default_classes + 'input-required '
+
 
 def generate_activities():
     """
@@ -16,11 +23,13 @@ def generate_activities():
         ((A, A), (B, B))
     to use in Django forms.
     """
-    activities = ('Подрядная строительная организация',
-                  'Производство строительных материалов',
-                  'Проектная организация',
-                  'Заказчик',
-                  'Оптовая торговля')
+    activities = (
+        'Подрядная строительная организация',
+        'Производство строительных материалов',
+        'Проектная организация',
+        'Заказчик',
+        'Оптовая торговля'
+    )
 
     return tuple((a, a) for a in activities)
 
@@ -78,14 +87,15 @@ class FileValidation:
 class BaseContactForm(forms.Form):
     """Define basic information about customer."""
 
-    css_class = {'class': 'input-field'}
     required_error_message = {'required': 'Пожалуйста, заполните это поле.'}
 
     name = forms.CharField(
         label='Имя',
         max_length=100,
         required=False,
-        widget=forms.TextInput(attrs=css_class)
+        widget=forms.TextInput(attrs={
+            'class': css_default_classes
+        })
     )
 
     phone = forms.CharField(
@@ -93,8 +103,10 @@ class BaseContactForm(forms.Form):
         max_length=20,
         error_messages=required_error_message,
         widget=forms.TextInput(attrs={
-            'class': 'input-field js-input-field js-masked-phone',
+            'class': css_required_classes + 'js-masked-phone',
+            'pattern': phone_validation_pattern,
             'placeholder': '+7 (999) 000 00 00',
+            'required': True
         })
     )
 
@@ -105,8 +117,9 @@ class BaseContactForm(forms.Form):
             'invalid': 'Пожалуйста, введите корректный адрес электроной почты.'
         },
         widget=forms.EmailInput(attrs={
-            **css_class,
+            'class': css_required_classes,
             'type': 'email',
+            'required': True
         })
     )
 
@@ -115,19 +128,27 @@ class PriceForm(BaseContactForm):
     """Form for Price List ordering."""
 
     company = forms.CharField(
-        label='Полное название организации *',
+        label='Полное название организации',
         max_length=100,
-        error_messages=BaseContactForm.required_error_message
+        error_messages=BaseContactForm.required_error_message,
+        widget=forms.TextInput(attrs={
+            'class': css_required_classes,
+            'required': True
+        })
     )
 
     city = forms.CharField(
-        label='Город *',
+        label='Город',
         max_length=100,
-        error_messages=BaseContactForm.required_error_message
+        error_messages=BaseContactForm.required_error_message,
+        widget=forms.TextInput(attrs={
+            'class': css_required_classes + 'js-city',
+            'required': True
+        })
     )
 
     activity = forms.ChoiceField(
-        label='Направление деятельности организации *',
+        label='Направление деятельности организации',
         choices=generate_activities,
         error_messages=BaseContactForm.required_error_message
     )
@@ -147,12 +168,14 @@ class DrawingForm(BaseContactForm):
     file = forms.FileField(
         label='Прикрепить файл',
         required=False,
-        help_text='''Максимальный размер файла - 20 Мб.
-        Вы можете прикрепить не более 10 вложений одновременно. Допустимые форматы вложений:
-        jpeg, pdf, tiff, gif, doc, xls, zip, 7-zip, rar, tar.''',
+        help_text='''
+            Максимальный размер файла - 20 Мб.
+            Вы можете прикрепить не более 10 вложений одновременно. Допустимые форматы вложений:
+            jpeg, pdf, tiff, gif, doc, xls, zip, 7-zip, rar, tar.
+        ''',
         widget=forms.ClearableFileInput(
             attrs={
-                'class': 'js-file-input input-field',
+                'class': 'input-field input-file js-file-input',
                 'accept': str(reduce(lambda x, y: '{},{}'.format(x, y), accept_mime_types)),
                 'multiple': 'True'
             }
@@ -162,7 +185,9 @@ class DrawingForm(BaseContactForm):
     comment = forms.CharField(
         label='Комментарий',
         required=False,
-        widget=forms.Textarea(attrs=BaseContactForm.css_class)
+        widget=forms.Textarea(attrs={
+            'class': css_default_classes
+        })
     )
 
     def clean(self):
@@ -195,10 +220,21 @@ class OrderForm(forms.ModelForm):
         ]
 
         widgets = {
-            'name': TextInput(attrs={'class': 'input-field order-input-field js-input-field'}),
-            'phone': TextInput(attrs={'class': 'input-field order-input-field js-input-field'}),
-            'email': TextInput(attrs={'class': 'input-field order-input-field js-input-field'}),
-            'company': TextInput(attrs={'class': 'input-field order-input-field js-input-field'}),
+            'name': TextInput(attrs={'class': css_default_classes}),
+            'phone': TextInput(attrs={
+                'class': css_required_classes,
+                'pattern': phone_validation_pattern,
+                'required': True
+            }),
+            'email': TextInput(attrs={
+                'class': css_required_classes,
+                'type': 'email',
+                'required': True
+            }),
+            'company': TextInput(attrs={
+                'class': css_required_classes,
+                'required': True
+            }),
             'address': Textarea(attrs={'class': 'js-input-field'}),
             'comment': Textarea(attrs={'class': 'js-input-field'}),
         }

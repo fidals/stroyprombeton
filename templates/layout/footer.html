@@ -71,6 +71,11 @@
                 Контакты
               </a>
             </li>
+            <li class="footer-list-item">
+              <a class="footer-list-link" href="{% url 'pages:flat_page' 'partners' %}">
+                Наши партнёры
+              </a>
+            </li>
           </ul>
         </div>
       </div>
@@ -85,13 +90,13 @@
             </li>
             <li class="footer-list-item tel">
               <span class="type">Санкт-Петербург</span>
-              <a class="footer-list-link value" href="tel:{{ site_info.phone.spb_1_url }}">
+              <a class="footer-list-link value" href="{{ site_info.phone.spb_1_url }}">
                 {{ site_info.phone.spb_1 }}
               </a>
             </li>
             <li class="footer-list-item tel">
               <span class="type">Москва</span>
-              <a class="footer-list-link value" href="tel:{{ site_info.phone.moscow_1_url }}">
+              <a class="footer-list-link value" href="{{ site_info.phone.moscow_1_url }}">
                 {{ site_info.phone.moscow_1 }}
               </a>
             </li>

@@ -3,6 +3,8 @@
     $nav: $('.js-nav'),
     navSubnav: '.js-nav-subnav',
     $application: $('.js-application'),
+    $search: $('#search'),
+    $searchField: $('.js-search-field'),
     $searchBar: $('.js-searchbar'),
     $reviewsItem: $('.js-reviews-item'),
     $reviewsNavItems: $('.js-reviews-nav-item'),
@@ -19,6 +21,7 @@
   function setUpListeners() {
     $(window).scroll(toggleScrollToTopBtn);
     $(window).scroll(moveSearchBar);
+    DOM.$search.submit(preventEmptySearch);
     DOM.$btnScrollTop.click(scrollToTop);
     DOM.$reviewsNavItems.click(reviewsSlideTo);
   }
@@ -27,9 +30,9 @@
    * Toggle scroll-to-top button.
    */
   function toggleScrollToTopBtn() {
-    $(window).scrollTop() > 300 ?
-    DOM.$btnScrollTop.addClass('active') :
-    DOM.$btnScrollTop.removeClass('active');
+    return $(window).scrollTop() > 300 ?
+           DOM.$btnScrollTop.addClass('active') :
+           DOM.$btnScrollTop.removeClass('active');
   }
 
   /**
@@ -73,6 +76,10 @@
     } else {
       DOM.$searchBar.addClass(DOM.bannerClass);
     }
+  }
+
+  function preventEmptySearch(event) {
+    if (!DOM.$searchField.val()) event.preventDefault();
   }
 
   init();

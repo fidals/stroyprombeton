@@ -3,7 +3,7 @@
 <div class="container container-fluid">
   <div class="row">
     <div class="col-xs-4 col-lg-offset-1 searchbar-wrap">
-      <form class="search" action="{% custom_url 'search' %}" method="get">
+      <form class="search" id="search" action="{% custom_url 'search' %}" method="get">
         <input class="search-field js-search-field" name="term" value="{{ query }}" type="text">
 
         <button class="search-btn" type="submit">
@@ -16,13 +16,13 @@
       <ul class="searchbar-contacts">
         <li class="searchbar-contacts-item">
           СПб
-          <a class="searchbar-contacts-link" href="tel:{{ site_info.phone.spb_1_url }}">
+          <a class="searchbar-contacts-link" href="{{ site_info.phone.spb_1_url }}">
             {{ site_info.phone.spb_1 }}
           </a>
         </li>
         <li class="searchbar-contacts-item">
           Мск
-          <a class="searchbar-contacts-link" href="tel:{{ site_info.phone.moscow_1_url }}">
+          <a class="searchbar-contacts-link" href="{{ site_info.phone.moscow_1_url }}">
             {{ site_info.phone.moscow_1 }}
           </a>
         </li>

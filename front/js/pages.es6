@@ -1,7 +1,9 @@
 {
   const DOM = {
+    $map: $('#map'),
     $galleryTarget: $('.news-wrapper .gbi-photo'),
     $mapPoint: $('.js-map-point'),
+    $cityField: $('.js-city'),
   };
 
   const points = [
@@ -23,8 +25,11 @@
         id: 0,
         geometry: { type: 'Point', coordinates: points[0] },
         properties: {
-          balloonContent: '<p>192148, Санкт-Петербург, головной офис, пр. Елизарова, 38А, офис 218</p>' +
-                          '<p>8 (812) 648-13-80, 8 (812) 642-47-09</p><p>ПН-ПТ с 9.00 до 18.00</p>',
+          balloonContent: `
+            <p>192148, Санкт-Петербург, головной офис, пр. Елизарова, 38А, офис 218</p>
+            <p>8 (812) 648-13-80, 8 (812) 642-47-09</p>
+            <p>ПН-ПТ с 9.00 до 18.00</p>
+          `,
           hintContent: 'Санкт-Петербург, головной офис',
         },
       },
@@ -33,8 +38,11 @@
         id: 1,
         geometry: { type: 'Point', coordinates: points[1] },
         properties: {
-          balloonContent: '<p>188683, Санкт-Петербург, производство, пос.им.Свердлова, промышленная зона, улица' +
-                          ' Овцынская</p><p>ПН-ПТ с 9.00 до 18.00</p>',
+          balloonContent: `
+            <p>188683, Санкт-Петербург, производство, пос.им.Свердлова, промышленная зона, улица 
+            Овцынская</p>
+            <p>ПН-ПТ с 9.00 до 18.00</p>
+          `,
           hintContent: 'Санкт-Петербург, производство',
         },
       },
@@ -43,8 +51,11 @@
         id: 2,
         geometry: { type: 'Point', coordinates: points[2] },
         properties: {
-          balloonContent: '<p>107023, Москва, улица Электрозаводская, 24</p>' +
-                          '<p>8(499) 322-31-98</p><p>ПН-ПТ с 9.00 до 18.00</p>',
+          balloonContent: `
+            <p>107023, Москва, улица Электрозаводская, 24</p>
+            <p>8(499) 322-31-98</p>
+            <p>ПН-ПТ с 9.00 до 18.00</p>
+          `,
           hintContent: 'Москва',
         },
       },
@@ -53,8 +64,11 @@
         id: 3,
         geometry: { type: 'Point', coordinates: points[3] },
         properties: {
-          balloonContent: '<p>163100, Архангельск, площадь Ленина, д. 3</p>' +
-                          '<p>8 (8182) 63-92-35</p><p>ПН-ПТ с 9.00 до 18.00</p>',
+          balloonContent: `
+            <p>163100, Архангельск, площадь Ленина, д. 3</p>
+            <p>8 (8182) 63-92-35</p>
+            <p>ПН-ПТ с 9.00 до 18.00</p>
+          `,
           hintContent: 'Архангельск',
         },
       },
@@ -63,8 +77,11 @@
         id: 4,
         geometry: { type: 'Point', coordinates: points[4] },
         properties: {
-          balloonContent: '<p>Мурманск, проспект Ленина, д. 16А</p>' +
-                          '<p>8 (8152) 65-50-48</p><p>ПН-ПТ с 9.00 до 18.00</p>',
+          balloonContent: `
+            <p>Мурманск, проспект Ленина, д. 16А</p>
+            <p>8 (8152) 65-50-48</p>
+            <p>ПН-ПТ с 9.00 до 18.00</p>
+          `,
           hintContent: 'Мурманск',
         },
       },
@@ -73,8 +90,11 @@
         id: 5,
         geometry: { type: 'Point', coordinates: points[5] },
         properties: {
-          balloonContent: '<p>Казань, Республика Татарстан, Спартаковская улица, 2</p>' +
-                          '<p>8 (343) 318-26-91</p><p>ПН-ПТ с 9.00 до 18.00</p>',
+          balloonContent: `
+            <p>Казань, Республика Татарстан, Спартаковская улица, 2</p>
+            <p>8 (343) 318-26-91</p>
+            <p>ПН-ПТ с 9.00 до 18.00</p>
+          `,
           hintContent: 'Казань',
         },
       },
@@ -83,8 +103,11 @@
         id: 6,
         geometry: { type: 'Point', coordinates: points[6] },
         properties: {
-          balloonContent: '<p>Екатеринбург, Свердловская область, улица Титова, 27, литер. З</p>' +
-                          '<p>8 (343) 318-26-91</p><p>ПН-ПТ с 9.00 до 18.00</p>',
+          balloonContent: `
+            <p>Екатеринбург, Свердловская область, улица Титова, 27, литер. З</p>
+            <p>8 (343) 318-26-91</p>
+            <p>ПН-ПТ с 9.00 до 18.00</p>
+          `,
           hintContent: 'Екатеринбург',
         },
       },
@@ -93,8 +116,11 @@
         id: 7,
         geometry: { type: 'Point', coordinates: points[7] },
         properties: {
-          balloonContent: '<p>629007, Ямало-Ненецкий автономный округ, Салехард, улица Чубынина, 34</p>' +
-                          '<p>8 (34922) 99-35-8</p><p>ПН-ПТ с 9.00 до 18.00</p>',
+          balloonContent: `
+            <p>629007, Ямало-Ненецкий автономный округ, Салехард, улица Чубынина, 34</p>
+            <p>8 (34922) 99-35-8</p>
+            <p>ПН-ПТ с 9.00 до 18.00</p>
+          `,
           hintContent: 'Салехард',
         },
       },
@@ -111,12 +137,11 @@
    */
   function pluginsInit() {
     DOM.$galleryTarget.featherlightGallery();
-    ymaps.ready(initMap);
+    cityAutocompleteInit();
+    if (DOM.$map.length) ymaps.ready(initMap);
   }
 
   function initMap() {
-    if (!$('#map').size()) return;
-
     const myMap = new ymaps.Map('map', {
       center: [64, 48],
       zoom: 3,
@@ -150,6 +175,35 @@
           console.error(err);
         });
     });
+  }
+
+  /**
+   * Autocomplete Russian cities.
+   * @link https://goo.gl/YfE1m8
+   */
+  function cityAutocompleteInit() {
+    $.kladr.setDefault({
+      parentInput: DOM.$cityField,
+      verify: true,
+      select(obj) {
+        setLabelText($(this), obj.type);
+      },
+      check(obj) {
+        setLabelText($(this), obj.type);
+      },
+    });
+
+    DOM.$cityField.kladr('type', $.kladr.type.city);
+  }
+
+  /**
+   * Change city label for: 'город', 'посёлок' и т.д.
+   * @param $input
+   * @param text
+   */
+  function setLabelText($input, text) {
+    const formattedText = text.charAt(0).toUpperCase() + text.substr(1).toLowerCase();
+    $input.parent().prev().find('label').text(formattedText);
   }
 
   init();

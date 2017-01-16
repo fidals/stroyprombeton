@@ -4,26 +4,34 @@ from django.template.loader import render_to_string
 
 
 def send_form(*, form, template, subject):
-    """Send given form in a email."""
+    """Send given form to email."""
 
-    email_template = render_to_string(
+    message = render_to_string(
         template,
-        {'form': form.cleaned_data},
+        {
+            'form': form.cleaned_data,
+            'base_url': settings.BASE_URL,
+            'site_info': settings.SITE_INFO
+        },
     )
 
     send_mail(
         subject='Stroyprombeton | {}'.format(subject),
-        message=email_template,
+        message=message,
         from_email=settings.SHOP_EMAIL,
         recipient_list=[settings.SHOP_EMAIL],
-        html_message=email_template
+        html_message=message
     )
 
 
 def send_form_with_files(*, form, files, template, subject, **context):
     message = render_to_string(
         template,
-        {'form': form.cleaned_data, **context},
+        {
+            'form': form.cleaned_data,
+            'site_info': settings.SITE_INFO,
+            **context
+        },
     )
 
     mail = EmailMultiAlternatives(
@@ -36,7 +44,7 @@ def send_form_with_files(*, form, files, template, subject, **context):
 
     mail.attach_alternative(message, 'text/html')  # Attach message
 
-    for file in files: # Attach files
+    for file in files:  # Attach files
         mail.attach(filename=file._name, content=file.read(), mimetype=file.content_type)
 
     mail.send()

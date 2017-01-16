@@ -14,7 +14,7 @@
     Телефон
     <span class="input-label-asterisk">*</span>
   </div>
-  <div class="input-field-wrapper {% if form.phone.errors %}not-valid{% endif %}">
+  <div class="input-field-wrapper">
     {{ form.phone|add_class:'js-masked-phone' }}
     {% include 'components/input_validation_icons.html' %}
     {% order_form_field_error form.phone.errors %}
@@ -24,8 +24,9 @@
     Электронная почта
     <span class="input-label-asterisk">*</span>
   </div>
-  <div class="input-field-wrapper {% if form.email.errors %}not-valid{% endif %}">
+  <div class="input-field-wrapper">
     {{ form.email }}
+    {% include 'components/input_validation_icons.html' %}
     {% order_form_field_error form.email.errors %}
   </div>
 
@@ -33,8 +34,9 @@
     Полное название организации
     <span class="input-label-asterisk">*</span>
   </div>
-  <div class="input-field-wrapper {% if form.company.errors %}not-valid{% endif %}">
+  <div class="input-field-wrapper">
     {{ form.company }}
+    {% include 'components/input_validation_icons.html' %}
     {% order_form_field_error form.company.errors %}
   </div>
 

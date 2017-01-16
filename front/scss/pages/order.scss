@@ -77,12 +77,12 @@
   }
 
   &-th {
+    border-bottom: 1px solid $c-order-table-border;
+    color: $c-order-table-th;
     font-size: $f-size-base - 3;
     font-weight: 600;
     line-height: 1.23;
     text-align: left;
-    color: $c-order-table-th;
-    border-bottom: 1px solid $c-order-table-border;
 
     &-name {
       padding: 7px 0 8px 98px;
@@ -103,13 +103,5 @@
   &-heading {
     font-size: $f-size-base + 18;
     padding-bottom: 40px;
-  }
-}
-
-.order {
-  &-input {
-    &-field {
-      width: 340px;
-    }
   }
 }

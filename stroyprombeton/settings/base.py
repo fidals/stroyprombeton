@@ -187,9 +187,9 @@ SITE_INFO = {
     'email': 'info@stroyprombeton.ru',
     'phone': {
         'moscow_1': '8 (499) 322-31-98',
-        'moscow_1_url': '+74993223198',
+        'moscow_1_url': 'tel:4993223198',
         'spb_1': '8 (812) 648-13-80',
-        'spb_1_url': '+78126481380'
+        'spb_1_url': 'tel:8126481380'
     },
 }
 

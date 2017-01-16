@@ -1,0 +1,20 @@
+{% load staticfiles %}
+
+<div style="margin-bottom: 10px;">
+  <span style="float: right; color: #767A7B; margin: 20px 0 0;">
+    <span style="font-size: 25px;" class="ya-opt-phone">
+      <a href="{{ site_info.phone.spb_1_url }}" style="color: #000; text-decoration: none;">
+        {{ site_info.phone.spb_1 }}
+      </a>
+    </span>
+  </span>
+
+  <div style="padding: 0 0 8px;">
+    <a href="{{ base_url }}" target="_blank">
+      <img src="{{ base_url }}{% static 'images/stk-prombeton.png' %}" alt="Логотип">
+    </a>
+    <div style="color: #515151; font-size: 13px; margin: -5px 0 0;">Завод железобетонных изделий</div>
+  </div>
+
+  <div style="background-color: rgb(215, 215, 215); height:1px;"></div>
+</div>

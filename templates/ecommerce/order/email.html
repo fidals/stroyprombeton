@@ -1,72 +1,60 @@
-{% load staticfiles %}
 {% load stb_extras %}
 
-<div style="width:100%; margin-bottom: 10px;">
-  <span style="float: right; color: #767A7B; margin-top: 32px;">
-    <span style="font-size: 13px;">(812)</span>
-    <span style="font-size: 25px;" class="ya-opt-phone">
-      <a href="tel:{{ site_info.phone.spb_1_url }}"
-         style="color: #000; text-decoration: none;">
-        {{ site_info.phone.spb_1 }}
-      </a>
-    </span>
-  </span>
-  <div style="padding: 0 0 8px;">
-    <a href="{{ base_url }}" target="_blank">
-      <img src="{{ base_url }}{% static 'images/stk-prombeton.png' %}" alt="Логотип">
-    </a>
-    <div style="color: #515151; font-size: 13px; margin: -5px 0 0;">Завод железобетонных изделий</div>
-  </div>
-  <div style="width: 100%; background-color: rgb(215, 215, 215); height:1px;"></div>
-</div>
+{% include 'ecommerce/email_header.html' %}
 
 <p style="margin: 0 0 1.15em; font-family: Arial, sans-serif;">
   <span style="font-size: 18px;">Здравствуйте!</span>
   <br>
-  <br>
   <span>{% if order.name %}Уважаемый(ая) {{ order.name }}. {% endif %}<b>Ваш заказ:</b></span>
 </p>
 
-<table width="100%" border="1" style="border: none; font-size: 16px;">
-  <tr align="center">
-    <th width="10%" style="border-color: #E4E4E4; padding: 10px; font-weight:bold;">Код</th>
-    <th width="50%" style="border-color: #E4E4E4; padding: 10px; font-weight:bold;">Наименование и марка</th>
-    <th width="15%" style="border-color: #E4E4E4; padding: 10px; font-weight:bold;">Кол-во</th>
-    <th width="15%" style="border-color: #E4E4E4; padding: 10px; font-weight:bold;">Цена</th>
-  </tr>
+<table width="100%" border="1" style="border: none; border-collapse: collapse; font-size: 16px;">
+  <thead>
+    <tr align="center">
+      <th width="10%" style="border-color: #E4E4E4; padding: 10px; font-weight:bold;">Код</th>
+      <th width="50%" style="border-color: #E4E4E4; padding: 10px; font-weight:bold;">Наименование и марка</th>
+      <th width="15%" style="border-color: #E4E4E4; padding: 10px; font-weight:bold;">Кол-во</th>
+      <th width="15%" style="border-color: #E4E4E4; padding: 10px; font-weight:bold;">Цена</th>
+    </tr>
+  </thead>
 
-  {% for position in order.items %}
-    <tr align="center" style="background: #F9F9F9;">
-      <td style="border-color: #E4E4E4; padding: 10px;">
-        {% get_product_field position.product_id 'code' %}
-      </td>
-      <td style="border-color: #E4E4E4; padding: 10px; text-align: left;">
-        <a href="{% full_url 'product' position.product_id %}"
-           style="text-decoration: none;">
-          {{ position.name }} {% get_product_field position.product_id 'mark' %}
-        </a>
-      </td>
-      <td style="border-color: #E4E4E4; padding: 10px;">
-        {{ position.quantity }} шт.
-      </td>
-      <td style="border-color: #E4E4E4; padding: 10px;">
-        {% if position.price %}
-          {{ position.price }} руб.
-        {% else %}
-          По запросу
-        {% endif %}
+  <tbody>
+    {% for position in order.items %}
+      <tr align="center"
+        {% if forloop.counter|divisibleby:2 %}
+          style="background: #fafafa;"
+        {% endif %}>
+        <td style="border-color: #e4e4e4; padding: 10px;">
+          {% get_product_field position.product_id 'code' %}
+        </td>
+        <td style="border-color: #E4E4E4; padding: 10px; text-align: left;">
+          <a href="{% full_url 'product' position.product_id %}"
+             style="text-decoration: none;">
+            {{ position.name }} {% get_product_field position.product_id 'mark' %}
+          </a>
+        </td>
+        <td style="border-color: #E4E4E4; padding: 10px;">
+          {{ position.quantity }} шт.
+        </td>
+        <td style="border-color: #E4E4E4; padding: 10px;">
+          {% if position.price %}
+            {{ position.price|format_price }}
+          {% else %}
+            По запросу
+          {% endif %}
+        </td>
+      </tr>
+    {% endfor %}
+
+    <tr align="center">
+      <td></td>
+      <td></td>
+      <td style="border-color: #E4E4E4; padding: 10px; font-weight: bold;">Итог:</td>
+      <td style="border-color: #E4E4E4; padding: 10px; font-weight: bold;">
+        {{ order.total_price|format_price }}
       </td>
     </tr>
-  {% endfor %}
-
-  <tr align="center">
-    <td></td>
-    <td></td>
-    <td style="border-color: #E4E4E4; padding: 10px; font-weight: bold;">Итог:</td>
-    <td style="border-color: #E4E4E4; padding: 10px; font-weight: bold;">
-      {{ order.price|format_price }}
-    </td>
-  </tr>
+  </tbody>
 </table>
 
 {# TODO: wrap it in inclusion tag #}
@@ -78,9 +66,4 @@
 {% customer_info order.address 'Адрес поставки' %}
 {% customer_info order.comment 'Комментарий к заказу' %}
 
-<p>Если у Вас остались вопросы, Вы можете связаться с нашими менеджерами по телефонам:
-  <a href="{{ site_info.phone.moscow_1_url }}">{{ site_info.phone.spb1 }}</a>,
-  <a href="{{ site_info.phone.spb_1_url }}">{{ site_info.phone.spb2 }}</a>
-  или по электронной почте:
-  <a href="mailto:{{ site_info.email }}">{{ site_info.email }}</a>
-</p>
+{% include 'ecommerce/email_footer.html' %}
