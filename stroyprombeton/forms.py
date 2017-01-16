@@ -254,18 +254,21 @@ class AddProductForm(forms.ModelForm):
         widgets = {
             'name': TextInput(
                 attrs={
-                    'id': 'entity-name',
-                    'class': 'form-control js-new-entity js-required'
+                    'class': 'form-control js-required',
+                    'data-id': 'name',
+                    'id': 'entity-name'
                 }),
             'category': TextInput(
                 attrs={
-                    'id': 'entity-category',
-                    'class': 'form-control js-new-entity js-required'
+                    'class': 'form-control js-required',
+                    'data-id': 'category',
+                    'id': 'entity-category'
                 }),
             'price': NumberInput(
                 attrs={
+                    'class': 'form-control js-required',
+                    'data-id': 'price',
                     'id': 'entity-price',
-                    'class': 'form-control js-new-entity',
                     'max': '1000000.00',
                     'min': '0.00',
                     'pattern': '[0-9]',
