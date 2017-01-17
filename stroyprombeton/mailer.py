@@ -18,7 +18,7 @@ def send_form(*, form, template, subject):
     send_mail(
         subject='Stroyprombeton | {}'.format(subject),
         message=message,
-        from_email=settings.SHOP_EMAIL,
+        from_email=settings.EMAIL_SENDER,
         recipient_list=[settings.SHOP_EMAIL],
         html_message=message
     )
@@ -37,7 +37,7 @@ def send_form_with_files(*, form, files, template, subject, **context):
     mail = EmailMultiAlternatives(
         subject='Stroyprombeton | {}'.format(subject),
         body=message,
-        from_email=settings.SHOP_EMAIL,
+        from_email=settings.EMAIL_SENDER,
         to=[settings.SHOP_EMAIL],
         connection=get_connection()
     )
