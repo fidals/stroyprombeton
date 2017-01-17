@@ -127,14 +127,6 @@ select {
     }
   }
 
-  .valid &-file {
-    border-color: $c-input-valid;
-  }
-
-  .invalid &-file {
-    border-color: $c-input-invalid;
-  }
-
   &-required {
     &:valid {
       border-color: $c-input-valid;

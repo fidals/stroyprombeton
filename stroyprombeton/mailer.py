@@ -1,5 +1,5 @@
 from django.conf import settings
-from django.core.mail import send_mail, get_connection, EmailMultiAlternatives
+from django.core.mail import send_mail
 from django.template.loader import render_to_string
 
 
@@ -22,29 +22,3 @@ def send_form(*, form, template, subject):
         recipient_list=[settings.SHOP_EMAIL],
         html_message=message
     )
-
-
-def send_form_with_files(*, form, files, template, subject, **context):
-    message = render_to_string(
-        template,
-        {
-            'form': form.cleaned_data,
-            'site_info': settings.SITE_INFO,
-            **context
-        },
-    )
-
-    mail = EmailMultiAlternatives(
-        subject='Stroyprombeton | {}'.format(subject),
-        body=message,
-        from_email=settings.EMAIL_SENDER,
-        to=[settings.SHOP_EMAIL],
-        connection=get_connection()
-    )
-
-    mail.attach_alternative(message, 'text/html')  # Attach message
-
-    for file in files:  # Attach files
-        mail.attach(filename=file._name, content=file.read(), mimetype=file.content_type)
-
-    mail.send()

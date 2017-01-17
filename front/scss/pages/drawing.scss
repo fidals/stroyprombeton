@@ -11,8 +11,13 @@
     width: 66%;
   }
 
-  &-input {
-    margin: 0 0 25px;
+
+  .input-field-wrapper {
+    margin: 0 0 25px 0;
+
+    .input-field {
+      width: 99%;
+    }
   }
 
   &-images {

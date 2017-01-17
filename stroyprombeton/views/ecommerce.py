@@ -57,13 +57,11 @@ class OrderDrawing(FormView, CustomPageView):
     )
 
     def post(self, request, *args, **kwargs):
-        files = request.FILES.getlist('file')
         form = self.get_form()
 
         if form.is_valid():
-            mailer.send_form_with_files(
+            mailer.send_form(
                 form=form,
-                files=files,
                 template='ecommerce/email_drawing.html',
                 subject='Изготовление по индивидуальным чертежам',
             )
