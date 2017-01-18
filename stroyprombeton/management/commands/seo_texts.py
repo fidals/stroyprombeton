@@ -1,56 +1,115 @@
 from functools import reduce
+from operator import or_
 
 from django.db import transaction
+from django.db.models.expressions import Q
 from django.core.management.base import BaseCommand
 
 from stroyprombeton.models import ProductPage
 
 
-product_page_content = '''
+product_page = {
+    'content': '''
 Производим, продаем и доставляем по России {}.
-В Санкт-Петербурге и Москве работает самовывоз.
+В Санкт-Петербурге и Ленинградской области работает самовывоз.
 У нас нет фиксированный цены доставки, поэтому звоните менеджеру, чтобы ее узнать.
 Менеджер поможет выбрать способ доставки, рассчитает стоимость и назовет срок.
-Следим за тем, чтобы изделия доставляли без дефектов, поэтому даем гарантию.
-'''
+Следим за тем, чтобы изделия доставляли без дефектов, поэтому даем гарантию.''',
+    'title': '{} - {}. Цена: {}. Купить с доставкой по Москве, Санкт-Петербург и всей России.',
+    'keywords': '{}',
+    # \U0001F6A9 - it's flag symbol. https://goo.gl/5qYGp1
+    'description': '\U0001F6A9 Купить {} на заводе железобетонных изделий "СТК-Промбетон"',
+}
 
 population_settings = [
     {
         'populate_model': ProductPage,
         'populate_fields': {
-            'content': {'template': product_page_content, 'entity_fields': ['name']}
-        },
-        'exclude': {
-            'content__iendswith': product_page_content[-(len(product_page_content) // 3)]
+            'content': {
+                'template': {
+                    'text': product_page['content'],
+                    'variables': ['name'],
+                },
+            },
+            'title': {
+                'template': {
+                    'text': product_page['title'],
+                    'variables': ['model.mark', 'name', 'model.price'],
+                    'correction': {
+                        'model.price': lambda e, v: v if not float(v) == 0 else 'по запросу',
+                        'name': lambda e, v: v.replace(e.model.mark, ''),
+                    }
+                },
+            },
+            'description': {
+                'template': {
+                    'text': product_page['description'],
+                    'variables': ['name'],
+                },
+            },
+            'keywords': {
+                'template': {
+                    'text': product_page['keywords'],
+                    'variables': ['name', 'model.mark'],
+                },
+            }
         }
     }
 ]
 
 
 @transaction.atomic
-def populate_entities(populate_model, populate_fields, exclude=None):
-    def populate(entity_, field_name, value):
-        if all(field_name in value for field_name in ['entity_fields', 'template']):
-            template, entity_fields = value.get('template'), value.get('entity_fields')
-            values = [getattr(entity, field_) for field_ in entity_fields]
-            setattr(entity_, field_name, template.format(*values))
-        elif 'text' in value:
-            setattr(entity_, field_name, value)
+def populate_entities(populate_model, populate_fields):
+    def get_by_attrs(entity_, attrs: str) -> str:
+        """
+        Get value for template from attribute chain.
+        >>> entity_ = ProductPage.objects.get(parent__name='Pipe')
+        >>> get_by_attrs(entity_,'model.category.page.name')
+        >>> 'Pipe'
+        """
+        return str(reduce(getattr, attrs.split('.'), entity_))
 
-    exclude = exclude or {}
-    entities = populate_model.objects.exclude(**exclude)
+    def get_template_value(entity_, field_name_, correction=None):
+        if '.' in field_name_:
+            value = get_by_attrs(entity_, field_name_)
+        else:
+            value = getattr(entity_, field_name_, '')
+
+        if correction and field_name_ in correction:
+            value = correction[field_name_](entity_, value)
+
+        return value.strip()
+
+    def populate(entity_, field_name_, template):
+        text, entity_fields, correction = (
+            template.get('text'), template.get('variables'), template.get('correction')
+        )
+
+        values = [
+            get_template_value(entity_, field, correction)
+            for field in entity_fields
+        ]
+
+        setattr(entity_, field_name_, text.format(*values))
+
     populated_fields = set()
 
-    for entity in entities:
-        for field, content in populate_fields.items():
-            populated_fields.add(field)
-            populate(entity, field, content)
-        entity.save()
+    entities = populate_model.objects.filter(
+        reduce(or_, (Q(**{k: ''}) for k in populate_fields.keys()))
+    )
+
+    for entity in entities.iterator():
+        for field_name, fields_populate_settings in populate_fields.items():
+            populate(entity, field_name, fields_populate_settings.get('template'))
+            entity.save()
+
+            populated_fields.add(field_name)
 
     if populated_fields:
-        populated_fields = reduce(lambda x, y: '{}, {}'.format(x, y), populated_fields)
-
-    print('Was populated {} for {} pages...'.format(populated_fields or '', entities.count()))
+        populated_fields = reduce('{}, {}'.format, populated_fields)
+        print('Was populated {} for {}...'.format(
+            populated_fields, populate_model._meta.model_name
+        ))
 
 
 class Command(BaseCommand):
