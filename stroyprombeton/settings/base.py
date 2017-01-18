@@ -194,13 +194,13 @@ SITE_INFO = {
 }
 
 CUSTOM_PAGES = {
-    'category_tree': {
+    'category-tree': {
         'slug': 'gbi',
         'title': 'Каталог товаров',
         'name': 'Все категории',
         'menu_title': 'Каталог',
     },
-    'client_feedbacks': {
+    'client-feedbacks': {
         'slug': 'client-feedbacks',
         'name': 'Отзывы',
     },

@@ -24,7 +24,7 @@ a {
 }
 
 .content {
-  flex: 1 0;
+  flex: 1 0 auto;
   padding: $h-header 0;
 }
 
@@ -63,6 +63,7 @@ a {
 
 .more-link {
   color: $c-btn-orange;
+  cursor: pointer;
   display: block;
   font-size: $f-size-base - 3;
   font-weight: 600;

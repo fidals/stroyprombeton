@@ -6,6 +6,7 @@ const configs = (() => {
   const DOM = {
     $phoneInputs: $('.js-masked-phone'),
     $tooltipTarget: $('.js-object-tooltip.active'),
+    $galleryItem: $('.js-featherlight-gallery'),
   };
 
   const labels = {
@@ -45,6 +46,11 @@ const configs = (() => {
         mouseenter: true,
       },
     });
+
+    /**
+     * https://goo.gl/Lw1RG9 - Featherlight Gallery
+     */
+    DOM.$galleryItem.featherlightGallery();
   }
 
   /**

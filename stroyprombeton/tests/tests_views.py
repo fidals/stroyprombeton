@@ -370,9 +370,6 @@ class IndexPage(TestCase):
     def test_has_news(self):
         self.assertIn('news-item', self.content)
 
-    def test_has_reviews(self):
-        self.assertIn('js-reviews-item', self.content)
-
     def test_has_link_on_region(self):
         """Index page should contain correct link to region"""
         region = FlatPage.objects.get(slug='empire-center-state')

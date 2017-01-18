@@ -156,7 +156,7 @@
         (products) => {
           mediator.publish('onProductsLoad', products);
         },
-        response => console.warn(response)
+        response => console.warn(response),
       );
   }
 
@@ -182,7 +182,7 @@
             mediator.publish('onProductsFilter', products);
             DOM.$showMoreLink.attr('data-load-count', config.productsToFetch);
           },
-          response => console.warn(response)
+          response => console.warn(response),
         );
     }, 300);
   }

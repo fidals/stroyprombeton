@@ -70,11 +70,16 @@ const path = {
 
     js: {
       vendors: [
-        'front/js/vendors/shared/*.js',
+        'front/js/vendors/shared/jquery-2.2.4.min.js',
+        'front/js/vendors/shared/jquery.mask.min.js',
+        'front/js/vendors/shared/autocomplete.min.js',
+        'front/js/vendors/shared/cookie.js',
+        'front/js/vendors/shared/tooltipster.bundle.min.js',
+        'front/js/vendors/shared/featherlight.core.with.gallery.js',
       ],
 
       vendorsPages: [
-        'front/js/vendors/*.js',
+        'front/js/vendors/jquery.kladr.min.js',
       ],
 
       common: [

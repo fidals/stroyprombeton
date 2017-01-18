@@ -7,17 +7,26 @@ NOTE:
     3. It overwrites stroyprombeton/fixtures/dump.json
     4. It can only run if your default database called `test`.
 """
+import os
 
 from django.conf import settings
+from django.core.files.images import ImageFile
 from django.core.management import call_command
 from django.core.management.base import BaseCommand
 
-from pages.models import CustomPage, FlatPage, ModelPage, Page
+from images.models import Image
+from pages.models import CustomPage, FlatPage, ModelPage
 from pages.utils import save_custom_pages
 
 from stroyprombeton.models import Product, Category
+import stroyprombeton.tests
 
 CATEGORY_PATTERN = 'Category #{} of #{}'
+REVIEWS_COUNT = 9
+REVIEW_IMAGE = os.path.join(
+    os.path.dirname(os.path.abspath(stroyprombeton.tests.__file__)),
+    'assets/review.jpg'
+)
 
 
 def create_pages():
@@ -28,7 +37,6 @@ def create_pages():
             # from settings.CUSTOM_PAGES
             parent=CustomPage.objects.get(slug='regions'),
             position=0,
-            type=Page.FLAT_TYPE
         )
 
     def create_news():
@@ -37,21 +45,24 @@ def create_pages():
             slug='krishnas-temple',
             # from settings.CUSTOM_PAGES
             parent=CustomPage.objects.get(slug='news'),
-            content='Viktor gave some GBI to Krisnas. Good guy!',
+            content='Viktor gave some GBI to Krishnas. Good guy!',
             position=0,
-            type=Page.FLAT_TYPE
         )
 
     def create_reviews():
-        FlatPage.objects.create(
-            name='Krishnas like Viktor\'s GBI',
-            slug='krishnas-gbi',
-            # from settings.CUSTOM_PAGES
-            parent=CustomPage.objects.get(slug='client-feedbacks'),
-            content='Krishnas like Viktor\'s GBI so much. They ask more GBI.',
-            position=0,
-            type=Page.FLAT_TYPE
-        )
+        # Start from 1 for `position` instead of 0.
+        for i in range(1, REVIEWS_COUNT + 1):
+            review = FlatPage.objects.create(
+                name='"Some company" respect #{}'.format(i),
+                # from settings.CUSTOM_PAGES
+                parent=CustomPage.objects.get(slug='client-feedbacks'),
+                position=i,
+            )
+
+            Image.objects.create(
+                model=review,
+                image=ImageFile(open(REVIEW_IMAGE, mode='rb')),
+            )
 
     save_custom_pages()
     create_regions()
@@ -73,7 +84,6 @@ class Command(BaseCommand):
         self._product_id = 0
 
         self.purge_tables()
-        save_custom_pages()
         create_pages()
         roots = self.create_root(count=2)
         second_level = self.create_children(count=2, parents=roots)
@@ -96,7 +106,10 @@ class Command(BaseCommand):
     def create_root(count):
         get_name = 'Category root #{}'.format
         return [
-            Category.objects.create(name=get_name(i), page=ModelPage.objects.create(name=get_name(i)))
+            Category.objects.create(
+                name=get_name(i),
+                page=ModelPage.objects.create(name=get_name(i)),
+            )
             for i in range(count)
         ]
 

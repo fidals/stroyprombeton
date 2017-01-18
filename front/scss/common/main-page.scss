@@ -304,59 +304,27 @@
   padding: 44px 0 74px;
 
   &-content {
-    position: relative;
-    height: 123px;
-
-    &-item {
-      color: $c-reviews;
-      left: 0;
-      line-height: 1.33;
-      font-size: $f-size-base + 2;
-      font-weight: 400;
-      opacity: 0;
-      position: absolute;
-      transition: all 0.3s ease;
-      top: 0;
+    &.overflowed {
+      overflow-y: scroll;
+      padding: 1px 0 0;
     }
 
-    &-item.active {
-      opacity: 1;
+    &-img-wrapper {
+      display: block;
+      margin: 0 0 15px;
     }
 
-    &-item-title {
-      color: $c-reviews-title;
-      font-size: $f-size-base + 4;
-      font-weight: 600;
-      margin-bottom: 22px;
-    }
-  }
-
-  &-nav {
-    margin-top: 3px;
-    padding-right: 41px;
-    text-align: center;
-
-    &-item {
-      background-color: $c-reviews-nav-item;
-      border-radius: 50%;
-      cursor: pointer;
-      display: inline-block;
-      height: 9px;
-      margin: 0 4px;
-      transition: all 0.2s ease;
-      width: 9px;
+    &-img {
+      box-shadow: 0 0 0 1px $c-reviews-img-border;
     }
 
-    &-item.active,
-    &-item:hover {
-      background-color: $c-reviews-nav-item-active;
+    &-text {
+      margin: 0 0 40px;
     }
   }
 
   &-more {
     border-bottom: 1px solid $c-reviews-bot-line;
-    margin-top: 15px;
-    padding-bottom: 20px;
-    text-align: right;
+    padding-bottom: 15px;
   }
 }

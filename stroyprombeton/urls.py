@@ -56,6 +56,7 @@ urlpatterns = [
     url(r'admin/', include(admin_urls)),
     url(r'^gbi/', include(catalog_urls)),
     url(r'^fetch-products/$', views.fetch_products, name='fetch_products'),
+    url(r'^fetch-reviews/$', views.fetch_reviews, name='fetch_reviews'),
     url(r'^order-drawing/', views.OrderDrawing.as_view(), name='order_drawing'),
     url(r'^order-price/', views.OrderPrice.as_view(), name='order_price'),
     url(r'^page/', include('pages.urls')),

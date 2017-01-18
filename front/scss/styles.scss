@@ -1,11 +1,9 @@
 // ================================================================
 // IMPORTS
 // ================================================================
-@import url("https://fonts.googleapis.com/css?family=Open+Sans:400,300,600,700&subset=latin,cyrillic");
+@import url("https://fonts.googleapis.com/css?family=Open+Sans:400,600,700&subset=latin,cyrillic");
 @import "utilities/variables";
 @import "utilities/utilities";
 @import "utilities/normalize";
-@import "vendors/flexboxgrid";
+@import "vendors/shared/*";
 @import "common/**/*";
-@import "vendors/font-awesome/font-awesome";
-@import "vendors/tooltipster";

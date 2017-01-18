@@ -8,6 +8,8 @@ $c-error-text: #ed0b00;
 $c-icon-remove: #9b9b9b;
 $c-link: #47a1d2;
 $c-link-hover: #07d;
+$c-link-grey: #404040;
+$c-link-grey-hovered: #979797;
 $c-orange: #fc7126;
 $c-selection: #fc7126;
 $c-separator-grey: #bababa;
@@ -15,15 +17,13 @@ $c-show-more-hover: #bd6739;
 $c-show-more-active: #904f2b;
 $c-show-more-disabled: #bababa;
 $c-table-row-bg: #f2f2f2;
+$c-teaser-bg: #f8f8f8;
+$c-teaser-bg-hover: #fbfbfb;
 $c-text: #212121;
 $c-text-orange: #fc7126;
 $c-text-grey: #acacac;
 $c-text-muted: #bababa;
-$c-link-grey: #404040;
-$c-link-grey-hovered: #979797;
 $c-white: #fff;
-$c-teaser-bg: #f8f8f8;
-$c-teaser-bg-hover: #fbfbfb;
 
 // Buttons
 $c-btn-disabled: #bababa;
@@ -111,19 +111,12 @@ $c-offer-title: #1c2e36;
 $c-offer-title-hover: #979797;
 $c-about-bg: #fbfbfb;
 $c-about-h2: #171237;
-$c-reviews: #1c2e36;
-$c-reviews-title: #2e2e2e;
-$c-reviews-nav-item: #bdc3c7;
-$c-reviews-nav-item-active: #242424;
 $c-reviews-bot-line: #e6eaeb;
+$c-reviews-img-border: #ecf0f2;
 
 // Page Catalog
 $c-catalog-title-bg: #fc7126;
 $c-catalog-title-hover-bg: #bd6739;
-$c-catalog-sub: #404040;
-$c-catalog-sub-hover: #fc7126;
-$c-catalog-sub-ico: #fc7126;
-$c-catalog-sub-item: #404040;
 
 // Page Category
 $c-category-filter-clear: #fc7126;
