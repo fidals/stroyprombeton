@@ -125,6 +125,7 @@ ASSETS_DIR = os.path.join(BASE_DIR, 'assets')
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'front/build'),
+    ASSETS_DIR,
 ]
 
 # Need for debug_toolbar
