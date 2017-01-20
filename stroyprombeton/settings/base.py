@@ -121,6 +121,7 @@ USE_TZ = True
 # https://goo.gl/HTQqfF
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+ASSETS_DIR = os.path.join(BASE_DIR, 'assets')
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'front/build'),
@@ -144,13 +145,25 @@ DATABASES = {
 
 
 # -------- SITE DATA -------- #
-PAYMENT_OPTIONS = (('cash', 'Наличные'),
-                   ('cashless', 'Безналичные и денежные переводы'))
+BASE_URL = 'http://www.stroyprombeton.ru'
+
+SHOP = {
+    'id': '69886',
+    'scid': '64788',
+    'success_url': BASE_URL + '/order-success/',
+    'fail_url': BASE_URL + '/',
+    'cps_phone': '+78126481380',
+    'cps_email': 'info@stroyprombeton.ru',
+}
+
+PAYMENT_OPTIONS = (
+    ('cash', 'Наличные'),
+    ('cashless', 'Безналичные и денежные переводы')
+)
 
 PRODUCT_MODEL = 'stroyprombeton.Product'
 CART_ID = 'cart'
 
-BASE_URL = 'http://www.stroyprombeton.ru'
 SITE_CREATED = datetime(2013, 1, 1)
 
 PLACEHOLDER_IMAGE = 'images/common/image-thumb.png'

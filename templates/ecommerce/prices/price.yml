@@ -1,0 +1,55 @@
+{% load stb_extras %}
+
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE yml_catalog SYSTEM "shops.dtd">
+<yml_catalog date="{% now "Y-m-d H:i" %}">
+  <shop>
+    <name>Stroyprombeton</name>
+    <company>Stroyprombeton</company>
+    <url>{{ base_url }}</url>
+    <platform>Django</platform>
+    <version>1.9.5</version>
+    <email>info@stroyprombeton.ru</email>
+    <currencies>
+      <currency id="RUR" rate="1"/>
+    </currencies>
+    <categories>
+      {% for category in categories %}
+        <category id="{{ category.id }}" {% if category.parent %}parentId="{{ category.parent.id }}"{% endif %}>
+          {{ category.name}}
+        </category>
+      {% endfor %}
+    </categories>
+    <cpa>0</cpa>
+    <offers>
+      {% for product in products %}
+        <offer id="{{ product.id }}" available="{{ product.in_stock|yesno:'true,false' }}">
+          <name>{{ product.mark }} - {{ product.name }} {{ product.specification }}</name>
+          <description>
+            Купить {{ product.name }} {{ product.specification }}. Доставка по Москве, МО, Санкт-Петербург и другим
+            регионам России. Гарантия качества от завода жби «СТК-Промбетон».
+          </description>
+          {% if product.length %}<param name="Длина" unit="мм">{{ product.length }}</param>{% endif %}
+          {% if product.width %}<param name="Ширина" unit="мм">{{ product.width }}</param>{% endif %}
+          {% if product.height %}<param name="Высота" unit="мм">{{ product.height }}</param>{% endif %}
+          {% if product.weight %}<param name="Вес" unit="кг">{{ product.weight }}</param>{% endif %}
+          {% if product.volume %}<param name="Объём" unit="м3">{{ product.volume }}</param>{% endif %}
+          {% if product.diameter_in %}
+            <param name="Диаметр внешний" unit="мм">{{ product.diameter_in }}</param>
+          {% endif %}
+          {% if product.diamenter_out %}
+            <param name="Диаметр внутренний" unit="мм">{{ product.diamenter_out }}</param>
+          {% endif %}
+          <url>{{ product.utm_url }}</url>
+          <price>{{ product.price|floatformat:-1 }}</price>
+          <currencyId>RUR</currencyId>
+          {% include 'ecommerce/prices/pictures.yml' with product=product base_url=base_url only %}
+          <categoryId>{{ product.category.id }}</categoryId>
+          <store>false</store>
+          <pickup>true</pickup>
+          <delivery>true</delivery>
+        </offer>
+      {% endfor %}
+    </offers>
+  </shop>
+</yml_catalog>
