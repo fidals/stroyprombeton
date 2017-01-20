@@ -14,10 +14,10 @@ from stroyprombeton.management.commands.seo_texts import populate_entities
 class ImportTest(TestCase):
 
     PRICE_FILES = ['yandex.yml']
+    call_command('price')
 
     @classmethod
     def setUpTestData(cls):
-        call_command('price')
         cls.pricelist_body = (
             ElementTree.parse(ImportTest.get_price_file_path('yandex.yml')).getroot().find('shop')
         )

@@ -12,7 +12,11 @@ from pages.models import FlatPage, CustomPage
 def fetch_reviews(request):
     """Fetch reviews with images for gallery."""
     first_triple = [1, 2, 3]
-    reviews = FlatPage.objects.all().exclude(position__in=first_triple).order_by('position')
+    reviews = (
+        FlatPage.objects
+            .filter(parent__slug='client-feedbacks')
+            .exclude(position__in=first_triple).order_by('position')
+    )
 
     return render(
         request,
