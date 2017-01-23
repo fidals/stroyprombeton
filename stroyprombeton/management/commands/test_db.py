@@ -22,7 +22,7 @@ from stroyprombeton.models import Product, Category
 import stroyprombeton.tests
 
 CATEGORY_PATTERN = 'Category #{} of #{}'
-REVIEWS_COUNT = 9
+FEEDBACKS_COUNT = 9
 REVIEW_IMAGE = os.path.join(
     os.path.dirname(os.path.abspath(stroyprombeton.tests.__file__)),
     'assets/review.jpg'
@@ -49,9 +49,9 @@ def create_pages():
             position=0,
         )
 
-    def create_reviews():
+    def create_feedbacks():
         # Start from 1 for `position` instead of 0.
-        for i in range(1, REVIEWS_COUNT + 1):
+        for i in range(1, FEEDBACKS_COUNT + 1):
             review = FlatPage.objects.create(
                 name='"Some company" respect #{}'.format(i),
                 # from settings.CUSTOM_PAGES
@@ -67,7 +67,7 @@ def create_pages():
     save_custom_pages()
     create_regions()
     create_news()
-    create_reviews()
+    create_feedbacks()
 
 
 class Command(BaseCommand):

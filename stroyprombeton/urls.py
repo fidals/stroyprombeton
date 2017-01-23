@@ -26,6 +26,7 @@ catalog_urls = [
 url_name = Page.CUSTOM_PAGES_URL_NAME
 custom_pages = [
     url(r'^(?P<page>)$', views.IndexPage.as_view(), name=url_name),
+    url(r'^(?P<page>client-feedbacks)/$', views.ClientFeedbacksPageView.as_view(), name=url_name),
     url(r'^(?P<page>drawing-success)/$', views.OrderDrawingSuccess.as_view(), name=url_name),
     url(r'^(?P<page>gbi)/$', views.CategoryTree.as_view(), name=url_name),
     url(r'^(?P<page>news)/$', views.NewsPageView.as_view(), name=url_name),
@@ -33,8 +34,8 @@ custom_pages = [
     url(r'^(?P<page>order)/$', views.OrderPage.as_view(), name=url_name),
     url(r'^(?P<page>order-drawing)/$', views.OrderDrawing.as_view(), name=url_name),
     url(r'^(?P<page>order-success)/$', views.OrderSuccess.as_view(), name=url_name),
-    url(r'^(?P<page>search)/$', views.Search.as_view(), name=url_name),
     url(r'^(?P<page>regions)/$', views.RegionsPageView.as_view(), name=url_name),
+    url(r'^(?P<page>search)/$', views.Search.as_view(), name=url_name),
 ]
 
 ecommerce_urls = [
@@ -56,7 +57,6 @@ urlpatterns = [
     url(r'admin/', include(admin_urls)),
     url(r'^gbi/', include(catalog_urls)),
     url(r'^fetch-products/$', views.fetch_products, name='fetch_products'),
-    url(r'^fetch-reviews/$', views.fetch_reviews, name='fetch_reviews'),
     url(r'^order-drawing/', views.OrderDrawing.as_view(), name='order_drawing'),
     url(r'^order-price/', views.OrderPrice.as_view(), name='order_price'),
     url(r'^page/', include('pages.urls')),

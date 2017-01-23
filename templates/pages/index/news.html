@@ -5,7 +5,7 @@
 <section class="mainpage-news">
   <h2 class="news-h2 heading-h2">Новости</h2>
 
-  <ul>
+  <ul class="news-list">
     {% for item in news %}
       <li class="news-item">
         <a class="news-item-link" href="{{ item.url }}">
@@ -31,10 +31,8 @@
     {% endfor %}
   </ul>
 
-  <div class="news-about">
-    <a class="more-link" href="{% url 'custom_page' 'news' %}">
-      Все новости
-      <i class="fa fa-arrow-right more-link-arrow" aria-hidden="true"></i>
-    </a>
-  </div>
+  <a class="more-link text-right" href="{% url 'custom_page' 'news' %}">
+    Все новости
+    <i class="fa fa-arrow-right more-link-arrow" aria-hidden="true"></i>
+  </a>
 </section>

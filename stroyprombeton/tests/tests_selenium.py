@@ -425,32 +425,3 @@ class IndexPage(SeleniumTestCase):
 
         self.assertTrue(send_btn.get_attribute('disabled'))
         self.assertFalse(modal.is_displayed())
-
-    def test_reviews(self):
-        reviews_count = 9
-
-        # There are should be 3 reviews by default on page.
-        reviews = self.browser.find_elements_by_class_name('js-reviews-item')
-        self.assertTrue(len(reviews), 3)
-
-        # There are should be > 3 reviews on page after fetch...
-        self.browser.find_element_by_class_name('js-more-reviews').click()
-        wait()
-        reviews = self.browser.find_elements_by_class_name('js-reviews-item')
-        self.assertTrue(len(reviews) > 3)
-
-        # ...but only 6 of them should be visible.
-        reviews = self.browser.find_elements_by_class_name('js-reviews-item')
-        visible_reviews = [item for item in reviews if item.is_displayed()]
-        self.assertTrue(len(visible_reviews) == 6)
-
-        # All reviews should be visible after scroll to the bottom of reviews section.
-        for i in range(0, 3):
-            self.browser.execute_script(
-                'var reviewsWrapper = document.getElementById("reviews-wrapper");' +
-                'reviewsWrapper.scrollTop = 100;'
-            )
-        wait()
-        reviews = self.browser.find_elements_by_class_name('js-reviews-item')
-        visible_reviews = [item for item in reviews if item.is_displayed()]
-        self.assertTrue(len(visible_reviews) == reviews_count)

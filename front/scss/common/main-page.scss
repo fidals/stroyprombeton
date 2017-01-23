@@ -232,7 +232,7 @@
 // NEWS
 // ================================================================
 .news {
-  padding: 28px 0;
+  padding: 0 0 50px;
 
   &-h2 {
     margin-bottom: 40px;
@@ -291,40 +291,34 @@
     margin-bottom: 10px;
   }
 
-  &-about {
-    margin-top: 23px;
-    text-align: right;
+  &-list {
+    margin-bottom: 20px;
   }
 }
 
 // ================================================================
-// REVIEWS
+// FEEDBACKS
 // ================================================================
-.reviews {
-  padding: 44px 0 74px;
+.feedbacks {
+  padding: 0 0 50px;
 
   &-content {
-    &.overflowed {
-      overflow-y: scroll;
-      padding: 1px 0 0;
-    }
-
     &-img-wrapper {
       display: block;
       margin: 0 0 15px;
     }
 
     &-img {
-      box-shadow: 0 0 0 1px $c-reviews-img-border;
+      box-shadow: 0 0 0 1px $c-feedbacks-img-border;
     }
 
     &-text {
-      margin: 0 0 40px;
+      margin: 0 0 20px;
     }
   }
 
   &-more {
-    border-bottom: 1px solid $c-reviews-bot-line;
+    border-bottom: 1px solid $c-feedbacks-bot-line;
     padding-bottom: 15px;
   }
 }

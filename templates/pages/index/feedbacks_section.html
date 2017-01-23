@@ -1,0 +1,28 @@
+{% load images %}
+{% load thumbnail %}
+{% load stb_extras %}
+{% load pages_extras %}
+
+<div class="container container-fluid">
+  <div class="row">
+    <div class="col-xs-offset-1 col-xs-3">
+      <h2 class="main-h2">Отзывы заказчиков и партнеров</h2>
+    </div>
+    <div class="col-xs-7">
+      <ul class="feedbacks-content row" id="feedbacks-wrapper">
+        {% include 'pages/feedback_items.html' with feedbacks=feedbacks only %}
+      </ul>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-xs-offset-4 col-xs-7">
+      <div class="feedbacks-more">
+        <a class="more-link text-right" href="{% custom_url 'client-feedbacks' %}">
+          Больше отзывов
+          <i class="fa fa-arrow-right more-link-arrow" aria-hidden="true"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>

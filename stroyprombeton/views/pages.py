@@ -1,28 +1,11 @@
 from itertools import groupby
 
 from django.conf import settings
-from django.shortcuts import render
 from mptt.utils import get_cached_trees
 
 import pages.views
 from ecommerce.forms import OrderBackcallForm
 from pages.models import FlatPage, CustomPage
-
-
-def fetch_reviews(request):
-    """Fetch reviews with images for gallery."""
-    first_triple = [1, 2, 3]
-    reviews = (
-        FlatPage.objects
-            .filter(parent__slug='client-feedbacks')
-            .exclude(position__in=first_triple).order_by('position')
-    )
-
-    return render(
-        request,
-        'pages/index/review_items.html',
-        {'reviews': reviews}
-    )
 
 
 def get_cached_regions():
@@ -71,6 +54,25 @@ class IndexPage(pages.views.CustomPageView):
             'backcall_form': OrderBackcallForm(),
             'partners': settings.PARTNERS,
             'regions': get_cached_regions(),
+        }
+
+
+class ClientFeedbacksPageView(pages.views.CustomPageView):
+    template_name = 'pages/feedbacks_page.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(ClientFeedbacksPageView, self).get_context_data(**kwargs)
+
+        first_triple = [1, 2, 3]
+        feedbacks = (
+            FlatPage.objects
+                .filter(parent__slug='client-feedbacks')
+                .exclude(position__in=first_triple).order_by('position')
+        )
+
+        return {
+            **context,
+            'feedbacks': feedbacks,
         }
 
 
