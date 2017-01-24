@@ -63,11 +63,10 @@ class ClientFeedbacksPageView(pages.views.CustomPageView):
     def get_context_data(self, **kwargs):
         context = super(ClientFeedbacksPageView, self).get_context_data(**kwargs)
 
-        first_triple = [1, 2, 3]
         feedbacks = (
             FlatPage.objects
                 .filter(parent__slug='client-feedbacks')
-                .exclude(position__in=first_triple).order_by('position')
+                .order_by('position')
         )
 
         return {

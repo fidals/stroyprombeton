@@ -9,7 +9,11 @@
       {# TODO Needed create logic for images and empty thumb. #}
       {# http://youtrack.stkmail.ru/issue/dev-811 #}
       <td class="table-td table-code">
-        {{ product.code|default:'' }}
+        {% if product.code %}
+          {{ product.code }}
+        {% else %}
+          <p class="text-center">-</p>
+        {% endif %}
       </td>
       <td class="table-td table-name">
         <a class="table-link" href="{{ product.url }}">

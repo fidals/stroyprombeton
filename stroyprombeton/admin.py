@@ -23,11 +23,14 @@ class ProductInline(inlines.ProductInline):
         'fields': (
             ('name', 'id'),
             ('category', 'correct_category_id'),
-            ('price', 'is_new_price',),
+            ('price', 'is_new_price'),
             ('in_stock', 'is_popular'),
             ('code', 'mark'),
             'specification',
-            ('length', 'width', 'height', 'weight', 'volume', 'diameter_out', 'diameter_in')
+            ('length', 'width'),
+            ('height', 'weight'),
+            ('diameter_out', 'diameter_in'),
+            'volume',
         )
     }),)
 
