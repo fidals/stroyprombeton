@@ -1,5 +1,6 @@
 from catalog.views import search
 from catalog.models import search as search_models
+from ecommerce.forms import OrderBackcallForm
 
 from stroyprombeton.views.helpers import MODEL_MAP
 
@@ -46,3 +47,11 @@ class Search(search.Search):
         products = products[:left_limit]
 
         return categories, products
+
+    def get_context_data(self, **kwargs):
+        context = super(Search, self).get_context_data(**kwargs)
+
+        return {
+            **context,
+            'backcall_form': OrderBackcallForm(),
+        }

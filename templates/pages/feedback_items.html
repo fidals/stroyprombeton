@@ -6,9 +6,9 @@
   {% if feedback.main_image %}
     <li class="feedbacks-content-item js-feedback-item
       {% if page.slug == 'client-feedbacks' %}
-        col-md-3
+        col-sm-3
       {% else %}
-        col-md-6 col-lg-4
+        col-sm-4
       {% endif %}">
       {% thumbnail feedback.main_image 'x270' as image %}
         <a class="feedbacks-content-img-wrapper js-featherlight-gallery" href="#"
