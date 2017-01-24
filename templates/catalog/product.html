@@ -15,10 +15,10 @@
       <span class="product-serial-val">{{ product.code }}</span>
     {% endif %}
 
-    {% if product.specification %}
+    {% if product.category.specification %}
       <span class="product-serial-title">Серия</span>
       {# TODO: `specification` should be replaced by `spec` #}
-      <span class="product-serial-val">{{ product.specification }}</span>
+      <span class="product-serial-val">{{ product.category.specification }}</span>
     {% endif %}
 
     {% if product.mark %}

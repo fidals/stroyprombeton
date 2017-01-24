@@ -107,7 +107,7 @@ class ProductPage(catalog.ProductPage):
 
         siblings = (
             Product.objects
-                .filter(specification=product.specification)
+                .get_by_category(product.category)
                 .exclude(id=product.id)
                 .select_related('page')
         )

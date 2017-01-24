@@ -1,3 +1,5 @@
+from django.db.models import F, Value, CharField
+from django.db.models.functions import Concat
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.utils.decorators import method_decorator
 
@@ -10,7 +12,9 @@ from stroyprombeton.models import Product, Category
 set_csrf_cookie = method_decorator(ensure_csrf_cookie, name='dispatch')
 
 MODEL_MAP = {
-    'product': Product,
+    'product': Product.objects.annotate(
+        search_field=Concat(F('name'), Value(' '), F('mark'), output_field=CharField())
+    ),
     'category': Category,
     'page': Page
 }

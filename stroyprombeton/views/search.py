@@ -16,6 +16,7 @@ class Autocomplete(search.Autocomplete):
     extra_entity_fields = {
         'product': {
             'mark',
+            'search_field',
         },
     }
 
@@ -31,9 +32,14 @@ class Search(search.Search):
     # Tail task: https://goo.gl/FFlpFF
     def search(self, term, limit, ordering=None):
         """Perform a search on models. Return evaluated QuerySet."""
-        product_lookups = ['name__icontains', 'id__contains', 'code__contains']
-        categories = search_models(term, self.category, self.lookups)
-        products = search_models(term, self.product, product_lookups, ordering)
+        stripped_term = term.strip()
+
+        product_lookups = [
+            'search_field__icontains', 'id__contains', 'code__contains',
+        ]
+
+        categories = search_models(stripped_term, self.category, self.lookups)
+        products = search_models(stripped_term, self.product, product_lookups, ordering)
 
         categories = categories[:limit]
         left_limit = limit - len(categories)

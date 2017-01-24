@@ -5,8 +5,10 @@ from django.db import transaction
 from django.db.models.expressions import Q
 from django.core.management.base import BaseCommand
 
-from stroyprombeton.models import ProductPage
+from stroyprombeton.models import ProductPage, CategoryPage
 
+# https://goo.gl/5qYGp1
+flag_symbol = '\U0001F6A9'
 
 product_page = {
     'content': '''
@@ -17,11 +19,40 @@ product_page = {
 Следим за тем, чтобы изделия доставляли без дефектов, поэтому даем гарантию.''',
     'title': '{} - {}. Цена: {}. Купить с доставкой по Москве, Санкт-Петербург и всей России.',
     'keywords': '{}',
-    # \U0001F6A9 - it's flag symbol. https://goo.gl/5qYGp1
-    'description': '\U0001F6A9 Купить {} на заводе железобетонных изделий "СТК-Промбетон"',
+    'description': flag_symbol + ' Купить {} на заводе железобетонных изделий "СТК-Промбетон"',
+}
+
+category_page = {
+    'title': '{} - низкие цены от производителя. Купить с доставкой по Москве, Санкт-Петербург и '
+             'всей России',
+    'description': flag_symbol + ' Купить {} на заводе железобетонных изделий «СТК-Промбетон»',
+    'keywords': '{}',
 }
 
 population_settings = [
+    {
+        'populate_model': CategoryPage,
+        'populate_fields': {
+            'title': {
+                'template': {
+                    'text': category_page['title'],
+                    'variables': ['h1'],
+                },
+            },
+            'description': {
+                'template': {
+                    'text': category_page['description'],
+                    'variables': ['h1'],
+                },
+            },
+            'keywords': {
+                'template': {
+                    'text': category_page['keywords'],
+                    'variables': ['h1'],
+                },
+            },
+        },
+    },
     {
         'populate_model': ProductPage,
         'populate_fields': {
@@ -36,7 +67,11 @@ population_settings = [
                     'text': product_page['title'],
                     'variables': ['model.mark', 'name', 'model.price'],
                     'correction': {
-                        'model.price': lambda e, v: v if not float(v) == 0 else 'по запросу',
+                        'model.price': (
+                            lambda e, v: v + ' руб'
+                            if not float(v) == 0 else
+                            'по запросу'
+                        ),
                         'name': lambda e, v: v.replace(e.model.mark, ''),
                     }
                 },
@@ -52,14 +87,14 @@ population_settings = [
                     'text': product_page['keywords'],
                     'variables': ['name', 'model.mark'],
                 },
-            }
-        }
-    }
+            },
+        },
+    },
 ]
 
 
 @transaction.atomic
-def populate_entities(populate_model, populate_fields):
+def populate_entities(populate_model, populate_fields, overwrite=False):
     def get_by_attrs(entity_, attrs: str) -> str:
         """
         Get value for template from attribute chain.
@@ -94,9 +129,12 @@ def populate_entities(populate_model, populate_fields):
 
     populated_fields = set()
 
-    entities = populate_model.objects.filter(
-        reduce(or_, (Q(**{k: ''}) for k in populate_fields.keys()))
-    )
+    if not overwrite:
+        entities = populate_model.objects.filter(
+            reduce(or_, (Q(**{k: ''}) for k in populate_fields.keys()))
+        )
+    else:
+        entities = populate_model.objects.all()
 
     for entity in entities.iterator():
         for field_name, fields_populate_settings in populate_fields.items():
@@ -114,6 +152,15 @@ def populate_entities(populate_model, populate_fields):
 
 class Command(BaseCommand):
 
+    def add_arguments(self, parser):
+        parser.add_argument(
+            '--overwrite',
+            action='store_true',
+            dest='overwrite',
+            default=False,
+            help='Overwrite all seo fields.'
+        )
+
     def handle(self, *args, **options):
         for setting in population_settings:
-            populate_entities(**setting)
+            populate_entities(**setting, overwrite=options['overwrite'])
