@@ -51,15 +51,13 @@
   };
 
   function renderItem(item, term) {
-    const highlightedText = highlight(item.name, term);
-
     const context = {
       url: item.url,
-      name: `<span class="search-item-text">${highlightedText}</span>`,
-      mark: item.mark ? `<span class="search-item-mark">${item.mark}</span>` : '',
+      name: `<span class="search-item-text">${highlight(item.name, term)}</span>`,
+      mark: item.mark ?
+        `<span class="search-item-mark">${highlight(item.mark, term)}</span>` : '',
       specification: item.specification ?
-        `<span class="search-item-spec">${item.specification}</span>` :
-        '',
+        `<span class="search-item-spec">${item.specification}</span>` : '',
       itemName: item.name,
     };
 
