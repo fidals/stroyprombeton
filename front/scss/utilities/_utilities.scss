@@ -1,6 +1,3 @@
-// ================================================================
-// UTILITIES
-// ================================================================
 @mixin font-smoothing($value: antialiased) {
   @if $value == antialiased {
     -webkit-font-smoothing: antialiased;
@@ -11,9 +8,92 @@
   }
 }
 
+// Mediaqueries:
+@mixin device($device) {
+  @if $device == mob {
+    @media (max-width: 800px) {
+      @content;
+    }
+  } @else if $device == tab {
+    @media (min-width: 801px) and (max-width: 1023px) {
+      @content;
+    }
+  } @else if $device == pc {
+    @media (min-width: 1024px) {
+      @content;
+    }
+  }
+}
+
+// Breakpoints:
+@mixin bp($key1, $breakpoint, $key2: null, $resolution2: null) {
+  @if nth($key1 $breakpoint $key2 $resolution2, 3) == null {
+    @media only screen and ($key1: $breakpoint) {
+      @content;
+    }
+  } @else {
+    @media only screen and ($key1: $breakpoint) and ($key2: $resolution2) {
+      @content;
+    }
+  }
+}
+
+// Pseudo elements:
+@mixin before(
+  $left: 0,
+  $top: 0
+) {
+  content: "";
+  left: $left;
+  position: absolute;
+  top: $top;
+}
+
+@mixin after(
+  $right: 0,
+  $top: 0
+) {
+  content: "";
+  position: absolute;
+  right: $right;
+  top: $top;
+}
+
+// Row with responsive children:
+@mixin rows(
+  $n,
+  $margin-right  : 0,
+  $margin-bottom : 0
+) {
+  // display: inline-block;
+  // vertical-align: top;
+  width: ( (100% - ($n - 1) * $margin-right) ) / $n;
+
+  &:nth-child( n ) {
+    margin-right: $margin-right;
+    margin-bottom: $margin-bottom;
+  }
+
+  &:nth-child( #{$n}n ) {
+    margin-right: 0;
+  }
+}
+
+// Justify children:
+@mixin justify {
+  position: relative;
+  text-align: justify;
+
+  &:after {
+    content: "";
+    display: inline-block;
+    width: 100%
+  }
+}
+
 // ================================================================
-// MIXINS
-// ================================================================
+// UI ELEMENTS
+// ==============================================================
 @mixin grey-link {
   color: $c-link-grey;
   transition: color 0.3s ease;

@@ -302,6 +302,10 @@
 .feedbacks {
   padding: 0 0 50px;
 
+  &-heading {
+    margin: 0 0 40px;
+  }
+
   &-content {
     &-img-wrapper {
       display: block;

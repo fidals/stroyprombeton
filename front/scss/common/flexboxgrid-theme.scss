@@ -5,10 +5,11 @@ $w-container-lg: 1200px;
 $gutter-width: 30px;
 $half-gutter-width: $gutter-width * 0.5;
 
-// Uncomment for fixed layout.
-//.container {
-//  min-width: $w-container-lg;
-//}
+// Comment/uncomment for fixed layout.
+body,
+.container {
+  min-width: $w-container-lg;
+}
 
 .container-fluid {
   padding-right: $gutter-width;

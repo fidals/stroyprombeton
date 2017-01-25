@@ -80,7 +80,7 @@
   <section class="offer">
     <div class="container container-fluid">
       <div class="row">
-        <div class="col-xs-offset-1 col-xs-3">
+        <div class="col-xs-4 col-md-offset-1 col-md-3">
           <a href="{% url 'order_drawing' %}" class="offer-item text-center">
             <div class="offer-image">
               <div class="offer-item-image offer-item-image-nohover icon-offer-draft"></div>
@@ -93,7 +93,7 @@
           </a>
         </div>
 
-        <div class="col-xs-offset-1 col-xs-2">
+        <div class="col-xs-4 col-md-offset-1 col-md-2">
           <a href="{% url 'order_price' %}" class="offer-item text-center">
             <div class="offer-image">
               <div class="offer-item-image offer-item-image-nohover icon-offer-pricelist"></div>
@@ -106,7 +106,7 @@
           </a>
         </div>
 
-        <div class="col-xs-offset-1 col-xs-3">
+        <div class="col-xs-4 col-md-offset-1 col-md-3">
           <a href="{% url 'pages:flat_page' 'kommercheskoe-predlozhenie' %}" class="offer-item text-center">
             <div class="offer-image">
               <div class="offer-item-image offer-item-image-nohover icon-offer-commercial"></div>
@@ -125,11 +125,11 @@
   <section class="about">
     <div class="container container-fluid">
       <div class="row middle-xs">
-        <div class="col-xs-offset-1 col-xs-3">
+        <div class="col-xs-12 col-md-offset-1 col-md-3">
           <h2 class="about-h2 main-h2">О компании</h2>
         </div>
 
-        <div class="col-xs-7">
+        <div class="col-xs-12 col-md-7">
           <div class="about-text">
             <p class="about-text-p">
               Завод “СТК-ПромБетон” уже шесть лет производит железобетонные
@@ -147,7 +147,7 @@
       </div>
 
       <div class="row">
-        <div class="col-xs-offset-1 col-xs-10">
+        <div class="col-xs-12 col-md-offset-1 col-md-10">
           <div class="about-more">
             <p><a class="more-link" href="{% url 'pages:flat_page' 'proizvodstvo-gbi' %}">
               Производство
@@ -177,11 +177,11 @@
   <section class="news">
     <div class="container container-fluid">
       <div class="row">
-        <div class="col-xs-offset-1 col-xs-3">
+        <div class="col-xs-12 col-md-offset-1 col-md-3">
           {% include 'pages/index/partners.html' %}
         </div>
 
-        <div class="col-xs-7">
+        <div class="col-xs-12 col-md-7">
           {% include 'pages/index/news.html' with news=news only %}
         </div>
       </div>
