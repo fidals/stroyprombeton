@@ -17,9 +17,9 @@ product_page = {
 У нас нет фиксированный цены доставки, поэтому звоните менеджеру, чтобы ее узнать.
 Менеджер поможет выбрать способ доставки, рассчитает стоимость и назовет срок.
 Следим за тем, чтобы изделия доставляли без дефектов, поэтому даем гарантию.''',
-    'title': '{} - {}. Цена: {}. Купить с доставкой по Москве, Санкт-Петербург и всей России.',
-    'keywords': '{}',
-    'description': flag_symbol + ' Купить {} на заводе железобетонных изделий "СТК-Промбетон"',
+    'title': '{} - {}. Цена: {}. {}. Купить с доставкой по Москве, Санкт-Петербург и всей России',
+    'keywords': '{} {}',
+    'description': flag_symbol + ' Купить {} {} на заводе железобетонных изделий "СТК-Промбетон"',
 }
 
 category_page = {
@@ -65,7 +65,9 @@ population_settings = [
             'title': {
                 'template': {
                     'text': product_page['title'],
-                    'variables': ['model.mark', 'name', 'model.price'],
+                    'variables': [
+                        'model.mark', 'name', 'model.price', 'model.category.specification'
+                    ],
                     'correction': {
                         'model.price': (
                             lambda e, v: v + ' руб'
@@ -79,7 +81,7 @@ population_settings = [
             'description': {
                 'template': {
                     'text': product_page['description'],
-                    'variables': ['name'],
+                    'variables': ['name', 'model.mark'],
                 },
             },
             'keywords': {

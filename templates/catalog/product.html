@@ -15,10 +15,10 @@
       <span class="product-serial-val">{{ product.code }}</span>
     {% endif %}
 
-    {% if product.category.specification %}
+    {% if product.specification %}
       <span class="product-serial-title">Серия</span>
       {# TODO: `specification` should be replaced by `spec` #}
-      <span class="product-serial-val">{{ product.category.specification }}</span>
+      <span class="product-serial-val">{{ product.specification }}</span>
     {% endif %}
 
     {% if product.mark %}
@@ -41,7 +41,7 @@
               {% with url=product.category.url %}
                 {% show_field_if_exist product.category 'Тип' url %}
                 {# TODO: `specification` should be replaced by `spec` #}
-                {% show_field_if_exist product.specification 'Рабочая документация' url %}
+                {% show_field_if_exist product.category.specification 'Рабочая документация' url %}
               {% endwith %}
               {% show_field_if_exist product.length 'Длина (мм)' %}
               {% show_field_if_exist product.width 'Ширина (мм)' %}
