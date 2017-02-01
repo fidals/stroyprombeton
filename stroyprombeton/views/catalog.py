@@ -132,7 +132,7 @@ class ProductPDF(PDFTemplateView, DetailView):
     model = Category
     context_object_name = 'category'
     pk_url_kwarg = 'category_id'
-    template_name = 'catalog/product_price.html'
+    template_name = 'catalog/product_pdf_price.html'
     filename = 'stb_product_price.pdf'
 
     def get(self, *args, **kwargs):

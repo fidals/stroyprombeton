@@ -60,8 +60,6 @@
       {% for product in products %}
         {% if product.page.is_active %}
           <tr id="{{ product.id }}">
-            {# TODO Needed create logic for images and empty thumb. #}
-            {# http://youtrack.stkmail.ru/issue/dev-811 #}
             <td>
               {% if product.code %}
                 {{ product.code }}
