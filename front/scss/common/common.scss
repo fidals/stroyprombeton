@@ -115,19 +115,23 @@ a {
   &-field {
     background-color: $c-white;
     border: 0;
-    border-radius: 13px;
+    border-radius: 30px;
     box-shadow: $sh-search;
     color: $c-search-text;
-    height: 26px;
+    height: 32px;
     font-size: $f-size-base - 2;
-    letter-spacing: -0.0125em;
-    line-height: 1.14;
-    padding: 2px 40px 3px 12px;
+    padding: 2px 16px 3px;
     transition: box-shadow 0.2s ease;
     width: 100%;
 
     &:focus {
       box-shadow: $sh-search-focus;
+    }
+
+    .header & {
+      border-radius: 13px;
+      height: 26px;
+      padding: 2px 40px 3px 12px;
     }
   }
 
@@ -252,6 +256,7 @@ a {
   cursor: pointer;
   font-size: $f-size-base;
   position: absolute;
+  transition: color 0.3s ease;
 
   &:hover {
     color: $c-black;

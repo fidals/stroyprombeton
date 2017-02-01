@@ -10,8 +10,7 @@
 // ================================================================
 .category-filter {
   &-title {
-    border-bottom: 1px solid $c-text-orange;
-    color: $c-text-orange;
+    border-bottom: 1px solid $c-table-border;
     font-weight: 600;
     margin: 0 0 10px;
     padding: 1px 0 10px;
@@ -22,15 +21,11 @@
   }
 
   &-link {
-    color: $c-text-muted;
+    color: $c-category-sidebar-link;
     display: block;
     font-size: $f-size-base - 4;
     font-weight: 600;
     transition: all 0.2s ease;
-
-    &:hover {
-      color: $c-text-muted;
-    }
   }
 }
 
@@ -40,12 +35,7 @@
 .product-list {
   border-bottom: 1px solid $c-separator-grey;
   margin-bottom: 100px;
-
-  .table-th {
-    border-bottom: 1px solid $c-separator-grey;
-  }
 }
-
 
 // ================================================================
 // ABOUT

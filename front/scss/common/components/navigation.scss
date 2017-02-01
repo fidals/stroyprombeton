@@ -93,7 +93,7 @@
   }
 
   &-sum {
-    border-top: 1px solid $c-text;
+    border-top: 1px solid $c-table-border;
     padding: 15px 0;
   }
 
@@ -128,7 +128,6 @@
       color: $c-nav-chart-item-price;
       font-size: $f-size-base - 4;
       font-weight: 600;
-      margin-right: 4px;
     }
 
     &-count {

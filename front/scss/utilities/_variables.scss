@@ -16,11 +16,12 @@ $c-separator-grey: #bababa;
 $c-show-more-hover: #bd6739;
 $c-show-more-active: #904f2b;
 $c-show-more-disabled: #bababa;
-$c-table-row-bg: #f2f2f2;
 $c-teaser-bg: #f8f8f8;
 $c-teaser-bg-hover: #fbfbfb;
 $c-text: #212121;
 $c-text-orange: #fc7126;
+$c-text-orange-active: #904f2b;
+$c-text-orange-hover: #bd6739;
 $c-text-grey: #acacac;
 $c-text-muted: #bababa;
 $c-white: #fff;
@@ -36,55 +37,8 @@ $c-btn-white-active: #9b9b9b;
 $c-btn-white-bg-hover: #c3c3c3;
 
 // Tables
-$c-table-th: #263238;
-$c-table-code: #263238;
-$c-table-name: #212121;
-$c-table-price: #2c2c2c;
-$c-table-input: #404040;
-$c-table-input-border: #ccc;
-$c-table-caret: #9e9e9e;
-$c-table-caret-hover: #404040;
-$c-table-order: #fc7126;
-$c-table-order-hover: #bd6739;
-$c-table-order-active: #904f2b;
-$c-table-btn: #fc7126;
-$c-table-btn-hover: #bd6739;
-$c-table-btn-active: #904f2b;
-$c-product-table-border: #979797;
-
-// Navigation
-$c-nav-bg: #f3f3f3;
-$c-nav-link-hover: #979797;
-$c-nav-link-chart: #fc7126;
-$c-nav-link-chart-hover: #bd6739;
-$c-nav-chart-clear: #fc7126;
-$c-nav-chart-clear-hover: #bd6739;
-$c-nav-chart-clear-active: #904f2b;
-$c-nav-chart-item-name: #434343;
-$c-nav-chart-item-price: #2c2c2c;
-$c-nav-chart-item-count: #434343;
-$c-nav-subnav-link: #434343;
-$c-nav-subnav-link-hover: #979797;
-$c-searchbar-bg: #fc7126;
-
-// Search
-$c-search-text: #434343;
-$c-search-link-hover: #f9f9f9;
-$c-search-highlight: #1f8dd6;
-
-$c-path: #fc7126;
-$c-path-hover: #bd6739;
-$c-path-active: #904f2b;
-
-// Regions map
-$c-region-fill: #dde3e8;
-$c-region-fill-hover: #67778b;
-
-// Footer
-$c-footer-bg: #f3f3f3;
-$c-footer-headers: #1d1d1d;
-$c-footer-li: #434343;
-$c-copyright: #5f5f5f;
+$c-table-border: #bababa;
+$c-table-border-light: #f2f2f2;
 
 // Forms
 $c-input-border-color: #d5d5d5;
@@ -105,6 +59,39 @@ $c-modal-label-asterisk: #fc7126;
 $c-popover: #212121;
 $c-popover-border: #fc7126;
 
+// Navigation
+$c-nav-bg: #f3f3f3;
+$c-nav-link-hover: #979797;
+$c-nav-link-chart: #fc7126;
+$c-nav-link-chart-hover: #bd6739;
+$c-nav-chart-clear: #fc7126;
+$c-nav-chart-clear-hover: #bd6739;
+$c-nav-chart-clear-active: #904f2b;
+$c-nav-chart-item-name: #434343;
+$c-nav-chart-item-price: #2c2c2c;
+$c-nav-chart-item-count: #434343;
+$c-nav-subnav-link: #434343;
+$c-nav-subnav-link-hover: #979797;
+$c-searchbar-bg: #fc7126;
+
+// Search
+$c-search-text: #434343;
+$c-search-link-hover: #f9f9f9;
+$c-search-highlight: #1f8dd6;
+$c-path: #fc7126;
+$c-path-hover: #bd6739;
+$c-path-active: #904f2b;
+
+// Regions map
+$c-region-fill: #dde3e8;
+$c-region-fill-hover: #67778b;
+
+// Footer
+$c-footer-bg: #f3f3f3;
+$c-footer-headers: #1d1d1d;
+$c-footer-li: #434343;
+$c-copyright: #5f5f5f;
+
 // Page Main
 $c-application-bg: #33393d;
 $c-offer-title: #1c2e36;
@@ -120,6 +107,7 @@ $c-catalog-title-hover-bg: #bd6739;
 
 // Page Category
 $c-category-filter-clear: #fc7126;
+$c-category-sidebar-link: #979797;
 
 // Page Specs
 $c-specs-h1: #171237;

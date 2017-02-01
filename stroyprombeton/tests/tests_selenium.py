@@ -1,5 +1,7 @@
+import os
 import time
 
+from selenium.webdriver import ChromeOptions
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.remote.webelement import WebElement
@@ -37,6 +39,7 @@ class SeleniumTestCase(LiveServerTestCase):
         """Instantiate browser instance."""
         super(SeleniumTestCase, cls).setUpClass()
         cls.browser = Chrome(settings.CHROMEDRIVER)
+
         cls.browser.implicitly_wait(5)
         cls.browser.maximize_window()
 

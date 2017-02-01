@@ -16,7 +16,9 @@
 
             <div class="cart-item-sum">
               <span class="cart-item-price">{{ product.price|format_price }}</span>
-              <span class="cart-item-count js-header-product-count">x {{ product.quantity }} шт.</span>
+              <span class="cart-item-count js-header-product-count">
+                <small><strong>x</strong></small> {{ product.quantity }} шт.
+              </span>
             </div>
 
             <i class="fa fa-close cart-item-remove icon-remove js-remove"

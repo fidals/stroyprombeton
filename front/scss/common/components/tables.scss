@@ -7,14 +7,14 @@
   }
 
   &-th {
-    border-bottom: 1px solid $c-black;
+    border-bottom: 1px solid $c-table-border;
     font-size: $f-size-base + 1;
     font-weight: 600;
     padding: 0 5px 10px;
   }
 
   &-tr {
-    border-bottom: 1px solid $c-table-row-bg;
+    border-bottom: 1px solid $c-table-border-light;
 
     &:nth-child(2n) {
       background: rgba($c-black, 0.02);
@@ -61,7 +61,7 @@
   }
 
   &-order {
-    color: $c-table-order;
+    color: $c-text-orange;
     cursor: pointer;
     font-size: $f-size-base - 3;
     font-weight: 600;
@@ -70,11 +70,11 @@
     width: 80px;
 
     &:hover {
-      color: $c-table-order-hover;
+      color: $c-text-orange-hover;
     }
 
     &:active {
-      color: $c-table-order-active;
+      color: $c-text-orange-active;
     }
   }
 

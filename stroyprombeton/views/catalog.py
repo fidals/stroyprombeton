@@ -1,5 +1,8 @@
 from django.shortcuts import render
 from django.views.generic.list import ListView
+from django.views.generic.detail import DetailView
+
+from wkhtmltopdf.views import PDFTemplateView
 
 from catalog.models import search as filter_
 from catalog.views import catalog
@@ -122,4 +125,32 @@ class ProductPage(catalog.ProductPage):
         return {
             **context,
             'sibling_with_images': siblings_with_images
+        }
+
+
+class ProductPDF(PDFTemplateView, DetailView):
+    model = Category
+    context_object_name = 'category'
+    pk_url_kwarg = 'category_id'
+    template_name = 'catalog/product_price.html'
+    filename = 'stb_product_price.pdf'
+
+    def get(self, *args, **kwargs):
+        self.object = self.get_object()
+        return super(ProductPDF, self).get(*args, **kwargs)
+
+    def get_context_data(self, **kwargs):
+        context = super(ProductPDF, self).get_context_data(**kwargs)
+        category = context[self.context_object_name]
+
+        products = (
+            Product.objects
+                .get_by_category(category, ordering=('name', 'mark'))
+                .select_related('page')
+        )
+
+        return {
+            **context,
+            'category': category,
+            'products': products,
         }

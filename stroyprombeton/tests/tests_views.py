@@ -18,15 +18,12 @@ from pages.models import CustomPage, FlatPage, ModelPage
 from stroyprombeton.models import Category, Product
 from stroyprombeton.tests.tests_forms import PriceFormTest, DrawingFormTest
 
+CATEGORY_ROOT_NAME = 'Category root #0'
+
 
 class CategoryTree(TestCase):
 
     fixtures = ['dump.json']
-
-    @classmethod
-    def setUpTestData(cls):
-        cls.root_name = 'Category root #0'
-        cls.child_name = 'Category #0 of #1'
 
     def setUp(self):
         catalog_page = CustomPage.objects.get(slug='gbi')
@@ -399,3 +396,16 @@ class Search(TestCase):
         url = self.get_search_url(term=self.WRONG_TERM)
         self.response = self.client.get(url)
         self.assertContains(self.response, self.WRONG_TERM)
+
+
+class ProductPrice(TestCase):
+
+    fixtures = ['dump.json']
+
+    def test_price_list(self):
+        """Context for pdf generation should include Category and Products."""
+        self.response = self.client.get('/gbi/categories/1/pdf/')
+
+        self.assertTrue(self.response['Content-Type'] == 'application/pdf')
+        self.assertTrue(self.response.context['category'].name == CATEGORY_ROOT_NAME)
+        self.assertTrue(len(self.response.context['products']) > 100)

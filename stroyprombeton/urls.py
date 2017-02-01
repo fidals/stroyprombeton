@@ -19,6 +19,8 @@ admin_urls = [
 catalog_urls = [
     url(r'^categories/(?P<category_id>[0-9]+)/$',
         views.CategoryPage.as_view(), name='category'),
+    url(r'^categories/(?P<category_id>[0-9]+)/pdf/$',
+        views.ProductPDF.as_view(), name='product_pdf'),
     url(r'^products/(?P<product_id>[0-9]+)/$',
         views.ProductPage.as_view(), name='product'),
 ]

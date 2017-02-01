@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'pages',
     'catalog',
     'ecommerce',
+    'wkhtmltopdf',
     'stroyprombeton',
 ]
 
@@ -143,7 +144,6 @@ DATABASES = {
         default=DATABASE_URL
     )
 }
-
 
 # -------- SITE DATA -------- #
 BASE_URL = 'http://www.stroyprombeton.ru'

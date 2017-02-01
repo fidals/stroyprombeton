@@ -3,8 +3,6 @@
 #
 # Boilerplate Django project on Docker from speech here:
 # https://github.com/satyrius/paid
-
-
 FROM ubuntu:16.04
 
 # Installing Linux packages and global python packages (like gunicorn and circus).
@@ -36,6 +34,7 @@ RUN export DEBIAN_FRONTEND=noninteractive \
         gunicorn==19.5.0 \
         iowait==0.2 \
         psutil==4.2.0 \
+        wkhtmltopdf \
 
     && apt-get autoremove -y ${BUILD_DEPS} \
     && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*

@@ -63,23 +63,27 @@
                 <th class="product-order-table-th">Итог</th>
               </tr>
               <tr>
-                <td class="product-order-table-col-price js-product-price">
+                <td class="product-order-table-col-price text-center js-product-price">
                   {{ product.price|format_price }}
                 </td>
-                <td class="product-order-table-col-count">
-                  <div class="category-table-col-count-wrap">
-                    {% include 'catalog/count_input.html' %}
-                  </div>
+                <td class="product-order-table-col-count text-center">
+                  {% include 'catalog/count_input.html' %}
                 </td>
-                <td class="product-order-table-col-total">
+                <td class="product-order-table-col-total text-center">
                   <span class="js-product-sum">{{ product.price|format_price }}</span>
                 </td>
               </tr>
             </table>
             <div class="product-order-submit text-right">
-              <input class="btn" id="buy-product" data-product-id="{{ product.id }}"
-                     type="submit" value="Заказать">
+              <button class="btn buy-product" id="buy-product" data-product-id="{{ product.id }}"
+                      type="submit">Заказать</button>
             </div>
+
+            <p class="text-right">
+              <a class="category-price" href="{% url 'product_pdf' product.category.id %}">
+                Скачать прайс этой категории
+              </a>
+            </p>
           </div>
 
           <h2 class="product-describe-title">
