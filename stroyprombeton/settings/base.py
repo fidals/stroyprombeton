@@ -145,6 +145,9 @@ DATABASES = {
     )
 }
 
+# 60 days in seconds
+CACHED_TIME = 60 * (24*60*60)
+
 # -------- SITE DATA -------- #
 BASE_URL = 'http://www.stroyprombeton.ru'
 
@@ -248,6 +251,11 @@ CUSTOM_PAGES = {
         'slug': 'search',
         'title': 'Результаты поиска',
         'name': 'Результаты поиска',
+    },
+    'sitemap': {
+        'slug': 'sitemap',
+        'h1': 'Карта сайта',
+        'name': 'Карта сайта',
     },
     'order-drawing': {
         'slug': 'order-drawing',

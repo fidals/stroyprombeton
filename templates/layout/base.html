@@ -3,6 +3,7 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
+  {% include 'layout/google_tag_manager.html' with DEBUG=DEBUG is_head_tag=True %}
   {% if page %}
     {% include 'components/metadata.html' with page=page only %}
   {% endif %}
@@ -15,6 +16,8 @@
 </head>
 
 <body class="{% block body_class %}{% endblock %}">
+  {% include 'layout/google_tag_manager.html' with DEBUG=DEBUG is_body_tag=True %}
+
   <header class="header">
     {% include 'components/navigation_bar.html' %}
 
@@ -46,7 +49,5 @@
   {% block jslinks %}
     <script src="{% static 'js/main.min.js' %}"></script>
   {% endblock %}
-
-  {% include 'layout/marketing.html' %}
 </body>
 </html>

@@ -1,10 +1,14 @@
+from collections import OrderedDict
 from django.conf import settings
 from django.conf.urls import url, include
 from django.conf.urls.static import static
+from django.contrib.sitemaps.views import sitemap
+from django.views.decorators.cache import cache_page
 
 from pages.models import Page
+from pages.views import robots, SitemapPage
 
-from stroyprombeton import views
+from stroyprombeton import sitemaps, views
 from stroyprombeton.admin import stb_admin_site
 
 
@@ -38,8 +42,8 @@ custom_pages = [
     url(r'^(?P<page>order-success)/$', views.OrderSuccess.as_view(), name=url_name),
     url(r'^(?P<page>regions)/$', views.RegionsPageView.as_view(), name=url_name),
     url(r'^(?P<page>search)/$', views.Search.as_view(), name=url_name),
+    url(r'^(?P<page>sitemap)/$', SitemapPage.as_view(), name=url_name),
 ]
-
 ecommerce_urls = [
     url(r'^cart-add/$', views.AddToCart.as_view(), name='cart_add'),
     url(r'^cart-change/$', views.ChangeCount.as_view(), name='cart_set_count'),
@@ -54,6 +58,16 @@ search_urls = [
     url(r'^autocomplete/$', views.Autocomplete.as_view(), name='autocomplete'),
 ]
 
+# Orders sitemaps instances
+sitemaps = OrderedDict([
+    ('index', sitemaps.IndexSitemap),
+    ('category', sitemaps.CategorySitemap),
+    ('products', sitemaps.ProductSitemap),
+    ('site', sitemaps.PagesSitemap)
+])
+
+cached_view = cache_page(settings.CACHED_TIME)
+
 urlpatterns = [
     url(r'', include(custom_pages)),
     url(r'admin/', include(admin_urls)),
@@ -63,8 +77,10 @@ urlpatterns = [
     url(r'^order-price/', views.OrderPrice.as_view(), name='order_price'),
     url(r'^page/', include('pages.urls')),
     url(r'^price-success/', views.OrderPriceSuccess.as_view(), name='order_price_success'),
+    url(r'^robots\.txt$', robots),
     url(r'^search/', include(search_urls)),
     url(r'^shop/', include(ecommerce_urls)),
+    url(r'^sitemap\.xml$', cached_view(sitemap), {'sitemaps': sitemaps}, name='sitemap'),
 ]
 
 if settings.DEBUG:
