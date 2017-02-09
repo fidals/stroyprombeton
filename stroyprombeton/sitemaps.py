@@ -1,9 +1,6 @@
 from django.contrib.sitemaps import Sitemap
-from django.core.urlresolvers import reverse
 
-from pages.models import Page
-
-from stroyprombeton.models import Product, Category
+from pages.models import CustomPage, FlatPage, ModelPage
 
 
 class AbstractSitemap(Sitemap):
@@ -17,33 +14,37 @@ class IndexSitemap(Sitemap):
     changefreq = 'monthly'
     priority = 1
 
-    # items()
-    # Required. A method that returns a list of objects.
-    # https://docs.djangoproject.com/ja/1.9/ref/contrib/sitemaps/#django.contrib.sitemaps.Sitemap.items
     def items(self):
-        return ['']
-
-    # location()
-    # Optional. If location isn’t provided, the framework will call the get_absolute_url()
-    # method on each object as returned by items().
-    # https://docs.djangoproject.com/ja/1.9/ref/contrib/sitemaps/#django.contrib.sitemaps.Sitemap.location
-    def location(self, model):
-        return reverse(Page.CUSTOM_PAGES_URL_NAME, args=(model, ))
+        return CustomPage.objects.filter(slug='')
 
 
-class CategorySitemap(AbstractSitemap):
+class FlatPagesSitemap(AbstractSitemap):
 
     def items(self):
-        return Category.objects.filter(page__is_active=True)
+        return FlatPage.objects.filter(is_active=True)
 
 
-class ProductSitemap(AbstractSitemap):
-
-    def items(self):
-        return Product.objects.filter(page__is_active=True)
-
-
-class PagesSitemap(AbstractSitemap):
+class CustomPagesSitemap(AbstractSitemap):
 
     def items(self):
-        return Page.objects.filter(is_active=True)
+        return CustomPage.objects.filter(is_active=True).exclude(slug='')
+
+
+class ProductPagesSitemap(AbstractSitemap):
+
+    def items(self):
+        return (
+            ModelPage.objects
+                .select_related('stroyprombeton_product')
+                .filter(is_active=True, stroyprombeton_product__isnull=False)
+        )
+
+
+class CategoryPagesSitemap(AbstractSitemap):
+
+    def items(self):
+        return (
+            ModelPage.objects
+                .select_related('stroyprombeton_category')
+                .filter(is_active=True, stroyprombeton_category__isnull=False)
+        )

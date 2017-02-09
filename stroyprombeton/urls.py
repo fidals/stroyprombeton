@@ -2,7 +2,7 @@ from collections import OrderedDict
 from django.conf import settings
 from django.conf.urls import url, include
 from django.conf.urls.static import static
-from django.contrib.sitemaps.views import sitemap
+from django.contrib.sitemaps import views as sitemaps_view
 from django.views.decorators.cache import cache_page
 
 from pages.models import Page
@@ -58,13 +58,13 @@ search_urls = [
     url(r'^autocomplete/$', views.Autocomplete.as_view(), name='autocomplete'),
 ]
 
-# Orders sitemaps instances
-sitemaps = OrderedDict([
-    ('index', sitemaps.IndexSitemap),
-    ('category', sitemaps.CategorySitemap),
-    ('products', sitemaps.ProductSitemap),
-    ('site', sitemaps.PagesSitemap)
-])
+sitemaps = {
+    'categories': sitemaps.CategoryPagesSitemap,
+    'custom-pages': sitemaps.CustomPagesSitemap,
+    'index': sitemaps.IndexSitemap,
+    'flat-pages': sitemaps.FlatPagesSitemap,
+    'products': sitemaps.ProductPagesSitemap,
+}
 
 cached_view = cache_page(settings.CACHED_TIME)
 
@@ -80,7 +80,10 @@ urlpatterns = [
     url(r'^robots\.txt$', robots),
     url(r'^search/', include(search_urls)),
     url(r'^shop/', include(ecommerce_urls)),
-    url(r'^sitemap\.xml$', cached_view(sitemap), {'sitemaps': sitemaps}, name='sitemap'),
+    url(r'^sitemap\.xml$', cached_view(sitemaps_view.index),
+        {'sitemaps': sitemaps, 'sitemap_url_name': 'sitemaps_children'}, name='sitemap'),
+    url(r'^sitemap-(?P<section>.+)\.xml$', cached_view(sitemaps_view.sitemap),
+        {'sitemaps': sitemaps}, name='sitemaps_children'),
 ]
 
 if settings.DEBUG:

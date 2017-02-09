@@ -9,7 +9,6 @@ pymysql
 openpyxl
 unidecode
 dj-database-url==0.4.1
-sorl-thumbnail==12.4a1
 django-debug-toolbar
 django-wkhtmltopdf
 -e git+https://github.com/fidals/refarm-site.git#egg=refarm-site
