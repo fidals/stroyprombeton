@@ -1,14 +1,24 @@
+{% load static %}
+
 <section class="partners">
-  <h2 class="partners-h2 heading-h2">Наши партнеры</h2>
+  <img class="partners-title" src="{% static 'images/stk-logo.png' %}">
 
   <ul>
     {% for partner in partners %}
       <li class="partners-item">
-        <a href="{{ partner.url }}" target="_blank">
-          <img class="img-responsive" src="{{ STATIC_URL }}{{ partner.logo }}"
-               alt="{{ partner.alt }}">
-          <p class="partners-item-title">{{ partner.text }}</p>
-        </a>
+        {% if partner.url  %}
+          <a href="{{ partner.url }}" target="_blank">
+            <img class="img-responsive partners-image"
+                 src="{{ STATIC_URL }}{{ partner.logo }}"
+                 alt="{{ partner.alt }}">
+            <p class="partners-item-title">{{ partner.text }}</p>
+          </a>
+        {% else %}
+            <img class="img-responsive partners-image"
+                 src="{{ STATIC_URL }}{{ partner.logo }}"
+                 alt="{{ partner.alt }}">
+            <p class="partners-item-title">{{ partner.text }}</p>
+        {% endif  %}
       </li>
     {% endfor %}
   </ul>

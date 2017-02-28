@@ -1,6 +1,6 @@
-// ================================================================
-// COMMON STYLES
-// ================================================================
+@import "../utilities/utilities";
+@import "../utilities/variables";
+
 ::selection {
   background-color: $c-selection;
   color: $c-white;
@@ -68,23 +68,34 @@ a {
 .more-link {
   color: $c-btn-orange;
   cursor: pointer;
-  display: block;
-  font-size: $f-size-base - 1;
+  display: inline-block;
+  font-size: $f-size-base + 1;
   font-weight: 600;
-  padding: 5px 10px;
+  padding: 5px 0;
 
   &-arrow {
+    @include transition;
     font-size: $f-size-base - 4;
-    margin-left: 5px;
+    margin-left: 2px;
+    position: relative;
+    top: -1px;
   }
 
   &:hover {
     color: $c-btn-orange-hover;
+
+    .more-link-arrow {
+      transform: translate(3px, 0);
+    }
   }
 
   &:active {
     color: $c-btn-orange-active;
   }
+}
+
+.hidden {
+  display: none;
 }
 
 .paddingless {
@@ -167,17 +178,14 @@ a {
     }
 
     &-text {
-      display: inline-block;
       margin-right: 5px;
-      overflow: hidden;
-      text-overflow: ellipsis;
     }
 
     &-link {
+      border-bottom: 1px solid $c-searchbar-border;
       color: $c-search-text;
-      display: flex;
-      padding: 5px 10px;
-      white-space: nowrap;
+      display: block;
+      padding: 10px;
     }
   }
 }
@@ -268,4 +276,11 @@ a {
     font-size: $f-size-base + 3;
     margin: 0 0 30px;
   }
+}
+
+.public-offer {
+  color: $c-text-muted;
+  font-size: $f-size-base - 2;
+  margin: 0 0 30px;
+  width: 100%;
 }

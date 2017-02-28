@@ -3,8 +3,17 @@
 {% load stb_extras %}
 
 {% if image %}
-  {% thumbnail image '556x416' as cropped_image %}
-    <a class="table-picture-ico icon-picture" href="#" data-featherlight="{{ cropped_image.url }}"></a>
+  {% thumbnail image '30' as thumbnail %}
+    <a class="table-picture-ico icon-picture" href="#">
+      <img
+        class="table-picture-img js-photoswipe-slide"
+        src="{{ thumbnail.url }}"
+        data-original-src="{{ image.url }}"
+        data-original-src-width="{{ image.width }}"
+        data-original-src-height="{{ image.height }}"
+        alt="{% get_img_alt page %}"
+      >
+    </a>
   {% endthumbnail %}
 {% else %}
   -

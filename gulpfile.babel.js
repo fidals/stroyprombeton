@@ -1,12 +1,13 @@
-// ================================================================
-// IMPORTS
-// ================================================================
-import gulp from 'gulp';
-import del from 'del';
-import sequence from 'run-sequence';
+import autoprefixer from 'autoprefixer';
 import babelPreset from 'babel-preset-es2015';
+import csso from 'postcss-csso';
+import mqpacker from 'css-mqpacker';
+import del from 'del';
+import gulp from 'gulp';
+import sequence from 'run-sequence';
 
 const $ = require('gulp-load-plugins')();
+const flexibility = require('postcss-flexibility')();
 const spawnSync = require('child_process').spawnSync;
 
 // ================================================================
@@ -46,6 +47,12 @@ const env = {
   production: false,
 };
 
+const plugins = [
+  autoprefixer(),
+  csso(),
+  mqpacker(),
+];
+
 const buildDir = 'front/build';
 const ecommercePaths = getAppSrcPaths('ecommerce');
 const genericAdminPaths = getAppSrcPaths('generic_admin');
@@ -75,17 +82,18 @@ const path = {
         'front/js/vendors/shared/autocomplete.min.js',
         'front/js/vendors/shared/cookie.js',
         'front/js/vendors/shared/tooltipster.bundle.min.js',
-        'front/js/vendors/shared/featherlight.core.with.gallery.js',
-      ],
-
-      vendorsPages: [
-        'front/js/vendors/jquery.kladr.min.js',
+        'front/js/vendors/shared/jquery.photoswipe.min.js',
       ],
 
       common: [
         'front/js/shared/services/*.es6',
         ecommercePaths.backcall,
         'front/js/shared/*.es6',
+      ],
+
+      vendorsPages: [
+        'front/js/vendors/featherlight.core.with.gallery.js',
+        'front/js/vendors/jquery.kladr.min.js',
       ],
 
       pages: [
@@ -100,6 +108,11 @@ const path = {
       admin: [
         ...genericAdminPaths.admin,
         'front/js/admin.es6',
+      ],
+
+      vendorsIE: [
+        'front/js/vendors/html5shiv.min.js',
+        'front/js/vendors/flexibility.js',
       ],
     },
 
@@ -158,9 +171,11 @@ gulp.task('build', () => {
     'js-pages-vendors',
     'js-admin',
     'js-admin-vendors',
+    'js-ie-vendors',
     'sprites',
     'styles-main',
     'styles-admin',
+    'styles-ie',
     'images',
     'fonts',
   );
@@ -181,9 +196,8 @@ gulp.task('styles-main', () => {
     .pipe($.plumber())
     .pipe($.sassGlob())
     .pipe($.sass())
-    .pipe($.if(env.production, $.autoprefixer()))
+    .pipe($.if(env.production, $.postcss(plugins)))
     .pipe($.rename({ suffix: '.min' }))
-    .pipe($.if(env.production, $.cssnano()))
     .pipe($.if(env.development, $.sourcemaps.write('.')))
     .pipe(gulp.dest(path.build.styles))
     .pipe($.livereload());
@@ -194,10 +208,18 @@ gulp.task('styles-admin', () => {
     .pipe($.changed(path.build.styles, { extension: '.css' }))
     .pipe($.plumber())
     .pipe($.concat('admin.min.css'))
-    .pipe($.if(env.production, $.autoprefixer()))
-    .pipe($.if(env.production, $.cssnano()))
+    .pipe($.if(env.production, $.postcss(plugins)))
     .pipe(gulp.dest(path.build.styles))
     .pipe($.livereload());
+});
+
+gulp.task('styles-ie', () => {
+  gulp.src(path.src.styles.main)
+    .pipe($.sassGlob())
+    .pipe($.sass())
+    .pipe($.concat('ie.min.css'))
+    .pipe($.postcss([...plugins, flexibility]))
+    .pipe(gulp.dest(path.build.styles));
 });
 
 // ================================================================
@@ -269,6 +291,13 @@ gulp.task('js-admin', () => {
 // ================================================================
 gulp.task('js-admin-vendors', () => {
   vendorJS(path.src.js.vendorsAdmin, path.build.js, 'admin-vendors');
+});
+
+// ================================================================
+// JS : Build vendors js for IE
+// ================================================================
+gulp.task('js-ie-vendors', () => {
+  vendorJS(path.src.js.vendorsIE, path.build.js, 'ie-vendors');
 });
 
 // ================================================================

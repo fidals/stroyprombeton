@@ -31,7 +31,7 @@
     <div class="container container-fluid">
       <div class="row">
         <div class="col-xs-offset-1 col-xs-6">
-          <div class="product-image">
+          <div class="product-img-wrapper js-photoswipe">
             {% include 'catalog/product_image.html' with product=product only %}
           </div>
 
@@ -39,17 +39,19 @@
             <h2 class="product-characteristics-title">Характеристики</h2>
             <table class="product-characteristics-table table">
               {% with url=product.category.url %}
-                {% show_field_if_exist product.category 'Тип' url %}
+                {% with spec=product.category.name|remove_specification:product.category.specification %}
+                  {% show_field_if_exist spec 'Тип' url %}
+                {% endwith %}
                 {# TODO: `specification` should be replaced by `spec` #}
                 {% show_field_if_exist product.category.specification 'Рабочая документация' url %}
               {% endwith %}
               {% show_field_if_exist product.length 'Длина (мм)' %}
               {% show_field_if_exist product.width 'Ширина (мм)' %}
               {% show_field_if_exist product.height 'Высота (мм)' %}
-              {% show_field_if_exist product.weight 'Масса (кг)' %}
-              {% show_field_if_exist product.volume 'Объем (м<sup>3</sup>)' %}
               {% show_field_if_exist product.diameter_out 'Внешний диаметр (мм)' %}
               {% show_field_if_exist product.diameter_in 'Внутренний диаметр (мм)' %}
+              {% show_field_if_exist product.weight|floatformat:'0' 'Масса (кг)' %}
+              {% show_field_if_exist product.volume 'Объем (м<sup>3</sup>)' %}
             </table>
           </div>
         </div>
@@ -74,6 +76,9 @@
                 </td>
               </tr>
             </table>
+
+            <div class="public-offer text-right">Не является публичной офертой.</div>
+
             <div class="product-order-submit text-right">
               <button class="btn buy-product" id="buy-product" data-product-id="{{ product.id }}"
                       type="submit">Заказать</button>

@@ -1,4 +1,4 @@
-{
+(() => {
   const config = {
     url: '/search/autocomplete/',
     searchInput: '.js-search-field',
@@ -61,25 +61,25 @@
       itemName: item.name,
     };
 
-    return `
-      <div class="autocomplete-suggestion search-item" data-val="${context.itemName}">
-        <a href="${context.url}" class="search-item-link">
-          ${context.specification}${context.name}${context.mark}
-        </a>
-      </div>
-    `;
+    // Do not change string template here cause of issue.
+    // https://github.com/Pixabay/JavaScript-autoComplete/issues/39
+    return `<div class="autocomplete-suggestion search-item" data-val="${context.itemName}">
+      <a href="${context.url}" class="search-item-link">
+        ${context.specification}${context.name}${context.mark}
+      </a>
+    </div>`;
   }
 
   function renderShowMoreItem(item) {
-    return `
-      <div class="search-item">
-        <a href="${item.url}" class="search-more-link more-link">
-          ${item.name}
-          <i class="fa fa-arrow-right more-link-arrow" aria-hidden="true"></i>
-        </a>
-      </div>
-    `;
+    // Do not change string template here cause of issue.
+    // https://github.com/Pixabay/JavaScript-autoComplete/issues/39
+    return `<div class="search-item">
+      <a href="${item.url}" class="search-more-link more-link">
+        ${item.name}
+        <i class="fa fa-arrow-right more-link-arrow" aria-hidden="true"></i>
+      </a>
+    </div>`;
   }
 
   init();
-}
+})();

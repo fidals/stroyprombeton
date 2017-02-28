@@ -1,3 +1,6 @@
+@import "../../utilities/variables";
+@import "../../utilities/utilities";
+
 .table {
   border-collapse: collapse;
   width: 100%;
@@ -19,6 +22,10 @@
     &:nth-child(2n) {
       background: rgba($c-black, 0.02);
     }
+
+    &:last-child {
+      border-color: transparent;
+    }
   }
 
   &-td {
@@ -28,20 +35,6 @@
   &-type {
     font-size: $f-size-base + 2;
     width: 80px;
-  }
-
-  &-picture {
-    width: 80px;
-
-    &-ico {
-      cursor: pointer;
-      display: inline-block;
-
-      &.icon-picture {
-        position: relative;
-        top: 2px;
-      }
-    }
   }
 
   &-code {
@@ -61,12 +54,12 @@
   }
 
   &-order {
+    @include transition;
     color: $c-text-orange;
     cursor: pointer;
     font-size: $f-size-base - 3;
     font-weight: 600;
     position: relative;
-    transition: all 0.2s ease;
     width: 80px;
 
     &:hover {
@@ -87,5 +80,21 @@
 
   &-link {
     color: $c-text;
+  }
+}
+
+.table-picture {
+  width: 80px;
+
+  &-ico {
+    cursor: pointer;
+    display: inline-block;
+    overflow: hidden;
+    position: relative;
+    top: 2px;
+  }
+
+  &-img {
+    opacity: 0;
   }
 }

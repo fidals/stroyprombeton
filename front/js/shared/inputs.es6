@@ -1,4 +1,4 @@
-{
+(() => {
   const DOM = {
     input: '.js-input-field',
   };
@@ -28,4 +28,4 @@
   }
 
   init();
-}
+})();

@@ -18,6 +18,10 @@
           </div>
         </div>
       </div>
+
+      <div class="row text-right">
+        <div class="col-xs-11 public-offer">Не является публичной офертой.</div>
+      </div>
     </div>
   </section>
 
@@ -52,12 +56,20 @@
               <th class="table-th"></th>
             </tr>
           </thead>
-          <tbody id="products-wrapper">
+          <tbody class="js-photoswipe" id="products-wrapper">
             {% include 'catalog/category_products.html' with products_with_images=products_with_images only %}
           </tbody>
         </table>
 
         {% include 'components/show_more_products.html' with category=category only %}
+
+        <ul class="hidden js-seo-links">
+          {% for link in seo_links %}
+            <li>
+              <a href="{{ link.url }}">{{ link.name }} {{ link.mark }}</a>
+            </li>
+          {% endfor %}
+        </ul>
       </div>
     </div>
   </div>

@@ -1,4 +1,4 @@
-{
+(() => {
   const DOM = {
     $map: $('#map'),
     $galleryTarget: $('.news-wrapper .gbi-photo'),
@@ -207,4 +207,4 @@
   }
 
   init();
-}
+})();

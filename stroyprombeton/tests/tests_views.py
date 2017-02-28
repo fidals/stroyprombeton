@@ -392,10 +392,10 @@ class Search(TestCase):
         )
 
     def test_result_page_contains_query(self):
-        """Search results page should contain it's search query"""
+        """Search results page should contain it's search query."""
         url = self.get_search_url(term=self.WRONG_TERM)
-        self.response = self.client.get(url)
-        self.assertContains(self.response, self.WRONG_TERM)
+        response = self.client.get(url)
+        self.assertNotContains(response, self.WRONG_TERM)
 
 
 class ProductPrice(TestCase):

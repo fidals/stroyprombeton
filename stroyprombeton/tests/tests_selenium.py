@@ -27,6 +27,10 @@ def hover(browser, element):
     hover_action.perform()
 
 
+def header_product_count(self):
+    return self.browser.find_element_by_class_name('js-header-product-count').text
+
+
 class SeleniumTestCase(LiveServerTestCase):
     """Common superclass for running selenium-based tests."""
 
@@ -150,9 +154,7 @@ class ProductPage(SeleniumTestCase, CartMixin):
         self.buy_on_product_page(quantity=42)
         self.show_cart()
 
-        product_count = self.browser.find_element_by_class_name('js-header-product-count').text
-
-        self.assertIn('42', product_count)
+        self.assertIn('42', header_product_count(self))
 
 
 class OrderPage(SeleniumTestCase, CartMixin):
@@ -251,9 +253,7 @@ class CategoryPage(SeleniumTestCase, CartMixin):
         self.buy_on_category_page()
         self.buy_on_category_page()
 
-        product_count = self.browser.find_element_by_class_name('js-header-product-count').text
-
-        self.assertIn('2', product_count)
+        self.assertIn('2', header_product_count(self))
 
     def test_buy_product_with_quantity(self):
         first_product_count = self.browser.find_element_by_class_name(self.quantity)
@@ -262,13 +262,10 @@ class CategoryPage(SeleniumTestCase, CartMixin):
         self.buy_on_category_page()
 
         self.assertEqual(self.positions_count(), 1)
-
-        product_count = self.browser.find_element_by_class_name('js-header-product-count').text
-        self.assertIn('42', product_count)
+        self.assertIn('42', header_product_count(self))
 
     def test_category_tooltip(self):
         """We should see tooltip after clicking on `Заказать` button."""
-
         self.buy_on_category_page()
         tooltip = self.browser.find_element_by_class_name('js-popover')
 
@@ -318,7 +315,6 @@ class CategoryPage(SeleniumTestCase, CartMixin):
         see that `Load more` link becomes disabled. That means that there are
         no more filtered products to load from server.
         """
-
         filter_field = self.browser.find_element_by_id('search-filter')
         send_keys_and_wait(filter_field, '#10')
 
@@ -386,7 +382,7 @@ class Search(SeleniumTestCase):
 
     def test_search_have_results(self):
         """Search results page should contain links on relevant pages"""
-        button_submit = self.browser.find_element_by_class_name('search-btn')
+        button_submit = self.browser.find_element_by_id('search-btn')
         click_and_wait(button_submit)
 
         self.assertTrue(self.browser.find_element_by_link_text('Category root #0'))
@@ -395,12 +391,25 @@ class Search(SeleniumTestCase):
     def test_search_results_empty(self):
         """Search results for wrong term should contain empty result set"""
         send_keys_and_wait(self.input, 'Not existing search query')
-        button_submit = self.browser.find_element_by_class_name('search-btn')
+        button_submit = self.browser.find_element_by_id('search-btn')
 
         click_and_wait(button_submit)
         h1 = self.browser.find_element_by_tag_name('h1')
 
         self.assertTrue(h1.text == 'По вашему запросу ничего не найдено')
+
+    def test_search_by_id(self):
+        """We able to search by Product id."""
+        product = Product.objects.first()
+        [product_id, product_h1] = [product.id, product.page.h1]
+        button_submit = self.browser.find_element_by_id('search-btn')
+
+        self.input.clear()
+        send_keys_and_wait(self.input, product_id)
+        button_submit.click()
+        h1 = self.browser.find_element_by_tag_name('h1')
+
+        self.assertTrue(h1.text == product_h1)
 
 
 class IndexPage(SeleniumTestCase):

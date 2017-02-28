@@ -1,4 +1,4 @@
-{
+(() => {
   const DOM = {
     $nav: $('.js-nav'),
     navSubnav: '.js-nav-subnav',
@@ -65,4 +65,4 @@
   }
 
   init();
-}
+})();

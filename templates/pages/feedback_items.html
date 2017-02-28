@@ -3,21 +3,26 @@
 {% load stb_extras %}
 
 {% for feedback in feedbacks %}
-  {% if feedback.main_image %}
-    <li class="feedbacks-content-item js-feedback-item
-      {% if page.slug == 'client-feedbacks' %}
-        col-sm-3
-      {% else %}
-        col-sm-4
-      {% endif %}">
-      {% thumbnail feedback.main_image 'x270' as image %}
-        <a class="feedbacks-content-img-wrapper js-featherlight-gallery" href="#"
-           data-featherlight="{{ feedback.main_image.url }}">
-          <img class="feedbacks-content-img img-responsive" src="{{ image.url }}"
-               alt="{% get_img_alt feedback %}">
-        </a>
-      {% endthumbnail %}
-      <p class="feedbacks-content-text">{{ feedback.name }}</p>
-    </li>
-  {% endif %}
+  {% with big_img=feedback.main_image %}
+    {% if big_img %}
+      <li class="feedbacks-content-item js-feedback-item
+        {% if page.slug == 'client-feedbacks' %}
+          col-sm-3
+        {% else %}
+          col-sm-4
+        {% endif %}">
+        {% thumbnail big_img 'x270' as thumbnail %}
+          <img
+            class="feedbacks-img img-responsive js-photoswipe-slide"
+            src="{{ thumbnail.url }}"
+            data-original-src="{{ big_img.url }}"
+            data-original-src-width="{{ big_img.width }}"
+            data-original-src-height="{{ big_img.height }}"
+            alt="{% get_img_alt feedback %}"
+          >
+        {% endthumbnail %}
+        <p class="feedbacks-text">{{ feedback.name }}</p>
+      </li>
+    {% endif %}
+  {% endwith %}
 {% endfor %}

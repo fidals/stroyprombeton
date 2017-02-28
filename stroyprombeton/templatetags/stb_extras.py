@@ -85,3 +85,9 @@ def get_product_field(product_id, parameter):
     product = Product.objects.get(id=product_id)
 
     return getattr(product, parameter)
+
+
+@register.filter
+def remove_specification(value, specification):
+    replace_pattern = '. {}'.format(specification)
+    return value.replace(replace_pattern, '')

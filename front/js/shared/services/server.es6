@@ -17,7 +17,7 @@ const server = (() => {
       {
         product: productId,
         quantity,
-      }
+      },
     );
   }
 
@@ -43,7 +43,7 @@ const server = (() => {
       {
         product: productId,
         quantity,
-      }
+      },
     );
   }
 

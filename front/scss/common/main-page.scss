@@ -1,6 +1,6 @@
-// ================================================================
-// PAGE MAIN
-// ================================================================
+@import "../utilities/variables";
+@import "../utilities/utilities";
+
 .content {
   .index & {
     padding-top: $h-nav;
@@ -210,21 +210,23 @@
 // PARTNERS
 // ================================================================
 .partners {
-  &-h2 {
+  &-title {
     margin-bottom: 40px;
   }
 
   &-item {
-    margin-bottom: 60px;
+    margin-bottom: 45px;
 
     &-title {
       color: $c-text;
       font-size: $f-size-base - 3;
-      font-weight: 400;
-      line-height: 1.5;
       margin-top: 10px;
       width: 90%;
     }
+  }
+
+  &-image {
+    max-width: 200px;
   }
 }
 
@@ -239,23 +241,23 @@
   }
 
   &-img-wrapper {
+    align-items: baseline;
     display: flex;
-    flex: 0 0 165px;
-    margin-right: 10px;
+    flex: 0 0 160px;
     position: relative;
   }
 
   &-text-wrapper {
     color: $c-text;
     overflow: hidden;
-    padding: 20px;
+    padding: 15px 20px;
     position: relative;
 
     &::after {
       background: linear-gradient(to bottom, rgba($c-teaser-bg, 0.5), $c-teaser-bg 40%);
       bottom: 0;
       content: "";
-      height: 45px;
+      height: 40px;
       position: absolute;
       width: 100%;
     }
@@ -264,7 +266,7 @@
   &-item {
     @include teaser-box;
     margin-bottom: 33px;
-    height: 165px;
+    height: 160px;
 
     &:last-child {
       margin-bottom: 0;
@@ -281,14 +283,14 @@
     }
 
     &-short {
-      padding: 0 0 10px;
+      padding: 0 0 5px;
     }
   }
 
   &-date {
     color: $c-text-grey;
     font-size: $f-size-base - 2;
-    margin-bottom: 10px;
+    margin-bottom: 5px;
   }
 
   &-list {
@@ -306,23 +308,19 @@
     margin: 0 0 40px;
   }
 
-  &-content {
-    &-img-wrapper {
-      display: block;
-      margin: 0 0 15px;
-    }
+  &-img {
+    box-shadow: 0 0 0 1px $c-feedbacks-img-border;
+    cursor: pointer;
+    margin: 0 0 15px;
+  }
 
-    &-img {
-      box-shadow: 0 0 0 1px $c-feedbacks-img-border;
-    }
-
-    &-text {
-      margin: 0 0 50px;
-    }
+  &-text {
+    margin: 0 0 50px;
   }
 
   &-more {
     border-bottom: 1px solid $c-feedbacks-bot-line;
     padding-bottom: 15px;
+    text-align: right;
   }
 }

@@ -1,3 +1,17 @@
+@import "../../utilities/variables";
+
+::-webkit-input-placeholder { // Chrome/Opera/Safari
+  color: $c-text-muted;
+}
+
+::-moz-placeholder { // Firefox 19+
+  color: $c-text-muted;
+}
+
+:-ms-input-placeholder { // IE 10+
+  color: $c-text-muted;
+}
+
 input[type='number'] {
   -moz-appearance: textfield;
 }

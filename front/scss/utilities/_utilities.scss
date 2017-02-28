@@ -1,3 +1,5 @@
+@import "./variables";
+
 @mixin font-smoothing($value: antialiased) {
   @if $value == antialiased {
     -webkit-font-smoothing: antialiased;
@@ -38,62 +40,19 @@
   }
 }
 
-// Pseudo elements:
-@mixin before(
-  $left: 0,
-  $top: 0
-) {
-  content: "";
-  left: $left;
-  position: absolute;
-  top: $top;
-}
-
-@mixin after(
-  $right: 0,
-  $top: 0
-) {
-  content: "";
-  position: absolute;
-  right: $right;
-  top: $top;
-}
-
-// Row with responsive children:
-@mixin rows(
-  $n,
-  $margin-right  : 0,
-  $margin-bottom : 0
-) {
-  // display: inline-block;
-  // vertical-align: top;
-  width: ( (100% - ($n - 1) * $margin-right) ) / $n;
-
-  &:nth-child( n ) {
-    margin-right: $margin-right;
-    margin-bottom: $margin-bottom;
-  }
-
-  &:nth-child( #{$n}n ) {
-    margin-right: 0;
-  }
-}
-
 // Justify children:
 @mixin justify {
   position: relative;
   text-align: justify;
 
-  &:after {
+  &::after {
     content: "";
     display: inline-block;
-    width: 100%
+    width: 100%;
   }
 }
 
-// ================================================================
-// UI ELEMENTS
-// ==============================================================
+// Links
 @mixin grey-link {
   color: $c-link-grey;
   transition: color 0.3s ease;
@@ -103,6 +62,7 @@
   }
 }
 
+// Boxes
 @mixin teaser-box {
   background-color: $c-teaser-bg;
   position: relative;
@@ -112,4 +72,13 @@
     background-color: $c-teaser-bg-hover;
     box-shadow: $sh-teaser;
   }
+}
+
+// Transition
+@mixin transition(
+  $property: all,
+  $time: 0.3s,
+  $easing: ease
+) {
+  transition: $property $time $easing;
 }

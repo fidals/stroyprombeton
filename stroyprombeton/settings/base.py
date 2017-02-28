@@ -305,10 +305,15 @@ REGIONS = {
 
 PARTNERS = [
     {
+        'logo': 'images/stk-prombeton.png',
+        'text': 'Проектируют и доставляют ЖБИ',
+        'alt': 'Проектируют и доставляют ЖБИ',
+    },
+    {
         'url': 'http://stkm-energo.ru/?utm_source=STB_site&utm_medium=backlink&utm_campaign=backlink_traffic',
         'logo': 'images/partner-modulenergo-logo.png',
-        'text': 'Проектируют и возводят энергообъекты',
-        'alt': 'Проектируют и возводят энергообъекты',
+        'text': 'Проектируют и возводят <br> энергообъекты',
+        'alt': 'Проектируют и возводят <br> энергообъекты',
     },
     {
         'url': 'http://www.stk-metal.ru/?utm_source=STB_site&utm_medium=backlink&utm_campaign=backlink_traffic',

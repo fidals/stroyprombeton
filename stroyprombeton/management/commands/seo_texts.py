@@ -1,9 +1,9 @@
 from functools import reduce
 from operator import or_
 
+from django.core.management.base import BaseCommand
 from django.db import transaction
 from django.db.models.expressions import Q
-from django.core.management.base import BaseCommand
 
 from stroyprombeton.models import ProductPage, CategoryPage
 
@@ -12,7 +12,7 @@ flag_symbol = '\U0001F6A9'
 
 product_page = {
     'content': '''
-Производим, продаем и доставляем по России {}.
+Производим, продаем и доставляем по России {} {}.
 В Санкт-Петербурге и Ленинградской области работает самовывоз.
 У нас нет фиксированный цены доставки, поэтому звоните менеджеру, чтобы ее узнать.
 Менеджер поможет выбрать способ доставки, рассчитает стоимость и назовет срок.
@@ -59,7 +59,7 @@ population_settings = [
             'content': {
                 'template': {
                     'text': product_page['content'],
-                    'variables': ['name'],
+                    'variables': ['name', 'model.mark'],
                 },
             },
             'title': {
@@ -101,7 +101,7 @@ def populate_entities(populate_model, populate_fields, overwrite=False):
         """
         Get value for template from attribute chain.
         >>> entity_ = ProductPage.objects.get(parent__name='Pipe')
-        >>> get_by_attrs(entity_,'model.category.page.name')
+        >>> get_by_attrs(entity_, 'model.category.page.name')
         >>> 'Pipe'
         """
         return str(reduce(getattr, attrs.split('.'), entity_))

@@ -2,13 +2,22 @@
 {% load thumbnail %}
 {% load stb_extras %}
 
-{% if product.page.main_image %}
-  {% thumbnail product.page.main_image '556x416' as image %}
-    <img class="img-centered img-responsive" src="{{ image.url }}"
-         alt="{% get_img_alt product.page %}" itemprop="image">
-  {% endthumbnail %}
-{% else %}
-  {% placeholder_image_url as image_url %}
-    <img class="img-centered img-responsive" src="{{ image_url }}"
-         alt="{% get_img_alt product.page %}" itemprop="image">
-{% endif %}
+{% with big_img=product.page.main_image %}
+  {% if big_img %}
+    {% thumbnail big_img '556x416' as thumbnail %}
+      <img
+        class="product-img img-centered img-responsive js-photoswipe-slide"
+        src="{{ thumbnail.url }}"
+        data-original-src="{{ big_img.url }}"
+        data-original-src-width="{{ big_img.width }}"
+        data-original-src-height="{{ big_img.height }}"
+        alt="{% get_img_alt product.page %}"
+        itemprop="image"
+      >
+    {% endthumbnail %}
+  {% else %}
+    {% placeholder_image_url as placeholder %}
+      <img class="img-centered img-responsive" src="{{ placeholder }}"
+           alt="{% get_img_alt product.page %}" itemprop="image">
+  {% endif %}
+{% endwith %}

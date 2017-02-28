@@ -12,7 +12,7 @@
           <div class="news-img-wrapper">
             {% if item.main_image %}
               {% thumbnail item.main_image '165x165' as image %}
-                <img class="img-responsive img-stretched" src="{{ image.url }}"
+                <img class="img-responsive" src="{{ image.url }}"
                      alt="{% get_img_alt item %}">
               {% endthumbnail %}
             {% else %}
@@ -24,6 +24,7 @@
 
           <div class="news-text-wrapper">
             <p class="news-item-title">{{ item.h1 }}</p>
+            <p class="news-date">{{ item.date_published|date:'d.m.Y' }}</p>
             <p class="news-item-short">{{ item.description|truncatechars:190 }}</p>
           </div>
         </a>
@@ -31,8 +32,10 @@
     {% endfor %}
   </ul>
 
-  <a class="more-link text-right" href="{% url 'custom_page' 'news' %}">
-    Все новости
-    <i class="fa fa-arrow-right more-link-arrow" aria-hidden="true"></i>
-  </a>
+  <p class="text-right">
+    <a class="more-link text-right" href="{% url 'custom_page' 'news' %}">
+      Все новости
+      <i class="fa fa-arrow-right more-link-arrow" aria-hidden="true"></i>
+    </a>
+  </p>
 </section>

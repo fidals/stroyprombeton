@@ -6,7 +6,8 @@ const configs = (() => {
   const DOM = {
     $phoneInputs: $('.js-masked-phone'),
     $tooltipTarget: $('.js-object-tooltip.active'),
-    $galleryItem: $('.js-featherlight-gallery'),
+    $galleryItem: $('.js-photoswipe'),
+    gallerySlide: '.js-photoswipe-slide',
   };
 
   const labels = {
@@ -48,9 +49,13 @@ const configs = (() => {
     });
 
     /**
-     * https://goo.gl/Lw1RG9 - Featherlight Gallery
+     * https://goo.gl/oF818r - Featherlight Gallery
      */
-    DOM.$galleryItem.featherlightGallery();
+    DOM.$galleryItem.photoSwipe(DOM.gallerySlide, {
+      closeOnScroll: false,
+      fullscreenEl: false,
+      shareEl: false,
+    });
   }
 
   /**

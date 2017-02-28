@@ -12,6 +12,8 @@ from images.models import Image
 from stroyprombeton.models import Product, Category
 from stroyprombeton.views.helpers import set_csrf_cookie, get_keys_from_post
 
+PRODUCTS_ORDERING = ['code', 'name', 'mark']
+
 
 def fetch_products(request):
     """Filter product table on Category page by Name, vendor code, series."""
@@ -21,11 +23,13 @@ def fetch_products(request):
     )
 
     category = Category.objects.get(id=category_id)
-    products = Product.objects.get_by_category(category, ordering=('name', 'mark'))
+    products = Product.objects.get_by_category(
+        category, ordering=PRODUCTS_ORDERING
+    )
 
     if filtered == 'true':
         lookups = ['name__icontains', 'code__icontains', 'mark__icontains']
-        products = filter_(term, products, lookups, ordering=('name', 'mark'))
+        products = filter_(term, products, lookups, ordering=PRODUCTS_ORDERING)
 
     if offset:
         offset = int(offset)
@@ -82,20 +86,21 @@ class CategoryPage(catalog.CategoryPage):
 
         products = (
             Product.objects
-                .get_by_category(category, ordering=('name', 'mark'))
+                .get_by_category(category, ordering=PRODUCTS_ORDERING)
                 .select_related('page')
-                .get_offset(0, 30)
         )
-
-        images = Image.objects.get_main_images_by_pages(product.page for product in products)
-
+        products_offset = products.get_offset(0, 30)
+        images = Image.objects.get_main_images_by_pages(
+            product.page for product in products_offset
+        )
         products_with_images = [
             (product, images.get(product.page))
-            for product in products
+            for product in products_offset
         ]
 
         return {
             **context,
+            'seo_links': products[30:],
             'products_with_images': products_with_images,
         }
 
@@ -115,7 +120,9 @@ class ProductPage(catalog.ProductPage):
                 .select_related('page')
         )
 
-        images = Image.objects.get_main_images_by_pages(sibling.page for sibling in siblings)
+        images = Image.objects.get_main_images_by_pages(
+            sibling.page for sibling in siblings
+        )
 
         siblings_with_images = [
             (product, images.get(product.page))
@@ -145,7 +152,7 @@ class ProductPDF(PDFTemplateView, DetailView):
 
         products = (
             Product.objects
-                .get_by_category(category, ordering=('name', 'mark'))
+                .get_by_category(category, ordering=PRODUCTS_ORDERING)
                 .select_related('page')
         )
 

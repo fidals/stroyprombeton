@@ -13,6 +13,10 @@
   {% block stylesheets %}
     <link rel="stylesheet" href="{% static 'css/styles.min.css' %}">
   {% endblock %}
+
+  <!--[if lt IE 10 ]>
+    <link rel="stylesheet" href="{% static 'css/ie.min.css' %}">
+  <![endif]-->
 </head>
 
 <body class="{% block body_class %}{% endblock %}">
@@ -36,14 +40,19 @@
     {% include 'layout/footer.html' %}
   {% endblock %}
 
-  {% block backcall_modal %}
-    {% include 'ecommerce/order/backcall_modal.html' %}
+  {% block modals %}
+    {% block backcall_modal %}
+      {% include 'ecommerce/order/backcall_modal.html' %}
+    {% endblock %}
   {% endblock %}
 
   <div class="btn btn-scroll-to-top" id="btn-scroll-to-top">Наверх</div>
 
   {% block jslibs %}
     <script src="{% static 'js/main-vendors.min.js' %}"></script>
+    <!--[if lt IE 10]>
+      <script src="{% static 'js/ie-vendors.min.js' %}"></script>
+    <![endif]-->
   {% endblock %}
 
   {% block jslinks %}
