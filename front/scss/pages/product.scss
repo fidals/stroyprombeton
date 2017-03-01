@@ -155,7 +155,10 @@
     &-price {
       font-size: $f-size-base + 4;
       font-weight: 600;
-      margin-bottom: 9px;
+    }
+
+    .more-link {
+      display: block;
     }
   }
 

@@ -1,3 +1,5 @@
+@import "../utilities/variables";
+
 .order {
   background-color: $c-order-order-bg;
   padding: 20px 0 30px;
@@ -94,9 +96,6 @@
   }
 }
 
-// ================================================================
-// FORM
-// ================================================================
 .order-form {
   padding: 20px 0 0;
 

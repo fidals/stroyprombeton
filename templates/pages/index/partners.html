@@ -11,7 +11,11 @@
             <img class="img-responsive partners-image"
                  src="{{ STATIC_URL }}{{ partner.logo }}"
                  alt="{{ partner.alt }}">
-            <p class="partners-item-title">{{ partner.text }}</p>
+            <p class="partners-item-title">
+              {% autoescape off %}
+                {{ partner.text }}
+              {% endautoescape %}
+            </p>
           </a>
         {% else %}
             <img class="img-responsive partners-image"

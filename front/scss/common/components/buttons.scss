@@ -1,5 +1,8 @@
+@import "../../utilities/variables";
+@import "../../utilities/utilities";
+
 .btn {
-  background-color: $c-white;
+  background: $c-white;
   border: 2px solid $c-btn-orange;
   border-radius: 25px;
   color: $c-btn-orange;
@@ -13,36 +16,40 @@
   transition: all 0.3s ease;
 
   &:hover {
-    border: solid 2px $c-btn-orange-hover;
+    border-color: $c-btn-orange-hover;
     color: $c-btn-orange-hover;
   }
 
+  &-active,
   &:active {
     color: $c-btn-orange-active;
-    border: solid 2px $c-btn-orange-active;
+    border-color: $c-btn-orange-active;
   }
 
-  &:disabled {
+  &-disabled,
+  &:disabled,
+  &-disabled:hover,
+  &:disabled:hover {
     border-color: $c-btn-disabled;
     color: $c-btn-disabled;
     cursor: default;
   }
 
   &-white {
-    background-color: $c-application-bg;
+    background: $c-application-bg;
     border-color: $c-white;
     color: $c-white;
     font-size: $f-size-base;
 
     &:hover {
-      background-color: $c-btn-white-bg-hover;
+      background: $c-btn-white-bg-hover;
       border-color: $c-white;
       color: $c-white;
     }
 
     &:active {
-      background-color: $c-btn-white-bg-hover;
-      border: solid 2px $c-white;
+      background: $c-btn-white-bg-hover;
+      border-color: $c-white;
       color: $c-btn-white-active;
     }
   }

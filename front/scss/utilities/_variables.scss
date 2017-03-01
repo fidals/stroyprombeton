@@ -29,8 +29,8 @@ $c-white: #fff;
 // Buttons
 $c-btn-disabled: #bababa;
 $c-btn-orange: #fc7126;
-$c-btn-orange-hover: #bd6739;
-$c-btn-orange-active: #904f2b;
+$c-btn-orange-hover: darken($c-btn-orange, 12%);
+$c-btn-orange-active: darken($c-btn-orange, 20%);
 $c-btn-search: #6d6c6c;
 $c-btn-search-hover: #434343;
 $c-btn-white-active: #9b9b9b;

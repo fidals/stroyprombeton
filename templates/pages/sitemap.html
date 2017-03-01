@@ -1,42 +1,63 @@
+{% extends 'layout/inner_page.html' %}
+
 {% load pages_extras %}
 
-<head>
-  <title>{{ page.title }}</title>
-</head>
-<body>
-  <h1>Страница: {{ page.h1 }}</h1>
+{% block content %}
+  {% include 'components/page_h1.html' with page=page %}
 
-  <ul class="catalog-list">
-    {% for page in paginator_pages|dictsort:'name' %}
-      <li class="catalog-list-item">
-        <a href="{{ page.url }}">{{ page.name }} {{ page.mark }}</a>
-      </li>
-    {% endfor %}
-  </ul>
-
-  {% if paginator_pages.has_other_pages %}
-    <ul class="pagination">
-      {% if paginator_pages.has_previous %}
-        <li><a href="?{{ url_pagination_hash }}={{ paginator_pages.previous_page_number }}">&laquo;</a></li>
-      {% else %}
-        <li class="disabled"><span>&laquo;</span></li>
-      {% endif %}
-
-      {% for link in paginator_links %}
-        {% if paginator_pages.number == link %}
-          <li class="active"><span>{{ link }} <span class="sr-only">(current)</span></span></li>
-        {% else %}
-          <li><a href="?{{ url_pagination_hash }}={{ link }}">{{ link }}</a></li>
-        {% endif %}
+  <div class="container container-fluid">
+    <ul class="sitemap-list">
+      {% for page in paginator_pages|dictsort:'name' %}
+        <li class="sitemap-list-item">
+          <a href="{{ page.url }}">{{ page.name }} {{ page.model.mark }}</a>
+        </li>
       {% endfor %}
-
-      {% if paginator_pages.has_next %}
-        <li><a href="?{{ url_pagination_hash }}={{ paginator_pages.next_page_number }}">&raquo;</a></li>
-      {% else %}
-        <li class="disabled"><span>&raquo;</span></li>
-      {% endif %}
     </ul>
-  {% endif %}
 
-  <p>Page {{ paginator_pages.number }} of {{ paginator_pages.paginator.num_pages }}</p>
-</body>
+    {% if paginator_pages.has_other_pages %}
+      <ul class="pagination">
+        {% if paginator_pages.has_previous %}
+          <li class="pagination-item">
+            <a
+              class="btn"
+              href="?{{ url_pagination_hash }}={{ paginator_pages.previous_page_number }}">
+                &laquo;
+            </a>
+          </li>
+        {% else %}
+          <li class="pagination-item">
+            <span class="btn btn-disabled">&laquo;</span>
+          </li>
+        {% endif %}
+
+        {% for link in paginator_links %}
+          {% if paginator_pages.number == link %}
+            <li class="pagination-item">
+              <span class="btn btn-active">{{ link }} <span class="sr-only">(current)</span></span>
+            </li>
+          {% else %}
+            <li class="pagination-item">
+              <a class="btn" href="?{{ url_pagination_hash }}={{ link }}">{{ link }}</a>
+            </li>
+          {% endif %}
+        {% endfor %}
+
+        {% if paginator_pages.has_next %}
+          <li class="pagination-item">
+            <a
+              class="btn"
+              href="?{{ url_pagination_hash }}={{ paginator_pages.next_page_number }}">
+                &raquo;
+            </a>
+          </li>
+        {% else %}
+          <li class="pagination-item disabled"><span>&raquo;</span></li>
+        {% endif %}
+      </ul>
+    {% endif %}
+
+    <p class="text-center">
+      Страница {{ paginator_pages.number }} из {{ paginator_pages.paginator.num_pages }}
+    </p>
+  </div>
+{% endblock %}

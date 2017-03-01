@@ -178,6 +178,8 @@ SEARCH_SEE_ALL_LABEL = 'Смотреть все результаты'
 SITE_ID = 1
 SITE_DOMAIN_NAME = 'www.stroyprombeton.ru'
 
+USE_CELERY = False
+
 # Email configs
 # It is fake-pass. Correct pass will be created on `docker-compose up` stage from `docker/.env`
 EMAIL_HOST = 'smtp.yandex.ru'
