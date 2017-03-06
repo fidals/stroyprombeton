@@ -8,8 +8,8 @@ import os
 
 from django.conf import settings
 from django.core.management.base import BaseCommand
-from django.core.urlresolvers import reverse
 from django.template.loader import render_to_string
+from django.urls import reverse
 
 from stroyprombeton.models import Product, Category
 
@@ -39,17 +39,15 @@ class Command(BaseCommand):
 
         def put_utm(product):
             """Put UTM attribute to product."""
-            utm_marks = {
-                'utm_source': utm,
-                'utm_medium': 'cpc',
-                'utm_content': product.get_root_category().page.slug,
-                'utm_term': str(product.id)
-            }
+            utm_marks = [
+                ('utm_source', utm),
+                ('utm_medium', 'cpc'),
+                ('utm_content', product.get_root_category().page.slug),
+                ('utm_term', product.id),
+            ]
             url = reverse('product', args=(product.id,))
-            utm_mark = '&'.join(
-                ['{}={}'.format(k, v) for k, v in utm_marks.items()]
-            )
-            product.utm_url = ''.join([settings.BASE_URL, url, '?' + utm_mark])
+            utm_mark = '&'.join('{}={}'.format(k, v) for k, v in utm_marks)
+            product.utm_url = '{}{}?{}'.format(settings.BASE_URL, url, utm_mark)
 
             return product
 
@@ -63,10 +61,14 @@ class Command(BaseCommand):
             )
             return product
 
-        def prepare_products(categories):
+        def prepare_products(categories_):
             """Filter product list and patch it for rendering."""
-            products_except_others = Product.objects.filter(
-                category__in=categories).filter(price__gt=0)
+            products_except_others = (
+                Product.objects
+                    .select_related('page')
+                    .prefetch_related('category', 'category__page')
+                    .filter(category__in=categories_, price__gt=0)
+            )
             result_products = (
                 put_crumbs(put_utm(product))
                 for product in products_except_others

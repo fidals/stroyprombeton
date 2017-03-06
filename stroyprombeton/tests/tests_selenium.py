@@ -6,10 +6,10 @@ from selenium.webdriver.remote.webelement import WebElement
 from seleniumrequests import Chrome  # We use this instead of standard selenium
 
 from django.conf import settings
-from django.core.urlresolvers import reverse
 from django.db.models import Count
 from django.template.defaultfilters import floatformat
 from django.test import LiveServerTestCase
+from django.urls import reverse
 
 from pages.models import Page
 

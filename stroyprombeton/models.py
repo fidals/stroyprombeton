@@ -1,5 +1,5 @@
-from django.core.urlresolvers import reverse
 from django.db import models
+from django.urls import reverse
 
 from catalog.models import AbstractProduct, AbstractCategory
 from ecommerce.models import Order as ecOrder

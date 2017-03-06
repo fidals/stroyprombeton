@@ -9,9 +9,9 @@ All Selenium-tests should be located in tests_selenium.
 from copy import copy
 from datetime import datetime
 
-from django.core.urlresolvers import reverse
 from django.http import QueryDict
-from django.test import TestCase
+from django.test import TestCase, override_settings
+from django.urls import reverse
 
 from pages.models import CustomPage, FlatPage, ModelPage
 
@@ -398,6 +398,7 @@ class Search(TestCase):
         self.assertNotContains(response, self.WRONG_TERM)
 
 
+@override_settings(WKHTMLTOPDF_CMD='wkhtmltopdf')
 class ProductPrice(TestCase):
 
     fixtures = ['dump.json']

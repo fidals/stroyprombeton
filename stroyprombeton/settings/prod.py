@@ -7,3 +7,5 @@ ALLOWED_HOSTS = ['*']
 
 # http->https change
 os.environ['HTTPS'] = 'off'
+
+USE_CELERY = True

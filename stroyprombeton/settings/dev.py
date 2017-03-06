@@ -7,3 +7,5 @@ DEBUG = True
 THUMBNAIL_DEBUG = True
 
 SITE_DOMAIN_NAME = 'stage.stroyprombeton.ru'
+
+USE_CELERY = False

@@ -1,4 +1,5 @@
-Django==1.9.5
+celery
+Django==1.10
 django-widget-tweaks
 tblib
 pillow

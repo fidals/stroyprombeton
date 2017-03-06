@@ -1,7 +1,7 @@
 from django import template
 from django.conf import settings
-from django.core.urlresolvers import reverse
 from django.template.defaultfilters import floatformat
+from django.urls import reverse
 
 from images.models import ImageMixin
 from pages.models import Page

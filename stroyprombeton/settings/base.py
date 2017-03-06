@@ -52,7 +52,7 @@ INSTALLED_APPS = [
     'stroyprombeton',
 ]
 
-MIDDLEWARE_CLASSES = [
+MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -144,6 +144,8 @@ DATABASES = {
         default=DATABASE_URL
     )
 }
+
+WKHTMLTOPDF_CMD = 'xvfb-run wkhtmltopdf'
 
 # 60 days in seconds
 CACHED_TIME = 60 * (24*60*60)

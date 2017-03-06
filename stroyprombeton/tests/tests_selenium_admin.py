@@ -5,8 +5,8 @@ from selenium.webdriver.common.keys import Keys
 from seleniumrequests import Chrome  # We use this instead of standard selenium
 
 from django.test import LiveServerTestCase
-from django.core.urlresolvers import reverse
 from django.conf import settings
+from django.urls import reverse
 
 from stroyprombeton.models import Product, Category
 
