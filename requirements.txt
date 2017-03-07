@@ -1,15 +1,18 @@
 celery
+dj-database-url==0.4.1
 Django==1.10
+django-debug-toolbar
+django-user-agents
 django-widget-tweaks
-tblib
+django-wkhtmltopdf
+openpyxl
 pillow
-selenium
-selenium-requests
 psycopg2
 pymysql
-openpyxl
+selenium
+selenium-requests
+tblib
 unidecode
-dj-database-url==0.4.1
-django-debug-toolbar
-django-wkhtmltopdf
+ua-parser
+user-agents
 -e git+https://github.com/fidals/refarm-site.git#egg=refarm-site

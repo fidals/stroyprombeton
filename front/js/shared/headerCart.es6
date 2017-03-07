@@ -26,7 +26,7 @@
    */
   function removeFromCart(productId) {
     server.removeFromCart(productId)
-      .then(data => mediator.publish('onCartUpdate', { html: data }));
+      .then(data => mediator.publish('onCartUpdate', data));
   }
 
   /**
@@ -34,15 +34,16 @@
    */
   function flushCart() {
     server.flushCart()
-      .then(data => mediator.publish('onCartUpdate', { html: data }));
+      .then(data => mediator.publish('onCartUpdate', data));
   }
 
   /**
    * Render new Cart's html.
-   * @param {string} data - html form server
+   * @param {string} data - html from server
    */
   function render(_, data) {
-    DOM.$cartWrapper.html(data.html.header);
+    const html = data.html || data;
+    DOM.$cartWrapper.html(html.header);
   }
 
   /**
@@ -56,7 +57,7 @@
 
     setTimeout(() => {
       $cartProductsList.removeClass('active');
-    }, 3000);
+    }, 1500);
   }
 
   init();

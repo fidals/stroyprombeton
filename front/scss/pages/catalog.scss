@@ -1,78 +1,84 @@
 @import "../utilities/variables";
+@import "../utilities/mixins";
 
 .catalog {
   padding: 21px 0;
 
-  &-ul {
-    display: none;
-    margin: 0 0 30px 50px;
+  &-ul-item {
+    margin-bottom: 30px;
 
-    &-item {
+    @include media($sm) {
       align-items: center;
       display: flex;
-      margin-bottom: 72px;
-      padding: 0 120px 0 80px;
+      margin-bottom: 30px;
       position: relative;
+    }
+
+    @include media($lg) {
+      margin-bottom: 60px;
+      padding: 0 120px 0 80px;
     }
   }
 
   &-img {
-    width: 30%;
-  }
+    display: none;
 
-  &-title {
-    width: 70%;
-
-    &::after {
-      content: "-";
-      font-weight: 600;
-      left: -15px;
-      position: absolute;
-      top: -2px;
+    @include media($sm) {
+      display: block;
+      width: 30%;
     }
   }
 }
 
-.catalog-ul-wrapper .catalog {
-  &-title {
+.catalog-title {
+  @include transition;
+  background: $c-orange;
+  border-radius: 3px;
+  display: block;
+  color: $c-white;
+  cursor: pointer;
+  font-size: $f-size-base + 3;
+  padding: 10px 70px 10px 15px;
+  position: relative;
+
+  @include media($sm) {
     align-items: center;
-    background-color: $c-catalog-title-bg;
-    border-radius: 3px;
-    color: $c-white;
-    cursor: pointer;
     display: flex;
-    font-size: $f-size-base + 18;
-    font-weight: 300;
+    font-size: $f-size-base + 10;
     margin: 0 0 0 50px;
+    padding: 10px 70px 15px 15px;
+    width: 70%;
+  }
+
+  @include media($md) {
+    font-size: $f-size-base + 15;
     min-height: 120px;
     padding: 15px 70px 20px 32px;
-    position: relative;
-    transition: all 0.2s ease;
+  }
 
-    &:hover {
-      background-color: $c-catalog-title-hover-bg;
-    }
+  &:hover {
+    background: $c-btn-orange-hover;
+    color: $c-white;
+  }
 
-    &::after {
-      border-right: 2px solid $c-white;
-      border-bottom: 2px solid $c-white;
-      content: "";
-      display: block;
-      height: 23px;
-      left: auto;
-      position: absolute;
-      right: 32px;
-      top: 49px;
-      transform: rotate(-45deg);
-      transition: all 0.2s ease;
-      width: 23px;
-    }
+  &::after {
+    border-right: 2px solid $c-white;
+    border-bottom: 2px solid $c-white;
+    content: "";
+    display: block;
+    height: 23px;
+    left: auto;
+    position: absolute;
+    right: 32px;
+    top: 50%;
+    transform: translateY(-50%) rotate(-45deg);
+    width: 23px;
+  }
 
-    &.active::after {
-      right: 25px;
-      top: 42px;
-      transform: rotate(45deg);
-    }
+  &.active::after {
+    right: 25px;
+    top: 42px;
+    transform: rotate(45deg);
   }
 }
 

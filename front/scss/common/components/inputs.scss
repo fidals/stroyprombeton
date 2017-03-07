@@ -1,4 +1,5 @@
 @import "../../utilities/variables";
+@import "../../utilities/mixins";
 
 ::-webkit-input-placeholder { // Chrome/Opera/Safari
   color: $c-text-muted;
@@ -43,8 +44,13 @@ select {
   background-color: $c-input-select;
   overflow: hidden;
   text-overflow: ellipsis;
-  white-space: nowrap;
-  width: 370px;
+  white-space: normal;
+  width: 90%;
+
+  @include media() {
+    white-space: nowrap;
+    width: 370px;
+  }
 }
 
 .input {
@@ -60,6 +66,7 @@ select {
   }
 
   &-caret {
+    @include transition;
     background-color: $c-white;
     color: $c-input-caret;
     cursor: pointer;
@@ -69,7 +76,6 @@ select {
     position: absolute;
     right: 1px;
     text-align: center;
-    transition: all 0.2s ease;
     width: 20px;
 
     &:hover {
@@ -87,12 +93,12 @@ select {
   }
 
   &-status.fa {
+    @include transition;
     align-self: center;
     opacity: 0;
     font-size: $f-size-base - 2;
     left: 10px;
     position: absolute;
-    transition: all 0.3s ease;
   }
 
   &-status-valid {
@@ -113,7 +119,7 @@ select {
   }
 
   &-label {
-    color: $c-form-label;
+    color: $c-input-label;
     margin-bottom: 10px;
 
     &-asterisk {
@@ -123,11 +129,19 @@ select {
   }
 
   &-field {
-    min-width: 340px;
+    width: 90%;
+
+    @include media($sm) {
+      min-width: 340px;
+    }
 
     &-wrapper {
       display: flex;
-      margin: 0 0 30px 90px;
+      margin: 0 0 20px;
+
+      @include media($sm) {
+        margin: 0 0 30px 90px;
+      }
     }
 
     &-help {

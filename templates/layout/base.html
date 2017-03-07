@@ -4,9 +4,7 @@
 <html lang="ru">
 <head>
   {% include 'layout/google_tag_manager.html' with DEBUG=DEBUG is_head_tag=True %}
-  {% if page %}
-    {% include 'components/metadata.html' with page=page only %}
-  {% endif %}
+  {% include 'components/metadata.html' with page=page only %}
 
   <link rel="icon" type="image/x-icon" href="{% static 'images/favicon.ico' %}">
 
@@ -20,24 +18,32 @@
 </head>
 
 <body class="{% block body_class %}{% endblock %}">
-  {% include 'layout/google_tag_manager.html' with DEBUG=DEBUG is_body_tag=True %}
+  <div id="desktop-wrapper">
+    <header class="header">
+      {% include 'components/navigation_bar.html' %}
 
-  <header class="header">
-    {% include 'components/navigation_bar.html' %}
+      {% block search_bar %}
+        <div class="searchbar js-searchbar">
+          {% include 'components/search_bar.html' %}
+        </div>
+      {% endblock %}
+    </header>
 
-    {% block search_bar %}
-      <div class="searchbar js-searchbar">
-        {% include 'components/search_bar.html' %}
-      </div>
+    <div class="content">
+      {% block content %}{% endblock %}
+    </div>
+
+    {% block footer %}
+      {% include 'layout/footer.html' %}
     {% endblock %}
-  </header>
 
-  <div class="content">
-    {% block content %}{% endblock %}
+    {% block mobile_cart %}
+      {% include 'layout/mobile_cart.html' %}
+    {% endblock %}
   </div>
 
-  {% block footer %}
-    {% include 'layout/footer.html' %}
+  {% block mobile_nav %}
+    {% include 'layout/mobile_nav.html' %}
   {% endblock %}
 
   {% block modals %}

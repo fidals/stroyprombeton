@@ -1,5 +1,3 @@
-import time
-
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.remote.webelement import WebElement
@@ -14,11 +12,7 @@ from django.urls import reverse
 from pages.models import Page
 
 from stroyprombeton.models import Category, Product
-
-
-def wait(seconds=1):
-    """Simple wrapper on time.sleep() method."""
-    time.sleep(seconds)
+from stroyprombeton.tests.helpers import wait
 
 
 def hover(browser, element):
@@ -88,6 +82,7 @@ class CartMixin:
 
     def show_cart(self):
         hover(self.browser, self.cart())
+        wait()
 
     def positions(self):
         return self.browser.find_elements_by_class_name('cart-item')

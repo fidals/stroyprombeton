@@ -1,7 +1,5 @@
 from django import template
-from django.conf import settings
 from django.template.defaultfilters import floatformat
-from django.urls import reverse
 
 from images.models import ImageMixin
 from pages.models import Page
@@ -16,7 +14,7 @@ def show_field_if_exist(value, title, link=None):
     return {
         'title': title,
         'value': value,
-        'link': link
+        'link': link,
     }
 
 
@@ -24,7 +22,7 @@ def show_field_if_exist(value, title, link=None):
 def customer_info(value, title):
     return {
         'title': title,
-        'value': value
+        'value': value,
     }
 
 
@@ -32,14 +30,14 @@ def customer_info(value, title):
 def search_result(items, item_type):
     return {
         'items': items,
-        'item_type': item_type
+        'item_type': item_type,
     }
 
 
 @register.inclusion_tag('tags/order_form_field_error.html')
 def order_form_field_error(errors):
     return {
-        'errors': errors
+        'errors': errors,
     }
 
 
@@ -72,12 +70,6 @@ def get_img_alt(entity: ImageMixin):
     entity_name = next(
         filter(None, (getattr(entity, attr, None) for attr in name_attrs)))
     return product_alt.format(entity_name)
-
-
-# TODO - move it in pages. Inspired by LP electric
-@register.simple_tag
-def full_url(url_name, *args):
-    return settings.BASE_URL + reverse(url_name, args=args)
 
 
 @register.simple_tag

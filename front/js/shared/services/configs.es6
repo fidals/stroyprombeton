@@ -4,6 +4,7 @@
  */
 const configs = (() => {
   const DOM = {
+    $mobileMenu: $('#mobile-menu'),
     $phoneInputs: $('.js-masked-phone'),
     $tooltipTarget: $('.js-object-tooltip.active'),
     $galleryItem: $('.js-photoswipe'),
@@ -14,12 +15,16 @@ const configs = (() => {
     phone: 'phone',
   };
 
+  let $menu;
+
   const init = () => {
     pluginsInit();
     setupXHR();
   };
 
   function pluginsInit() {
+    initMmenu();
+
     DOM.$phoneInputs
       .attr('placeholder', '+7 (999) 000 00 00')
       .mask('+0 (000) 000 00 00');
@@ -73,9 +78,28 @@ const configs = (() => {
     });
   }
 
+  function initMmenu() {
+    $menu = DOM.$mobileMenu.mmenu({
+      extensions: [
+        'border-offset', 'shadow-page',
+        'shadow-panels', 'effect-menu-slide',
+      ],
+      iconPanels: true,
+      screenReader: true,
+      navbar: {
+        title: 'Меню',
+      },
+    }, {
+      offCanvas: {
+        pageSelector: '#desktop-wrapper',
+      },
+    });
+  }
+
   init();
 
   return {
+    $menu,
     labels,
   };
 })();

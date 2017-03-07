@@ -1,81 +1,68 @@
-{
+(() => {
   const DOM = {
     $addToCart: $('#buy-product'),
     $counter: $('.js-count-input'),
-    $sliderContent: $('.js-slider-content'),
-    $sliderNavLeft: $('.js-slider-nav-left'),
-    $sliderNavRight: $('.js-slider-nav-right'),
-    $sliderItem: $('.js-slider-item'),
+    $slick: $('.js-slick'),
+    slickItem: '.slick-slide',
   };
-
-  const slider = {
-    itemsToSlide: 3,
-    position: 0,
-    animationSpeed: 600,
-    disabledClass: 'slider-nav-disable',
-    itemsCount: DOM.$sliderItem.length,
-    itemsWidth: DOM.$sliderItem.eq(0).outerWidth(true),
-  };
-
-  const productId = () => DOM.$addToCart.attr('data-product-id');
 
   const init = () => {
+    pluginsInit();
     setUpListeners();
   };
 
+  function pluginsInit() {
+    initSlickSlider();
+  }
+
   function setUpListeners() {
     DOM.$addToCart.click(buyProduct);
-    DOM.$sliderNavLeft.click(slideLeft);
-    DOM.$sliderNavRight.click(slideRight);
+  }
+
+  function initSlickSlider() {
+    DOM.$slick.slick({
+      infinite: false,
+      lazyLoad: 'ondemand',
+      slidesToShow: 3,
+      slidesToScroll: 3,
+      responsive: [
+        {
+          breakpoint: 768,
+          settings: {
+            slidesToShow: 2,
+            slidesToScroll: 2,
+          },
+        },
+        {
+          breakpoint: 600,
+          settings: {
+            slidesToShow: 1,
+            slidesToScroll: 1,
+          },
+        },
+      ],
+    });
+
+    // Recalculate height on window resize:
+    $(window).resize(() => DOM.$slick.slick('setPosition'));
+
+    // Equal height for slides
+    DOM.$slick.on('setPosition', function slickRecalculate() {
+      $(this).find(DOM.slickItem).height('auto');
+      const slickTrack = $(this).find('.slick-track');
+      $(this).find(DOM.slickItem).css('height', `${$(slickTrack).height()}px`);
+    });
   }
 
   function buyProduct() {
     const { id, count } = {
-      id: productId(),
+      id: DOM.$addToCart.attr('data-product-id'),
       count: DOM.$counter.val(),
     };
 
     server.addToCart(id, count)
-      .then(data => mediator.publish('onCartUpdate', { html: data }));
-  }
-
-  const isDisabled = $sliderBtn => $sliderBtn.hasClass(slider.disabledClass);
-
-  function slideLeft() {
-    if (isDisabled(DOM.$sliderNavLeft)) return;
-
-    if (slider.position <= slider.itemsToSlide) {
-      slider.position = 0;
-      DOM.$sliderNavLeft.addClass(slider.disabledClass);
-    } else {
-      slider.position -= slider.itemsToSlide;
-    }
-
-    sliderMove();
-    DOM.$sliderNavRight.removeClass(slider.disabledClass);
-  }
-
-  function slideRight() {
-    if (isDisabled(DOM.$sliderNavRight)) return;
-
-    let imagesRightSide = slider.itemsCount - slider.position - slider.itemsToSlide;
-
-    if (imagesRightSide > slider.itemsToSlide) {
-      imagesRightSide = slider.itemsToSlide;
-    } else {
-      DOM.$sliderNavRight.addClass(slider.disabledClass);
-    }
-
-    slider.position += imagesRightSide;
-    sliderMove();
-    DOM.$sliderNavLeft.removeClass(slider.disabledClass);
-  }
-
-  function sliderMove() {
-    const left = slider.position * -slider.itemsWidth;
-
-    DOM.$sliderContent.stop().animate({ left }, slider.animationSpeed);
+      .then(data => mediator.publish('onCartUpdate', data));
   }
 
   init();
-}
+})();

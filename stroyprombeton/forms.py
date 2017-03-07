@@ -40,8 +40,8 @@ class BaseContactForm(forms.Form):
         max_length=100,
         required=False,
         widget=forms.TextInput(attrs={
-            'class': css_default_classes
-        })
+            'class': css_default_classes,
+        }),
     )
 
     phone = forms.CharField(
@@ -52,21 +52,21 @@ class BaseContactForm(forms.Form):
             'class': css_required_classes + 'js-masked-phone',
             'pattern': phone_validation_pattern,
             'placeholder': '+7 (999) 000 00 00',
-            'required': True
-        })
+            'required': True,
+        }),
     )
 
     email = forms.EmailField(
         label='Электронная почта',
         error_messages={
             **required_error_message,
-            'invalid': 'Пожалуйста, введите корректный адрес электроной почты.'
+            'invalid': 'Пожалуйста, введите корректный адрес электроной почты.',
         },
         widget=forms.EmailInput(attrs={
             'class': css_required_classes,
             'type': 'email',
-            'required': True
-        })
+            'required': True,
+        }),
     )
 
 
@@ -79,8 +79,8 @@ class PriceForm(BaseContactForm):
         error_messages=BaseContactForm.required_error_message,
         widget=forms.TextInput(attrs={
             'class': css_required_classes,
-            'required': True
-        })
+            'required': True,
+        }),
     )
 
     city = forms.CharField(
@@ -89,17 +89,23 @@ class PriceForm(BaseContactForm):
         error_messages=BaseContactForm.required_error_message,
         widget=forms.TextInput(attrs={
             'class': css_required_classes + 'js-city',
-            'required': True
-        })
+            'required': True,
+        }),
     )
 
     activity = forms.ChoiceField(
         label='Направление деятельности организации',
         choices=generate_activities,
-        error_messages=BaseContactForm.required_error_message
+        error_messages=BaseContactForm.required_error_message,
     )
 
-    site = forms.URLField(label='Сайт', required=False)
+    site = forms.URLField(
+        label='Сайт',
+        widget=forms.TextInput(attrs={
+            'class': css_default_classes,
+            'required': False,
+        }),
+    )
 
 
 class DrawingForm(BaseContactForm):

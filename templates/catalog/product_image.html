@@ -17,7 +17,7 @@
     {% endthumbnail %}
   {% else %}
     {% placeholder_image_url as placeholder %}
-      <img class="img-centered img-responsive" src="{{ placeholder }}"
-           alt="{% get_img_alt product.page %}" itemprop="image">
+    <img class="img-centered img-responsive" src="{{ placeholder }}"
+         alt="{% get_img_alt product.page %}" itemprop="image">
   {% endif %}
 {% endwith %}

@@ -2,6 +2,7 @@
   "extends": "airbnb-base",
   "globals": {
     "$": true,
+    "autocomplete": true,
     "Cookies": true,
     "configs": true,
     "document": true,

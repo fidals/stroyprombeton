@@ -1,28 +1,38 @@
 {% load images %}
-{% load thumbnail %}
 {% load stb_extras %}
 {% load pages_extras %}
+{% load thumbnail %}
+{% load user_agents %}
 
 <div class="container container-fluid">
-  <div class="row">
-    <div class="col-xs-12 col-md-offset-1 col-md-3">
-      <h2 class="heading-h3 feedbacks-heading">Отзывы заказчиков и партнеров</h2>
-    </div>
-    <div class="col-xs-12 col-md-7">
-      <ul class="feedbacks-content row js-photoswipe" id="feedbacks-wrapper">
-        {% include 'pages/feedback_items.html' with feedbacks=feedbacks only %}
-      </ul>
-    </div>
-  </div>
-
-  <div class="row">
-    <div class="col-md-11">
-      <div class="feedbacks-more">
-        <a class="more-link text-right" href="{% custom_url 'client-feedbacks' %}">
-          Больше отзывов
-          <i class="fa fa-arrow-right more-link-arrow" aria-hidden="true"></i>
-        </a>
+  {% if request|is_mobile %}
+    <h2 class="heading-h3 feedbacks-heading">
+      <a class="more-link" href="{% custom_url 'client-feedbacks' %}">
+        Отзывы заказчиков и партнеров
+        <i class="fa fa-arrow-right more-link-arrow" aria-hidden="true"></i>
+      </a>
+    </h2>
+  {% else %}
+    <div class="row">
+      <div class="col-xs-12 col-md-3 col-md-offset-1">
+        <h2 class="heading-h3 feedbacks-heading">Отзывы заказчиков и партнеров</h2>
+      </div>
+      <div class="col-xs-12 col-md-7">
+        <ul class="feedbacks-content row js-photoswipe" id="feedbacks-wrapper">
+          {% include 'pages/feedback_items.html' with feedbacks=feedbacks only %}
+        </ul>
       </div>
     </div>
-  </div>
+
+    <div class="row">
+      <div class="col-sm-12 col-md-11">
+        <div class="feedbacks-more">
+          <a class="more-link text-right" href="{% custom_url 'client-feedbacks' %}">
+            Больше отзывов
+            <i class="fa fa-arrow-right more-link-arrow" aria-hidden="true"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  {% endif %}
 </div>

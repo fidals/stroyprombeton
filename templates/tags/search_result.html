@@ -4,7 +4,7 @@
   {% for item in items %}
     <tr class="table-tr" id="{{ item.id }}">
       <td class="table-td table-type">{{ item_type }}</td>
-      <td class="table-td table-picture text-center">
+      <td class="table-td table-photo text-center">
         {% include 'catalog/category_product_image.html' with image=item.page.main_image only %}
       </td>
       <td class="table-td table-code">

@@ -1,15 +1,11 @@
 {% extends 'layout/inner_page.html' %}
 
-{% load images %}
-{% load thumbnail %}
-{% load stb_extras %}
-
 {% block content %}
   {% include 'components/breadcrumbs.html' %}
   {% include 'components/page_h1.html' with page=page only %}
 
   <div class="container container-fluid">
-    <ul class="row">
+    <ul class="row js-photoswipe">
       {% include 'pages/feedback_items.html' with feedbacks=feedbacks page=page only %}
     </ul>
   </div>

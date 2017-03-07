@@ -1,0 +1,79 @@
+@import "../utilities/variables";
+@import "../utilities/mixins";
+
+.search {
+  margin: 0 auto;
+  max-width: 340px;
+  position: relative;
+
+  @include media($md) {
+    max-width: none;
+  }
+
+  &-field {
+    @include transition(box-shadow);
+    background-color: $c-white;
+    border: 0;
+    border-radius: 30px;
+    box-shadow: $sh-search;
+    color: $c-search-text;
+    height: 32px;
+    font-size: $f-size-base - 2;
+    padding: 2px 16px 3px;
+    width: 100%;
+
+    &:focus {
+      box-shadow: $sh-search-focus;
+    }
+
+    .header & {
+      border-radius: 13px;
+      height: 26px;
+      padding: 2px 40px 3px 12px;
+    }
+  }
+
+  &-btn {
+    @include transition(color);
+    background: none;
+    border: 0;
+    color: $c-btn-search;
+    cursor: pointer;
+    font-size: $f-size-base - 1;
+    line-height: 1;
+    padding: 5px 18px;
+    position: absolute;
+    right: 0;
+    top: 0;
+
+    &:hover {
+      color: $c-btn-search-hover;
+    }
+  }
+
+  &-more {
+    margin-bottom: 9px;
+
+    &-link {
+      padding: 5px 10px;
+    }
+  }
+
+  &-item {
+    &:hover,
+    &.selected {
+      background: $c-search-link-hover;
+    }
+
+    &-text {
+      margin-right: 5px;
+    }
+
+    &-link {
+      border-bottom: 1px solid $c-searchbar-border;
+      color: $c-search-text;
+      display: block;
+      padding: 10px;
+    }
+  }
+}

@@ -1,14 +1,16 @@
 {% load images %}
-{% load thumbnail %}
+{% load pages_extras %}
 {% load stb_extras %}
+{% load thumbnail %}
+{% load user_agents %}
 
-<section class="mainpage-news">
-  <h2 class="news-h2 heading-h2">Новости</h2>
+<h2 class="news-h2 heading-h2">Новости</h2>
 
-  <ul class="news-list">
-    {% for item in news %}
-      <li class="news-item">
-        <a class="news-item-link" href="{{ item.url }}">
+<ul class="news-list">
+  {% for item in news %}
+    <li class="news-item">
+      <a class="news-item-link" href="{{ item.url }}">
+        {% if not request|is_mobile %}
           <div class="news-img-wrapper">
             {% if item.main_image %}
               {% thumbnail item.main_image '165x165' as image %}
@@ -17,25 +19,25 @@
               {% endthumbnail %}
             {% else %}
               {% placeholder_image_url as image_url %}
-                <img class="img-responsive img-stretched" src="{{ image_url }}"
-                     alt="{% get_img_alt item %}">
+              <img class="img-responsive img-stretched" src="{{ image_url }}"
+                   alt="{% get_img_alt item %}">
             {% endif %}
           </div>
+        {% endif %}
 
-          <div class="news-text-wrapper">
-            <p class="news-item-title">{{ item.h1 }}</p>
-            <p class="news-date">{{ item.date_published|date:'d.m.Y' }}</p>
-            <p class="news-item-short">{{ item.description|truncatechars:190 }}</p>
-          </div>
-        </a>
-      </li>
-    {% endfor %}
-  </ul>
+        <div class="news-text-wrapper">
+          <p class="news-item-title">{{ item.h1 }}</p>
+          <p class="news-date">{{ item.date_published|date:'d.m.Y' }}</p>
+          <p class="news-item-short">{{ item.description|truncatechars:190 }}</p>
+        </div>
+      </a>
+    </li>
+  {% endfor %}
+</ul>
 
-  <p class="text-right">
-    <a class="more-link text-right" href="{% url 'custom_page' 'news' %}">
-      Все новости
-      <i class="fa fa-arrow-right more-link-arrow" aria-hidden="true"></i>
-    </a>
-  </p>
-</section>
+<p class="text-right">
+  <a class="more-link text-right" href="{% custom_url 'news' %}">
+    Все новости
+    <i class="fa fa-arrow-right more-link-arrow" aria-hidden="true"></i>
+  </a>
+</p>

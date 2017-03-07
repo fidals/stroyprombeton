@@ -1,4 +1,4 @@
-{
+(() => {
   const DOM = {
     addToCart: 'js-category-buy',
     $cart: $('.js-cart'),
@@ -67,19 +67,14 @@
    * Show tooltip after adding Product to the Cart.
    */
   function showTooltip(_, data) {
-    const $target = $(data.target).closest('.table-td').find('.js-popover');
+    const $target = $(data.target).siblings().filter('.js-popover');
 
     $target.fadeIn();
     setTimeout(() => $target.fadeOut(), 1000);
   }
 
-  /**
-   * Get already loaded products count.
-   */
-  const getLoadedProducts = () => parseInt(DOM.$showMoreLink.attr('data-load-count'), 10);
-
+  const getLoadedProductsCount = () => parseInt(DOM.$showMoreLink.attr('data-load-count'), 10);
   const getFilterTerm = () => DOM.$searchFilter.val();
-
   const getCategoryId = () => DOM.$searchFilter.attr('data-category');
 
   /**
@@ -89,7 +84,7 @@
    * @param {string} products - HTML string of fetched products
    */
   function updateLoadMoreLink(_, products) {
-    const oldCount = getLoadedProducts();
+    const oldCount = getLoadedProductsCount();
     const newCount = oldCount + config.productsToFetch;
     const productsLoaded = countWord(products, 'table-tr');
 
@@ -146,7 +141,7 @@
 
     const fetchData = {
       categoryId: getCategoryId(),
-      offset: getLoadedProducts(),
+      offset: getLoadedProductsCount(),
       filterValue: getFilterTerm(),
       filtered: getFilterTerm().length > 0,
     };
@@ -200,4 +195,4 @@
   }
 
   init();
-}
+})();

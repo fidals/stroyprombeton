@@ -368,11 +368,11 @@ class IndexPage(TestCase):
         self.assertIn('news-item', self.content)
 
     def test_has_link_on_region(self):
-        """Index page should contain correct link to region"""
+        """Index page should contain correct link to region."""
         region = FlatPage.objects.get(slug='empire-center-state')
-        self.assertIn(region.url, self.content)
         response = self.client.get(region.url)
         self.assertEqual(response.status_code, 200)
+        self.assertContains(response, region.url)
 
 
 class Search(TestCase):

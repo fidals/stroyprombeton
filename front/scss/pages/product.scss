@@ -1,7 +1,13 @@
 @import "../utilities/variables";
+@import "../utilities/mixins";
 
 .product-serial {
-  padding-bottom: 50px;
+  padding-bottom: 20px;
+
+  @include media($md) {
+    padding-bottom: 50px;
+    text-align: center;
+  }
 
   &-title {
     font-weight: 400;
@@ -9,7 +15,11 @@
 
   &-val {
     font-weight: 600;
-    margin-right: 20px;
+    margin-right: 10px;
+
+    @include media($sm) {
+      margin-right: 20px;
+    }
   }
 }
 
@@ -17,21 +27,35 @@
   cursor: pointer;
 
   &-wrapper {
-    padding: 35px 0 85px;
+    margin: 0 0 30px;
+
+    @include media($md) {
+      margin: 0;
+      padding: 35px 0 85px;
+    };
   }
 }
 
 .product {
   &-info {
-    padding: 0 0 85px;
+    padding: 0 0 30px;
+
+    @include media($md) {
+      padding: 0 0 85px;
+    }
   }
 
   &-td {
     border-bottom: 1px solid $c-table-border;
-    font-size: $f-size-base;
-    font-weight: 400;
-    min-width: 204px;
-    padding: 11px 20px 11px 0;
+    font-size: $f-size-base - 2;
+    min-width: 130px;
+    padding: 8px 10px 8px 0;
+
+    @include media($sm) {
+      font-size: $f-size-base;
+      min-width: 204px;
+      padding: 11px 20px 11px 0;
+    }
   }
 }
 
@@ -44,6 +68,11 @@
 
   &-table {
     border-top: 1px solid $c-table-border;
+    margin: 0 0 20px;
+
+    @include media($md) {
+      margin: 0;
+    }
   }
 
   &-val {
@@ -56,7 +85,19 @@
 }
 
 .product-order {
-  padding-bottom: 40px;
+  padding-bottom: 20px;
+
+  @include media($sm) {
+    padding-bottom: 40px;
+  }
+
+  &-submit {
+    text-align: center;
+
+    @include media($md) {
+      text-align: right;
+    }
+  }
 
   &-table {
     border-bottom: 1px solid $c-table-border;
@@ -70,11 +111,15 @@
 
     &-col-price,
     &-col-total {
-      font-size: $f-size-base + 4;
+      font-size: $f-size-base;
       font-weight: 600;
-      vertical-align: middle;
       height: 60px;
+      vertical-align: middle;
       width: 162px;
+
+      @include media($sm) {
+        font-size: $f-size-base + 4;
+      }
     }
 
     &-col-count {
@@ -89,8 +134,14 @@
 
 .category-price {
   color: $c-orange;
+  display: block;
   font-size: $f-size-base;
   font-weight: 600;
+  text-align: center;
+
+  @include media($md) {
+    text-align: right;
+  }
 }
 
 .product-describe {
@@ -107,13 +158,23 @@
 
 .product-siblings {
   &-title {
-    font-size: $f-size-base + 18;
-    margin-bottom: 18px;
+    font-size: $f-size-base + 10;
+    margin-bottom: 10px;
+
+    @include media($sm) {
+      font-size: $f-size-base + 18;
+      margin-bottom: 18px;
+    }
   }
 
   &-text {
-    font-size: $f-size-base + 2;
-    margin-bottom: 40px;
+    font-size: $f-size-base;
+    margin-bottom: 20px;
+
+    @include media($sm) {
+      font-size: $f-size-base + 2;
+      margin-bottom: 40px;
+    }
   }
 }
 
@@ -122,18 +183,8 @@
   overflow: hidden;
   height: 342px;
 
-  &-content {
-    position: absolute;
-    left: 0;
-    top: 0;
-    font-size: 0;
-    white-space: nowrap;
-  }
-
   &-item {
-    display: inline-block;
-    margin-right: 30px;
-    width: 360px;
+    margin: 0 15px;
 
     &-title {
       color: $c-text;
@@ -161,59 +212,53 @@
       display: block;
     }
   }
+}
 
-  &-nav {
-    background-color: $c-black;
-    bottom: 32px;
-    cursor: pointer;
-    height: 53px;
-    margin: auto 0;
+.slick-arrow {
+  @include transition;
+  background-color: $c-black;
+  height: 38px;
+  width: 36px;
+  z-index: 1;
+
+  @include media($md) {
+    height: 52px;
+    width: 46px;
+
+    &:not(.slick-disabled):hover {
+      height: 100%;
+    }
+  }
+
+  &::after {
+    border-right: 2px solid $c-white;
+    border-bottom: 2px solid $c-white;
+    bottom: 0;
+    content: "";
+    height: 10px;
+    left: 0;
+    margin: auto;
     position: absolute;
+    right: 0;
     top: 0;
-    transition: all 0.2s ease;
-    width: 47px;
+    width: 10px;
+  }
+}
 
-    &-disable {
-      cursor: default;
-      opacity: 0.5;
-    }
+.slick {
+  &-prev {
+    left: 0;
+  }
 
-    &:hover {
-      height: 238px;
-    }
+  &-prev::after {
+    transform: translateX(2px) rotate(135deg);
+  }
 
-    &-disable:hover {
-      height: 53px;
-    }
+  &-next {
+    right: 0;
+  }
 
-    &::after {
-      content: "";
-      position: absolute;
-      top: 0;
-      bottom: 0;
-      margin: auto;
-      width: 10px;
-      height: 10px;
-      border-bottom: 2px solid $c-white;
-      border-right: 2px solid $c-white;
-    }
-
-    &-left {
-      left: 0;
-    }
-
-    &-left::after {
-      left: 21px;
-      transform: rotate(135deg);
-    }
-
-    &-right {
-      right: 0;
-    }
-
-    &-right::after {
-      right: 21px;
-      transform: rotate(-45deg);
-    }
+  &-next::after {
+    transform: translateX(-2px) rotate(-45deg);
   }
 }

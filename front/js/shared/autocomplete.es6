@@ -1,4 +1,4 @@
-(() => {
+const autocomplete = (() => {
   const config = {
     url: '/search/autocomplete/',
     searchInput: '.js-search-field',
@@ -15,7 +15,7 @@
   const autoCompleteConfig = {
     selector: config.searchInput,
     minChars: config.minChars,
-    source: (term, response) => {
+    source(term, response) {
       $.getJSON(config.url, { term }, (namesArray) => {
         response(namesArray);
       });
@@ -82,4 +82,8 @@
   }
 
   init();
+
+  return {
+    init,
+  };
 })();

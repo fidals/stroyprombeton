@@ -1,7 +1,14 @@
+@import "../../utilities/variables";
+@import "../../utilities/mixins";
+
 .breadcrumbs {
   color: $c-path;
   font-size: $f-size-base - 3;
-  padding: 0 0 30px;
+  padding: 0 0 10px;
+
+  @include media($md) {
+    padding: 0 0 30px;
+  }
 
   &-item {
     line-height: 1.8;

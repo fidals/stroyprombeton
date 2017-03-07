@@ -1,0 +1,111 @@
+{% load pages_extras %}
+{% load stb_extras %}
+{% get_root_categories as root_categories %}
+
+<nav id="mobile-menu">
+  <ul>
+    <li class="mobile-menu-item">
+      <a href="/">Главная</a>
+    </li>
+
+    <li class="mobile-menu-item">
+      <a href="{% custom_url 'gbi' %}">Каталог ЖБИ</a>
+    </li>
+
+    <li class="mobile-menu-item">
+      <span>Категории</span>
+      <ul>
+        {% for item in root_categories %}
+          <li class="mobile-menu-item">
+            <a href="{{ item.url }}">
+              {{ item.name }}
+            </a>
+          </li>
+        {% endfor %}
+      </ul>
+    </li>
+
+    <li class="mobile-menu-item">
+      <span>Заказ</span>
+      <ul>
+        <li class="mobile-menu-item">
+          <a href="{% url 'pages:flat_page' 'ordering' %}">
+            Как оформить
+          </a>
+        </li>
+        <li class="mobile-menu-item">
+          <a href="{% url 'pages:flat_page' 'delivery' %}">
+            Доставка
+          </a>
+        </li>
+      </ul>
+    </li>
+
+    <li class="mobile-menu-item">
+      <span>Услуги</span>
+      <ul>
+        <li class="mobile-menu-item">
+          <a href="{% url 'order_drawing' %}">
+            ЖБИ по вашим чертежам
+          </a>
+        </li>
+        <li class="mobile-menu-item">
+          <a href="{% url 'order_price' %}">
+            Прайс-листы
+          </a>
+        </li>
+        <li class="mobile-menu-item">
+          <a href="{% url 'pages:flat_page' 'kommercheskoe-predlozhenie' %}">
+            Коммерческое предложение
+          </a>
+        </li>
+      </ul>
+    </li>
+
+    <li class="mobile-menu-item">
+      <span>О компании</span>
+      <ul>
+        <li class="mobile-menu-item">
+          <a href="{% url 'pages:flat_page' 'about' %}">
+            О нас
+          </a>
+        </li>
+        <li class="mobile-menu-item">
+          <a href="{% url 'pages:flat_page' 'proizvodstvo-gbi' %}">
+            Производство
+          </a>
+        </li>
+        <li class="mobile-menu-item">
+          <a href="{% url 'pages:flat_page' 'req' %}">
+            Реквизиты
+          </a>
+        </li>
+        <li class="mobile-menu-item">
+          <a href="{% custom_url 'news' %}">
+            Новости
+          </a>
+        </li>
+        <li class="mobile-menu-item">
+          <a href="{% url 'pages:flat_page' 'contacts' %}">
+            Контакты
+          </a>
+        </li>
+        <li class="mobile-menu-item">
+          <a href="{% url 'pages:flat_page' 'partners' %}">
+            Наши партнеры
+          </a>
+        </li>
+        <li class="mobile-menu-item">
+          <a href="{% custom_url 'client-feedbacks' %}">
+            Отзывы
+          </a>
+        </li>
+        <li class="mobile-menu-item">
+          <a href="{% custom_url 'sitemap' %}">
+            Карта сайта
+          </a>
+        </li>
+      </ul>
+    </li>
+  </ul>
+</nav>

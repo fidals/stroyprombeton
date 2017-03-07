@@ -1,15 +1,32 @@
 @import "../utilities/variables";
+@import "../utilities/mixins";
 
 .category-search {
   .search-field {
-    margin: 0 0 30px;
+    margin: 0 0 15px;
+
+    @include media($md) {
+      margin: 0 0 30px;
+    }
   }
 }
 
-// ================================================================
-// FILTER
-// ================================================================
 .category-filter {
+  position: relative;
+
+  &::after {
+    background: linear-gradient(to bottom, rgba(255, 255, 255, 0), $c-white 40%);
+    bottom: 0;
+    content: "";
+    height: 40px;
+    position: absolute;
+    width: 100%;
+
+    @include media($md) {
+      content: none;
+    }
+  }
+
   &-title {
     border-bottom: 1px solid $c-table-border;
     font-weight: 600;
@@ -17,22 +34,60 @@
     padding: 1px 0 10px;
   }
 
+  &-list {
+    max-height: 185px;
+    overflow: auto;
+
+    @include media($md) {
+      max-height: none;
+    }
+  }
+
   &-item {
-    margin-bottom: 15px;
+    margin-bottom: 10px;
+
+    @include media($sm) {
+      margin-bottom: 15px;
+    }
   }
 
   &-link {
+    @include transition;
     color: $c-category-sidebar-link;
     display: block;
-    font-size: $f-size-base - 4;
+    font-size: $f-size-base - 2;
     font-weight: 600;
-    transition: all 0.2s ease;
+
+    @include media($sm) {
+      font-size: $f-size-base - 4;
+      font-weight: 600;
+    }
   }
 }
 
 .product-list {
   border-bottom: 1px solid $c-separator-grey;
-  margin-bottom: 100px;
+  margin-bottom: 50px;
+
+  @include media($sm) {
+    margin-bottom: 100px;
+  }
+
+  &-title {
+    margin: 0 0 15px;
+
+    @include media($sm) {
+      display: none;
+    }
+  }
+
+  .table-th {
+    display: none;
+
+    @include media($sm) {
+      display: table-cell;
+    }
+  }
 }
 
 .category-about {
@@ -42,7 +97,10 @@
 
   &-text {
     font-size: $f-size-base + 2;
-    width: 55%;
+
+    @include media($lg) {
+      width: 55%;
+    }
   }
 
   &-img {

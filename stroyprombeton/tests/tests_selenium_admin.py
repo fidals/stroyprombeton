@@ -1,5 +1,3 @@
-import time
-
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.keys import Keys
 from seleniumrequests import Chrome  # We use this instead of standard selenium
@@ -9,14 +7,10 @@ from django.conf import settings
 from django.urls import reverse
 
 from stroyprombeton.models import Product, Category
+from stroyprombeton.tests.helpers import wait
 
 
 class HelpersMixin:
-
-    @staticmethod
-    def wait(seconds=1):
-        """Simple wrapper on time.sleep() method."""
-        time.sleep(seconds)
 
     def hover(self, element):
         """Perform a hover over an element."""
@@ -24,7 +18,7 @@ class HelpersMixin:
 
     def context_click(self, element):
         ActionChains(self.browser).context_click(element).perform()
-        self.wait()
+        wait()
 
 
 class AdminMixin:
@@ -43,7 +37,7 @@ class AdminMixin:
         password_field.send_keys(self.password)
         login_form = self.browser.find_element_by_id('login-form')
         login_form.submit()
-        HelpersMixin.wait()
+        wait()
 
 
 class SeleniumTestCase(LiveServerTestCase):
@@ -112,7 +106,7 @@ class AdminPage(SeleniumTestCase, HelpersMixin, AdminMixin):
 
         def change_state_by_id(id):
             get_change_state_button(id).click()
-            self.wait()
+            wait()
 
         def is_node_open(id):
             return self.browser.find_element_by_id(
@@ -128,7 +122,7 @@ class AdminPage(SeleniumTestCase, HelpersMixin, AdminMixin):
             """Sidebar should be opened before the tests."""
             if self.browser.find_elements_by_class_name('collapsed'):
                 self.browser.find_element_by_class_name('js-toggle-sidebar').click()
-                self.wait()
+                wait()
 
         open_sidebar()
         open_node(
@@ -150,7 +144,7 @@ class AdminPage(SeleniumTestCase, HelpersMixin, AdminMixin):
         # separated var for debugging
         self.browser.get(self.change_products_url)
         self.browser.find_element_by_xpath(self.price_filter).click()
-        self.wait()
+        wait()
         product = self.browser.find_element_by_xpath('//*[@id="result_list"]/tbody/tr[1]/td[4]')
         product_price = int(float(product.text))
 
@@ -162,14 +156,14 @@ class AdminPage(SeleniumTestCase, HelpersMixin, AdminMixin):
         """
         self.browser.get(self.change_products_url)
         self.browser.find_element_by_xpath(self.filter_by_has_image).click()
-        self.wait()
+        wait()
 
         table = self.get_table_with_products().text
 
         self.assertTrue('0' in table)
 
         self.browser.find_element_by_xpath(self.filter_by_has_not_image).click()
-        self.wait()
+        wait()
 
         table = self.get_table_with_products().text
 
@@ -181,14 +175,14 @@ class AdminPage(SeleniumTestCase, HelpersMixin, AdminMixin):
         """
         self.browser.get(self.change_products_url)
         self.browser.find_element_by_xpath(self.filter_by_has_content).click()
-        self.wait()
+        wait()
 
         table = self.browser.find_element_by_class_name(self.product_table).text
 
         self.assertTrue('0' in table)
 
         self.browser.find_element_by_xpath(self.filter_by_has_not_content).click()
-        self.wait()
+        wait()
 
         table = self.get_table_with_products().text
 
@@ -197,9 +191,9 @@ class AdminPage(SeleniumTestCase, HelpersMixin, AdminMixin):
     def test_is_active_filter(self):
         """Activity filter returns only active or non active items."""
         self.browser.get(self.change_products_url)
-        self.wait()
+        wait()
         self.browser.find_element_by_xpath(self.active_products).click()
-        self.wait()
+        wait()
 
         first_product = self.browser.find_element_by_class_name(
             self.is_active_img).find_element_by_tag_name('img')
@@ -208,7 +202,7 @@ class AdminPage(SeleniumTestCase, HelpersMixin, AdminMixin):
         self.assertTrue(first_product_state == 'true')
 
         self.browser.find_element_by_xpath(self.inactive_products).click()
-        self.wait()
+        wait()
         results = self.browser.find_element_by_class_name('paginator')
 
         self.assertTrue('0' in results.text)
@@ -217,7 +211,7 @@ class AdminPage(SeleniumTestCase, HelpersMixin, AdminMixin):
         """Search should autocomplete queries."""
         self.browser.get(self.change_products_url)
         self.browser.find_element_by_id('searchbar').send_keys(self.autocomplete_text)
-        self.wait()
+        wait()
 
         first_suggested_item = self.browser.find_element_by_class_name(
             'autocomplete-suggestion')
@@ -248,7 +242,7 @@ class AdminPage(SeleniumTestCase, HelpersMixin, AdminMixin):
         # click at tree's item should redirect us to entity edit page
         root_node = self.browser.find_element_by_id(self.root_category_id)
         root_node.find_element_by_tag_name('a').click()
-        self.wait()
+        wait()
         test_h1 = self.first_h1
 
         self.assertIn(test_h1, expected_h1)
@@ -260,7 +254,7 @@ class AdminPage(SeleniumTestCase, HelpersMixin, AdminMixin):
             self.tree_product_id).find_element_by_tag_name('a')
         self.context_click(tree_item)
         self.browser.find_elements_by_class_name('vakata-contextmenu-sep')[0].click()
-        self.wait()
+        wait()
 
         test_h1 = self.first_h1
         self.assertEqual(test_h1, 'Table editor')
@@ -279,7 +273,7 @@ class AdminPage(SeleniumTestCase, HelpersMixin, AdminMixin):
         # # open context menu and click at redirect to site's page
         # self.context_click(tree_item)
         # self.browser.find_elements_by_class_name('vakata-contextmenu-sep')[1].click()
-        # self.wait()
+        # wait()
         # test_h1 = self.browser.find_element_by_tag_name('h1').text
         #
         # self.assertEqual(test_h1, category_h1)
@@ -287,13 +281,13 @@ class AdminPage(SeleniumTestCase, HelpersMixin, AdminMixin):
     def test_sidebar_toggle(self):
         """Sidebar should store collapsed state."""
         self.browser.find_element_by_class_name('js-toggle-sidebar').click()
-        self.wait()
+        wait()
         body_classes = self.browser.find_element_by_tag_name('body').get_attribute('class')
 
         self.assertTrue('collapsed' in body_classes)
 
         self.browser.refresh()
-        self.wait()
+        wait()
         body_classes = self.browser.find_element_by_tag_name('body').get_attribute('class')
 
         self.assertTrue('collapsed' in body_classes)
@@ -309,11 +303,11 @@ class TableEditor(SeleniumTestCase, AdminMixin, HelpersMixin):
         """Set up testing url and dispatch selenium webdriver."""
         self.sign_in()
         self.browser.find_element_by_id('admin-editor-link').click()
-        self.wait()
+        wait()
 
     def refresh_table_editor_page(self):
         self.browser.find_element_by_id('admin-editor-link').click()
-        self.wait()
+        wait()
 
     def trigger_autocomplete(self, selector):
         """Programmatically trigger jQ autocomplete widget."""
@@ -326,7 +320,7 @@ class TableEditor(SeleniumTestCase, AdminMixin, HelpersMixin):
         editable_input = self.browser.find_elements_by_class_name('inline-edit-cell')[index]
         editable_input.clear()
         editable_input.send_keys(str(new_data) + Keys.ENTER)
-        self.wait()
+        wait()
 
     def get_cell(self, index=0):
         """Return WebElement for subsequent manipulations by index."""
@@ -359,7 +353,7 @@ class TableEditor(SeleniumTestCase, AdminMixin, HelpersMixin):
 
         if not filters_wrapper.is_displayed():
             self.browser.find_element_by_class_name('js-hide-filter').click()
-            self.wait()
+            wait()
 
     def check_filters_and_table_headers_equality(self):
         """TE filters and table headers text should be equal."""
@@ -382,7 +376,7 @@ class TableEditor(SeleniumTestCase, AdminMixin, HelpersMixin):
 
     def save_filters(self):
         self.browser.find_element_by_class_name('js-save-filters').click()
-        self.wait(2)
+        wait(2)
 
     def test_products_loaded(self):
         """TE should have all products."""
@@ -405,7 +399,7 @@ class TableEditor(SeleniumTestCase, AdminMixin, HelpersMixin):
         price_cell_input = 1
         new_price = self.get_current_price(price_cell_index) + 100
         self.get_cell(price_cell_index).click()
-        self.wait()
+        wait()
         self.update_input_value(price_cell_input, new_price)
         self.refresh_table_editor_page()
         updated_price = self.get_current_price(price_cell_index)
@@ -432,9 +426,9 @@ class TableEditor(SeleniumTestCase, AdminMixin, HelpersMixin):
         """We could remove Product from TE."""
         old_first_row_id = self.get_cell().text
         self.browser.find_element_by_class_name('js-confirm-delete-modal').click()
-        self.wait()
+        wait()
         self.browser.find_element_by_class_name('js-modal-delete').click()
-        self.wait()
+        wait()
         new_first_row_id = self.get_cell().text
 
         self.assertNotEqual(old_first_row_id, new_first_row_id)
@@ -461,7 +455,7 @@ class TableEditor(SeleniumTestCase, AdminMixin, HelpersMixin):
         rows_before = len(self.browser.find_elements_by_class_name('jqgrow'))
         search_field = self.browser.find_element_by_id('search-field')
         search_field.send_keys('384')
-        self.wait(2)
+        wait(2)
         rows_after = len(self.browser.find_elements_by_class_name('jqgrow'))
 
         self.assertNotEqual(rows_before, rows_after)
@@ -490,10 +484,10 @@ class TableEditor(SeleniumTestCase, AdminMixin, HelpersMixin):
 
         self.browser.refresh()
         self.open_filters()
-        self.wait(2)
+        wait(2)
 
         self.browser.find_element_by_class_name('js-drop-filters').click()
-        self.wait(2)
+        wait(2)
         self.check_filters_and_table_headers_equality()
 
     def test_non_existing_category_change(self):
@@ -515,15 +509,15 @@ class TableEditor(SeleniumTestCase, AdminMixin, HelpersMixin):
 
         # Check is autocomplete works for category search by manual triggering it:
         self.browser.find_element_by_id('entity-category').send_keys('Category #0')
-        self.wait()
+        wait()
         self.trigger_autocomplete('#entity-category')
-        self.wait()
+        wait()
         autocomplete = self.browser.find_element_by_class_name('ui-autocomplete')
 
         # Choose category from autocomplete dropdown & save new entity:
         autocomplete.find_element_by_class_name('ui-menu-item-wrapper').click()
         self.browser.find_element_by_id('entity-save').click()
-        self.wait()
+        wait()
 
         # If entity was successfully changed `refresh_btn` should become active:
         refresh_btn = self.browser.find_element_by_id('refresh-table')
@@ -535,7 +529,7 @@ class TableEditor(SeleniumTestCase, AdminMixin, HelpersMixin):
         first_row = self.browser.find_element_by_id('jqGrid').find_element_by_class_name('jqgrow')
         name_cell = first_row.find_elements_by_tag_name('td')[1]
         self.assertEqual(name_cell.get_attribute('title'), new_entity_text)
-        self.wait()
+        wait()
 
         # We are able to change newly created entity:
         self.test_edit_product_name()

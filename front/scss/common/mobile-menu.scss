@@ -1,0 +1,7 @@
+@import "../utilities/variables";
+
+.mobile-menu {
+  &-item {
+    font-size: $f-size-base - 2;
+  }
+}

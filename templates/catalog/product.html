@@ -1,36 +1,37 @@
 {% extends 'layout/inner_page.html' %}
 
-{% load staticfiles %}
 {% load pages_extras %}
+{% load staticfiles %}
 {% load stb_extras %}
 
 {% block content %}
   {% include 'components/breadcrumbs.html' with page=page only %}
-
   {% include 'components/page_h1.html' with page=page product=product only %}
 
-  <section class="product-serial text-center">
-    {% if product.code %}
-      <span class="product-serial-title">Код</span>
-      <span class="product-serial-val">{{ product.code }}</span>
-    {% endif %}
+  <section class="product-serial">
+    <div class="container container-fluid">
+      {% if product.code %}
+        <span class="product-serial-title">Код</span>
+        <span class="product-serial-val">{{ product.code }}</span>
+      {% endif %}
 
-    {% if product.specification %}
-      <span class="product-serial-title">Серия</span>
-      {# TODO: `specification` should be replaced by `spec` #}
-      <span class="product-serial-val">{{ product.specification }}</span>
-    {% endif %}
+      {% if product.specification %}
+        <span class="product-serial-title">Серия</span>
+        {# TODO: `specification` should be replaced by `spec` #}
+        <span class="product-serial-val">{{ product.specification }}</span>
+      {% endif %}
 
-    {% if product.mark %}
-      <span class="product-serial-title">Марка</span>
-      <span class="product-serial-val">{{ product.mark }}</span>
-    {% endif %}
+      {% if product.mark %}
+        <span class="product-serial-title">Марка</span>
+        <span class="product-serial-val">{{ product.mark }}</span>
+      {% endif %}
+    </div>
   </section>
 
   <section class="product-info">
     <div class="container container-fluid">
       <div class="row">
-        <div class="col-xs-offset-1 col-xs-6">
+        <div class="col-xs-12 col-md-7 col-lg-6 col-lg-offset-1">
           <div class="product-img-wrapper js-photoswipe">
             {% include 'catalog/product_image.html' with product=product only %}
           </div>
@@ -56,7 +57,7 @@
           </div>
         </div>
 
-        <div class="col-xs-5">
+        <div class="col-xs-12 col-md-5">
           <div class="product-order">
             <table class="product-order-table table">
               <tr>
@@ -77,14 +78,14 @@
               </tr>
             </table>
 
-            <div class="public-offer text-right">Не является публичной офертой.</div>
+            <div class="public-offer">Не является публичной офертой.</div>
 
-            <div class="product-order-submit text-right">
+            <div class="product-order-submit">
               <button class="btn buy-product" id="buy-product" data-product-id="{{ product.id }}"
                       type="submit">Заказать</button>
             </div>
 
-            <p class="text-right">
+            <p>
               <a class="category-price" href="{% url 'product_pdf' product.category.id %}">
                 Скачать прайс этой категории
               </a>

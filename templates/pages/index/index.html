@@ -1,6 +1,7 @@
 {% extends 'layout/base.html' %}
 
 {% load pages_extras %}
+{% load user_agents %}
 
 {% block body_class %}index{% endblock %}
 
@@ -14,7 +15,7 @@
   <section class="banner js-banner">
     <div class="container container-fluid">
       <div class="row">
-        <div class="col-xs-11 col-xs-pull-1">
+        <div class="col-xs-12 col-sm-11 col-sm-pull-1">
           <div class="banner-address">
             <p>Адрес офиса продаж:</p>
             <p>СПб, пр. Елизарова 38А, офис 218</p>
@@ -37,13 +38,13 @@
   <section class="application js-application">
     <div class="container container-fluid">
       <div class="row">
-        <div class="col-xs-offset-1 col-xs-7">
-          <div class="application-title">
-            <p>Оставьте свою заявку, мы вам перезвоним, как только оператор будет свободен.</p>
+        <div class="col-xs-12 col-sm-8 col-lg-7 col-lg-offset-1">
+          <div class="center-xs start-sm application-title">
+            Оставьте свою заявку, мы вам перезвоним, как только оператор будет свободен.
           </div>
         </div>
 
-        <div class="col-xs-4">
+        <div class="col-xs-12 col-sm-4 center-xs start-sm">
           <div class="application-btn">
             <button class="btn btn-white js-open-modal"
                     data-modal-id="backcall-modal">Свяжитесь со мной</button>
@@ -56,22 +57,23 @@
   <section class="catalog-section text-center">
     <div class="container container-fluid">
       <div class="row">
-        <div class="col-xs-6">
-          <div class="catalog-section-image">
-            <img class="img-responsive img-centered" src="{{ STATIC_URL }}images/catalog-gbi.png" alt="Каталог ЖБИ">
-          </div>
-          <div class="catalog-section-btn">
-            <a href="{% custom_url 'gbi' %}" class="btn btn-catalog">Каталог ЖБИ</a>
-          </div>
+        <div class="col-xs-12 center-xs col-sm-6">
+          {% if not request|is_mobile %}
+            <div class="catalog-section-image">
+              <img class="img-responsive img-centered" src="{{ STATIC_URL }}images/catalog-gbi.png" alt="Каталог ЖБИ">
+            </div>
+          {% endif %}
+          <a href="{% custom_url 'gbi' %}" class="btn btn-catalog">Каталог ЖБИ</a>
         </div>
 
-        <div class="col-xs-6">
-          <div class="catalog-section-image">
-            <img class="img-responsive img-centered" src="{{ STATIC_URL }}images/catalog-new-jersey.png" alt="Блоки 'Нью-Джерси'">
-          </div>
-          <div class="catalog-section-btn">
-            <a href="{% url 'category' 473 %}" class="btn btn-catalog">Блоки "Нью-Джерси"</a>
-          </div>
+        <div class="col-xs-12 center-xs col-sm-6">
+          {% if not request|is_mobile %}
+            <div class="catalog-section-image">
+              <img class="img-responsive img-centered"
+                   src="{{ STATIC_URL }}images/catalog-new-jersey.png" alt="Блоки 'Нью-Джерси'">
+            </div>
+          {% endif %}
+          <a href="{% url 'category' 473 %}" class="btn btn-catalog">Блоки "Нью-Джерси"</a>
         </div>
       </div>
     </div>
@@ -80,7 +82,7 @@
   <section class="offer">
     <div class="container container-fluid">
       <div class="row">
-        <div class="col-xs-4 col-md-offset-1 col-md-3">
+        <div class="col-xs-12 col-sm-4 col-md-3 col-md-offset-1">
           <a href="{% url 'order_drawing' %}" class="offer-item text-center">
             <div class="offer-image">
               <div class="offer-item-image offer-item-image-nohover icon-offer-draft"></div>
@@ -93,7 +95,7 @@
           </a>
         </div>
 
-        <div class="col-xs-4 col-md-offset-1 col-md-2">
+        <div class="col-xs-12 col-sm-4 col-md-2 col-md-offset-1">
           <a href="{% url 'order_price' %}" class="offer-item text-center">
             <div class="offer-image">
               <div class="offer-item-image offer-item-image-nohover icon-offer-pricelist"></div>
@@ -106,7 +108,7 @@
           </a>
         </div>
 
-        <div class="col-xs-4 col-md-offset-1 col-md-3">
+        <div class="col-xs-12 col-sm-4 col-md-3 col-md-offset-1">
           <a href="{% url 'pages:flat_page' 'kommercheskoe-predlozhenie' %}" class="offer-item text-center">
             <div class="offer-image">
               <div class="offer-item-image offer-item-image-nohover icon-offer-commercial"></div>
@@ -125,7 +127,7 @@
   <section class="about">
     <div class="container container-fluid">
       <div class="row middle-xs">
-        <div class="col-xs-12 col-md-offset-1 col-md-3">
+        <div class="col-xs-12 col-md-3 col-md-offset-1">
           <h2 class="about-h2 main-h2">О компании</h2>
         </div>
 
@@ -163,42 +165,46 @@
     </div>
   </section>
 
-  <section class="objects">
-    <div class="container container-fluid">
-      <div class="objects-title">
-        <h2 class="objects-title-h2 main-h2">Наши объекты</h2>
-      </div>
-      <div class="objects-map">
-        {% include 'pages/index/regions_map.html' with regions=regions only %}
-      </div>
+  {% if request|is_pc %}
+    <section class="objects">
+      <div class="container container-fluid">
+        <div class="objects-title">
+          <h2 class="objects-title-h2 main-h2">Наши объекты</h2>
+        </div>
+        <div class="objects-map">
+          {% include 'pages/index/regions_map.html' with regions=regions only %}
+        </div>
 
-      <div class="row text-right">
-        <div class="col-xs-11">
-          <a class="more-link text-right" href="{% url 'pages:flat_page' 'partners' %}">
-            Наши партнеры и заказчики
-            <i class="fa fa-arrow-right more-link-arrow" aria-hidden="true"></i>
-          </a>
+        <div class="row text-right">
+          <div class="col-xs-11">
+            <a class="more-link text-right" href="{% url 'pages:flat_page' 'partners' %}">
+              Наши партнеры и заказчики
+              <i class="fa fa-arrow-right more-link-arrow" aria-hidden="true"></i>
+            </a>
+          </div>
         </div>
       </div>
-    </div>
-  </section>
+    </section>
+  {% endif %}
 
   <section class="news">
     <div class="container container-fluid">
       <div class="row">
-        <div class="col-xs-12 col-md-offset-1 col-md-3">
-          {% include 'pages/index/partners.html' %}
-        </div>
+        {% if request|is_pc %}
+          <div class="col-md-offset-1 col-md-3">
+            {% include 'pages/index/partners.html' %}
+          </div>
+        {% endif %}
 
         <div class="col-xs-12 col-md-7">
-          {% include 'pages/index/news.html' with news=news only %}
+          {% include 'pages/index/news.html' with news=news request=request only %}
         </div>
       </div>
     </div>
   </section>
 
   <section class="feedbacks">
-    {% include 'pages/index/feedbacks_section.html' with feedbacks=client_feedbacks only %}
+    {% include 'pages/index/feedbacks_section.html' with feedbacks=client_feedbacks request=request only %}
   </section>
 
   <section class="contact-us text-center">

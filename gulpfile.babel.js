@@ -50,7 +50,9 @@ const env = {
 const plugins = [
   autoprefixer(),
   csso(),
-  mqpacker(),
+  mqpacker({
+    sort: true,
+  }),
 ];
 
 const buildDir = 'front/build';
@@ -78,6 +80,7 @@ const path = {
     js: {
       vendors: [
         'front/js/vendors/shared/jquery-2.2.4.min.js',
+        'front/js/vendors/shared/jquery.mmenu.min.js',
         'front/js/vendors/shared/jquery.mask.min.js',
         'front/js/vendors/shared/autocomplete.min.js',
         'front/js/vendors/shared/cookie.js',
@@ -92,6 +95,7 @@ const path = {
       ],
 
       vendorsPages: [
+        'front/js/vendors/slick.min.js',
         'front/js/vendors/featherlight.core.with.gallery.js',
         'front/js/vendors/jquery.kladr.min.js',
       ],

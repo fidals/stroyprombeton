@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'django.contrib.staticfiles',
     'django.contrib.humanize',
+    'django_user_agents',
     'debug_toolbar',
     'mptt',
     'widget_tweaks',
@@ -63,6 +64,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.contrib.redirects.middleware.RedirectFallbackMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware',
+    'stroyprombeton.middleware.PatchedUserAgentMiddleware',
 ]
 
 ROOT_URLCONF = 'stroyprombeton.urls'
@@ -241,6 +243,13 @@ CUSTOM_PAGES = {
         'slug': 'order',
         'title': 'Корзина Интернет-магазин СТК-ПромБетон',
         'name': 'Оформление заказа',
+    },
+    'order-price': {
+        'slug': 'order-price',
+        'title': 'Оформление запроса на прайс ЖБИ',
+        'name': 'Оформление запроса на прайс ЖБИ',
+        'keywords': 'прайс лист жби',
+        'description': 'Оформить заявку на прайслист ЖБИ завода СТК-Промбетон',
     },
     'order-success': {
         'slug': 'order-success',

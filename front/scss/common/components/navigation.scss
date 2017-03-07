@@ -1,26 +1,27 @@
+@import "../../utilities/variables";
+@import "../../utilities/mixins";
+
 .nav {
-  position: relative;
-  right: -14px;
+  display: none;
+
+  @include media($md) {
+    display: flex;
+    position: relative;
+    right: -14px;
+  }
 
   &-wrapper {
     background-color: $c-nav-bg;
-    height: $h-nav;
     position: relative;
     z-index: 2;
+
+    @include media($md) {
+      height: $h-nav-pc;
+    }
   }
 
   &-logo {
     margin-top: 8px;
-  }
-
-  &-item {
-    float: left;
-    display: block;
-    position: relative;
-
-    &:last-child {
-      margin-right: 0;
-    }
   }
 
   &-link {
@@ -40,7 +41,17 @@
   }
 }
 
+.nav-item {
+  display: block;
+  position: relative;
+
+  &:last-child {
+    margin-right: 0;
+  }
+}
+
 .cart {
+  @include transition(opacity);
   background-color: $c-white;
   border-radius: 2px;
   box-shadow: $sh-modal;
@@ -49,7 +60,6 @@
   position: absolute;
   right: 15px;
   top: 45px;
-  transition: opacity 0.5s ease;
   visibility: hidden;
   width: 324px;
   z-index: -1;
@@ -62,6 +72,7 @@
   }
 
   &-clear {
+    @include transition;
     color: $c-nav-chart-clear;
     cursor: pointer;
     font-size: $f-size-base - 3;
@@ -69,7 +80,6 @@
     line-height: 1.23;
     margin-bottom: 15px;
     text-align: right;
-    transition: all 0.2s ease;
 
     &:hover {
       color: $c-nav-chart-clear-hover;
@@ -158,6 +168,7 @@
 }
 
 .nav-subnav {
+  @include transition(opacity);
   background-color: $c-white;
   border-radius: 2px;
   box-shadow: $sh-modal;
@@ -165,7 +176,6 @@
   left: 0;
   padding: 14px;
   position: absolute;
-  transition: opacity 0.3s ease;
   top: 42px;
   width: 360px;
 
@@ -187,7 +197,7 @@
     }
 
     &-remove {
-      transition: all 0.3s ease;
+      @include transition;
 
       &:hover {
         color: $c-black;

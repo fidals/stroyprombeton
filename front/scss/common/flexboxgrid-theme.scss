@@ -1,19 +1,20 @@
-// ================================================================
-// FLEXBOXGRID CUSTOMIZATION
-// ================================================================
-$w-container-lg: 1200px;
-$gutter-width: 30px;
-$half-gutter-width: $gutter-width * 0.5;
+@import "../utilities/variables";
+@import "../utilities/mixins";
 
 // Comment/uncomment for fixed layout.
-body,
-.container {
-  min-width: $w-container-lg;
-}
+//body,
+//.container {
+//  min-width: $w-container-lg;
+//}
 
 .container-fluid {
-  padding-right: $gutter-width;
-  padding-left: $gutter-width;
+  padding-right: $mob-gutter-width;
+  padding-left: $mob-gutter-width;
+
+  @include media($md) {
+    padding-right: $pc-gutter-width;
+    padding-left: $pc-gutter-width;
+  }
 }
 
 .col-xs,
@@ -29,11 +30,11 @@ body,
 .col-xs-10,
 .col-xs-11,
 .col-xs-12 {
-  padding-right: $half-gutter-width;
-  padding-left: $half-gutter-width;
+  padding-right: $pc-half-gutter-width;
+  padding-left: $pc-half-gutter-width;
 }
 
-@media only screen and (min-width: $w-container-lg) {
+@include media($w-container-lg) {
   .container {
     width: $w-container-lg;
   }
@@ -51,7 +52,7 @@ body,
   .col-lg-10,
   .col-lg-11,
   .col-lg-12 {
-    padding-right: $half-gutter-width;
-    padding-left: $half-gutter-width;
+    padding-right: $pc-half-gutter-width;
+    padding-left: $pc-half-gutter-width;
   }
 }

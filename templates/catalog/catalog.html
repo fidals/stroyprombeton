@@ -1,29 +1,31 @@
 {% extends 'layout/inner_page.html' %}
 
-{% load staticfiles %}
 {% load images %}
-{% load thumbnail %}
 {% load mptt_tags %}
+{% load staticfiles %}
+{% load thumbnail %}
+{% load user_agents %}
 
 {% block content %}
   {% include 'components/breadcrumbs.html' %}
-
   {% include 'components/page_h1.html' with page=page only %}
 
   <div class="container container-fluid">
     <div class="catalog-ul-wrapper">
       {% for category in categories %}
         <div class="catalog-ul-item">
-          {% with image=category.page.main_image  %}
-            {% if image %}
-              {% thumbnail image '494x290' as resized_image %}
-                <img class="catalog-img" src="{{ resized_image.url }}" alt="{{ category.name }}">
-              {% endthumbnail %}
-            {% else %}
-              {% placeholder_image_url as image_url %}
-              <img class="catalog-img" src="{{ image_url }}" alt="{{ category.name }}">
-            {% endif %}
-          {% endwith %}
+          {% if request|is_pc %}
+            {% with image=category.page.main_image  %}
+              {% if image %}
+                {% thumbnail image '494x290' as resized_image %}
+                  <img class="catalog-img" src="{{ resized_image.url }}" alt="{{ category.name }}">
+                {% endthumbnail %}
+              {% else %}
+                {% placeholder_image_url as image_url %}
+                <img class="catalog-img" src="{{ image_url }}" alt="{{ category.name }}">
+              {% endif %}
+            {% endwith %}
+          {% endif %}
           <a class="catalog-title" href="{{ category.url }}">
             {{ category.name }}
           </a>
@@ -35,7 +37,7 @@
   <section class="about-catalog">
     <div class="container container-fluid">
       <div class="row">
-        <div class="col-xs-offset-2 col-xs-8">
+        <div class="col-xs-8 col-xs-offset-2">
           {% autoescape off %}
             {{ page.content }}
           {% endautoescape %}

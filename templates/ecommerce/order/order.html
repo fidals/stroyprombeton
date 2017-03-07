@@ -1,11 +1,9 @@
 {% extends 'layout/inner_page.html' %}
 
-{% load staticfiles %}
-
 {% block content %}
   {% include 'components/breadcrumbs.html' %}
+  {% include 'components/page_h1.html' with page=page only %}
 
-  {% include 'components/page_h1.html' with page=page %}
   <div class="js-order-contain">
     {% include 'ecommerce/order/table_form.html' %}
   </div>

@@ -10,32 +10,40 @@
   }
 }
 
-// Mediaqueries:
-@mixin device($device) {
-  @if $device == mob {
-    @media (max-width: 800px) {
-      @content;
-    }
-  } @else if $device == tab {
-    @media (min-width: 801px) and (max-width: 1023px) {
-      @content;
-    }
-  } @else if $device == pc {
-    @media (min-width: 1024px) {
-      @content;
-    }
-  }
-}
+// Live example: https://goo.gl/xs238n
+@mixin media($breaks...) {
+  // If there's only one breakpoint:
+  @if (length($breaks) == 1) {
+    $query: "(min-width: #{$breaks}px)";
 
-// Breakpoints:
-@mixin bp($key1, $breakpoint, $key2: null, $resolution2: null) {
-  @if nth($key1 $breakpoint $key2 $resolution2, 3) == null {
-    @media only screen and ($key1: $breakpoint) {
+    @media screen and #{$query} {
       @content;
+    };
+  }
+
+  // If there's two breakpoints:
+  @if (length($breaks) == 2) {
+    $min: nth($breaks, 1);
+    $max: nth($breaks, 2);
+
+    // If first breakpoint is not number, we build just a max-width query:
+    @if not (type-of($min) == "number") {
+      $max-width: ($max - 1);
+      $query: "(max-width: #{$max-width}px)";
+
+      @media screen and #{$query} {
+        @content;
+      };
     }
-  } @else {
-    @media only screen and ($key1: $breakpoint) and ($key2: $resolution2) {
-      @content;
+
+    // If the two breakpoints are specified,
+    // then we build a min-width AND max-width:
+     @if (type-of($min) == "number") {
+      $query: "(min-width: #{$min}px) and (max-width: #{$max}px)";
+
+       @media screen and #{$query} {
+        @content;
+      };
     }
   }
 }

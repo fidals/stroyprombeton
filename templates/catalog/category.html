@@ -10,7 +10,7 @@
   <section class="category-search">
     <div class="container container-fluid">
       <div class="row center-xs">
-        <div class="col-xs-4">
+        <div class="col-xs-12 col-md-4">
           <div class="search">
             <input class="search-field" id="search-filter" type="text"
                    data-category="{{ category.id }}"
@@ -20,18 +20,18 @@
       </div>
 
       <div class="row text-right">
-        <div class="col-xs-11 public-offer">Не является публичной офертой.</div>
+        <div class="col-xs-12 col-lg-11 public-offer">Не является публичной офертой.</div>
       </div>
     </div>
   </section>
 
   <div class="container container-fluid">
     <div class="row">
-      <div class="col-xs-2">
+      <div class="col-xs-12 col-md-3 col-lg-2">
         {% if children %}
           <div class="category-filter">
             <div class="category-filter-title">Подкатегории</div>
-            <ul>
+            <ul class="category-filter-list">
               {% for child in children %}
                 <li class="category-filter-item">
                   <a class="category-filter-link" href="{{ child.url }}">
@@ -44,16 +44,17 @@
         {% endif %}
       </div>
 
-      <div class="col-xs-9 product-list">
+      <div class="col-md-9 product-list">
+        <h2 class="center-xs product-list-title">Товары в категории</h2>
         <table class="table">
           <thead>
             <tr>
-              <th class="table-th">Фото</th>
-              <th class="table-th">Код</th>
-              <th class="table-th">Наименование / Марка</th>
-              <th class="table-th text-left">Цена</th>
-              <th class="table-th">Кол-во</th>
-              <th class="table-th"></th>
+              <th class="table-th table-th-photo">Фото</th>
+              <th class="table-th table-th-code">Код</th>
+              <th class="table-th table-th-name">Наименование / Марка</th>
+              <th class="table-th table-th-price">Цена</th>
+              <th class="table-th table-th-count">Кол-во</th>
+              <th class="table-th table-th-remove"></th>
             </tr>
           </thead>
           <tbody class="js-photoswipe" id="products-wrapper">

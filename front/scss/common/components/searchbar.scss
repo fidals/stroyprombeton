@@ -1,13 +1,24 @@
+@import "../../utilities/mixins";
+
 .searchbar {
-  background-color: $c-searchbar-bg;
+  @include transition(background-color);
+  background: $c-nav-bg;
   height: $h-searchbar;
-  transition: background-color 0.3s ease;
+  padding: 3px 0 0;
+
+  @include media($md) {
+    background: $c-searchbar-bg;
+    padding: 0;
+  }
 
   &-banner {
-    background: none;
-    position: relative;
-    top: 390px;
-    z-index: 1;
+    @include media($md) {
+      background: none;
+      padding: 0;
+      position: relative;
+      top: 390px;
+      z-index: 1;
+    }
   }
 
   &.active {
@@ -20,12 +31,20 @@
   }
 
   &-wrap {
-    padding-top: 9px;
+    padding-bottom: 15px;
+
+    @include media($md) {
+      padding-top: 9px;
+    }
   }
 
   &-contacts {
-    display: flex;
+    display: none;
     padding-top: 11px;
+
+    @include media($md) {
+      display: flex;
+    }
 
     &-item {
       color: $c-white;

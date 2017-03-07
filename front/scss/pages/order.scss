@@ -1,18 +1,35 @@
 @import "../utilities/variables";
+@import "../utilities/mixins";
 
 .order {
   background-color: $c-order-order-bg;
-  padding: 20px 0 30px;
+  padding: 20px 0 0;
+
+  @include media($sm) {
+    padding: 20px 0 30px;
+  }
 
   &-title {
-    font-size: $f-size-base + 18;
-    font-weight: 300;
+    font-size: $f-size-base + 8;
     line-height: 1.18;
-    padding-bottom: 22px;
+    padding-bottom: 10px;
+
+    @include media($sm) {
+      font-size: $f-size-base + 18;
+      padding-bottom: 22px;
+    }
   }
 
   &-total {
     padding: 20px 0 20px 70px;
+
+    @include media($sm) {
+      text-align: right;
+    }
+
+    @include media($md) {
+      text-align: left;
+    }
 
     &-title {
       color: $c-order-order-title;
@@ -47,13 +64,22 @@
   border-bottom: 1px solid $c-order-table-border;
 
   &-name {
+    @include transition;
     border-right: 1px solid $c-order-table-border;
-    font-size: $f-size-base;
+    font-size: $f-size-base - 1;
     font-weight: 400;
-    padding: 15px 30px 14px 98px;
+    padding: 10px 10px 10px 0;
     position: relative;
-    transition: all 0.2s ease;
     width: 572px;
+
+    @include media($sm) {
+      padding: 15px 20px;
+    }
+
+    @include media($md) {
+      font-size: $f-size-base;
+      padding: 15px 30px 14px 98px;
+    }
 
     a {
       color: $c-order-table-name;
@@ -66,16 +92,25 @@
 
   &-count {
     border-right: 1px solid $c-order-table-count;
-    text-align: center;
-    width: 129px;
+    padding: 10px;
+
+    @include media($sm) {
+      text-align: center;
+      width: 130px;
+    }
   }
 
   &-price {
-    font-size: $f-size-base + 4;
+    font-size: $f-size-base;
     font-weight: 600;
-    padding-left: 23px;
+    padding: 10px;
     position: relative;
     width: 244px;
+
+    @include media($sm) {
+      font-size: $f-size-base + 4;
+      padding: 0 0 0 23px;
+    }
   }
 
   &-th {
@@ -84,14 +119,45 @@
     font-size: $f-size-base - 3;
     font-weight: 600;
     line-height: 1.23;
+    padding: 7px 10px 7px 0;
     text-align: left;
 
+    @include media($sm) {
+      padding: 7px 10px 7px 20px;
+    }
+
+    @include media($md) {
+      padding: 0;
+    }
+
     &-name {
-      padding: 7px 0 8px 98px;
+      @include media($sm) {
+        padding: 7px 0 8px 20px;
+      }
+
+      @include media($md) {
+        padding: 7px 0 8px 98px;
+      }
     }
 
     &-price {
-      padding: 7px 0 8px 22px;
+      min-width: 80px;
+
+      @include media($sm) {
+        padding: 7px 0 8px 20px;
+      }
+
+      @include media($md) {
+        padding: 7px 0 8px 98px;
+      }
+    }
+  }
+
+  .table-count-input {
+    width: 65px;
+
+    @include media($md) {
+      width: 80px;
     }
   }
 }
@@ -100,7 +166,20 @@
   padding: 20px 0 0;
 
   &-heading {
-    font-size: $f-size-base + 18;
-    padding-bottom: 40px;
+    font-size: $f-size-base + 8;
+    padding-bottom: 20px;
+
+    @include media($sm) {
+      font-size: $f-size-base + 18;
+      padding-bottom: 40px;
+    }
+  }
+}
+
+.btn-order-form {
+  text-align: center;
+
+  @include media($sm) {
+    text-align: right;
   }
 }

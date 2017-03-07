@@ -20,6 +20,7 @@
   function setUpListeners() {
     $(window).scroll(toggleScrollToTopBtn);
     $(window).scroll(moveSearchBar);
+    $(window).resize(moveSearchBar);
     DOM.$search.submit(preventEmptySearch);
     DOM.$btnScrollTop.click(scrollToTop);
   }
@@ -47,7 +48,6 @@
    */
   function moveSearchBar() {
     if (!DOM.$application.length) return;
-
     const scrollTop = $(window).scrollTop();
     const offset = DOM.$application.offset().top - DOM.$nav.height();
 

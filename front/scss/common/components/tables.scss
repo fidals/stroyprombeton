@@ -1,5 +1,5 @@
 @import "../../utilities/variables";
-@import "../../utilities/utilities";
+@import "../../utilities/mixins";
 
 .table {
   border-collapse: collapse;
@@ -11,15 +11,29 @@
 
   &-th {
     border-bottom: 1px solid $c-table-border;
-    font-size: $f-size-base + 1;
+    font-size: $f-size-base;
     font-weight: 600;
     padding: 0 5px 10px;
+
+    @include media($sm) {
+      font-size: $f-size-base + 1;
+      width: 80px;
+    }
   }
 
   &-tr {
     border-bottom: 1px solid $c-table-border-light;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    padding: 10px;
 
-    &:nth-child(2n) {
+    @include media($sm) {
+      display: table-row;
+      padding: 0;
+    }
+
+    &:nth-child(2n + 1) {
       background: rgba($c-black, 0.02);
     }
 
@@ -30,11 +44,21 @@
 
   &-td {
     padding: 10px 5px;
+    flex: 65%;
+
+    &:nth-child(2n) {
+      flex: 35%;
+    }
   }
 
   &-type {
-    font-size: $f-size-base + 2;
-    width: 80px;
+    font-size: $f-size-base;
+    width: 70px;
+
+    @include media($sm) {
+      font-size: $f-size-base + 2;
+      width: 80px;
+    }
   }
 
   &-code {
@@ -43,24 +67,45 @@
     width: 90px;
   }
 
+  &-code,
+  &-type,
+  &-photo {
+    display: none;
+
+    @include media($sm) {
+      display: table-cell;
+    }
+  }
+
   &-name {
-    font-size: $f-size-base + 2;
-    width: 420px;
+    @include media($sm) {
+      font-size: $f-size-base + 1;
+      width: 400px;
+    }
+
+    @include media($md) {
+      font-size: $f-size-base + 2;
+      width: 420px;
+    }
   }
 
   &-price {
-    font-weight: 400;
     width: 120px;
   }
 
   &-order {
     @include transition;
-    color: $c-text-orange;
+    color: $c-orange;
     cursor: pointer;
-    font-size: $f-size-base - 3;
-    font-weight: 600;
+    font-size: $f-size-base + 1;
+    padding: 17px 5px;
     position: relative;
-    width: 80px;
+
+    @include media($sm) {
+      font-size: $f-size-base - 3;
+      font-weight: 600;
+      width: 90px;
+    }
 
     &:hover {
       color: $c-text-orange-hover;
@@ -74,7 +119,11 @@
   &-count {
     &-input {
       padding: 8px;
-      width: 80px;
+      width: 100px;
+
+      @include media($sm) {
+        width: 80px;
+      }
     }
   }
 
@@ -83,8 +132,10 @@
   }
 }
 
-.table-picture {
-  width: 80px;
+.table-photo {
+  @include media($sm) {
+    width: 80px;
+  }
 
   &-ico {
     cursor: pointer;

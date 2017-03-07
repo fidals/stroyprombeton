@@ -1,5 +1,5 @@
 @import "../utilities/variables";
-@import "../utilities/utilities";
+@import "../utilities/mixins";
 
 .page-news {
   padding: $h-header 0 58px;
@@ -9,22 +9,31 @@
 // NEWS
 // ================================================================
 .news {
-  &-date {
-    color: $c-text-grey;
-    font-size: $f-size-base;
-    font-weight: 400;
-    margin-bottom: 19px;
-  }
-
   &-wrapper {
     p {
       line-height: 1.5;
-      margin: 0 0 25px;
+      margin: 0 0 15px;
     }
 
     ul:not(.news-list):not(.list-unstyled) {
-      list-style: outside;
-      margin: 0 0 25px;
+      list-style: none;
+      margin: 0 0 20px;
+
+      li {
+        line-height: 1.5;
+        text-indent: 20px;
+
+        @include media($sm) {
+          line-height: 2;
+        }
+      }
+
+      li::before {
+        content: "-";
+        font-weight: 600;
+        left: -10px;
+        position: relative;
+      }
     }
 
     img {
@@ -32,6 +41,11 @@
       margin: 0 auto 10px;
       max-height: 100%;
       max-width: 100%;
+      position: static;
+
+      @include media($sm) {
+        position: absolute;
+      }
     }
   }
 
@@ -49,16 +63,29 @@
 
   &-item {
     @include teaser-box;
-    margin-bottom: 50px;
-    min-height: 196px;
-    padding: 20px 30px 0 285px;
+    margin-bottom: 20px;
+    padding: 0 15px 45px;
+
+    @include media($sm) {
+      margin-bottom: 50px;
+      min-height: 206px;
+      padding: 10px 30px 0 285px;
+    }
+
+    @include media($md) {
+      min-height: 196px;
+      padding: 20px 30px 0 285px;
+    }
 
     &-img {
       height: 100%;
       left: 0;
-      position: absolute;
       top: 0;
       width: 262px;
+
+      @include media($sm) {
+        position: absolute;
+      }
     }
 
     &-title {
@@ -82,19 +109,27 @@
 // CONTACTS PAGE
 // ================================================================
 .map {
+  height: 350px;
+
+  @include media($md) {
+    height: auto;
+  }
+
   &-points {
     height: 400px;
-    float: left;
+    margin: 0 0 15px;
     overflow-y: auto;
-    margin: 0;
-    width: 340px;
+
+    @include media($md) {
+      margin: 0;
+    }
   }
 
   &-point {
+    @include transition;
     cursor: pointer;
     padding: 10px 10px 5px;
     position: relative;
-    transition: all 0.3s ease;
 
     &:hover {
       background: rgba($c-black, 0.03);
@@ -105,6 +140,7 @@
     }
 
     &::before {
+      @include transition;
       content: "";
       background: $c-orange;
       height: 100%;
@@ -112,7 +148,6 @@
       opacity: 0;
       position: absolute;
       top: 0;
-      transition: all 0.3s ease;
       width: 2px;
     }
 
@@ -149,15 +184,26 @@
 
 .pagination {
   display: flex;
-  justify-content: center;
+  flex-wrap: wrap;
+  justify-content: space-between;
   margin-bottom: 30px;
 
+  @include media($sm) {
+    justify-content: center;
+  }
+
   &-item {
-    margin: 0 3px;
+    margin: 0 3px 10px;
+
+    @include media($sm) {
+      margin: 0 3px;
+    }
   }
 
   .btn {
     border-width: 1px;
+    min-width: 65px;
     padding: 2px 20px 3px;
+    text-align: center;
   }
 }

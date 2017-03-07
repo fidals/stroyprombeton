@@ -1,4 +1,4 @@
-{
+(() => {
   const DOM = {
     $order: $('.js-order-contain'),
     productCount: '.js-count-input',
@@ -10,7 +10,7 @@
   };
 
   function setUpListeners() {
-    mediator.subscribe('onCartUpdate', renderTable);
+    mediator.subscribe('onCartUpdate', render);
 
     $(DOM.$order).on('keyup', 'input', storeInput);
     $(DOM.$order).on('keyup', 'textarea', storeInput);
@@ -58,9 +58,10 @@
   /**
    * Add order's table and form html into the page.
    */
-  function renderTable(_, data) {
-    DOM.$order.html(data.html.table);
+  function render(_, data) {
+    const html = data.html || data;
+    DOM.$order.html(html.table);
   }
 
   init();
-}
+})();

@@ -3,7 +3,7 @@
 {% for product, image in products_with_images %}
   {% if product.page.is_active %}
     <tr class="table-tr" id="{{ product.id }}">
-      <td class="table-td table-picture text-center">
+      <td class="table-td table-photo text-center">
         {% include 'catalog/category_product_image.html' with image=image.image page=product.page only %}
       </td>
       {# TODO Needed create logic for images and empty thumb. #}
@@ -24,11 +24,9 @@
         {{ product.price|format_price }}
       </td>
       <td class="table-td table-count">
-        <div class="table-count-wrap">
-          {% include 'catalog/count_input.html' %}
-        </div>
+        {% include 'catalog/count_input.html' %}
       </td>
-      <td class="table-td table-order text-center">
+      <td class="table-td table-order">
         <span class="category-table-order js-category-buy">Заказать</span>
 
         <div class="popover js-popover">

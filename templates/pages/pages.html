@@ -13,8 +13,8 @@
           {% endthumbnail %}
         {% else %}
           {% placeholder_image_url as image_url %}
-            <img class="img-responsive img-stretched" src="{{ image_url }}"
-                 alt="{% get_img_alt page %}">
+          <img class="img-responsive img-stretched" src="{{ image_url }}"
+               alt="{% get_img_alt page %}">
         {% endif %}
       </a>
       <div class="newslist-item-title">

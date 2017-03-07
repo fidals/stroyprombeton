@@ -575,10 +575,10 @@
 //  content: $fa-var-lemon-o;
 //}
 //
-//.#{$fa-css-prefix}-phone:before {
-//  content: $fa-var-phone;
-//}
-//
+.#{$fa-css-prefix}-phone:before {
+  content: $fa-var-phone;
+}
+
 .#{$fa-css-prefix}-square-o:before {
   content: $fa-var-square-o;
 }
@@ -819,9 +819,9 @@
 //  content: $fa-var-sort-asc;
 //}
 //
-//.#{$fa-css-prefix}-envelope:before {
-//  content: $fa-var-envelope;
-//}
+.#{$fa-css-prefix}-envelope:before {
+  content: $fa-var-envelope;
+}
 //
 //.#{$fa-css-prefix}-linkedin:before {
 //  content: $fa-var-linkedin;
@@ -1225,7 +1225,7 @@
 // .#{$fa-css-prefix}-check-square:before {
 //  content: $fa-var-check-square;
 // }
-// 
+//
 //.#{$fa-css-prefix}-pencil-square:before {
 //  content: $fa-var-pencil-square;
 //}

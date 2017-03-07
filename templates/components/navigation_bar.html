@@ -2,17 +2,30 @@
 
 <nav class="nav-wrapper js-nav">
   <div class="container container-fluid">
-    <div class="row between-xs">
-      <div class="col-sm-3">
+    <div class="row">
+      <a href="#mobile-menu" class="header-toggle-menu js-mobile-menu-toggler">
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+      </a>
+
+      <div class="col-md-4 header-logo-wrapper">
         <div class="nav-logo">
-          <a href="/">
-            <img class="img-responsive" src="{% static 'images/stk-prombeton.png' %}"
-                 title="На главную" alt="СТК-ПромБетон">
-          </a>
+          <a class="header-logo" href="/"></a>
         </div>
       </div>
 
-      <div class="col-sm-offset-2 col-sm-7">
+      <div class="header-info">
+        <a class="header-info-link" href="{{ site_info.phone.spb_1_url }}">
+          <i class="fa fa-phone"></i> {{ site_info.phone.spb_1 }}
+        </a>
+        <a class="header-info-link" href="mailto:{{ site_info.email }}">
+          <i class="fa fa-envelope"></i> {{ site_info.email }}
+        </a>
+      </div>
+
+      <div class="col-md-7 col-md-offset-1">
         <ul class="nav">
           {% include 'components/navigation.html' %}
 

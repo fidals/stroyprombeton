@@ -35,7 +35,9 @@
         </div>
       {% endif %}
 
-      <p>Для заказа изделий по индивидуальным чертежам воспользуйтесь формой ниже:</p>
+      <p class="drawing-text">
+        Для заказа изделий по индивидуальным чертежам воспользуйтесь формой ниже:
+      </p>
 
       <form method="post" class="drawing-form">
         {% csrf_token %}
@@ -60,7 +62,7 @@
           {% endif %}
         {% endfor %}
 
-        <div class="text-right">
+        <div class="btn-submit-page-form">
           <button class="btn" type="submit">Отправить заявку</button>
         </div>
       </form>

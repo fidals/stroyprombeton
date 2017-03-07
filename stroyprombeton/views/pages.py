@@ -1,6 +1,7 @@
 from itertools import groupby
 
 from django.conf import settings
+from django_user_agents.utils import get_user_agent
 from mptt.utils import get_cached_trees
 
 import pages.views
@@ -28,11 +29,12 @@ class IndexPage(pages.views.CustomPageView):
 
     def get_context_data(self, **kwargs):
         context = super(IndexPage, self).get_context_data(**kwargs)
+        mobile_view = get_user_agent(self.request).is_mobile
 
         def prepare_pages(parent_slug, pages_):
             if parent_slug == 'news':
                 return sorted(pages_, key=lambda x: x.date_published, reverse=True)[:2]
-            if parent_slug == 'client-feedbacks':
+            if parent_slug == 'client-feedbacks' and not mobile_view:
                 return sorted(pages_, key=lambda x: x.position)[:3]
 
         pages_query = (
@@ -52,7 +54,7 @@ class IndexPage(pages.views.CustomPageView):
             **context,
             **pages,
             'backcall_form': OrderBackcallForm(),
-            'partners': settings.PARTNERS,
+            'partners': settings.PARTNERS if not mobile_view else '',
             'regions': get_cached_regions(),
         }
 
