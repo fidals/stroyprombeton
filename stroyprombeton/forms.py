@@ -52,7 +52,6 @@ class BaseContactForm(forms.Form):
             'class': css_required_classes + 'js-masked-phone',
             'pattern': phone_validation_pattern,
             'placeholder': '+7 (999) 000 00 00',
-            'required': True,
         }),
     )
 
@@ -65,7 +64,6 @@ class BaseContactForm(forms.Form):
         widget=forms.EmailInput(attrs={
             'class': css_required_classes,
             'type': 'email',
-            'required': True,
         }),
     )
 
@@ -79,7 +77,6 @@ class PriceForm(BaseContactForm):
         error_messages=BaseContactForm.required_error_message,
         widget=forms.TextInput(attrs={
             'class': css_required_classes,
-            'required': True,
         }),
     )
 
@@ -89,21 +86,25 @@ class PriceForm(BaseContactForm):
         error_messages=BaseContactForm.required_error_message,
         widget=forms.TextInput(attrs={
             'class': css_required_classes + 'js-city',
-            'required': True,
         }),
     )
 
     activity = forms.ChoiceField(
         label='Направление деятельности организации',
         choices=generate_activities,
+        required=False,
         error_messages=BaseContactForm.required_error_message,
     )
 
     site = forms.URLField(
         label='Сайт',
+        required=False,
+        error_messages={
+            **BaseContactForm.required_error_message,
+            'invalid': 'Пожалуйста, введите корректный адрес Вашего сайта.',
+        },
         widget=forms.TextInput(attrs={
             'class': css_default_classes,
-            'required': False,
         }),
     )
 
@@ -134,13 +135,22 @@ class OrderForm(forms.ModelForm):
             'email',
             'company',
             'address',
-            'comment'
+            'comment',
         ]
+
+        labels = {
+            'name': 'Имя',
+            'phone': 'Телефон',
+            'email': 'Электронная почта',
+            'company': 'Полное название организации',
+            'address': 'Адрес поставки',
+            'comment': 'Комментарий к заказу',
+        }
 
         widgets = {
             'name': TextInput(attrs={'class': css_default_classes}),
             'phone': TextInput(attrs={
-                'class': css_required_classes,
+                'class': css_required_classes + 'js-masked-phone',
                 'pattern': phone_validation_pattern,
                 'required': True
             }),

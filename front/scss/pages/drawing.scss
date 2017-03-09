@@ -6,10 +6,7 @@
 
   &-text {
     margin: 0 0 20px;
-
-    @include media($sm) {
-      margin: 5px 0 30px;
-    }
+    text-align: center;
   }
 
   &-form {
@@ -18,14 +15,6 @@
     @include media($sm) {
       align-self: center;
       width: 66%;
-    }
-  }
-
-  .input-field-wrapper {
-    margin: 0 0 25px;
-
-    .input-field {
-      width: 99%;
     }
   }
 

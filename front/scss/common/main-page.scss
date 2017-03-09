@@ -39,6 +39,7 @@
   }
 
   &-address {
+    @include white-text-shadow;
     font-weight: 600;
     margin-bottom: 20px;
     text-align: right;
@@ -54,6 +55,7 @@
 
   &-name {
     &-h1 {
+      @include white-text-shadow;
       font-size: $f-size-base + 14;
       line-height: 1.19;
       margin-bottom: 19px;
@@ -65,6 +67,7 @@
     }
 
     &-h2 {
+      @include white-text-shadow;
       font-size: $f-size-base + 4;
       line-height: 1.18;
       margin-bottom: 20px;

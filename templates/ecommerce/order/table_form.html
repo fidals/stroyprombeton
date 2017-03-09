@@ -6,7 +6,7 @@
 {% if not cart %}
   <h2 class="text-center">Нет выбранных позиций</h2>
   <p class="text-center">Если вы не нашли изделие <a href="{% custom_url 'gbi' %}">в каталоге</a>,
-    <br>мы изготовим его <a href="{% url 'order_drawing' %}">по вашим чертежам</a>.
+    <br>мы изготовим его <a href="{% custom_url 'order-drawing' %}">по вашим чертежам</a>.
   </p>
 {% else %}
   <section class="order">

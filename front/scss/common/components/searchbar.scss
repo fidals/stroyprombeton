@@ -47,10 +47,16 @@
     }
 
     &-item {
+      @include white-text-shadow;
       color: $c-white;
       font-size: $f-size-base - 1;
       font-weight: 600;
       margin-right: 28px;
+
+      @include media($lg) {
+        font-size: $f-size-base - 1;
+        margin-right: 11px;
+      }
     }
 
     &-link {

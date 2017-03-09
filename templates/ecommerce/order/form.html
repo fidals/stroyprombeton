@@ -1,58 +1,22 @@
-{% load widget_tweaks %}
 {% load pages_extras %}
-{% load stb_extras %}
 
-<form action="{% custom_url 'order' %}" method="post" id="shop-order-form"> {% csrf_token %}
-  <div class="input-label">
-    Имя
-  </div>
-  <div class="input-field-wrapper">
-    {{ form.name }}
-  </div>
+<form action="{% custom_url 'order' %}" method="post" id="shop-order-form">
+  {% csrf_token %}
+  {% for field in form %}
+    <div class="input-label">
+      <label for="{{ field.name }}">{{ field.label }}</label>
+      {% if field.field.required %}
+        <span class="input-label-asterisk">*</span>
+      {% endif %}
+    </div>
 
-  <div class="input-label">
-    Телефон
-    <span class="input-label-asterisk">*</span>
-  </div>
-  <div class="input-field-wrapper">
-    {{ form.phone|add_class:'js-masked-phone' }}
-    {% include 'components/input_validation_icons.html' %}
-    {% order_form_field_error form.phone.errors %}
-  </div>
-
-  <div class="input-label">
-    Электронная почта
-    <span class="input-label-asterisk">*</span>
-  </div>
-  <div class="input-field-wrapper">
-    {{ form.email }}
-    {% include 'components/input_validation_icons.html' %}
-    {% order_form_field_error form.email.errors %}
-  </div>
-
-  <div class="input-label">
-    Полное название организации
-    <span class="input-label-asterisk">*</span>
-  </div>
-  <div class="input-field-wrapper">
-    {{ form.company }}
-    {% include 'components/input_validation_icons.html' %}
-    {% order_form_field_error form.company.errors %}
-  </div>
-
-  <div class="input-label">
-    Адрес поставки
-  </div>
-  <div class="input-field-wrapper">
-    {{ form.address }}
-  </div>
-
-  <div class="input-label">
-    Комментарий к заказу
-  </div>
-  <div class="input-field-wrapper">
-    {{ form.comment }}
-  </div>
+    <div class="input-field-wrapper">
+      {{ field }}
+      {% if field == form.activity %}<i class="fa fa-angle-down input-angle-down"></i>{% endif %}
+      {% include 'components/input_validation_icons.html' %}
+      {{ field.errors }}
+    </div>
+  {% endfor %}
 
   <div class="btn-order-form">
     <button type="submit" class="btn">Отправить</button>

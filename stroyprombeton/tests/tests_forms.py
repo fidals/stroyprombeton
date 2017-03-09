@@ -43,7 +43,7 @@ class AbstractFormTest:
 
 
 class PriceFormTest(AbstractFormTest, TestCase):
-    REQUIRED = ['phone', 'email', 'company', 'city', 'activity']
+    REQUIRED = ['phone', 'email', 'company', 'city']
     FIELDS = copy(PRICE_FORM_FIELDS)
     FORM = forms.PriceForm
 

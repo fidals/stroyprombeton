@@ -67,14 +67,14 @@ class OrderDrawing(FormView, CustomPageView):
             )
             return self.form_valid(form)
         else:
-            return self.get(request, args, kwargs)
+            return self.get(request, *args, **kwargs)
 
 
 class OrderDrawingSuccess(TemplateView):
     template_name = 'ecommerce/order/drawing_success.html'
 
 
-class OrderPrice(FormView):
+class OrderPrice(FormView, CustomPageView):
     form_class = PriceForm
     template_name = 'ecommerce/order/price.html'
     success_url = reverse_lazy(
@@ -83,14 +83,18 @@ class OrderPrice(FormView):
         args=('price-success',)
     )
 
-    def form_valid(self, form):
-        mailer.send_form(
-            form=form,
-            template='ecommerce/email_price.html',
-            subject='Заказ прайс-листа'
-        )
+    def post(self, request, *args, **kwargs):
+        form = self.get_form()
 
-        return super(OrderPrice, self).form_valid(form)
+        if form.is_valid():
+            mailer.send_form(
+                form=form,
+                template='ecommerce/email_price.html',
+                subject='Заказ прайс-листа',
+            )
+            return self.form_valid(form)
+        else:
+            return self.get(request, *args, **kwargs)
 
 
 class OrderPriceSuccess(TemplateView):

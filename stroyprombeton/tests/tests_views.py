@@ -344,6 +344,10 @@ class OrderPrice(AbstractFormViewTest, TestCase):
     FORM_TEST = PriceFormTest
     FIELDS = copy(PriceFormTest.FIELDS)
 
+    def setUp(self):
+        CustomPage.objects.create(slug='order-price')
+        super(OrderPrice, self).setUp()
+
 
 class OrderDrawing(AbstractFormViewTest, TestCase):
     URL = '/order-drawing/'

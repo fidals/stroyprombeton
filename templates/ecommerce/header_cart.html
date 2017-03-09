@@ -1,40 +1,39 @@
-{% load stb_extras %}
 {% load pages_extras %}
+{% load stb_extras %}
 
-<div class="{% if cart|length %}active{% endif %}">
-  <a class="nav-link nav-cart-link" href="{% custom_url 'order' %}">Корзина</a>
-  <div class="cart js-cart">
-    <div class="cart-clear js-flush-cart">Очистить корзину</div>
+<a class="nav-link nav-cart-link {% if cart|length %}active{% endif %}"
+   href="{% custom_url 'order' %}">Корзина</a>
+<div class="cart js-cart">
+  <div class="cart-clear js-flush-cart">Очистить корзину</div>
 
-    {% if cart|length %}
-      <ul class="cart-item-list">
-        {% for id, product in cart %}
-          <li class="cart-item">
-            <a class="cart-item-name" href="{{ product.url }}">
-              {{ product.name }}
-            </a>
+  {% if cart|length %}
+    <ul class="cart-item-list">
+      {% for id, product in cart %}
+        <li class="cart-item">
+          <a class="cart-item-name" href="{{ product.url }}">
+            {{ product.name }}
+          </a>
 
-            <div class="cart-item-sum">
-              <span class="cart-item-price">{{ product.price|format_price }}</span>
-              <span class="cart-item-count js-header-product-count">
-                <small><strong>x</strong></small> {{ product.quantity }} шт.
-              </span>
-            </div>
+          <div class="cart-item-sum">
+            <span class="cart-item-price">{{ product.price|format_price }}</span>
+            <span class="cart-item-count js-header-product-count">
+              <small><strong>x</strong></small> {{ product.quantity }} шт.
+            </span>
+          </div>
 
-            <i class="fa fa-close cart-item-remove icon-remove js-remove"
-               data-product-id="{{ id }}" aria-hidden="true" title="Удалить товар"></i>
-          </li>
-        {% endfor %}
-      </ul>
-      <div class="cart-item-list-after"></div>
+          <i class="fa fa-close cart-item-remove icon-remove js-remove"
+             data-product-id="{{ id }}" aria-hidden="true" title="Удалить товар"></i>
+        </li>
+      {% endfor %}
+    </ul>
+    <div class="cart-item-list-after"></div>
 
-      <p class="cart-sum text-right"><strong>Итог: {{ cart.total_price|format_price }}</strong></p>
-    {% else %}
-      <p class="cart-empty-text text-center">В корзине пока нет товаров...</p>
-    {% endif %}
+    <p class="cart-sum text-right"><strong>Итог: {{ cart.total_price|format_price }}</strong></p>
 
     <div class="text-right">
       <a href="{% custom_url 'order' %}" class="btn cart-order-btn">Оформить заказ</a>
     </div>
-  </div>
+  {% else %}
+    <p class="cart-empty-text text-center">В корзине пока нет товаров...</p>
+  {% endif %}
 </div>

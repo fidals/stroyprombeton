@@ -34,13 +34,6 @@ def search_result(items, item_type):
     }
 
 
-@register.inclusion_tag('tags/order_form_field_error.html')
-def order_form_field_error(errors):
-    return {
-        'errors': errors,
-    }
-
-
 @register.filter
 def format_price(price):
     if price:

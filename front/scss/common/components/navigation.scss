@@ -6,8 +6,9 @@
 
   @include media($md) {
     display: flex;
+    justify-content: flex-end;
     position: relative;
-    right: -14px;
+    right: -$pc-half-gutter-width;
   }
 
   &-wrapper {
@@ -32,21 +33,12 @@
     padding: 18px 14px;
   }
 
-  .active &-cart-link {
+  &-cart-link.active {
     color: $c-nav-link-chart;
 
     &:hover {
       color: $c-nav-link-chart-hover;
     }
-  }
-}
-
-.nav-item {
-  display: block;
-  position: relative;
-
-  &:last-child {
-    margin-right: 0;
   }
 }
 

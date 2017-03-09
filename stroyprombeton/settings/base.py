@@ -63,6 +63,7 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.contrib.redirects.middleware.RedirectFallbackMiddleware',
+    'django.middleware.locale.LocaleMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware',
     'stroyprombeton.middleware.PatchedUserAgentMiddleware',
 ]
@@ -319,8 +320,8 @@ REGIONS = {
 PARTNERS = [
     {
         'logo': 'images/stk-prombeton.png',
-        'text': 'Проектируют и доставляют ЖБИ',
-        'alt': 'Проектируют и доставляют ЖБИ',
+        'text': 'Производят железобетонные изделия',
+        'alt': 'Производят железобетонные изделия',
     },
     {
         'url': 'http://stkm-energo.ru/?utm_source=STB_site&utm_medium=backlink&utm_campaign=backlink_traffic',

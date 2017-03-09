@@ -13,7 +13,7 @@
           {% for field in form %}
             <div class="input-label">
               <label for="{{ field.name }}">{{ field.label }}</label>
-              {% if field.field.widget.attrs.required %}
+              {% if field.field.required %}
                 <span class="input-label-asterisk">*</span>
               {% endif %}
             </div>
@@ -21,11 +21,8 @@
             <div class="input-field-wrapper">
               {{ field }}
               {% if field == form.activity %}<i class="fa fa-angle-down input-angle-down"></i>{% endif %}
-
-              {% if field.field.widget.attrs.required %}
-                {% include 'components/input_validation_icons.html' %}
-                {% order_form_field_error field.errors %}
-              {% endif %}
+              {% include 'components/input_validation_icons.html' %}
+              {{ field.errors }}
             </div>
           {% endfor %}
 

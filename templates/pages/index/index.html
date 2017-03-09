@@ -15,7 +15,7 @@
   <section class="banner js-banner">
     <div class="container container-fluid">
       <div class="row">
-        <div class="col-xs-12 col-sm-11 col-sm-pull-1">
+        <div class="col-xs-12 col-sm-11">
           <div class="banner-address">
             <p>Адрес офиса продаж:</p>
             <p>СПб, пр. Елизарова 38А, офис 218</p>
@@ -44,7 +44,7 @@
           </div>
         </div>
 
-        <div class="col-xs-12 col-sm-4 center-xs start-sm">
+        <div class="col-xs-12 col-sm-4 col-md-3 center-xs start-sm end-md">
           <div class="application-btn">
             <button class="btn btn-white js-open-modal"
                     data-modal-id="backcall-modal">Свяжитесь со мной</button>
@@ -83,7 +83,7 @@
     <div class="container container-fluid">
       <div class="row">
         <div class="col-xs-12 col-sm-4 col-md-3 col-md-offset-1">
-          <a href="{% url 'order_drawing' %}" class="offer-item text-center">
+          <a href="{% custom_url 'order-drawing' %}" class="offer-item text-center">
             <div class="offer-image">
               <div class="offer-item-image offer-item-image-nohover icon-offer-draft"></div>
               <div class="offer-item-image offer-item-image-hover icon-offer-draft-hover"></div>
@@ -96,7 +96,7 @@
         </div>
 
         <div class="col-xs-12 col-sm-4 col-md-2 col-md-offset-1">
-          <a href="{% url 'order_price' %}" class="offer-item text-center">
+          <a href="{% custom_url 'order-price' %}" class="offer-item text-center">
             <div class="offer-image">
               <div class="offer-item-image offer-item-image-nohover icon-offer-pricelist"></div>
               <div class="offer-item-image offer-item-image-hover icon-offer-pricelist-hover"></div>
