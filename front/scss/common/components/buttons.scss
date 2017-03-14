@@ -74,6 +74,7 @@
 
   @include media($sm) {
     border-radius: 25px;
+    bottom: 160px;
     font-size: $f-size-base + 4;
     padding: 6px 20px 7px;
     right: 5px;

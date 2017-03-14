@@ -14,7 +14,7 @@
 
     $(DOM.$order).on('keyup', 'input', storeInput);
     $(DOM.$order).on('keyup', 'textarea', storeInput);
-    $(DOM.$order).on('input', DOM.productCount, changeProductCount);
+    $(DOM.$order).on('input', DOM.productCount, helpers.debounce(changeProductCount, 300));
     $(DOM.$order).on('click', DOM.remove, removeProduct);
   }
 
@@ -24,14 +24,12 @@
    * Change Product's count in Cart with delay for better UX.
    */
   function changeProductCount(event) {
-    helpers.delay(() => {
-      const $target = $(event.target);
-      const productID = getProductId($target);
-      const newCount = $target.closest('.js-product-row').find(DOM.productCount).val();
+    const $target = $(event.target);
+    const productID = getProductId($target);
+    const newCount = $target.closest('.js-product-row').find(DOM.productCount).val();
 
-      server.changeInCart(productID, newCount)
-        .then(data => mediator.publish('onCartUpdate', { html: data }));
-    }, 300);
+    server.changeInCart(productID, newCount)
+      .then(data => mediator.publish('onCartUpdate', { html: data }));
   }
 
   /**
@@ -39,7 +37,6 @@
    */
   function storeInput(event) {
     const $target = $(event.target);
-
     localStorage.setItem($target.attr('name'), $target.val());
   }
 
@@ -50,9 +47,7 @@
     const productID = getProductId($(event.target));
 
     server.removeFromCart(productID)
-      .then((data) => {
-        mediator.publish('onCartUpdate', { html: data });
-      });
+      .then(data => mediator.publish('onCartUpdate', { html: data }));
   }
 
   /**

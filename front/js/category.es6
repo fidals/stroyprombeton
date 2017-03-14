@@ -1,6 +1,7 @@
 (() => {
   const DOM = {
     addToCart: 'js-category-buy',
+    tablaRow: '.table-tr',
     $cart: $('.js-cart'),
     $showMoreLink: $('#load-more-products'),
     $productsTable: $('#products-wrapper'),
@@ -28,11 +29,11 @@
 
     $(DOM.$productsTable).on('click', buyProduct);
     DOM.$showMoreLink.click(loadProducts);
-    DOM.$searchFilter.keyup(filterProducts);
+    DOM.$searchFilter.keyup(helpers.debounce(filterProducts, 400));
   }
 
   function setLoadMoreLinkState() {
-    if ($('.table-tr').size() < config.productsToFetch) {
+    if ($(DOM.tablaRow).size() < config.productsToFetch) {
       DOM.$showMoreLink.addClass('disabled');
     }
   }
@@ -56,7 +57,6 @@
    */
   function buyProduct(event) {
     if (!$(event.target).hasClass(DOM.addToCart)) return;
-
     const { id, count } = getProductInfo(event);
 
     server.addToCart(id, count)
@@ -148,9 +148,7 @@
 
     fetchProducts(fetchData)
       .then(
-        (products) => {
-          mediator.publish('onProductsLoad', products);
-        },
+        products => mediator.publish('onProductsLoad', products),
         response => console.warn(response),
       );
   }
@@ -161,36 +159,35 @@
    * Number `3` is minimal length for search term.
    */
   function filterProducts() {
-    helpers.delay(() => {
-      const filterValue = getFilterTerm();
-      if (filterValue.length > 0 && filterValue.length < 3) return;
+    const filterValue = getFilterTerm();
+    if (filterValue.length && filterValue.length < 3) return;
 
-      const fetchData = {
-        categoryId: getCategoryId(),
-        filterValue,
-        filtered: filterValue.length >= 3,
-      };
+    const fetchData = {
+      categoryId: getCategoryId(),
+      filterValue,
+      filtered: filterValue.length >= 3,
+      offset: config.productsToFetch,
+    };
 
-      fetchProducts(fetchData)
-        .then(
-          (products) => {
-            mediator.publish('onProductsFilter', products);
-            DOM.$showMoreLink.attr('data-load-count', config.productsToFetch);
-          },
-          response => console.warn(response),
-        );
-    }, 300);
+    fetchProducts(fetchData)
+      .then(
+        (products) => {
+          mediator.publish('onProductsFilter', products);
+          DOM.$showMoreLink.attr('data-load-count', config.productsToFetch);
+        },
+        response => console.warn(response),
+      );
   }
 
   /**
    * Load products from back-end by passed data.
    */
-  function fetchProducts(fetchData) {
+  function fetchProducts(data) {
     return $.post(config.fetchProductsUrl, {
-      categoryId: fetchData.categoryId,
-      term: fetchData.filterValue,
-      offset: fetchData.offset,
-      filtered: fetchData.filtered,
+      categoryId: data.categoryId,
+      term: data.filterValue,
+      offset: data.offset,
+      filtered: data.filtered,
     });
   }
 

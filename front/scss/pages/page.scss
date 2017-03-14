@@ -41,11 +41,6 @@
       margin: 0 auto 10px;
       max-height: 100%;
       max-width: 100%;
-      position: static;
-
-      @include media($sm) {
-        position: absolute;
-      }
     }
   }
 

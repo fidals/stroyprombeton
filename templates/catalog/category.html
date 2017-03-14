@@ -1,10 +1,7 @@
 {% extends 'layout/inner_page.html' %}
 
-{% load staticfiles %}
-
 {% block content %}
   {% include 'components/breadcrumbs.html' with page=page only %}
-
   {% include 'components/page_h1.html' with page=page only %}
 
   <section class="category-search">
@@ -63,14 +60,7 @@
         </table>
 
         {% include 'components/show_more_products.html' with category=category only %}
-
-        <ul class="hidden js-seo-links">
-          {% for link in seo_links %}
-            <li>
-              <a href="{{ link.url }}">{{ link.name }} {{ link.mark }}</a>
-            </li>
-          {% endfor %}
-        </ul>
+        {% include 'catalog/seo_links.html' with page_obj=page_obj paginator_links=paginator_links pagination_param=pagination_param only %}
       </div>
     </div>
   </div>

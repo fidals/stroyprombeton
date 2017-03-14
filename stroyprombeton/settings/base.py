@@ -148,6 +148,7 @@ DATABASES = {
     )
 }
 
+# Is required for Docker container
 WKHTMLTOPDF_CMD = 'xvfb-run wkhtmltopdf'
 
 # 60 days in seconds

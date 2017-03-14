@@ -1,20 +1,18 @@
 {% load images %}
-{% load thumbnail %}
 {% load stb_extras %}
+{% load staticfiles %}
 
 {% if image %}
-  {% thumbnail image '30' as thumbnail %}
-    <a class="table-picture-ico icon-picture" href="#">
-      <img
-        class="table-picture-img js-photoswipe-slide"
-        src="{{ thumbnail.url }}"
-        data-original-src="{{ image.url }}"
-        data-original-src-width="{{ image.width }}"
-        data-original-src-height="{{ image.height }}"
-        alt="{% get_img_alt page %}"
-      >
-    </a>
-  {% endthumbnail %}
+  <a class="table-photo-ico icon-picture" href="#">
+    <img
+      class="table-photo-img js-photoswipe-slide"
+      src="{% static 'images/icon-photo.png' %}"
+      data-original-src="{{ image.url }}"
+      data-original-src-width="{{ image.width }}"
+      data-original-src-height="{{ image.height }}"
+      alt="{% get_img_alt page %}"
+    >
+  </a>
 {% else %}
   -
 {% endif %}

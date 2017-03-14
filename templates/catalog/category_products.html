@@ -6,8 +6,6 @@
       <td class="table-td table-photo text-center">
         {% include 'catalog/category_product_image.html' with image=image.image page=product.page only %}
       </td>
-      {# TODO Needed create logic for images and empty thumb. #}
-      {# http://youtrack.stkmail.ru/issue/dev-811 #}
       <td class="table-td table-code">
         {% if product.code %}
           {{ product.code }}
@@ -17,7 +15,7 @@
       </td>
       <td class="table-td table-name">
         <a class="table-link" href="{{ product.url }}">
-          {{ product.name }} {{ product.mark }}
+          {{ product.name }} {{ product.mark }} {{ product.specification }}
         </a>
       </td>
       <td class="table-td table-price">

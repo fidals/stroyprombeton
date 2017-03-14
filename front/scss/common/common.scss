@@ -13,6 +13,10 @@ body {
   flex-direction: column;
   font-weight: 400;
   min-height: 100vh;
+
+  .hidden {
+    display: none;
+  }
 }
 
 a {
@@ -102,10 +106,6 @@ a {
   &:active {
     color: $c-btn-orange-active;
   }
-}
-
-.hidden {
-  display: none;
 }
 
 .paddingless {

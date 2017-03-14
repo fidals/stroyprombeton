@@ -1,0 +1,27 @@
+<ul class="pagination hidden js-seo-links">
+  <li class="pagination-item">
+    {% if page_obj.has_previous %}
+      <a class="btn" href="?{{ pagination_param }}={{ page_obj.previous_page_number }}">&laquo;</a>
+    {% else %}
+      <span class="btn btn-disabled">&laquo;</span>
+    {% endif %}
+  </li>
+
+  {% for page_index in paginator_links %}
+    <li class="pagination-item">
+      {% if page_obj.number == page_index %}
+        <span class="btn btn-disabled">{{ page_index }} <span class="sr-only">(current)</span></span>
+      {% else %}
+        <a class="btn" href="?{{ pagination_param }}={{ page_index }}">{{ page_index }}</a>
+      {% endif %}
+    </li>
+  {% endfor %}
+
+  <li class="pagination-item">
+    {% if page_obj.has_next %}
+      <a class="btn" href="?{{ pagination_param }}={{ page_obj.next_page_number }}">&raquo;</a>
+    {% else %}
+      <span class="btn btn-disabled">&raquo;</span>
+    {% endif %}
+  </li>
+</ul>

@@ -20,19 +20,21 @@ const helpers = (() => {
   const isEmailValid = data => !!data.toLowerCase().match(config.regexpEmail);
 
   /**
-   * Delay function call to prevent calls queue.
+   * Delays `fn` execution for better UI and AJAX request performance.
+   *
+   * @param {function} fn
+   * @param {number} delay
    */
-  const delay = (() => {
-    let timer = 0;
-
-    return (callback, ms) => {
-      clearTimeout(timer);
-      timer = setTimeout(callback, ms);
+  function debounce(fn, delay) {
+    let timerId;
+    return function delayed(...args) {
+      clearTimeout(timerId);
+      timerId = setTimeout(() => fn.apply(this, args), delay);
     };
-  })();
+  }
 
   return {
-    delay,
+    debounce,
     isPhoneValid,
     isEmailValid,
   };

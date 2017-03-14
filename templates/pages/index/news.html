@@ -13,7 +13,7 @@
         {% if not request|is_mobile %}
           <div class="news-img-wrapper">
             {% if item.main_image %}
-              {% thumbnail item.main_image '165x165' as image %}
+              {% thumbnail item.main_image '165x165' crop='center' as image %}
                 <img class="img-responsive" src="{{ image.url }}"
                      alt="{% get_img_alt item %}">
               {% endthumbnail %}

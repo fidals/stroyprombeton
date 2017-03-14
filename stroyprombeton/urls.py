@@ -44,6 +44,7 @@ custom_pages = [
     url(r'^(?P<page>search)/$', views.Search.as_view(), name=url_name),
     url(r'^(?P<page>sitemap)/$', SitemapPage.as_view(), name=url_name),
 ]
+
 ecommerce_urls = [
     url(r'^cart-add/$', views.AddToCart.as_view(), name='cart_add'),
     url(r'^cart-change/$', views.ChangeCount.as_view(), name='cart_set_count'),

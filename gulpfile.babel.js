@@ -1,9 +1,11 @@
 import autoprefixer from 'autoprefixer';
 import babelPreset from 'babel-preset-es2015';
 import csso from 'postcss-csso';
-import mqpacker from 'css-mqpacker';
 import del from 'del';
 import gulp from 'gulp';
+import imageminJpg from 'imagemin-mozjpeg';
+import imageminPng from 'imagemin-pngquant';
+import mqpacker from 'css-mqpacker';
 import sequence from 'run-sequence';
 
 const $ = require('gulp-load-plugins')();
@@ -176,10 +178,10 @@ gulp.task('build', () => {
     'js-admin',
     'js-admin-vendors',
     'js-ie-vendors',
-    'sprites',
     'styles-main',
     'styles-admin',
     'styles-ie',
+    'sprites',
     'images',
     'fonts',
   );
@@ -305,16 +307,7 @@ gulp.task('js-ie-vendors', () => {
 });
 
 // ================================================================
-// Images : Copy images.
-// ================================================================
-gulp.task('images', () => {
-  gulp.src(path.src.images)
-    .pipe($.changed(path.build.images))
-    .pipe(gulp.dest(path.build.images));
-});
-
-// ================================================================
-// Sprites
+// Images: Sprites
 // ================================================================
 gulp.task('sprites', () => {
   let spriteData = gulp.src(path.src.sprites.main)
@@ -342,6 +335,18 @@ gulp.task('sprites', () => {
   spriteData.css
     .pipe($.rename({ extname: '.scss' }))
     .pipe(gulp.dest(path.build.sprites.scss.pages));
+});
+
+// ================================================================
+// Images : Copy images.
+// ================================================================
+gulp.task('images', () => {
+  gulp.src(path.src.images)
+    .pipe($.imagemin([
+      imageminJpg({ quality: 80 }),
+      imageminPng({ quality: 80 }),
+    ]))
+    .pipe(gulp.dest(path.build.images));
 });
 
 // ================================================================

@@ -15,7 +15,9 @@ class AbstractSearch:
         stripped_term = term.strip()
 
         product_lookups = [
-            'search_field__icontains', 'id__contains', 'code__contains',
+            'search_field__icontains',
+            'id__contains',
+            'code__contains',
         ]
 
         categories = search_models(stripped_term, self.category, self.lookups)
@@ -33,12 +35,13 @@ class Autocomplete(AbstractSearch, search.Autocomplete):
     see_all_label = 'Показать все результаты'
 
     # Extend default ordering fields
-    extra_ordering_fields = ('mark',)
+    extra_ordering_fields = ('mark', 'specification',)
 
     # Extend default search fields
     extra_entity_fields = {
         'product': {
             'mark',
+            'specification',
         },
     }
 
