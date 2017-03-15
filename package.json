@@ -38,8 +38,6 @@
     "gulp-sourcemaps": "^2.4.0",
     "gulp.spritesmith": "^6.2.1",
     "gulp-uglify": "^2.0.1",
-    "imagemin-mozjpeg": "^6.0.0",
-    "imagemin-pngquant": "^5.0.0",
     "postcss-csso": "^1.1.2",
     "postcss-flexibility": "^1.1.0",
     "run-sequence": "^1.2.2"

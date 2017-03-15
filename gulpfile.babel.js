@@ -3,8 +3,6 @@ import babelPreset from 'babel-preset-es2015';
 import csso from 'postcss-csso';
 import del from 'del';
 import gulp from 'gulp';
-import imageminJpg from 'imagemin-mozjpeg';
-import imageminPng from 'imagemin-pngquant';
 import mqpacker from 'css-mqpacker';
 import sequence from 'run-sequence';
 
@@ -342,10 +340,7 @@ gulp.task('sprites', () => {
 // ================================================================
 gulp.task('images', () => {
   gulp.src(path.src.images)
-    .pipe($.imagemin([
-      imageminJpg({ quality: 80 }),
-      imageminPng({ quality: 80 }),
-    ]))
+    .pipe($.imagemin())
     .pipe(gulp.dest(path.build.images));
 });
 
