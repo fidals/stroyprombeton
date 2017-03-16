@@ -12,3 +12,4 @@ stroyprombeton/settings/local.py
 stb.json
 docker/.env
 celerybeat*
+fake_db.py

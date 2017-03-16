@@ -2,15 +2,14 @@ from django.contrib import admin
 from django.contrib.redirects.models import Redirect
 from django.utils.translation import ugettext_lazy as _
 
-from pages.models import CustomPage, FlatPage
+from pages import models as pages_models
 from generic_admin import models, inlines, sites, filters
 
-from stroyprombeton.models import ProductPage, CategoryPage, Category, Product
+from stroyprombeton import models as stb_models
 from stroyprombeton.views import TableEditor
 
 
-class PageParent(admin.SimpleListFilter):
-    """https://goo.gl/IYojpl"""
+class ParentFilter(admin.SimpleListFilter):
     title = _('parent')
     parameter_name = 'parent'
 
@@ -34,7 +33,7 @@ class StbAdminSite(sites.SiteWithTableEditor):
 
 
 class CategoryInline(inlines.CategoryInline):
-    model = Category
+    model = stb_models.Category
 
 
 class FlatPageAdmin(models.FlatPageAdmin):
@@ -42,12 +41,12 @@ class FlatPageAdmin(models.FlatPageAdmin):
         'is_active',
         filters.HasContent,
         filters.HasImages,
-        PageParent,
+        ParentFilter,
     ]
 
 
 class ProductInline(inlines.ProductInline):
-    model = Product
+    model = stb_models.Product
     fieldsets = ((None, {
         'classes': ('primary-chars', ),
         'fields': (
@@ -66,7 +65,7 @@ class ProductInline(inlines.ProductInline):
 
 
 class ProductPageAdmin(models.ProductPageAdmin):
-    category_page_model = CategoryPage
+    category_page_model = stb_models.CategoryPage
     inlines = [ProductInline, inlines.ImageInline]
 
 
@@ -76,8 +75,16 @@ class CategoryPageAdmin(models.CategoryPageAdmin):
 
 stb_admin_site = StbAdminSite(name='stb_admin')
 
-stb_admin_site.register(CustomPage, models.CustomPageAdmin)
-stb_admin_site.register(FlatPage, FlatPageAdmin)
-stb_admin_site.register(ProductPage, ProductPageAdmin)
-stb_admin_site.register(CategoryPage, CategoryPageAdmin)
+# Pages
+stb_admin_site.register(pages_models.CustomPage, models.CustomPageAdmin)
+stb_admin_site.register(pages_models.FlatPage, FlatPageAdmin)
+
+# STB
+stb_admin_site.register(stb_models.ProductPage, ProductPageAdmin)
+stb_admin_site.register(stb_models.CategoryPage, CategoryPageAdmin)
+stb_admin_site.register(stb_models.NewsForAdmin, FlatPageAdmin)
+stb_admin_site.register(stb_models.RegionsForAdmin, FlatPageAdmin)
+stb_admin_site.register(stb_models.ClientFeedbacksForAdmin, FlatPageAdmin)
+
+# Redirects
 stb_admin_site.register(Redirect)

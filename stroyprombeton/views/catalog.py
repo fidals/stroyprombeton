@@ -28,7 +28,7 @@ def fetch_products(request):
         category, ordering=PRODUCTS_ORDERING
     )
 
-    if filtered == 'true' and not term:
+    if filtered == 'true' and term:
         lookups = [
             'name__icontains',
             'code__icontains',
@@ -39,12 +39,11 @@ def fetch_products(request):
 
     offset = int(offset)
     left_product_count = products.count() - offset
-    size = left_product_count if left_product_count < PRODUCTS_PER_PAGE else PRODUCTS_PER_PAGE
+    size = min(left_product_count, PRODUCTS_PER_PAGE)
     products = products.get_offset(offset, size)
 
     images = Image.objects.get_main_images_by_pages(
-        product.page
-        for product in products
+        product.page for product in products
     )
     products_with_images = [
         (product, images.get(product.page))
@@ -112,7 +111,7 @@ class CategoryPage(catalog.CategoryPage, ListView):
             .select_related('page')
         )
 
-        # here we offsetting products for seo-robots & for users:
+        # offset products for seo-robots & for users:
         products_offset = products.get_offset(
             PRODUCTS_PER_PAGE * (page_index - 1), PRODUCTS_PER_PAGE
         )

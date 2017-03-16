@@ -13,10 +13,15 @@ set_csrf_cookie = method_decorator(ensure_csrf_cookie, name='dispatch')
 
 MODEL_MAP = {
     'product': Product.objects.annotate(
-        search_field=Concat(F('name'), Value(' '), F('mark'), output_field=CharField())
+        search_field=Concat(
+            F('name'), Value(' '),
+            F('mark'), Value(' '),
+            F('specification'),
+            output_field=CharField(),
+        )
     ),
     'category': Category,
-    'page': Page
+    'page': Page,
 }
 
 

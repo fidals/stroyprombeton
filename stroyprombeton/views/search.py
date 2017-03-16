@@ -35,11 +35,12 @@ class Autocomplete(AbstractSearch, search.Autocomplete):
     see_all_label = 'Показать все результаты'
 
     # Extend default ordering fields
-    extra_ordering_fields = ('mark', 'specification',)
+    extra_ordering_fields = ('search_field', 'code')
 
     # Extend default search fields
     extra_entity_fields = {
         'product': {
+            'code',
             'mark',
             'specification',
         },

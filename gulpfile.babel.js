@@ -168,20 +168,21 @@ gulp.task('build', () => {
   env.production = true;
 
   sequence(
-    'clear',
-    'js-common',
-    'js-common-vendors',
-    'js-pages',
-    'js-pages-vendors',
-    'js-admin',
-    'js-admin-vendors',
-    'js-ie-vendors',
-    'styles-main',
-    'styles-admin',
-    'styles-ie',
-    'sprites',
+    'clear', [
+      'js-common',
+      'js-common-vendors',
+      'js-pages',
+      'js-pages-vendors',
+      'js-admin',
+      'js-admin-vendors',
+      'js-ie-vendors',
+      'styles-main',
+      'styles-admin',
+      'styles-ie',
+      'sprites',
+      'fonts',
+    ],
     'images',
-    'fonts',
   );
 });
 
@@ -305,7 +306,7 @@ gulp.task('js-ie-vendors', () => {
 });
 
 // ================================================================
-// Images: Sprites
+// Images: Sprites.
 // ================================================================
 gulp.task('sprites', () => {
   let spriteData = gulp.src(path.src.sprites.main)
@@ -336,7 +337,7 @@ gulp.task('sprites', () => {
 });
 
 // ================================================================
-// Images : Copy images.
+// Images : Optimize and copy images.
 // ================================================================
 gulp.task('images', () => {
   gulp.src(path.src.images)

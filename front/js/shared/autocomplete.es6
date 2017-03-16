@@ -57,7 +57,7 @@ const autocomplete = (() => {
       mark: item.mark ?
         `<span class="search-item-mark">${highlight(item.mark, term)}</span>` : '',
       specification: item.specification ?
-        `<span class="search-item-spec">${item.specification}</span>` : '',
+        `<span class="search-item-spec">${highlight(item.specification, term)}</span>` : '',
       itemName: item.name,
     };
 
@@ -65,7 +65,7 @@ const autocomplete = (() => {
     // https://github.com/Pixabay/JavaScript-autoComplete/issues/39
     return `<div class="autocomplete-suggestion search-item" data-val="${context.itemName}">
       <a href="${context.url}" class="search-item-link">
-        ${context.specification}${context.name}${context.mark}
+        ${context.name}${context.mark} ${context.specification}
       </a>
     </div>`;
   }
