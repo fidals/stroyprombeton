@@ -43,7 +43,6 @@ class CategoryTile(TestCase):
     Test for CategoryPage view under the condition, that using CategoryTile
     template.
     """
-    fixtures = ['dump.json']
 
     def setUp(self):
         """Create root and child category."""

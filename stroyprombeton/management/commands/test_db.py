@@ -84,6 +84,7 @@ class Command(BaseCommand):
         self._product_id = 0
 
         self.purge_tables()
+        call_command('migrate')
         create_pages()
         roots = self.create_root(count=2)
         second_level = self.create_children(count=2, parents=roots)
@@ -99,6 +100,8 @@ class Command(BaseCommand):
             '--all',
             '--natural-foreign',
             '--natural-primary',
+            '-e',
+            'sites',
             output='stroyprombeton/fixtures/dump.json'
         )
 

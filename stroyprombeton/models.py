@@ -9,14 +9,17 @@ from pages import models as page_models
 
 
 class Order(ecOrder):
-    company = models.CharField(max_length=255)
-    address = models.TextField(default='', blank=True)
-    comment = models.TextField(default='', blank=True)
+    company = models.CharField(max_length=255, verbose_name='company')
+    address = models.TextField(default='', blank=True, verbose_name='address')
+    comment = models.TextField(default='', blank=True, verbose_name='comment')
 
 
 class Category(AbstractCategory, page_models.PageMixin):
-    specification = models.TextField(default='', blank=True)
-    link_to_metal = models.URLField(default='', blank=True)
+    specification = models.TextField(
+        default='',
+        blank=True,
+        verbose_name=_('specification'),
+    )
 
     @classmethod
     def get_default_parent(cls):
@@ -29,19 +32,27 @@ class Category(AbstractCategory, page_models.PageMixin):
 
 class Product(AbstractProduct, page_models.PageMixin):
     category = models.ForeignKey(
-        Category, on_delete=models.CASCADE, related_name='products')
-    is_new_price = models.NullBooleanField(blank=True, null=True)
-    date_price_updated = models.DateField(auto_now_add=True)
-    code = models.BigIntegerField(null=True, blank=True)
-    mark = models.CharField(default='', max_length=500, blank=True)
-    specification = models.TextField(default='', blank=True)
-    length = models.IntegerField(null=True, blank=True)
-    width = models.IntegerField(null=True, blank=True)
-    height = models.IntegerField(null=True, blank=True)
-    weight = models.FloatField(null=True, blank=True)
-    volume = models.FloatField(null=True, blank=True)
-    diameter_out = models.IntegerField(null=True, blank=True)
-    diameter_in = models.IntegerField(null=True, blank=True)
+        Category,
+        on_delete=models.CASCADE,
+        related_name='products',
+        verbose_name=_('category'),
+    )
+    is_new_price = models.NullBooleanField(
+        blank=True,
+        null=True,
+        verbose_name=_('is new price'),
+    )
+    date_price_updated = models.DateField(auto_now_add=True, verbose_name=_('date price updated'))
+    code = models.BigIntegerField(null=True, blank=True, verbose_name=_('code'))
+    mark = models.CharField(default='', max_length=500, blank=True, verbose_name=_('mark'))
+    specification = models.TextField(default='', blank=True, verbose_name=_('specification'),)
+    length = models.IntegerField(null=True, blank=True, verbose_name=_('length'))
+    width = models.IntegerField(null=True, blank=True, verbose_name=_('width'))
+    height = models.IntegerField(null=True, blank=True, verbose_name=_('height'))
+    weight = models.FloatField(null=True, blank=True, verbose_name=_('weight'))
+    volume = models.FloatField(null=True, blank=True, verbose_name=_('volume'))
+    diameter_out = models.IntegerField(null=True, blank=True, verbose_name=_('diameter out'))
+    diameter_in = models.IntegerField(null=True, blank=True, verbose_name=_('diameter in'))
 
     def get_absolute_url(self):
         return reverse('product', args=(self.id,))
@@ -52,6 +63,8 @@ class CategoryPage(page_models.ModelPage):
 
     class Meta(page_models.ModelPage.Meta):
         proxy = True
+        verbose_name = _('category')
+        verbose_name_plural = _('categories')
 
     objects = page_models.ModelPage.create_model_page_managers(Category)
 
@@ -61,6 +74,8 @@ class ProductPage(page_models.ModelPage):
 
     class Meta(page_models.ModelPage.Meta):
         proxy = True
+        verbose_name = _('product')
+        verbose_name_plural = _('products')
 
     objects = page_models.ModelPage.create_model_page_managers(Product)
 

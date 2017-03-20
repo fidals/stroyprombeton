@@ -63,9 +63,6 @@ class AdminPage(TestCase):
             )
         )
 
-        self.assertNotContains(response, 'Products')
-        self.assertNotContains(response, 'Categories')
-
         for field in self.fieldsets['page']:
             self.assertContains(response, field)
 
@@ -91,8 +88,6 @@ class AdminPage(TestCase):
                 )
             )
         )
-
-        self.assertNotContains(response, 'Products')
 
         for field in self.fieldsets['category']:
             self.assertContains(response, field)
@@ -120,8 +115,6 @@ class AdminPage(TestCase):
                 )
             )
         )
-
-        self.assertNotContains(response, 'Categories')
 
         for field in self.fieldsets['product']:
             self.assertContains(response, field)

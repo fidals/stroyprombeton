@@ -4,6 +4,7 @@ from seleniumrequests import Chrome  # We use this instead of standard selenium
 
 from django.test import LiveServerTestCase
 from django.conf import settings
+from django.test import override_settings
 from django.urls import reverse
 
 from stroyprombeton.models import Product, Category
@@ -40,9 +41,9 @@ class AdminMixin:
         wait()
 
 
+@override_settings(LANGUAGE_CODE='ru-ru', LANGUAGES=(('ru', 'Russian'),))
 class SeleniumTestCase(LiveServerTestCase):
     """Common superclass for running selenium-based tests."""
-
     fixtures = ['dump.json', 'admin.json']
 
     @classmethod
@@ -63,7 +64,7 @@ class SeleniumTestCase(LiveServerTestCase):
 class AdminPage(SeleniumTestCase, HelpersMixin, AdminMixin):
     """Selenium-based tests for Admin page UI."""
 
-    title_text = 'Stroyprombeton administration'
+    title_text = 'Админка Stroyprombeton'
     product_table = 'paginator'
     active_products = '//*[@id="changelist-filter"]/ul[1]/li[2]/a'
     inactive_products = '//*[@id="changelist-filter"]/ul[1]/li[3]/a'
@@ -146,7 +147,7 @@ class AdminPage(SeleniumTestCase, HelpersMixin, AdminMixin):
         self.browser.find_element_by_xpath(self.price_filter).click()
         wait()
         product = self.browser.find_element_by_xpath('//*[@id="result_list"]/tbody/tr[1]/td[4]')
-        product_price = int(float(product.text))
+        product_price = int(float(product.text.replace(',', '.')))
 
         self.assertTrue(product_price >= 1000)
 
@@ -237,7 +238,7 @@ class AdminPage(SeleniumTestCase, HelpersMixin, AdminMixin):
     def test_tree_redirect_to_entity_edit_page(self):
         """Test redirect to edit entity page by click on jstree's item."""
         self.open_js_tree_nodes()
-        expected_h1 = ['Change category page', 'Изменить category page']
+        expected_h1 = ['Change category', 'Изменить категория']
 
         # click at tree's item should redirect us to entity edit page
         root_node = self.browser.find_element_by_id(self.root_category_id)
@@ -257,7 +258,7 @@ class AdminPage(SeleniumTestCase, HelpersMixin, AdminMixin):
         wait()
 
         test_h1 = self.first_h1
-        self.assertEqual(test_h1, 'Table editor')
+        self.assertEqual(test_h1, 'Табличный редактор')
 
         test_search_value = self.browser.find_element_by_id('search-field').get_attribute('value')
         self.assertTrue(test_search_value)
@@ -360,8 +361,9 @@ class TableEditor(SeleniumTestCase, AdminMixin, HelpersMixin):
         filters = self.browser.find_elements_by_class_name('js-sortable-item')
 
         for index, item in enumerate(filters):
-            filter_text = item.text.lower()
-            table_header_text = self.browser.find_elements_by_class_name('ui-th-div')[index + 1].text.lower()
+            filter_text = item.text.lower().replace(':', '')
+            table_header = self.browser.find_elements_by_class_name('ui-th-div')[index + 1]
+            table_header_text = table_header.text.lower().replace(':', '')
 
             self.assertIn(table_header_text, filter_text)
 
@@ -394,9 +396,9 @@ class TableEditor(SeleniumTestCase, AdminMixin, HelpersMixin):
         self.assertEqual(updated_name, self.new_product_name)
 
     def test_edit_product_price(self):
-        """We could change Product price from TE."""
-        price_cell_index = 2
-        price_cell_input = 1
+        """We could change Product price in TE."""
+        price_cell_index = 3
+        price_cell_input = 2
         new_price = self.get_current_price(price_cell_index) + 100
         self.get_cell(price_cell_index).click()
         wait()
@@ -442,11 +444,11 @@ class TableEditor(SeleniumTestCase, AdminMixin, HelpersMixin):
         self.assertNotEqual(first_product_id_before, first_product_id_after)
 
     def test_sort_table_by_price(self):
-        first_product_price_before = self.get_cell(1).text
-        name_header = self.browser.find_elements_by_class_name('ui-jqgrid-sortable')[1]
-        name_header.click()
-        name_header.click()
-        first_product_price_after = self.get_cell(1).text
+        first_product_price_before = self.get_cell(3).text
+        price_header = self.browser.find_elements_by_class_name('ui-jqgrid-sortable')[3]
+        price_header.click()
+        price_header.click()
+        first_product_price_after = self.get_cell(3).text
 
         self.assertNotEqual(first_product_price_before, first_product_price_after)
 

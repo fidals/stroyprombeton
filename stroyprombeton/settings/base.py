@@ -112,14 +112,15 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://goo.gl/HD4atG
 LANGUAGE_CODE = 'en-us'
-
 TIME_ZONE = 'UTC'
-
 USE_I18N = True
-
 USE_L10N = True
-
 USE_TZ = True
+
+LOCALE_PATHS = [os.path.join(BASE_DIR, 'stroyprombeton/locale')]
+FORMAT_MODULE_PATH = [
+    'stroyprombeton.formats',
+]
 
 # Static files (CSS, JavaScript, Images)
 # https://goo.gl/HTQqfF

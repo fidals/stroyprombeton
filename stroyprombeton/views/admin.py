@@ -1,4 +1,5 @@
 from django.db.models import ObjectDoesNotExist
+from django.utils.translation import ugettext_lazy as _
 
 from generic_admin import views as admin_views
 
@@ -6,10 +7,11 @@ from stroyprombeton import models, forms
 
 
 def category_name_strategy(entity, related_model_entity, related_model_value):
+    error_message = _('Category with name ( %s ) does not exist.')
     try:
         new_category = type(related_model_entity).objects.get(name=related_model_value)
     except ObjectDoesNotExist:
-        raise ValueError('Category with name={} does not exist.'.format(related_model_value))
+        raise ValueError(error_message % related_model_value)
     entity.category = new_category
 
 

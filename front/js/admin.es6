@@ -1,7 +1,7 @@
 const customColModels = [
   {
     name: 'is_new_price',
-    label: 'Is new price',
+    label: 'новая цена',
     align: 'center',
     editable: true,
     editoptions: { value: '1:0' },
@@ -11,7 +11,7 @@ const customColModels = [
   },
   {
     name: 'code',
-    label: 'Code',
+    label: 'код',
     editable: true,
     editoptions: {
       type: 'number',
@@ -28,7 +28,7 @@ const customColModels = [
   },
   {
     name: 'length',
-    label: 'Length',
+    label: 'длина',
     editable: true,
     editoptions: {
       type: 'number',
@@ -45,7 +45,7 @@ const customColModels = [
   },
   {
     name: 'width',
-    label: 'Width',
+    label: 'ширина',
     editable: true,
     editoptions: {
       type: 'number',
@@ -62,7 +62,7 @@ const customColModels = [
   },
   {
     name: 'height',
-    label: 'Height',
+    label: 'высота',
     editable: true,
     editoptions: {
       type: 'number',
@@ -79,7 +79,7 @@ const customColModels = [
   },
   {
     name: 'weight',
-    label: 'Weight',
+    label: 'вес',
     editable: true,
     editoptions: {
       type: 'number',
@@ -96,7 +96,7 @@ const customColModels = [
   },
   {
     name: 'volume',
-    label: 'Volume',
+    label: 'объём',
     editable: true,
     editoptions: {
       type: 'number',
@@ -113,7 +113,7 @@ const customColModels = [
   },
   {
     name: 'diameter_out',
-    label: 'Diameter out',
+    label: 'диаметр внешний',
     editable: true,
     editoptions: {
       type: 'number',
@@ -130,7 +130,7 @@ const customColModels = [
   },
   {
     name: 'diameter_in',
-    label: 'Diameter in',
+    label: 'диаметр внутренний',
     editable: true,
     editoptions: {
       type: 'number',
@@ -147,19 +147,19 @@ const customColModels = [
   },
   {
     name: 'mark',
-    label: 'Mark',
+    label: 'марка',
     editable: true,
     width: 80,
   },
   {
     name: 'specification',
-    label: 'Specification',
+    label: 'документация',
     editable: true,
     width: 100,
   },
   {
     name: 'date_price_updated',
-    label: 'Date price updated',
+    label: 'дата обновления цены',
     editable: true,
     width: 100,
     formatter: {
@@ -222,7 +222,13 @@ const customColModels = [
   },
 ];
 
+const toggleFilterBtnText = {
+  show: 'Показать фильтры',
+  hide: 'Скрыть фильтры',
+};
+
 new AdminCommonPlugins();
 new AdminSidebar();
-const stbColModel = new TableEditorColModel(customColModels);
+const stbFilters = new TableEditorFilters(toggleFilterBtnText);
+const stbColModel = new TableEditorColModel(customColModels, stbFilters);
 new TableEditor(stbColModel);

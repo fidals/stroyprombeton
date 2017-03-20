@@ -1,5 +1,7 @@
 {% extends 'admin/table_editor.html' %}
 
+{% load i18n %}
+
 {% block new_entity_modal %}
   <div class="modal fade" id="add-entity" tabindex="-1" role="dialog" aria-labelledby="add-entity-title">
     <div class="modal-dialog" role="document">
@@ -20,7 +22,9 @@
             {% for field in add_entity_form %}
               <div class="form-group">
                   {{ field.errors }}
-                  <label class="control-label" for="{{ field.name }}">{{ field.label }}:</label>
+                  <label class="control-label" for="{{ field.name }}">
+                    {% trans field.label %}:
+                  </label>
                   {{ field }}
               </div>
             {% endfor %}

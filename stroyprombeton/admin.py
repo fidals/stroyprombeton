@@ -1,9 +1,10 @@
+from django import forms
 from django.contrib import admin
 from django.contrib.redirects.models import Redirect
 from django.utils.translation import ugettext_lazy as _
 
 from pages import models as pages_models
-from generic_admin import models, inlines, sites, filters
+from generic_admin import models as admin_models, inlines, sites, filters
 
 from stroyprombeton import models as stb_models
 from stroyprombeton.views import TableEditor
@@ -27,16 +28,38 @@ class ParentFilter(admin.SimpleListFilter):
         return queryset.filter(parent__slug=self.value())
 
 
+class CustomWidgetsForm(forms.ModelForm):
+    class Meta:
+        widgets = {
+            'description': forms.TextInput,
+            'seo_text': forms.TextInput,
+            'specification': forms.TextInput,
+            'title': forms.TextInput,
+        }
+        fields = '__all__'
+
+
 class StbAdminSite(sites.SiteWithTableEditor):
-    site_header = 'Stroyprombeton administration'
+    site_header = _('Stroyprombeton administration')
     table_editor_view = TableEditor
 
 
-class CategoryInline(inlines.CategoryInline):
+class StbImageInline(inlines.ImageInline):
+    form = CustomWidgetsForm
+
+
+class StbCategoryInline(inlines.CategoryInline):
     model = stb_models.Category
 
 
-class FlatPageAdmin(models.FlatPageAdmin):
+class StbCustomPageAdmin(admin_models.CustomPageAdmin):
+    form = CustomWidgetsForm
+    inlines = [StbImageInline]
+
+
+class StbFlatPageAdmin(admin_models.FlatPageAdmin):
+    form = CustomWidgetsForm
+    inlines = [StbImageInline]
     list_filter = [
         'is_active',
         filters.HasContent,
@@ -45,8 +68,9 @@ class FlatPageAdmin(models.FlatPageAdmin):
     ]
 
 
-class ProductInline(inlines.ProductInline):
+class StbProductInline(inlines.ProductInline):
     model = stb_models.Product
+    form = CustomWidgetsForm
     fieldsets = ((None, {
         'classes': ('primary-chars', ),
         'fields': (
@@ -64,27 +88,29 @@ class ProductInline(inlines.ProductInline):
     }),)
 
 
-class ProductPageAdmin(models.ProductPageAdmin):
+class StbProductPageAdmin(admin_models.ProductPageAdmin):
+    form = CustomWidgetsForm
     category_page_model = stb_models.CategoryPage
-    inlines = [ProductInline, inlines.ImageInline]
+    inlines = [StbProductInline, StbImageInline]
 
 
-class CategoryPageAdmin(models.CategoryPageAdmin):
-    inlines = [CategoryInline, inlines.ImageInline]
+class StbCategoryPageAdmin(admin_models.CategoryPageAdmin):
+    form = CustomWidgetsForm
+    inlines = [StbCategoryInline, StbImageInline]
 
 
 stb_admin_site = StbAdminSite(name='stb_admin')
 
 # Pages
-stb_admin_site.register(pages_models.CustomPage, models.CustomPageAdmin)
-stb_admin_site.register(pages_models.FlatPage, FlatPageAdmin)
+stb_admin_site.register(pages_models.CustomPage, StbCustomPageAdmin)
+stb_admin_site.register(pages_models.FlatPage, StbFlatPageAdmin)
 
 # STB
-stb_admin_site.register(stb_models.ProductPage, ProductPageAdmin)
-stb_admin_site.register(stb_models.CategoryPage, CategoryPageAdmin)
-stb_admin_site.register(stb_models.NewsForAdmin, FlatPageAdmin)
-stb_admin_site.register(stb_models.RegionsForAdmin, FlatPageAdmin)
-stb_admin_site.register(stb_models.ClientFeedbacksForAdmin, FlatPageAdmin)
+stb_admin_site.register(stb_models.ProductPage, StbProductPageAdmin)
+stb_admin_site.register(stb_models.CategoryPage, StbCategoryPageAdmin)
+stb_admin_site.register(stb_models.NewsForAdmin, StbFlatPageAdmin)
+stb_admin_site.register(stb_models.RegionsForAdmin, StbFlatPageAdmin)
+stb_admin_site.register(stb_models.ClientFeedbacksForAdmin, StbFlatPageAdmin)
 
 # Redirects
 stb_admin_site.register(Redirect)
