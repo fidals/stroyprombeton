@@ -30,6 +30,7 @@ class AdminMixin:
 
     def sign_in(self):
         self.browser.get(self.live_server_url + reverse(self.admin_urlconf))
+
         login_field = self.browser.find_element_by_id('id_username')
         login_field.clear()
         login_field.send_keys(self.login)

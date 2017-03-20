@@ -154,8 +154,8 @@ const path = {
       ecommercePaths.watch,
       genericAdminPaths.watch.js,
     ],
-    images: 'front/src/images/**/*',
-    fonts: 'front/src/fonts/**/*',
+    images: 'front/images/**/*',
+    fonts: 'front/fonts/**/*',
     html: 'templates/**/*',
   },
 };

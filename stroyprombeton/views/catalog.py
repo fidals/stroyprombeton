@@ -96,7 +96,7 @@ class CategoryPage(catalog.CategoryPage, ListView):
         self.object_list = (
             Product.objects
             .get_by_category(self.object.model, ordering=PRODUCTS_ORDERING)
-            .select_related('page')[PRODUCTS_PER_PAGE:]
+            .select_related('page')
         )
         return super(CategoryPage, self).get(*args, **kwargs)
 

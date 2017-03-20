@@ -1,3 +1,5 @@
+@import "../utilities/variables";
+
 // Slick icon entity codes outputs the following
 // "\2022" outputs ascii character "•"
 $slick-font-path: "./fonts/" !default;
@@ -16,14 +18,6 @@ $slick-opacity-not-active: 0.5 !default;
   @return url($slick-loader-path + $url);
 }
 
-@function slick-font-url($url) {
-  @if function-exists(font-url) {
-    @return font-url($url);
-  } @else {
-    @return url($slick-font-path + $url);
-  }
-}
-
 // Slider
 .slick-list {
   .slick-loading & {
@@ -35,9 +29,8 @@ $slick-opacity-not-active: 0.5 !default;
 @if $slick-font-family == "slick" {
   @font-face {
     font-family: "slick";
-    src: slick-font-url("slick.eot");
-    src: slick-font-url("slick.woff") format("woff"),
-         slick-font-url("slick.ttf") format("truetype");
+    src: url("#{$font-path}/slick.woff") format("woff"),
+         url("#{$font-path}/slick.ttf") format("truetype");
     font-weight: normal;
     font-style: normal;
   }
