@@ -26,6 +26,8 @@ catalog_urls = [
         views.ProductPDF.as_view(), name='product_pdf'),
     url(r'^products/(?P<product_id>[0-9]+)/$',
         views.ProductPage.as_view(), name='product'),
+    url(r'^categories/csv/$',
+        views.categories_csv_export, name='categories-export'),
 ]
 
 url_name = Page.CUSTOM_PAGES_URL_NAME
