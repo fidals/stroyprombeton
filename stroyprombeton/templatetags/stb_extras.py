@@ -76,3 +76,40 @@ def get_product_field(product_id, parameter):
 def remove_specification(value, specification):
     replace_pattern = '. {}'.format(specification)
     return value.replace(replace_pattern, '')
+
+
+def parse_page_metadata(content: str, delimiter: str = '---') -> (dict, str):
+    """
+    Returns dictionary with metadata (for example {'delivery-time': 'Август, 2014')) and content body without metadata headers
+    """
+    metadata = {}
+    content_begins_with_line = 0
+    content_lines = content.splitlines()
+
+    if not content_lines:
+        return None, content
+
+    if content_lines[0].strip() != delimiter:
+        # First line doesn't contains "magic" metadata dashes -> page doesn't have metadata at all
+        return None, content
+
+    for i, line in enumerate(content_lines[1:]):
+        content_begins_with_line = i
+        if line.strip() == delimiter:
+            break
+        else:
+            key, value = line.split(':')
+            metadata[key.strip()] = value.strip()
+
+    return metadata, '\n'.join(
+        content_lines[content_begins_with_line + 2:] # +2 because we have two "magical dashes": at beginning of the file and at the end of metadata header
+    )
+
+
+@register.filter
+def get_page_metadata(content: str) -> dict:
+    metadata, cleaned_content = parse_page_metadata(content)
+    return {
+        'metadata': metadata,
+        'cleaned_content': cleaned_content,
+    }

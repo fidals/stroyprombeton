@@ -2,6 +2,7 @@
 
 {% load static %}
 {% load pages_extras %}
+{% load stb_extras %}
 
 {% block content %}
   {% include 'components/breadcrumbs.html' %}
@@ -20,7 +21,13 @@
 
         {% autoescape off %}
           {% if page.content %}
-            {{ page.content }}
+            {% with page_extra_info=page.content|get_page_metadata %}
+              {% if page_extra_info.metadata %}
+                {{ page_extra_info.cleaned_content }}
+              {% else %}
+                {{ page.content }}
+              {% endif %}
+            {% endwith %}
           {% endif %}
         {% endautoescape %}
       </div>
