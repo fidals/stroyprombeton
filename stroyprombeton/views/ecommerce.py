@@ -47,31 +47,13 @@ class ChangeCount(ec_views.ChangeCount):
 
 
 # -------- STB-specific views -------- #
-class OrderDrawing(FormView, CustomPageView):
-    form_class = DrawingForm
+class OrderDrawing(CustomPageView):
     template_name = 'ecommerce/order/drawing.html'
     success_url = reverse_lazy(
         Page.CUSTOM_PAGES_URL_NAME,
         current_app='stroyprombeton',
         args=('drawing-success',)
     )
-
-    def post(self, request, *args, **kwargs):
-        form = self.get_form()
-
-        if form.is_valid():
-            mailer.send_form(
-                form=form,
-                template='ecommerce/email_drawing.html',
-                subject='Изготовление по индивидуальным чертежам',
-            )
-            return self.form_valid(form)
-        else:
-            return self.get(request, *args, **kwargs)
-
-
-class OrderDrawingSuccess(TemplateView):
-    template_name = 'ecommerce/order/drawing_success.html'
 
 
 class OrderPrice(FormView, CustomPageView):

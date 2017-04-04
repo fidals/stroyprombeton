@@ -34,38 +34,6 @@
           {% endfor %}
         </div>
       {% endif %}
-
-      <p class="drawing-text">
-        Для заказа изделий по индивидуальным чертежам воспользуйтесь формой ниже:
-      </p>
-
-      <form method="post" class="drawing-form">
-        {% csrf_token %}
-        {% for field in form %}
-          <div class="input-label">
-            {{ field.label }}
-            <span class="input-label-asterisk">
-              {% if field.field.required %} *{% endif %}{{ field.required }}
-            </span>
-          </div>
-
-          <div class="input-field-wrapper">
-            {{ field }}
-            {% include 'components/input_validation_icons.html' %}
-            {{ field.errors }}
-          </div>
-
-          {% if field.help_text %}
-            <div class="input-field-help">
-              {{ field.help_text }}
-            </div>
-          {% endif %}
-        {% endfor %}
-
-        <div class="btn-submit-page-form">
-          <button class="btn" type="submit">Отправить заявку</button>
-        </div>
-      </form>
     </div>
   </div>
 {% endblock %}
