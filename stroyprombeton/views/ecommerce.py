@@ -49,11 +49,6 @@ class ChangeCount(ec_views.ChangeCount):
 # -------- STB-specific views -------- #
 class OrderDrawing(CustomPageView):
     template_name = 'ecommerce/order/drawing.html'
-    success_url = reverse_lazy(
-        Page.CUSTOM_PAGES_URL_NAME,
-        current_app='stroyprombeton',
-        args=('drawing-success',)
-    )
 
 
 class OrderPrice(FormView, CustomPageView):
