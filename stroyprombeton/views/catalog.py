@@ -2,7 +2,7 @@ from csv import writer as CSVWriter
 
 from django.conf import settings
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import StreamingHttpResponse
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 
@@ -62,31 +62,48 @@ def fetch_products(request):
         {'products_with_images': products_with_images}
     )
 
+
+class CSVExportBuffer(object):
+    """
+    Pseudo-buffer that required for streaming csv response
+    """
+
+    def write(self, value):
+        return value
+
+
 def categories_csv_export(request, filename='categories.csv', breadcrumbs_delimiter=' » '):
 
-    # Create the HttpResponse object with the appropriate CSV header.
-    response = HttpResponse(content_type='text/csv')
-    response['Content-Disposition'] = 'attachment; filename="{0}"'.format(filename)
+    def serialize_categories(categories):
+        for category in categories:
 
-    categories = CategoryPageModel.objects.filter(
-        is_active=True,
+            url = settings.BASE_URL + category.get_absolute_url()
+            breadcrumbs = get_page_breadcrumbs(category)['crumbs_list']
+            breadcrumbs = breadcrumbs_delimiter.join(
+                (name for name, url in breadcrumbs)
+            )
+
+            yield (
+                (url, category.name, breadcrumbs)
+            )
+
+    buf = CSVExportBuffer()
+    writer = CSVWriter(buf, delimiter='|')
+
+    categories = serialize_categories(
+        CategoryPageModel.objects.filter(
+            is_active=True,
+        )
     )
 
-    writer = CSVWriter(response, delimiter='|')
-
-    for category in categories:
-
-        url = settings.BASE_URL + category.get_absolute_url()
-        breadcrumbs = get_page_breadcrumbs(category)['crumbs_list']
-        breadcrumbs = breadcrumbs_delimiter.join(
-            (name for name, url in breadcrumbs)
-        )
-
-        writer.writerow(
-            (url, category.name, breadcrumbs)
-        )
+    response = StreamingHttpResponse(
+        (writer.writerow(c) for c in categories),
+        content_type="text/csv",
+    )
+    response['Content-Disposition'] = 'attachment; filename="{0}"'.format(filename)
 
     return response
+
 
 class CategoryTree(ListView):
     """Show list of root categories."""
