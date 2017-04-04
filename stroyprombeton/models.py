@@ -57,7 +57,7 @@ class Product(AbstractProduct, page_models.PageMixin):
         return reverse('product', args=(self.id,))
 
     def get_admin_tree_title(self):
-        return '[{id}] {mark} {name}'.format(id=self.id, mark=self.mark, name=self.name)
+        return '[{id}] {name} {mark}'.format(id=self.id, mark=self.mark, name=self.name)
 
 
 class CategoryPage(page_models.ModelPage):
