@@ -24,6 +24,10 @@
         <span class="product-serial-title">Марка</span>
         <span class="product-serial-val">{{ product.mark }}</span>
       {% endif %}
+
+        <a class="category-price" href="{% url 'product_pdf' product.category.id %}">
+          Скачать прайс <sup>[PDF]</sup>
+        </a>
     </div>
   </section>
 
@@ -34,9 +38,10 @@
           <div class="product-img-wrapper js-photoswipe">
             {% include 'catalog/product_image.html' with product=product only %}
           </div>
+        </div>
 
+        <div class="col-xs-12 col-md-5">
           <div class="product-characteristics">
-            <h2 class="product-characteristics-title">Характеристики</h2>
             <table class="product-characteristics-table table">
               {% with url=product.category.url %}
                 {% with spec=product.category.name|remove_specification:product.category.specification %}
@@ -54,9 +59,6 @@
               {% show_field_if_exist product.volume 'Объем (м<sup>3</sup>)' %}
             </table>
           </div>
-        </div>
-
-        <div class="col-xs-12 col-md-5">
           <div class="product-order">
             <table class="product-order-table table">
               <tr>
@@ -65,32 +67,31 @@
                 <th class="product-order-table-th">Итог</th>
               </tr>
               <tr>
-                <td class="product-order-table-col-price text-center js-product-price">
+                <td class="product-order-table-col-price js-product-price">
                   {{ product.price|format_price }}
                 </td>
-                <td class="product-order-table-col-count text-center">
+                <td class="product-order-table-col-count">
                   {% include 'catalog/count_input.html' %}
                 </td>
-                <td class="product-order-table-col-total text-center">
+                <td class="product-order-table-col-total">
                   <span class="js-product-sum">{{ product.price|format_price }}</span>
                 </td>
               </tr>
             </table>
 
-            <div class="public-offer">Не является публичной офертой.</div>
+            <div class="public-offer product-order-public-offer">Не является публичной офертой</div>
 
             <div class="product-order-submit">
               <button class="btn buy-product" id="buy-product" data-product-id="{{ product.id }}"
                       type="submit">Заказать</button>
             </div>
 
-            <p>
-              <a class="category-price" href="{% url 'product_pdf' product.category.id %}">
-                Скачать прайс этой категории
-              </a>
-            </p>
           </div>
+        </div>
+      </div>
 
+      <div class="row">
+        <div class="col-xs-12">
           <h2 class="product-describe-title">
             Производство ЖБИ: {{ page.h1 }} марки {{ product.mark }}
           </h2>
@@ -100,6 +101,7 @@
           </div>
         </div>
       </div>
+
     </div>
   </section>
 
