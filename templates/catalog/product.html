@@ -15,9 +15,12 @@
       {% endif %}
 
       {% if product.specification %}
-        <span class="product-serial-title">Серия</span>
-        {# TODO: `specification` should be replaced by `spec` #}
-        <span class="product-serial-val">{{ product.specification }}</span>
+        <span class="product-serial">
+          <span class="product-serial-title">Серия</span>
+          <a href="{{ product.category.url }}" class="product-serial-val link-on-top-level">
+            {{ product.specification }}
+          </a>
+        </span>
       {% endif %}
 
       {% if product.mark %}
@@ -41,23 +44,22 @@
         </div>
 
         <div class="col-xs-12 col-md-5">
-          <div class="product-characteristics">
-            <table class="product-characteristics-table table">
-              {% with url=product.category.url %}
-                {% with spec=product.category.name|remove_specification:product.category.specification %}
-                  {% show_field_if_exist spec 'Тип' url %}
-                {% endwith %}
-                {# TODO: `specification` should be replaced by `spec` #}
-                {% show_field_if_exist product.category.specification 'Рабочая документация' url %}
-              {% endwith %}
-              {% show_field_if_exist product.length 'Длина (мм)' %}
-              {% show_field_if_exist product.width 'Ширина (мм)' %}
-              {% show_field_if_exist product.height 'Высота (мм)' %}
-              {% show_field_if_exist product.diameter_out 'Внешний диаметр (мм)' %}
-              {% show_field_if_exist product.diameter_in 'Внутренний диаметр (мм)' %}
-              {% show_field_if_exist product.weight|floatformat:'0' 'Масса (кг)' %}
-              {% show_field_if_exist product.volume 'Объем (м<sup>3</sup>)' %}
-            </table>
+          <div class="product-characteristics row">
+            <div class="col-xs-12 col-md-8">
+              <table class="product-characteristics-table table">
+                <colgroup>
+                  <col class="product-characteristics-table-column-key">
+                  <col class="product-characteristics-table-column-value">
+                </colgroup>
+                {% show_field_if_exist product.length 'Длина (мм)' %}
+                {% show_field_if_exist product.width 'Ширина (мм)' %}
+                {% show_field_if_exist product.height 'Высота (мм)' %}
+                {% show_field_if_exist product.diameter_out 'Внешний диаметр (мм)' %}
+                {% show_field_if_exist product.diameter_in 'Внутренний диаметр (мм)' %}
+                {% show_field_if_exist product.weight|floatformat:'0' 'Масса (кг)' %}
+                {% show_field_if_exist product.volume 'Объем (м<sup>3</sup>)' %}
+              </table>
+            </div>
           </div>
           <div class="product-order">
             <table class="product-order-table table">
@@ -91,16 +93,26 @@
       </div>
 
       <div class="row">
-        <div class="col-xs-12">
+        <div class="col-xs-12 col-lg-offset-1">
           <h2 class="product-describe-title">
             О доставке {{ page.h1 }} марки {{ product.mark }}:
           </h2>
           <div class="product-describe-text">
+            <p>
             Организуем доставку {{ page.h1 }} марки {{ product.mark }} по всей России автомобильным, железнодорожным, водным транспортом. Можно воспользоваться самовывозом.
+            </p>
             <br>
+            <p>
             У нас нет фиксированной цены доставки, поэтому звоните менеджеру, чтобы ее узнать. Менеджер поможет выбрать способ доставки, рассчитает стоимость и назовет срок.
+            </p>
             <br>
+            <p>
             На каждое изделие выдается паспорт в соответствии с ГОСТ 13015-2012.
+            </p>
+            <br>
+              Тип изделия &mdash; <a href="#" class="link-on-top-level">test</a>; класс &mdash; <a href="#" class="link-on-top-level">test</a>; вид &mdash; <a href="#" class="link-on-top-level">test</a>.
+            </p>
+            <br>
           </div>
         </div>
       </div>
