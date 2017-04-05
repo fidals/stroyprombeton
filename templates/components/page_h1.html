@@ -4,6 +4,7 @@
   <h1 class="heading-h1">{{ page.h1 }} {{ product.mark }}</h1>
   {% if category %}
   <p class="category-description">
+    <br>
     {% with page_index=page|get_page_parents_count %}
       {# page_index == 0 - страница "каталог" #}
       {% if page_index == 1 %} {# категории первого уровня #}
