@@ -26,7 +26,10 @@ DEBUG = True
 # setting from docker example: https://github.com/satyrius/paid/
 ALLOWED_HOSTS = [h.strip() for h in os.getenv('ALLOWED_HOSTS', '').split(',')]
 
-# Application definition
+# Enable in frame loading for Ya.Metric
+# https://docs.djangoproject.com/es/1.10/ref/clickjacking/
+# https://yandex.ru/support/metrika/general/counter-webvisor.xml#download-page
+X_FRAME_OPTIONS = 'ALLOW-FROM http://webvisor.com'
 
 INSTALLED_APPS = [
     'django.contrib.contenttypes',
