@@ -76,7 +76,6 @@ def categories_csv_export(request, filename='categories.csv', breadcrumbs_delimi
 
     def serialize_categories(categories):
         for category in categories:
-
             url = settings.BASE_URL + category.get_absolute_url()
             breadcrumbs = get_page_breadcrumbs(category)['crumbs_list']
             breadcrumbs = breadcrumbs_delimiter.join(
@@ -91,9 +90,7 @@ def categories_csv_export(request, filename='categories.csv', breadcrumbs_delimi
     writer = CSVWriter(buf, delimiter='|')
 
     categories = serialize_categories(
-        CategoryPageModel.objects.filter(
-            is_active=True,
-        )
+        CategoryPageModel.objects.filter(is_active=True)
     )
 
     response = StreamingHttpResponse(
