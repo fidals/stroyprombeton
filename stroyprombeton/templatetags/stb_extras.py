@@ -78,7 +78,7 @@ def remove_specification(value, specification):
     return value.replace(replace_pattern, '')
 
 
-def parse_page_metadata(content: str, delimiter='---') -> dict, str:
+def parse_page_metadata(content: str, delimiter='---') -> (dict, str):
     """
     Returns dictionary with metadata extracted from content
     (for example {'delivery-time': 'Август, 2014'))
