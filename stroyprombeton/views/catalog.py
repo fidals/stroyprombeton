@@ -1,4 +1,8 @@
+from csv import writer as CSVWriter
+
+from django.conf import settings
 from django.shortcuts import render
+from django.http import StreamingHttpResponse
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 
@@ -8,8 +12,10 @@ from catalog.models import search as filter_
 from catalog.views import catalog
 from images.models import Image
 from pages.models import CustomPage, ModelPage
+from pages.templatetags.pages_extras import breadcrumbs as get_page_breadcrumbs
 
 from stroyprombeton.models import Product, Category
+from stroyprombeton.models import CategoryPage as CategoryPageModel
 from stroyprombeton.views.helpers import set_csrf_cookie, get_keys_from_post
 
 PRODUCTS_ORDERING = ['code', 'name', 'mark']
@@ -55,6 +61,45 @@ def fetch_products(request):
         'catalog/category_products.html',
         {'products_with_images': products_with_images}
     )
+
+
+class CSVExportBuffer:
+    """
+    Pseudo-buffer that required for streaming csv response
+    """
+
+    def write(self, value):
+        return value
+
+
+def categories_csv_export(request, filename='categories.csv', breadcrumbs_delimiter=' » '):
+
+    def serialize_categories(categories):
+        for category in categories:
+            url = settings.BASE_URL + category.get_absolute_url()
+            breadcrumbs = get_page_breadcrumbs(category)['crumbs_list']
+            breadcrumbs = breadcrumbs_delimiter.join(
+                (name for name, url in breadcrumbs)
+            )
+
+            yield (
+                url, category.name, breadcrumbs
+            )
+
+    buf = CSVExportBuffer()
+    writer = CSVWriter(buf, delimiter='|')
+
+    categories = serialize_categories(
+        CategoryPageModel.objects.filter(is_active=True)
+    )
+
+    response = StreamingHttpResponse(
+        (writer.writerow(c) for c in categories),
+        content_type="text/csv",
+    )
+    response['Content-Disposition'] = 'attachment; filename="{0}"'.format(filename)
+
+    return response
 
 
 class CategoryTree(ListView):

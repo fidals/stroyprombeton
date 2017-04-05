@@ -1,3 +1,5 @@
+import re
+
 from django import template
 from django.template.defaultfilters import floatformat
 
@@ -96,3 +98,38 @@ def get_page_childrens_attributes(childrens, attribute='name') -> str:
         if value:
             attributes.append(value)
     return ', '.join(attributes)
+
+
+def parse_page_metadata(content: str, delimiter_pattern=r'[\-]{3,}') -> (dict, str):
+    """
+    Returns dictionary with metadata extracted from content
+    (for example {'delivery-time': 'Август, 2014'))
+    and content body without metadata headers
+    """
+    metadata = {}
+
+    if not content:
+        return {}, content
+
+    delimiter_span = re.search(delimiter_pattern, content)
+
+    if not delimiter_span:
+        return {}, content
+
+    delimiter_start, delimiter_end = delimiter_span.span(0)
+
+    header_lines = (line.strip() for line in content[:delimiter_start].splitlines())
+    for line in header_lines:
+        key, value = line.split(':')
+        metadata[key.strip()] = value.strip()
+
+    return metadata, content[delimiter_end + 1:]
+
+
+@register.filter
+def get_page_metadata(content: str) -> dict:
+    metadata, cleaned_content = parse_page_metadata(content)
+    return {
+        'metadata': metadata,
+        'cleaned_content': cleaned_content,
+    }
