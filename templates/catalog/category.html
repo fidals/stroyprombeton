@@ -2,7 +2,7 @@
 
 {% block content %}
   {% include 'components/breadcrumbs.html' with page=page only %}
-  {% include 'components/page_h1.html' with page=page only %}
+  {% include 'components/page_h1.html' with page=page category=category children=children only %}
 
   <section class="category-search">
     <div class="container container-fluid">

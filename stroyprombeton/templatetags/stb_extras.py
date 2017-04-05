@@ -76,3 +76,23 @@ def get_product_field(product_id, parameter):
 def remove_specification(value, specification):
     replace_pattern = '. {}'.format(specification)
     return value.replace(replace_pattern, '')
+
+
+@register.filter
+def get_page_parents_count(page: Page, index=0) -> int:
+    """
+    Возвращает индекс вложенности страницы, например для категории второго уровня: index == 2
+    """
+    if page.parent:
+        return get_page_parents_count(page.parent, index=(index + 1))
+    return index
+
+
+@register.filter
+def get_page_childrens_attributes(childrens, attribute='name') -> str:
+    attributes = []
+    for children in childrens:
+        value = getattr(children, attribute, None)
+        if value:
+            attributes.append(value)
+    return ', '.join(attributes)

@@ -1,6 +1,11 @@
 @import "../utilities/variables";
 @import "../utilities/mixins";
 
+.category-description {
+  font-size: 12px;
+  color: rgba(193, 193, 193, 0.56);
+}
+
 .category-search {
   .search-field {
     margin: 0 0 15px;
