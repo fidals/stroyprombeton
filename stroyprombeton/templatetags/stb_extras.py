@@ -84,7 +84,7 @@ def parse_page_metadata(content: str, delimiter='---') -> (dict, str):
     """
     metadata = {}
     content_begins_with_line = 0
-    content_lines = [line.split() for line in content.splitlines()]
+    content_lines = [line.strip() for line in content.splitlines()]
 
     if (not content_lines or content_lines[0] != delimiter):
         # First line doesn't contain "magic" metadata dashes -> page doesn't have metadata at all
