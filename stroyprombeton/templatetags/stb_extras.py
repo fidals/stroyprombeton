@@ -91,7 +91,7 @@ def parse_page_metadata(content: str, delimiter='---') -> (dict, str):
         return {}, content
 
     for i, line in enumerate(content_lines[1:]):
-        if line.strip() == delimiter:
+        if line == delimiter:
             content_begins_with_line = i
             break
         else:
