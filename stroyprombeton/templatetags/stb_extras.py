@@ -78,9 +78,11 @@ def remove_specification(value, specification):
     return value.replace(replace_pattern, '')
 
 
-def parse_page_metadata(content: str, delimiter='---') -> (dict, str):
+def parse_page_metadata(content: str, delimiter='---') -> dict, str:
     """
-    Returns dictionary with metadata (for example {'delivery-time': 'Август, 2014')) and content body without metadata headers
+    Returns dictionary with metadata extracted from content
+    (for example {'delivery-time': 'Август, 2014'))
+    and content body without metadata headers
     """
     metadata = {}
     content_begins_with_line = 0
@@ -99,7 +101,10 @@ def parse_page_metadata(content: str, delimiter='---') -> (dict, str):
             metadata[key.strip()] = value.strip()
 
     return metadata, '\n'.join(
-        content_lines[content_begins_with_line + 2:] # +2 because we have two "magical dashes": at beginning of the file and at the end of metadata header
+        # +2 because we have two "magical dashes":
+        # 1. at beginning of the content
+        # 2. at the end of metadata header
+        content_lines[content_begins_with_line + 2:]
     )
 
 

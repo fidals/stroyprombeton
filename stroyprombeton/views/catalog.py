@@ -63,7 +63,7 @@ def fetch_products(request):
     )
 
 
-class CSVExportBuffer(object):
+class CSVExportBuffer:
     """
     Pseudo-buffer that required for streaming csv response
     """
@@ -83,7 +83,7 @@ def categories_csv_export(request, filename='categories.csv', breadcrumbs_delimi
             )
 
             yield (
-                (url, category.name, breadcrumbs)
+                url, category.name, breadcrumbs
             )
 
     buf = CSVExportBuffer()
