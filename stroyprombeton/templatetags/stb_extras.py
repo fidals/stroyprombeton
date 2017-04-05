@@ -1,3 +1,5 @@
+import re
+
 from django import template
 from django.template.defaultfilters import floatformat
 
@@ -78,34 +80,30 @@ def remove_specification(value, specification):
     return value.replace(replace_pattern, '')
 
 
-def parse_page_metadata(content: str, delimiter='---') -> (dict, str):
+def parse_page_metadata(content: str, delimiter_pattern=r'[\-]{3,}') -> (dict, str):
     """
     Returns dictionary with metadata extracted from content
     (for example {'delivery-time': 'Август, 2014'))
     and content body without metadata headers
     """
     metadata = {}
-    content_begins_with_line = 0
-    content_lines = [line.strip() for line in content.splitlines()]
 
-    if (not content_lines or content_lines[0] != delimiter):
-        # First line doesn't contain "magic" metadata dashes -> page doesn't have metadata at all
+    if not content:
         return {}, content
 
-    for i, line in enumerate(content_lines[1:]):
-        if line == delimiter:
-            content_begins_with_line = i
-            break
-        else:
-            key, value = line.split(':')
-            metadata[key.strip()] = value.strip()
+    delimiter_span = re.search(delimiter_pattern, content)
 
-    return metadata, '\n'.join(
-        # +2 because we have two "magical dashes":
-        # 1. at beginning of the content
-        # 2. at the end of metadata header
-        content_lines[content_begins_with_line + 2:]
-    )
+    if not delimiter_span:
+        return {}, content
+
+    delimiter_start, delimiter_end = delimiter_span.span(0)
+
+    header_lines = (line.strip() for line in content[:delimiter_start].splitlines())
+    for line in header_lines:
+        key, value = line.split(':')
+        metadata[key.strip()] = value.strip()
+
+    return metadata, content[delimiter_end + 1:]
 
 
 @register.filter
