@@ -17,6 +17,7 @@
   const init = () => {
     setLoadMoreLinkState();
     setUpListeners();
+    setUpCategoryDescription();
   };
 
   /**
@@ -36,6 +37,16 @@
     if ($(DOM.tablaRow).size() < config.productsToFetch) {
       DOM.$showMoreLink.addClass('disabled');
     }
+  }
+
+  /**
+   * Moves category description to bottom of page 
+   */
+  function setUpCategoryDescription() {
+    var element = document.getElementsByClassName('category-description')[0],
+        target = document.getElementById('category-description-container');
+    target.appendChild(element.cloneNode(true));
+    element.parentNode.removeChild(element);
   }
 
   /**
