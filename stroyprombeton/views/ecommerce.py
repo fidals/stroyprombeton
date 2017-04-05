@@ -10,7 +10,7 @@ from pages.models import Page
 from pages.views import CustomPageView
 
 from stroyprombeton import mailer
-from stroyprombeton.forms import DrawingForm, OrderForm, PriceForm
+from stroyprombeton.forms import OrderForm, PriceForm
 from stroyprombeton.models import Product, Order
 
 
