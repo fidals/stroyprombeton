@@ -78,24 +78,21 @@ def remove_specification(value, specification):
     return value.replace(replace_pattern, '')
 
 
-def parse_page_metadata(content: str, delimiter: str = '---') -> (dict, str):
+def parse_page_metadata(content: str, delimiter='---') -> (dict, str):
     """
     Returns dictionary with metadata (for example {'delivery-time': 'Август, 2014')) and content body without metadata headers
     """
     metadata = {}
     content_begins_with_line = 0
-    content_lines = content.splitlines()
+    content_lines = [line.split() for line in content.splitlines()]
 
-    if not content_lines:
-        return None, content
-
-    if content_lines[0].strip() != delimiter:
-        # First line doesn't contains "magic" metadata dashes -> page doesn't have metadata at all
-        return None, content
+    if (not content_lines or content_lines[0] != delimiter):
+        # First line doesn't contain "magic" metadata dashes -> page doesn't have metadata at all
+        return {}, content
 
     for i, line in enumerate(content_lines[1:]):
-        content_begins_with_line = i
         if line.strip() == delimiter:
+            content_begins_with_line = i
             break
         else:
             key, value = line.split(':')
