@@ -67,10 +67,19 @@
   }
 
   &-table {
-    margin: 0 0 20px;
+    margin: 0 0 40px;
+    table-layout: fixed;
 
-    @include media($md) {
-      margin: 0;
+    &-column {
+
+      &-key {
+        width: 80%;
+      }
+
+      &-val {
+        width: 20%;
+      }
+
     }
   }
 
