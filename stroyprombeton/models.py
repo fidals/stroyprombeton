@@ -29,6 +29,7 @@ class Category(AbstractCategory, page_models.PageMixin):
         """Return url for model."""
         return reverse('category', args=(self.id,))
 
+
 class Product(AbstractProduct, page_models.PageMixin):
     category = models.ForeignKey(
         Category,
