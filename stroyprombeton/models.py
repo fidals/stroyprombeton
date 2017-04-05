@@ -57,6 +57,9 @@ class Product(AbstractProduct, page_models.PageMixin):
     def get_absolute_url(self):
         return reverse('product', args=(self.id,))
 
+    def get_admin_tree_title(self):
+        return '[{id}] {name} {mark}'.format(id=self.id, mark=self.mark, name=self.name)
+
 
 class CategoryPage(page_models.ModelPage):
     """Proxy model for Admin"""
