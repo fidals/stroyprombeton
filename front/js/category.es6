@@ -45,6 +45,9 @@
   function setUpCategoryDescription() {
     var element = document.getElementsByClassName('category-description')[0],
         target = document.getElementById('category-description-container');
+    if (element === undefined) {
+      return 0;
+    }
     target.appendChild(element.cloneNode(true));
     element.parentNode.removeChild(element);
   }
