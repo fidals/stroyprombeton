@@ -70,8 +70,7 @@
     margin: 0 0 40px;
     table-layout: fixed;
 
-    &-column {
-
+    &-col {
       &-key {
         width: 80%;
       }
@@ -134,7 +133,6 @@
     &-col-count {
       width: 130px;
     }
-
   }
 
   &-public-offer {
