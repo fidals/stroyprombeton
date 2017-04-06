@@ -2,8 +2,8 @@
 @import "../utilities/mixins";
 
 .category-description {
-  font-size: 12px;
-  color: rgba(193, 193, 193, 0.56);
+  font-size: $f-category-description-hidden-text-size;
+  color: rgba($f-category-description-hidden-text-color, 0.56);
 }
 
 .category-search {
