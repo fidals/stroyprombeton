@@ -110,7 +110,8 @@
             На каждое изделие выдается паспорт в соответствии с ГОСТ 13015-2012.
             </p>
             <br>
-              Тип изделия &mdash; <a href="#" class="link-on-top-level">test</a>; класс &mdash; <a href="#" class="link-on-top-level">test</a>; вид &mdash; <a href="#" class="link-on-top-level">test</a>.
+              {% get_product_categories page as page_breadcrumbs %}
+              Тип изделия &mdash; <a href="{{ page_breadcrumbs.0.slug }}" class="link-on-top-level">{{ page_breadcrumbs.0.name }};</a> класс &mdash; <a href="{{ page_breadcrumbs.1.slug }}" class="link-on-top-level">{{ page_breadcrumbs.1.name }};</a> вид &mdash; <a href="{{ page_breadcrumbs.2.slug }}" class="link-on-top-level">{{ page_breadcrumbs.2.name }}.</a>
             </p>
             <br>
           </div>
