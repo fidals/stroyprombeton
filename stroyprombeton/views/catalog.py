@@ -14,8 +14,7 @@ from images.models import Image
 from pages.models import CustomPage, ModelPage
 from pages.templatetags.pages_extras import breadcrumbs as get_page_breadcrumbs
 
-from stroyprombeton.models import Product, Category
-from stroyprombeton.models import CategoryPage as CategoryPageModel
+from stroyprombeton.models import Product, Category, CategoryPage as CategoryPageModel
 from stroyprombeton.views.helpers import set_csrf_cookie, get_keys_from_post
 
 PRODUCTS_ORDERING = ['code', 'name', 'mark']
