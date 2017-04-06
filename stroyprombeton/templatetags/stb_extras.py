@@ -124,19 +124,3 @@ def get_page_metadata(content: str) -> dict:
         'metadata': metadata,
         'cleaned_content': cleaned_content,
     }
-
-
-@register.simple_tag
-def get_product_categories(page, limit=3):
-    """
-    Returns categories to which product belongs
-    """
-    crumbs_list = breadcrumbs(page)['crumbs_list']
-    offset = 2 # skip "главная" and "каталог" pages
-    return [
-        {
-            'name': name,
-            'slug': slug,
-        } for (name, slug) in crumbs_list[offset:offset + limit]
-    ]
-

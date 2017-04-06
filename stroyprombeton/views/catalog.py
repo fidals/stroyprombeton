@@ -200,9 +200,21 @@ class ProductPage(catalog.ProductPage):
             for product in siblings
         ]
 
+        product_ancestors = product.page.get_ancestors_fields('name', 'get_absolute_url')
+        offset = 1 # "каталог" page
+        limit = 3
+        product_categories = [
+            {
+                'name': name,
+                'slug': slug(),
+            } for (name, slug) in product_ancestors[offset:offset + limit]
+        ]
+
+
         return {
             **context,
             'sibling_with_images': siblings_with_images,
+            'product_categories': product_categories,
         }
 
 
