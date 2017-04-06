@@ -45,10 +45,10 @@
    * Moves category description to bottom of page 
    */
   function setUpCategoryDescription() {
-    if !(DOM.$seoCategoryDescription.length) {
+    if (!DOM.$seoCategoryDescription.length) {
       return 0;
     } else {
-      $DOM.$setUpCategoryDescription.detach().appendTo(DOM.$seoCategoryDescriptionDestination);
+      DOM.$seoCategoryDescription.detach().appendTo(DOM.$seoCategoryDescriptionDestination);
     }
   };
 
