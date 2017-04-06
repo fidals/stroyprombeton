@@ -6,6 +6,8 @@
     $showMoreLink: $('#load-more-products'),
     $productsTable: $('#products-wrapper'),
     $searchFilter: $('#search-filter'),
+    $seoCategoryDescription: $('#js-category-description'),
+    $seoCategoryDescriptionDestination: $('#js-category-description-destination'),
   };
 
   const config = {
@@ -43,14 +45,12 @@
    * Moves category description to bottom of page 
    */
   function setUpCategoryDescription() {
-    var element = document.getElementsByClassName('category-description')[0],
-        target = document.getElementById('category-description-container');
-    if (element === undefined) {
+    if !(DOM.$seoCategoryDescription.length) {
       return 0;
+    } else {
+      $DOM.$setUpCategoryDescription.detach().appendTo(DOM.$seoCategoryDescriptionDestination);
     }
-    target.appendChild(element.cloneNode(true));
-    element.parentNode.removeChild(element);
-  }
+  };
 
   /**
    * Get product quantity & id from DOM.

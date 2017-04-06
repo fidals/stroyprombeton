@@ -1,9 +1,9 @@
 @import "../utilities/variables";
 @import "../utilities/mixins";
 
-.category-description {
+#js-category-description {
   font-size: $f-category-description-hidden-text-size;
-  color: rgba($f-category-description-hidden-text-color, 0.56);
+  color: rgba($c-category-description-hidden-text-color, 0.56);
 }
 
 .category-search {
