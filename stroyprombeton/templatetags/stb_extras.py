@@ -82,16 +82,6 @@ def remove_specification(value, specification):
 
 
 @register.filter
-def get_page_parents_count(page: Page, index=0) -> int:
-    """
-    Возвращает индекс вложенности страницы, например для категории второго уровня: index == 2
-    """
-    if page.parent:
-        return get_page_parents_count(page.parent, index=(index + 1))
-    return index
-
-
-@register.filter
 def get_page_childrens_attributes(childrens, attribute='name') -> str:
     attributes = []
     for children in childrens:

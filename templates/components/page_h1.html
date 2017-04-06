@@ -3,9 +3,9 @@
 <div class="container container-fluid">
   <h1 class="heading-h1">{{ page.h1 }} {{ product.mark }}</h1>
   {% if category %}
-  <p class="category-description">
+  <p id="js-category-description">
     <br>
-    {% with page_index=page|get_page_parents_count %}
+    {% with page_index=page.get_level %}
       {# page_index == 0 - страница "каталог" #}
       {% if page_index == 1 %} {# категории первого уровня #}
           Завод железобетонных изделий «СТК-ПромБетон» производит и продает ЖБИ для {{ page.h1 }}. Доставляем по Москве, Санкт-Петербургу и регионам России. Организуем самовывоз, если понадобится. Стоимость и сроки доставки обсуждайте с менеджером. Вы можете купить ЖБИ для {{ page.h1 }} на сайте
