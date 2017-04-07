@@ -82,13 +82,12 @@ def remove_specification(value, specification):
 
 
 @register.filter
-def get_page_childrens_attributes(childrens, attribute='name') -> str:
-    attributes = []
-    for children in childrens:
-        value = getattr(children, attribute, None)
-        if value:
-            attributes.append(value)
-    return ', '.join(attributes)
+def get_objects_attributes(objects, attribute='name') -> str:
+    return ', '.join(
+        filter(None, 
+            (getattr(o, attribute, None) or o in objects)
+        )
+    )
 
 
 def parse_page_metadata(content: str, delimiter_pattern=r'[\-]{3,}') -> (dict, str):
