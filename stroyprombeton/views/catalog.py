@@ -204,10 +204,8 @@ class ProductPage(catalog.ProductPage):
         offset = 1 # "каталог" page
         limit = 3
         product_categories = [
-            {
-                'name': name,
-                'slug': slug(),
-            } for (name, slug) in product_ancestors[offset:offset + limit]
+            {'name': name, 'url': url(),}
+            for (name, url) in product_ancestors[offset:offset + limit]
         ]
 
 
