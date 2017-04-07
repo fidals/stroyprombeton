@@ -19,7 +19,7 @@
   const init = () => {
     setLoadMoreLinkState();
     setUpListeners();
-    setUpCategoryDescription();
+    moveCategoryDescription();
   };
 
   /**
@@ -44,12 +44,11 @@
   /**
    * Moves category description to bottom of page 
    */
-  function setUpCategoryDescription() {
+  function moveCategoryDescription() {
     if (!DOM.$seoCategoryDescription.length) {
       return 0;
-    } else {
-      DOM.$seoCategoryDescription.detach().appendTo(DOM.$seoCategoryDescriptionDestination);
-    }
+    };
+    DOM.$seoCategoryDescription.detach().appendTo(DOM.$seoCategoryDescriptionDestination);
   };
 
   /**
