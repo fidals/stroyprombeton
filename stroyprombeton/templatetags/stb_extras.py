@@ -85,7 +85,7 @@ def remove_specification(value, specification):
 def get_objects_attributes(objects, attribute='name') -> str:
     return ', '.join(
         filter(None, 
-            (getattr(o, attribute, None) or o in objects)
+            (getattr(o, attribute, None) for o in objects)
         )
     )
 
