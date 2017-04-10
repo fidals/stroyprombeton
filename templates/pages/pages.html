@@ -20,7 +20,15 @@
       <div class="newslist-item-title">
         <a class="newslist-title-link" href="{{ page.url }}">{{ page.title }}</a>
       </div>
-      <div class="news-date">{{ page.date_published|date:'d.m.Y' }}</div>
+      <div class="news-date">
+        {% with page_extra_info=page.content|get_page_metadata %}
+          {% if page_extra_info.metadata and page_extra_info.metadata.delivery_time %}
+            {{ page_extra_info.metadata.delivery_time }}
+          {% else %}
+            {{ page.date_published|date:'d.m.Y' }}
+          {% endif %}
+        {% endwith %}
+      </div>
       <div class="newslist-item-text">
         {{ page.description|truncatechars:190 }}
       </div>

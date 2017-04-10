@@ -109,18 +109,6 @@ class PriceForm(BaseContactForm):
     )
 
 
-class DrawingForm(BaseContactForm):
-    """Form for Drawing order."""
-
-    comment = forms.CharField(
-        label='Комментарий',
-        required=False,
-        widget=forms.Textarea(attrs={
-            'class': css_default_classes
-        })
-    )
-
-
 class OrderForm(forms.ModelForm):
     """
     Form for making orders. Based on Order model.

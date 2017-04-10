@@ -16,7 +16,7 @@ from django.urls import reverse
 from pages.models import CustomPage, FlatPage, ModelPage
 
 from stroyprombeton.models import Category, Product
-from stroyprombeton.tests.tests_forms import PriceFormTest, DrawingFormTest
+from stroyprombeton.tests.tests_forms import PriceFormTest
 
 CATEGORY_ROOT_NAME = 'Category root #0'
 
@@ -346,17 +346,6 @@ class OrderPrice(AbstractFormViewTest, TestCase):
     def setUp(self):
         CustomPage.objects.create(slug='order-price')
         super(OrderPrice, self).setUp()
-
-
-class OrderDrawing(AbstractFormViewTest, TestCase):
-    URL = '/order-drawing/'
-    SUCCESS_URL = '/drawing-success/'
-    FORM_TEST = DrawingFormTest
-    FIELDS = copy(DrawingFormTest.FIELDS)
-
-    def setUp(self):
-        CustomPage.objects.create(slug='order-drawing')
-        super(OrderDrawing, self).setUp()
 
 
 class IndexPage(TestCase):

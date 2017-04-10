@@ -67,11 +67,18 @@
   }
 
   &-table {
-    border-top: 1px solid $c-table-border;
-    margin: 0 0 20px;
+    margin: 0 0 40px;
+    table-layout: fixed;
 
-    @include media($md) {
-      margin: 0;
+    &-col {
+      &-key {
+        width: 80%;
+      }
+
+      &-val {
+        width: 20%;
+      }
+
     }
   }
 
@@ -104,6 +111,7 @@
     margin-bottom: 25px;
 
     &-th {
+      text-align: left;
       border-bottom: 1px solid $c-table-border;
       line-height: 1.25;
       padding-bottom: 14px;
@@ -126,6 +134,10 @@
       width: 130px;
     }
   }
+
+  &-public-offer {
+    text-align: left;
+  }
 }
 
 .buy-product {
@@ -134,7 +146,6 @@
 
 .category-price {
   color: $c-orange;
-  display: block;
   font-size: $f-size-base;
   font-weight: 600;
   text-align: center;

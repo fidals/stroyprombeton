@@ -59,13 +59,3 @@ class PriceFormTest(AbstractFormTest, TestCase):
     def test_invalid_site(self):
         self.FIELDS['site'] = 'n@t.a.s/te'
         self.assertFalse(forms.PriceForm(self.FIELDS).is_valid())
-
-
-class DrawingFormTest(AbstractFormTest, TestCase):
-    REQUIRED = ['phone', 'email']
-    FIELDS = copy(DRAWING_FORM_FIELDS)
-    FORM = forms.DrawingForm
-
-    def test_invalid_email(self):
-        self.FIELDS['email'] = 'n@t.a.em@il'
-        self.assertFalse(self.FORM(self.FIELDS).is_valid())
