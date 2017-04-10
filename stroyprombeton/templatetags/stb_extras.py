@@ -40,7 +40,7 @@ def search_result(items, item_type):
 @register.filter
 def format_price(price):
     if price:
-        return floatformat(price, 0) + ' руб.'
+        return floatformat(price, 0) + ' руб'
     else:
         return 'По запросу'
 
