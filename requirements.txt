@@ -2,7 +2,6 @@ celery
 dj-database-url==0.4.1
 Django==1.10
 django-debug-toolbar
-django-user-agents
 django-widget-tweaks
 django-wkhtmltopdf
 openpyxl
@@ -15,4 +14,5 @@ tblib
 unidecode
 ua-parser
 user-agents
+-e git+https://github.com/selwin/django-user_agents#egg=django_user_agents
 -e git+https://github.com/fidals/refarm-site.git#egg=refarm-site
