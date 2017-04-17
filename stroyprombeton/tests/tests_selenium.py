@@ -198,7 +198,7 @@ class OrderPage(SeleniumTestCase, CartMixin):
         counter.clear()
         send_keys_and_wait(counter, 42)
         product_price = Product.objects.get(id=1).price
-        expected_price = floatformat(str(product_price * 42), 0) + ' руб.'
+        expected_price = floatformat(str(product_price * 42), 0) + ' руб'
         total_price = self.browser.find_element_by_class_name('order-total-val').text
 
         self.assertEqual(expected_price, total_price)
@@ -318,6 +318,16 @@ class CategoryPage(SeleniumTestCase, CartMixin):
         click_and_wait(load_more_button)
 
         self.assertIn('disabled', self.get_load_more_button_classes())
+
+    def test_inactive_product_not_in_categogy(self):
+        product_id = self.browser.find_element_by_class_name('table-tr').get_attribute('id')
+        Page.objects.filter(stroyprombeton_product=product_id).update(is_active=False)
+        product_name = Page.objects.get(stroyprombeton_product=product_id).stroyprombeton_product.name
+        self.browser.get(self.root_category)
+        wait()
+        filter_field = self.browser.find_element_by_id('search-filter')
+        send_keys_and_wait(filter_field, product_name)
+        self.assertEquals(self.get_tables_rows_count(), 0)
 
 
 class Search(SeleniumTestCase):

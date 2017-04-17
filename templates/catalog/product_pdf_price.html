@@ -58,23 +58,21 @@
     </thead>
     <tbody>
       {% for product in products %}
-        {% if product.page.is_active %}
-          <tr id="{{ product.id }}">
-            <td>
-              {% if product.code %}
-                {{ product.code }}
-              {% else %}
-                <p class="text-center">-</p>
-              {% endif %}
-            </td>
-            <td>
-              {{ product.name }} {{ product.mark }}
-            </td>
-            <td>
-              {{ product.price|format_price }}
-            </td>
-          </tr>
-        {% endif %}
+        <tr id="{{ product.id }}">
+          <td>
+            {% if product.code %}
+              {{ product.code }}
+            {% else %}
+              <p class="text-center">-</p>
+            {% endif %}
+          </td>
+          <td>
+            {{ product.name }} {{ product.mark }}
+          </td>
+          <td>
+            {{ product.price|format_price }}
+          </td>
+        </tr>
       {% endfor %}
     </tbody>
   </table>

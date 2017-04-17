@@ -291,6 +291,15 @@ class Product_(TestCase):
 
         self.assertEqual(specification, self.product_data['specification'])
 
+    def test_inactive_product_unavailable(self):
+        product_id = self.response.context['product'].id
+
+        ModelPage.objects.filter(stroyprombeton_product=product_id).update(is_active=False)
+        response = self.client.get('/gbi/products/{}/'.format(product_id))
+
+        status_code = response.status_code
+        self.assertEqual(status_code, 404)
+
 
 class AbstractFormViewTest:
     """

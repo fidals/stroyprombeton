@@ -1,37 +1,35 @@
 {% load stb_extras %}
 
 {% for product, image in products_with_images %}
-  {% if product.page.is_active %}
-    <tr class="table-tr" id="{{ product.id }}">
-      <td class="table-td table-photo text-center">
-        {% include 'catalog/category_product_image.html' with image=image.image page=product.page only %}
-      </td>
-      <td class="table-td table-code">
-        {% if product.code %}
-          {{ product.code }}
-        {% else %}
-          <p class="text-center">-</p>
-        {% endif %}
-      </td>
-      <td class="table-td table-name">
-        <a class="table-link" href="{{ product.url }}">
-          {{ product.name }} {{ product.mark }} {{ product.specification }}
-        </a>
-      </td>
-      <td class="table-td table-price">
-        {{ product.price|format_price }}
-      </td>
-      <td class="table-td table-count">
-        {% include 'catalog/count_input.html' %}
-      </td>
-      <td class="table-td table-order">
-        <span class="category-table-order js-category-buy">Заказать</span>
+  <tr class="table-tr" id="{{ product.id }}">
+    <td class="table-td table-photo text-center">
+      {% include 'catalog/category_product_image.html' with image=image.image page=product.page only %}
+    </td>
+    <td class="table-td table-code">
+      {% if product.code %}
+        {{ product.code }}
+      {% else %}
+        <p class="text-center">-</p>
+      {% endif %}
+    </td>
+    <td class="table-td table-name">
+      <a class="table-link" href="{{ product.url }}">
+        {{ product.name }} {{ product.mark }} {{ product.specification }}
+      </a>
+    </td>
+    <td class="table-td table-price">
+      {{ product.price|format_price }}
+    </td>
+    <td class="table-td table-count">
+      {% include 'catalog/count_input.html' %}
+    </td>
+    <td class="table-td table-order">
+      <span class="category-table-order js-category-buy">Заказать</span>
 
-        <div class="popover js-popover">
-          Товар добавлен в корзину
-          <div class="popover-arrow"></div>
-        </div>
-      </td>
-    </tr>
-  {% endif %}
+      <div class="popover js-popover">
+        Товар добавлен в корзину
+        <div class="popover-arrow"></div>
+      </div>
+    </td>
+  </tr>
 {% endfor %}

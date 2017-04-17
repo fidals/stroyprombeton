@@ -2,7 +2,7 @@ from csv import writer as CSVWriter
 
 from django.conf import settings
 from django.shortcuts import render
-from django.http import StreamingHttpResponse
+from django.http import StreamingHttpResponse, Http404
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 
@@ -29,8 +29,10 @@ def fetch_products(request):
     term = term.strip()
 
     category = Category.objects.get(id=category_id)
-    products = Product.objects.get_by_category(
-        category, ordering=PRODUCTS_ORDERING
+    products = (
+        Product.objects
+        .filter(page__is_active=True)
+        .get_by_category(category, ordering=PRODUCTS_ORDERING)
     )
 
     if filtered == 'true' and term:
@@ -139,6 +141,7 @@ class CategoryPage(catalog.CategoryPage, ListView):
         self.object = self.get_object()
         self.object_list = (
             Product.objects
+            .filter(page__is_active=True)
             .get_by_category(self.object.model, ordering=PRODUCTS_ORDERING)
             .select_related('page')
         )
@@ -151,6 +154,7 @@ class CategoryPage(catalog.CategoryPage, ListView):
 
         products = (
             Product.objects
+            .filter(page__is_active=True)
             .get_by_category(category, ordering=PRODUCTS_ORDERING)
             .select_related('page')
         )
@@ -178,7 +182,18 @@ class CategoryPage(catalog.CategoryPage, ListView):
 
 @set_csrf_cookie
 class ProductPage(catalog.ProductPage):
-    queryset = Product.objects.select_related('page').prefetch_related('page__images')
+    queryset = (
+        Product.objects
+        .filter(page__is_active=True)
+        .select_related('page')
+        .prefetch_related('page__images')
+    )
+
+    def get_object(self, **kwargs):
+        product = super(ProductPage, self).get_object(**kwargs)
+        if not product.page.is_active:
+            raise Http404
+        return product
 
     def get_context_data(self, **kwargs):
         context = super(ProductPage, self).get_context_data(**kwargs)
@@ -186,6 +201,7 @@ class ProductPage(catalog.ProductPage):
 
         siblings = (
             Product.objects
+            .filter(page__is_active=True)
             .get_by_category(product.category)
             .exclude(id=product.id)
             .select_related('page')
@@ -207,7 +223,6 @@ class ProductPage(catalog.ProductPage):
             {'name': name, 'url': url(),}
             for (name, url) in product_ancestors[offset:offset + limit]
         ]
-
 
         return {
             **context,
@@ -233,6 +248,7 @@ class ProductPDF(PDFTemplateView, DetailView):
 
         products = (
             Product.objects
+            .filter(page__is_active=True)
             .get_by_category(category, ordering=PRODUCTS_ORDERING)
             .select_related('page')
         )
