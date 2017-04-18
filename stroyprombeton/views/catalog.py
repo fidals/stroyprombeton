@@ -2,7 +2,7 @@ from csv import writer as CSVWriter
 
 from django.conf import settings
 from django.shortcuts import render
-from django.http import StreamingHttpResponse, Http404
+from django.http import Http404, StreamingHttpResponse
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 

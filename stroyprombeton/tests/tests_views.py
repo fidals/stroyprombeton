@@ -299,6 +299,7 @@ class Product_(TestCase):
 
         status_code = response.status_code
         self.assertEqual(status_code, 404)
+        ModelPage.objects.filter(stroyprombeton_product=product_id).update(is_active=True)
 
 
 class AbstractFormViewTest:
