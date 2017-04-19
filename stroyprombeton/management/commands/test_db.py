@@ -151,5 +151,3 @@ class Command(BaseCommand):
         create_products(count=25, categories=parents[4:])
         # Create 50 products for tests_selenium.CategoryPage.test_load_more_products
         create_products(count=50, categories=parents[:4])
-        # Make one inactive product
-        ModelPage.objects.filter(stroyprombeton_product='111').update(is_active=False)

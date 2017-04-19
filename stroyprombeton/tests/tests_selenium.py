@@ -319,15 +319,6 @@ class CategoryPage(SeleniumTestCase, CartMixin):
 
         self.assertIn('disabled', self.get_load_more_button_classes())
 
-    def test_inactive_product_not_in_filter_autocomplete(self):
-        filter_field = self.browser.find_element_by_id('search-filter')
-        send_keys_and_wait(filter_field, "Product #11 of Category #0 of #3")
-
-        self.assertEquals(self.get_tables_rows_count(), 0)
-
-    def test_inactive_product_not_in_category_page(self):
-        self.assertNotEquals('111', self.browser.find_element_by_class_name('table-tr').get_attribute('id'))
-
 
 class Search(SeleniumTestCase):
     """Selenium-based tests for Search"""
@@ -414,6 +405,15 @@ class Search(SeleniumTestCase):
         h1 = self.browser.find_element_by_tag_name('h1')
 
         self.assertTrue(h1.text == product_h1)
+
+    def test_inactive_product_not_in_search_autocomplete(self):
+        test_product = Product.objects.first()
+        test_product.is_active = False
+        test_product.save()
+
+        send_keys_and_wait(self.input, test_product.name)
+
+        self.assertFalse(self.autocomplete.is_displayed())
 
 
 class IndexPage(SeleniumTestCase):

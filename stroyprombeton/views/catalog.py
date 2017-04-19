@@ -189,12 +189,6 @@ class ProductPage(catalog.ProductPage):
         .prefetch_related('page__images')
     )
 
-    def get_object(self, **kwargs):
-        product = super(ProductPage, self).get_object(**kwargs)
-        if not product.page.is_active:
-            raise Http404
-        return product
-
     def get_context_data(self, **kwargs):
         context = super(ProductPage, self).get_context_data(**kwargs)
         product = context[self.context_object_name]
