@@ -198,7 +198,7 @@ class OrderPage(SeleniumTestCase, CartMixin):
         counter.clear()
         send_keys_and_wait(counter, 42)
         product_price = Product.objects.get(id=1).price
-        expected_price = floatformat(str(product_price * 42), 0) + ' руб.'
+        expected_price = floatformat(str(product_price * 42), 0) + ' руб'
         total_price = self.browser.find_element_by_class_name('order-total-val').text
 
         self.assertEqual(expected_price, total_price)
@@ -405,6 +405,15 @@ class Search(SeleniumTestCase):
         h1 = self.browser.find_element_by_tag_name('h1')
 
         self.assertTrue(h1.text == product_h1)
+
+    def test_inactive_product_not_in_search_autocomplete(self):
+        test_product = Product.objects.first()
+        test_product.is_active = False
+        test_product.save()
+
+        send_keys_and_wait(self.input, test_product.name)
+
+        self.assertFalse(self.autocomplete.is_displayed())
 
 
 class IndexPage(SeleniumTestCase):

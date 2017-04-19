@@ -207,7 +207,7 @@ class AdminPage(SeleniumTestCase, HelpersMixin, AdminMixin):
         wait()
         results = self.browser.find_element_by_class_name('paginator')
 
-        self.assertTrue('0' in results.text)
+        self.assertTrue('1' in results.text)
 
     def test_search_autocomplete(self):
         """Search should autocomplete queries."""

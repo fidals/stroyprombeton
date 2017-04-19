@@ -176,6 +176,14 @@ class CategoryTable(TestCase):
 
         self.assertEqual(code, self.product_data['code'])
 
+    def test_inactive_product_not_in_category(self):
+        test_product = Product.objects.first()
+        test_product.page.is_active = False
+        test_product.save()
+
+        response = self.client.get(reverse('category', args=(test_product.category_id,)))
+        self.assertNotIn(test_product, response.context['products_with_images'])
+
 
 class Product_(TestCase):
     """Test for ProductPage view."""
@@ -290,6 +298,15 @@ class Product_(TestCase):
         specification = self.response.context['product'].specification
 
         self.assertEqual(specification, self.product_data['specification'])
+
+    def test_inactive_product_unavailable(self):
+        product_id = self.response.context['product'].id
+
+        ModelPage.objects.filter(stroyprombeton_product=product_id).update(is_active=False)
+        response = self.client.get(reverse('product', args=(product_id,)))
+
+        self.assertEqual(response.status_code, 404)
+        ModelPage.objects.filter(stroyprombeton_product=product_id).update(is_active=True)
 
 
 class AbstractFormViewTest:
