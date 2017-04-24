@@ -47,7 +47,7 @@ services:
       - postgres
       - rabbitmq
     ports:
-      - $VIRTUAL_HOST_STAGE_PORT
+      - '$VIRTUAL_HOST_STAGE_EXPOSE_PORT:$VIRTUAL_HOST_STAGE_PORT'
     volumes:
       - /src/ # contains refarm-site modules
     volumes_from:
