@@ -1,6 +1,7 @@
 import re
 
 from django import template
+from django.conf import settings
 from django.template.defaultfilters import floatformat
 
 from images.models import ImageMixin
@@ -84,8 +85,10 @@ def remove_specification(value, specification):
 @register.filter
 def get_objects_attributes(objects, attribute='name') -> str:
     return ', '.join(
-        filter(None, 
-            (getattr(o, attribute, None) for o in objects)
+        filter(None,
+            map(lambda x: remove_specification(x[0], x[1]) if x[1] else x[0],
+                map(lambda x: (getattr(x, attribute, None), x.specification), objects)
+            )
         )
     )
 
@@ -123,3 +126,8 @@ def get_page_metadata(content: str) -> dict:
         'metadata': metadata,
         'cleaned_content': cleaned_content,
     }
+
+
+@register.filter
+def get_category_gent_name(category: Category) -> str:
+    return settings.CATEGORY_GENT_NAMES[category.id]

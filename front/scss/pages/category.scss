@@ -3,7 +3,8 @@
 
 #js-category-description {
   font-size: $f-category-description-hidden-text-size;
-  color: rgba($c-category-description-hidden-text-color, 0.56);
+  color: $c-category-description-hidden-text-color;
+  margin-top: $m-category-description-margin-top;
 }
 
 .category-search {
