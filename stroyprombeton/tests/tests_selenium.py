@@ -1,7 +1,8 @@
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.remote.webelement import WebElement
-from seleniumrequests import Chrome  # We use this instead of standard selenium
+from seleniumrequests import Remote  # We use this instead of standard selenium
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
 from django.conf import settings
 from django.db.models import Count
@@ -34,10 +35,11 @@ class SeleniumTestCase(LiveServerTestCase):
     def setUpClass(cls):
         """Instantiate browser instance."""
         super(SeleniumTestCase, cls).setUpClass()
-        cls.browser = Chrome(settings.CHROMEDRIVER)
+        cls.browser = Remote(command_executor='http://selenium-hub:4444/wd/hub',
+                             desired_capabilities=DesiredCapabilities.CHROME)
 
         cls.browser.implicitly_wait(5)
-        cls.browser.maximize_window()
+        cls.browser.set_window_size(1920, 1080)
 
     @classmethod
     def tearDownClass(cls):

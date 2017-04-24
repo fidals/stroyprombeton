@@ -1,0 +1,150 @@
+version: '2'
+
+services:
+
+  source:
+    build:
+      context: ..
+      dockerfile: docker/source/prod/Dockerfile
+    image: fidals/stb-source:prod
+    container_name: source
+    volumes:
+      - /usr/app/src/ # code volume
+      - /opt/media/stroyprombeton/:/usr/app/src/media/
+    command: sh -c "top > /dev/null"
+
+  python:
+    build:
+      context: ..
+      dockerfile: docker/python/prod/Dockerfile
+    image: fidals/stb:prod
+    container_name: python
+    environment:
+      - DJANGO_SETTINGS_MODULE=$DJANGO_SETTINGS_MODULE
+      - DATABASE_URL=postgres://$DB_USER:$DB_PASS@postgres/$DB_NAME
+      - BROCKER_URL=amqp://$RABBITMQ_DEFAULT_USER:$RABBITMQ_DEFAULT_PASS@rabbitmq:5672/
+    depends_on:
+      - postgres
+      - rabbitmq
+    ports:
+      - $VIRTUAL_HOST_PORT
+    volumes:
+      - /src/ # contains refarm-site modules
+    volumes_from:
+      - source
+    networks:
+      - stb_backend
+      - stb_frontend
+    command: gunicorn stroyprombeton.wsgi:application -c /etc/gunicorn.py -b 0.0.0.0:$VIRTUAL_HOST_PORT
+
+  python_stage:
+    image: fidals/stb:prod
+    container_name: python_stage
+    environment:
+      - DJANGO_SETTINGS_MODULE=stroyprombeton.settings.dev
+      - DATABASE_URL=postgres://$DB_USER:$DB_PASS@postgres/stroyprombeton_stage
+    depends_on:
+      - postgres
+      - rabbitmq
+    ports:
+      - $VIRTUAL_HOST_STAGE_PORT
+    volumes:
+      - /src/ # contains refarm-site modules
+    volumes_from:
+      - source
+    networks:
+      - stb_backend
+      - stb_frontend
+    command: gunicorn stroyprombeton.wsgi:application -c /etc/gunicorn.py -b 0.0.0.0:$VIRTUAL_HOST_STAGE_PORT
+
+  celery-beat:
+    image: fidals/stb:prod
+    container_name: celery-beat
+    restart: always
+    environment:
+      - DJANGO_SETTINGS_MODULE=$DJANGO_SETTINGS_MODULE
+      - DATABASE_URL=postgres://$DB_USER:$DB_PASS@postgres/$DB_NAME
+      - BROCKER_URL=amqp://$RABBITMQ_DEFAULT_USER:$RABBITMQ_DEFAULT_PASS@rabbitmq:5672/
+    depends_on:
+      - python
+    volumes_from:
+      - source
+    networks:
+      - stb_backend
+    command: celery -A stroyprombeton beat -l info
+
+  celery-mail-worker:
+    image: fidals/stb:prod
+    container_name: celery-mail-worker
+    restart: always
+    environment:
+      - DJANGO_SETTINGS_MODULE=$DJANGO_SETTINGS_MODULE
+      - DATABASE_URL=postgres://$DB_USER:$DB_PASS@postgres/$DB_NAME
+      - BROCKER_URL=amqp://$RABBITMQ_DEFAULT_USER:$RABBITMQ_DEFAULT_PASS@rabbitmq:5672/
+    depends_on:
+      - python
+    volumes_from:
+      - source
+    networks:
+      - stb_backend
+    command: celery -A stroyprombeton worker -E -n worker.mail@%%h -l info -Q mail
+
+  celery-command-worker:
+    image: fidals/stb:prod
+    container_name: celery-command-worker
+    restart: always
+    environment:
+      - DJANGO_SETTINGS_MODULE=$DJANGO_SETTINGS_MODULE
+      - DATABASE_URL=postgres://$DB_USER:$DB_PASS@postgres/$DB_NAME
+      - BROCKER_URL=amqp://$RABBITMQ_DEFAULT_USER:$RABBITMQ_DEFAULT_PASS@rabbitmq:5672/
+    depends_on:
+      - python
+    volumes_from:
+      - source
+    networks:
+      - stb_backend
+    command: celery -A stroyprombeton worker -E -n worker.command@%%h -l info -Q command
+
+  nginx:
+    build:
+      context: ..
+      dockerfile: docker/nginx/Dockerfile
+    image: fidals/stb-nginx:prod
+    container_name: nginx
+    restart: always
+    depends_on:
+      - python
+    volumes_from:
+      - source
+    ports:
+      - '$VIRTUAL_HOST_EXPOSE_PORT:80'
+    networks:
+      - stb_frontend
+    command: nginx -g 'daemon off;'
+
+  postgres:
+    image: postgres:9.5
+    restart: always
+    environment:
+      POSTGRES_DB: $DB_NAME
+      POSTGRES_PASSWORD: $DB_PASS
+    networks:
+      - stb_backend
+    volumes:
+      - /var/lib/postgresql/data
+
+  rabbitmq:
+    image: rabbitmq:management-alpine
+    restart: always
+    environment:
+      RABBITMQ_DEFAULT_USER: $RABBITMQ_DEFAULT_USER
+      RABBITMQ_DEFAULT_PASS: $RABBITMQ_DEFAULT_PASS
+    networks:
+      - stb_backend
+    ports:
+      - '5674:5672'
+      - '15674:15672'
+
+networks:
+  stb_backend:
+  stb_frontend:

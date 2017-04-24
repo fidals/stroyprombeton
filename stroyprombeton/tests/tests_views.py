@@ -407,7 +407,6 @@ class Search(TestCase):
         self.assertNotContains(response, self.WRONG_TERM)
 
 
-@override_settings(WKHTMLTOPDF_CMD='wkhtmltopdf')
 class ProductPrice(TestCase):
 
     fixtures = ['dump.json']

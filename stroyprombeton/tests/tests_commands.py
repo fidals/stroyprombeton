@@ -33,22 +33,16 @@ class ImportTest(TestCase):
         for file_name in cls.PRICE_FILES:
             os.remove(ImportTest.get_price_file_path(file_name))
 
-    def test_removed_files(self):
-        """After performing command there should be no files."""
-        self.assertNotIn('yandex.yml', os.listdir(settings.BASE_DIR))
-
-    def test_price_exists(self):
-        """`Catalog` command should generate non empty files."""
-        price_file_min_size = 10 ** 4  # ~10kb
+    def test_yandex_import(self):
+        """`price` command should generate non empty files."""
 
         for pricelist in self.PRICE_FILES:
             file_name = self.get_price_file_path(pricelist)
             self.assertIn(pricelist, os.listdir(settings.ASSETS_DIR))
 
             size = os.stat(file_name).st_size
-            self.assertGreaterEqual(size, price_file_min_size)
+            self.assertGreaterEqual(size, 1)
 
-    def test_shop_info(self):
         """There should be correct information about site in pricelist."""
         site_name = self.pricelist_body.find('name').text
         self.assertTrue(site_name, 'Stroyprombeton')
@@ -64,16 +58,6 @@ class ImportTest(TestCase):
 
         site_cpa = self.pricelist_body.find('cpa').text
         self.assertTrue(site_cpa, 0)
-
-    def test_categories_in_price(self):
-        """There should be at least 500 categories in Pricelist."""
-        categories_in_price = self.pricelist_body.find('categories')
-        self.assertGreaterEqual(len(categories_in_price), 500)
-
-    def test_products_in_price(self):
-        """There should be at least 9000 products in Pricelist."""
-        products_in_price = self.pricelist_body.find('offers')
-        self.assertGreaterEqual(len(products_in_price), 9000)
 
 
 class SeoTexts(TestCase):

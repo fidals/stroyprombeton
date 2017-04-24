@@ -1,6 +1,3 @@
-node_modules/
-front/build/
-static/
 media/
 *.sqlite*
 *.log

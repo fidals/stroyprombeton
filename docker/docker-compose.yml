@@ -1,75 +1,111 @@
-version: "2"
+version: '2'
 
 services:
-  stb_prod:
+
+  source:
+    image: busybox
+    container_name: source
+    volumes:
+      - ./../:/usr/app/src/ # code volume
+      # - ./../static/:/usr/app/src/static/ # shared static folder
+      # - ./../media/:/usr/app/src/media/ # shared media folder
+    command: sh -c "top > /dev/null"
+
+  python:
     build:
       context: ..
-      dockerfile: docker/Dockerfile
-    image: fidals/stb
-    container_name: stb_prod
-    restart: always
+      dockerfile: docker/python/dev/Dockerfile
+    image: fidals/stb:dev
+    container_name: python
     environment:
-      - ALLOWED_HOSTS=*
-      - SECRET_KEY=$SECRET_KEY
-      - EMAIL_HOST_PASSWORD=$EMAIL_HOST_PASSWORD
-      - DJANGO_SETTINGS_MODULE=stroyprombeton.settings.prod
-      - DATABASE_URL=postgres://postgres:$DB_PASS@stb_db_prod/stb_prod
-      - BROCKER_URL=amqp://$RABBITMQ_DEFAULT_USER:$RABBITMQ_DEFAULT_PASS@stb_rabbitmq:5672/
-    entrypoint:
-      - circusd
-      - /etc/circus/stb_prod.ini
-    volumes:  # TODO - divide volumes on dev/ and prod/
-      - /opt/media/stroyprombeton:/opt/stroyprombeton/app/media
+      - ALLOWED_HOSTS=$VIRTUAL_HOST_NAME
+      - DJANGO_SETTINGS_MODULE=$DJANGO_SETTINGS_MODULE
+      - DATABASE_URL=postgres://$DB_USER:$DB_PASS@postgres/$DB_NAME
+      - BROCKER_URL=amqp://$RABBITMQ_DEFAULT_USER:$RABBITMQ_DEFAULT_PASS@rabbitmq:5672/
     ports:
-      - "8020:80"
-    links:
-      - stb_rabbitmq
+      - '$VIRTUAL_HOST_EXPOSE_PORT:$VIRTUAL_HOST_PORT'
+      - $VIRTUAL_HOST_LIVESERVER_PORT
+    depends_on:
+      - postgres
+      - rabbitmq
+    networks:
+      - stb_backend
+      - stb_frontend
+    volumes:
+      - /src/ # contains refarm-site modules
+    volumes_from:
+      - source
+    command: python manage.py runserver 0.0.0.0:$VIRTUAL_HOST_PORT
 
-  stb_dev:
-    image: fidals/stb
-    container_name: stb_dev
-    environment:
-      - ALLOWED_HOSTS=*
-      - SECRET_KEY=$SECRET_KEY
-      - EMAIL_HOST_PASSWORD=$EMAIL_HOST_PASSWORD
-      - DJANGO_SETTINGS_MODULE=stroyprombeton.settings.dev
-      - DATABASE_URL=postgres://postgres:$DB_PASS@stb_db_dev/stb_dev
-    entrypoint:
-      - circusd
-      - /etc/circus/stb_dev.ini
-    ports:
-      - "8021:80"
-    links:  # can't be inherited
-      - stb_db_dev
-    volumes:  # TODO - divide volumes on dev/ and prod/
-      - /opt/media/stroyprombeton:/opt/stroyprombeton/app/media
+  nodejs:
+    build:
+      context: ..
+      dockerfile: docker/node/Dockerfile
+    container_name: nodejs
+    command: bash -c 'npm install && npm install -g gulp-cli && gulp build'
+    volumes_from:
+      - source
+      - python
 
-  stb_db_prod:
+  postgres:
     image: postgres:9.5
-    container_name: stb_db_prod
     restart: always
     environment:
-      POSTGRES_DB: "stb_prod"
-      POSTGRES_PASSWORD: "$DB_PASS"
+      POSTGRES_DB: $DB_NAME
+      POSTGRES_PASSWORD: $DB_PASS
+    networks:
+      - stb_backend
     volumes:
       - /var/lib/postgresql/data
 
-  stb_db_dev:
-    image: postgres:9.5
-    container_name: stb_db_dev
-    environment:
-      POSTGRES_DB: "stb_dev"
-      POSTGRES_PASSWORD: "$DB_PASS"
-    volumes:
-      - /var/lib/postgresql/data
-
-  stb_rabbitmq:
+  rabbitmq:
     image: rabbitmq:management-alpine
-    container_name: stb_rabbitmq
     restart: always
     environment:
       RABBITMQ_DEFAULT_USER: $RABBITMQ_DEFAULT_USER
       RABBITMQ_DEFAULT_PASS: $RABBITMQ_DEFAULT_PASS
+    networks:
+      - stb_backend
     ports:
-      - "5674:5672"
-      - "15674:15672"
+      - '5674:5672'
+      - '15674:15672'
+
+  # TODO:
+  # Selenium Grid stuff (can't get it to work)
+
+  # selenium-hub:
+  #   image: selenium/hub:3.2.0
+  #   restart: always
+  #   networks:
+  #     - stb_backend
+  #   ports:
+  #     - '4444:4444'
+
+  # selenium-chrome:
+  #   image: selenium/node-chrome:3.2.0
+  #   restart: always
+  #   depends_on:
+  #     - selenium-hub
+  #   environment:
+  #     - HUB_PORT_4444_TCP_ADDR=selenium-hub
+  #     - HUB_PORT_4444_TCP_PORT=4444
+  #   networks:
+  #     - stb_backend
+  #   ports:
+  #     - 5555
+  #     - 5900
+
+  selenium-hub:
+    image: selenium/standalone-chrome-debug:3.3.0
+    restart: always
+    ports:
+      - '4444:4444'
+      - '5900'
+    networks:
+      - stb_backend
+    volumes: # https://github.com/SeleniumHQ/docker-selenium#running-the-images
+      - /dev/shm:/dev/shm
+
+networks:
+  stb_backend:
+  stb_frontend:
