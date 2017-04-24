@@ -42,7 +42,7 @@ services:
     container_name: python_stage
     environment:
       - DJANGO_SETTINGS_MODULE=stroyprombeton.settings.dev
-      - DATABASE_URL=postgres://$DB_USER:$DB_PASS@postgres/stroyprombeton_stage
+      - DATABASE_URL=postgres://$DB_USER:$DB_PASS@postgres/stb_dev
     depends_on:
       - postgres
       - rabbitmq
@@ -131,7 +131,7 @@ services:
     networks:
       - stb_backend
     volumes:
-      - /var/lib/postgresql/data
+      - /opt/database/stroyprombeton:/var/lib/postgresql/data
 
   rabbitmq:
     image: rabbitmq:management-alpine
