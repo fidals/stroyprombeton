@@ -4,7 +4,7 @@ services:
 
   source:
     image: busybox
-    container_name: source
+    container_name: stb_source
     volumes:
       - ./../:/usr/app/src/ # code volume
       # - ./../static/:/usr/app/src/static/ # shared static folder
@@ -16,7 +16,7 @@ services:
       context: ..
       dockerfile: docker/python/dev/Dockerfile
     image: fidals/stb:dev
-    container_name: python
+    container_name: stb_python
     environment:
       - ALLOWED_HOSTS=$VIRTUAL_HOST_NAME
       - DJANGO_SETTINGS_MODULE=$DJANGO_SETTINGS_MODULE
@@ -41,7 +41,7 @@ services:
     build:
       context: ..
       dockerfile: docker/node/Dockerfile
-    container_name: nodejs
+    container_name: stb_nodejs
     command: bash -c 'npm install && npm install -g gulp-cli && gulp build'
     volumes_from:
       - source
@@ -50,6 +50,7 @@ services:
   postgres:
     image: postgres:9.5
     restart: always
+    container_name: stb_postgres
     environment:
       POSTGRES_DB: $DB_NAME
       POSTGRES_PASSWORD: $DB_PASS
@@ -61,6 +62,7 @@ services:
   rabbitmq:
     image: rabbitmq:management-alpine
     restart: always
+    container_name: stb_rabbitmq
     environment:
       RABBITMQ_DEFAULT_USER: $RABBITMQ_DEFAULT_USER
       RABBITMQ_DEFAULT_PASS: $RABBITMQ_DEFAULT_PASS
