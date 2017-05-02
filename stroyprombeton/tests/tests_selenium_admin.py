@@ -52,7 +52,7 @@ class SeleniumTestCase(LiveServerTestCase):
     def setUpClass(cls):
         """Instantiate browser instance."""
         super(SeleniumTestCase, cls).setUpClass()
-        cls.browser = Remote(command_executor='http://selenium-hub:4444/wd/hub',
+        cls.browser = Remote(command_executor='http://stb-selenium-hub:4444/wd/hub',
                              desired_capabilities=DesiredCapabilities.CHROME)
         cls.browser.implicitly_wait(5)
         cls.browser.set_window_size(1920, 1080)
@@ -209,7 +209,7 @@ class AdminPage(SeleniumTestCase, HelpersMixin, AdminMixin):
         wait()
         results = self.browser.find_element_by_class_name('paginator')
 
-        self.assertTrue('1' in results.text)
+        self.assertTrue('0' in results.text)
 
     def test_search_autocomplete(self):
         """Search should autocomplete queries."""

@@ -2,72 +2,69 @@ version: '2'
 
 services:
 
-  source:
+  stb-source:
     image: busybox
-    container_name: stb_source
+    container_name: stb-source
     volumes:
       - ./../:/usr/app/src/ # code volume
-      # - ./../static/:/usr/app/src/static/ # shared static folder
-      # - ./../media/:/usr/app/src/media/ # shared media folder
     command: sh -c "top > /dev/null"
 
-  python:
+  stb-python:
     build:
       context: ..
       dockerfile: docker/python/dev/Dockerfile
     image: fidals/stb:dev
-    container_name: stb_python
+    container_name: stb-python
     environment:
-      - ALLOWED_HOSTS=$VIRTUAL_HOST_NAME
       - DJANGO_SETTINGS_MODULE=$DJANGO_SETTINGS_MODULE
-      - DATABASE_URL=postgres://$DB_USER:$DB_PASS@postgres/$DB_NAME
-      - BROCKER_URL=amqp://$RABBITMQ_DEFAULT_USER:$RABBITMQ_DEFAULT_PASS@rabbitmq:5672/
+      - DATABASE_URL=postgres://$DB_USER:$DB_PASS@stb-postgres/$DB_NAME
+      - BROCKER_URL=amqp://$RABBITMQ_DEFAULT_USER:$RABBITMQ_DEFAULT_PASS@stb-rabbitmq:5672/
     ports:
       - '$VIRTUAL_HOST_EXPOSE_PORT:$VIRTUAL_HOST_PORT'
       - $VIRTUAL_HOST_LIVESERVER_PORT
     depends_on:
-      - postgres
-      - rabbitmq
+      - stb-postgres
+      - stb-rabbitmq
     networks:
-      - stb_backend
-      - stb_frontend
+      - stb-backend
+      - stb-frontend
     volumes:
       - /src/ # contains refarm-site modules
     volumes_from:
-      - source
+      - stb-source
     command: python manage.py runserver 0.0.0.0:$VIRTUAL_HOST_PORT
 
-  nodejs:
+  stb-nodejs:
     build:
       context: ..
       dockerfile: docker/node/Dockerfile
-    container_name: stb_nodejs
+    container_name: stb-nodejs
     command: bash -c 'npm install && npm install -g gulp-cli && gulp build'
     volumes_from:
-      - source
-      - python
+      - stb-source
+      - stb-python
 
-  postgres:
+  stb-postgres:
     image: postgres:9.5
     restart: always
-    container_name: stb_postgres
+    container_name: stb-postgres
     environment:
       POSTGRES_DB: $DB_NAME
       POSTGRES_PASSWORD: $DB_PASS
     networks:
-      - stb_backend
+      - stb-backend
     volumes:
       - /var/lib/postgresql/data
 
-  rabbitmq:
+  stb-rabbitmq:
     image: rabbitmq:management-alpine
     restart: always
-    container_name: stb_rabbitmq
+    container_name: stb-rabbitmq
     environment:
       RABBITMQ_DEFAULT_USER: $RABBITMQ_DEFAULT_USER
       RABBITMQ_DEFAULT_PASS: $RABBITMQ_DEFAULT_PASS
     networks:
-      - stb_backend
+      - stb-backend
     ports:
       - '5674:5672'
       - '15674:15672'
@@ -79,7 +76,7 @@ services:
   #   image: selenium/hub:3.2.0
   #   restart: always
   #   networks:
-  #     - stb_backend
+  #     - stb-backend
   #   ports:
   #     - '4444:4444'
 
@@ -92,22 +89,22 @@ services:
   #     - HUB_PORT_4444_TCP_ADDR=selenium-hub
   #     - HUB_PORT_4444_TCP_PORT=4444
   #   networks:
-  #     - stb_backend
+  #     - stb-backend
   #   ports:
   #     - 5555
   #     - 5900
 
-  selenium-hub:
+  stb-selenium-hub:
     image: selenium/standalone-chrome-debug:3.3.0
     restart: always
     ports:
       - '4444:4444'
       - '5900'
     networks:
-      - stb_backend
+      - stb-backend
     volumes: # https://github.com/SeleniumHQ/docker-selenium#running-the-images
       - /dev/shm:/dev/shm
 
 networks:
-  stb_backend:
-  stb_frontend:
+  stb-backend:
+  stb-frontend:

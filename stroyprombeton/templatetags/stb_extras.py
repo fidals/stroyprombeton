@@ -129,5 +129,7 @@ def get_page_metadata(content: str) -> dict:
 
 
 @register.filter
-def get_category_gent_name(category: Category) -> str:
-    return settings.CATEGORY_GENT_NAMES[category.id]
+def get_category_gent_name(category: Category, default=None) -> str:
+    return settings.CATEGORY_GENT_NAMES.get(
+        category.id, category.name if not default else default
+    )

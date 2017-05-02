@@ -2,151 +2,154 @@ version: '2'
 
 services:
 
-  source:
+  stb-source:
     build:
       context: ..
       dockerfile: docker/source/prod/Dockerfile
     image: fidals/stb-source:prod
-    container_name: stb_source
+    container_name: stb-source
+    restart: always
     volumes:
       - /usr/app/src/ # code volume
       - /opt/media/stroyprombeton/:/usr/app/src/media/
     command: sh -c "top > /dev/null"
 
-  python:
+  stb-python:
     build:
       context: ..
       dockerfile: docker/python/prod/Dockerfile
     image: fidals/stb:prod
-    container_name: stb_python
+    container_name: stb-python
+    restart: always
     environment:
       - DJANGO_SETTINGS_MODULE=$DJANGO_SETTINGS_MODULE
-      - DATABASE_URL=postgres://$DB_USER:$DB_PASS@postgres/$DB_NAME
-      - BROCKER_URL=amqp://$RABBITMQ_DEFAULT_USER:$RABBITMQ_DEFAULT_PASS@rabbitmq:5672/
+      - DATABASE_URL=postgres://$DB_USER:$DB_PASS@stb-postgres/$DB_NAME
+      - BROCKER_URL=amqp://$RABBITMQ_DEFAULT_USER:$RABBITMQ_DEFAULT_PASS@stb-rabbitmq:5672/
     depends_on:
-      - postgres
-      - rabbitmq
+      - stb-postgres
+      - stb-rabbitmq
     ports:
       - $VIRTUAL_HOST_PORT
     volumes:
       - /src/ # contains refarm-site modules
     volumes_from:
-      - source
+      - stb-source
     networks:
-      - stb_backend
-      - stb_frontend
+      - stb-backend
+      - stb-frontend
     command: gunicorn stroyprombeton.wsgi:application -c /etc/gunicorn.py -b 0.0.0.0:$VIRTUAL_HOST_PORT
 
-  python_stage:
+  stb-python-stage:
     image: fidals/stb:prod
-    container_name: stb_python_stage
+    container_name: stb-python-stage
+    restart: always
     environment:
       - DJANGO_SETTINGS_MODULE=stroyprombeton.settings.dev
-      - DATABASE_URL=postgres://$DB_USER:$DB_PASS@postgres/stb_dev
+      - DATABASE_URL=postgres://$DB_USER:$DB_PASS@stb-postgres/$DB_DEV_NAME
     depends_on:
-      - postgres
-      - rabbitmq
+      - stb-postgres
+      - stb-rabbitmq
     ports:
       - '$VIRTUAL_HOST_STAGE_EXPOSE_PORT:$VIRTUAL_HOST_STAGE_PORT'
     volumes:
       - /src/ # contains refarm-site modules
     volumes_from:
-      - source
+      - stb-source
     networks:
-      - stb_backend
-      - stb_frontend
+      - stb-backend
+      - stb-frontend
     command: gunicorn stroyprombeton.wsgi:application -c /etc/gunicorn.py -b 0.0.0.0:$VIRTUAL_HOST_STAGE_PORT
 
-  celery_beat:
+  stb-celery-beat:
     image: fidals/stb:prod
-    container_name: stb_celery_beat
+    container_name: stb-celery-beat
     restart: always
     environment:
       - DJANGO_SETTINGS_MODULE=$DJANGO_SETTINGS_MODULE
-      - DATABASE_URL=postgres://$DB_USER:$DB_PASS@postgres/$DB_NAME
-      - BROCKER_URL=amqp://$RABBITMQ_DEFAULT_USER:$RABBITMQ_DEFAULT_PASS@rabbitmq:5672/
+      - DATABASE_URL=postgres://$DB_USER:$DB_PASS@stb-postgres/$DB_NAME
+      - BROCKER_URL=amqp://$RABBITMQ_DEFAULT_USER:$RABBITMQ_DEFAULT_PASS@stb-rabbitmq:5672/
     depends_on:
-      - python
+      - stb-python
     volumes_from:
-      - source
+      - stb-source
     networks:
-      - stb_backend
+      - stb-backend
     command: celery -A stroyprombeton beat -l info
 
-  celery_mail_worker:
+  stb-celery-mail-worker:
     image: fidals/stb:prod
-    container_name: stb_celery_mail_worker
+    container_name: stb-celery-mail-worker
     restart: always
     environment:
       - DJANGO_SETTINGS_MODULE=$DJANGO_SETTINGS_MODULE
-      - DATABASE_URL=postgres://$DB_USER:$DB_PASS@postgres/$DB_NAME
-      - BROCKER_URL=amqp://$RABBITMQ_DEFAULT_USER:$RABBITMQ_DEFAULT_PASS@rabbitmq:5672/
+      - DATABASE_URL=postgres://$DB_USER:$DB_PASS@stb-postgres/$DB_NAME
+      - BROCKER_URL=amqp://$RABBITMQ_DEFAULT_USER:$RABBITMQ_DEFAULT_PASS@stb-rabbitmq:5672/
     depends_on:
-      - python
+      - stb-python
     volumes_from:
-      - source
+      - stb-source
     networks:
-      - stb_backend
+      - stb-backend
     command: celery -A stroyprombeton worker -E -n worker.mail@%%h -l info -Q mail
 
-  celery_command_worker:
+  stb-celery-command-worker:
     image: fidals/stb:prod
-    container_name: stb_celery_command_worker
+    container_name: stb-celery-command-worker
     restart: always
     environment:
       - DJANGO_SETTINGS_MODULE=$DJANGO_SETTINGS_MODULE
-      - DATABASE_URL=postgres://$DB_USER:$DB_PASS@postgres/$DB_NAME
-      - BROCKER_URL=amqp://$RABBITMQ_DEFAULT_USER:$RABBITMQ_DEFAULT_PASS@rabbitmq:5672/
+      - DATABASE_URL=postgres://$DB_USER:$DB_PASS@stb-postgres/$DB_NAME
+      - BROCKER_URL=amqp://$RABBITMQ_DEFAULT_USER:$RABBITMQ_DEFAULT_PASS@stb-rabbitmq:5672/
     depends_on:
-      - python
+      - stb-python
     volumes_from:
-      - source
+      - stb-source
     networks:
-      - stb_backend
+      - stb-backend
     command: celery -A stroyprombeton worker -E -n worker.command@%%h -l info -Q command
 
-  nginx:
+  stb-nginx:
     build:
       context: ..
       dockerfile: docker/nginx/Dockerfile
     image: fidals/stb-nginx:prod
-    container_name: stb_nginx
+    container_name: stb-nginx
     restart: always
     depends_on:
-      - python
+      - stb-python
     volumes_from:
-      - source
+      - stb-source
     ports:
       - '$VIRTUAL_HOST_EXPOSE_PORT:80'
     networks:
-      - stb_frontend
+      - stb-frontend
     command: nginx -g 'daemon off;'
 
-  postgres:
+  stb-postgres:
     image: postgres:9.5
     restart: always
-    container_name: stb_postgres
+    container_name: stb-postgres
     environment:
       POSTGRES_DB: $DB_NAME
       POSTGRES_PASSWORD: $DB_PASS
     networks:
-      - stb_backend
+      - stb-backend
     volumes:
       - /opt/database/stroyprombeton:/var/lib/postgresql/data
 
-  rabbitmq:
+  stb-rabbitmq:
     image: rabbitmq:management-alpine
-    container_name: stb_rabbitmq
+    container_name: stb-rabbitmq
     restart: always
     environment:
       RABBITMQ_DEFAULT_USER: $RABBITMQ_DEFAULT_USER
       RABBITMQ_DEFAULT_PASS: $RABBITMQ_DEFAULT_PASS
     networks:
-      - stb_backend
+      - stb-backend
     ports:
       - '5674:5672'
       - '15674:15672'
 
 networks:
-  stb_backend:
-  stb_frontend:
+  stb-backend:
+  stb-frontend:

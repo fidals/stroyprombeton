@@ -23,7 +23,7 @@ class SeleniumTestCase(LiveServerTestCase):
                 'deviceName': 'Apple iPhone 5'
             },
         }
-        cls.browser = webdriver.Remote(command_executor='http://selenium-hub:4444/wd/hub',
+        cls.browser = webdriver.Remote(command_executor='http://stb-selenium-hub:4444/wd/hub',
                                        desired_capabilities=capabilities)
         cls.browser.implicitly_wait(5)
         cls.browser.set_window_size(640, 320)

@@ -35,7 +35,7 @@ class SeleniumTestCase(LiveServerTestCase):
     def setUpClass(cls):
         """Instantiate browser instance."""
         super(SeleniumTestCase, cls).setUpClass()
-        cls.browser = Remote(command_executor='http://selenium-hub:4444/wd/hub',
+        cls.browser = Remote(command_executor='http://stb-selenium-hub:4444/wd/hub',
                              desired_capabilities=DesiredCapabilities.CHROME)
 
         cls.browser.implicitly_wait(5)

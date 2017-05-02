@@ -3,6 +3,8 @@ from .base import *
 
 DEBUG = True
 
+ALLOWED_HOSTS = ['*']
+
 # http://bit.ly/sorl-thumbnail-docs
 THUMBNAIL_DEBUG = True
 
