@@ -17,9 +17,9 @@
     border-radius: 30px;
     box-shadow: $sh-search;
     color: $c-search-text;
-    height: 32px;
     font-size: $f-size-base - 2;
     padding: 2px 16px 3px;
+    height: $h-search-field;
     width: 100%;
 
     &:focus {
@@ -27,9 +27,14 @@
     }
 
     .header & {
-      border-radius: 13px;
-      height: 26px;
+      height: $h-search-field + 5;
+      border-radius: 10px;
       padding: 2px 40px 3px 12px;
+
+      @include media($md) {
+        height: $h-search-field - 6;
+        border-radius: 30px;
+      }
     }
   }
 
@@ -39,12 +44,18 @@
     border: 0;
     color: $c-btn-search;
     cursor: pointer;
-    font-size: $f-size-base - 1;
+    font-size: $f-size-base + 5;
     line-height: 1;
-    padding: 5px 18px;
+    padding: 7px 20px 5px 18px;
     position: absolute;
     right: 0;
     top: 0;
+    outline: none;
+
+    @include media($md) {
+      font-size: $f-size-base - 1;
+      padding: 5px 18px;
+    }
 
     &:hover {
       color: $c-btn-search-hover;

@@ -37,9 +37,11 @@
 
   &-white {
     background: $c-application-bg;
-    border-color: $c-white;
+    border: 1px solid $c-white;
     color: $c-white;
-    font-size: $f-size-base;
+    font-size: $f-size-base - 2;
+    line-height: 0.9;
+    border-radius: 9px;
 
     &:hover {
       background: $c-btn-white-bg-hover;

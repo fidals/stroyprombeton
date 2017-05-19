@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-03-17 15:42+0000\n"
+"POT-Creation-Date: 2017-05-16 14:43+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20,357 +20,366 @@ msgstr ""
 "%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n"
 "%100>=11 && n%100<=14)? 2 : 3);\n"
 
-#: env/src/refarm-site/catalog/apps.py:7
+#: src/refarm-site/catalog/apps.py:7
 msgid "catalog"
 msgstr "каталог"
 
-#: env/src/refarm-site/catalog/models.py:44
-#: env/src/refarm-site/generic_admin/templates/admin/table_editor.html:115
+#: src/refarm-site/catalog/models.py:57
+#: src/refarm-site/generic_admin/templates/admin/table_editor.html:115
 msgid "Category"
 msgstr "Категория"
 
-#: env/src/refarm-site/catalog/models.py:45
+#: src/refarm-site/catalog/models.py:58
 msgid "Categories"
 msgstr "Категории"
 
-#: env/src/refarm-site/catalog/models.py:48
-#: env/src/refarm-site/catalog/models.py:110
-#: env/src/refarm-site/pages/models.py:45
+#: src/refarm-site/catalog/models.py:61 src/refarm-site/catalog/models.py:123
+#: src/refarm-site/pages/models.py:57
 msgid "name"
 msgstr "название"
 
-#: env/src/refarm-site/catalog/models.py:55
-#: env/src/refarm-site/pages/models.py:56 stroyprombeton/admin.py:14
+#: src/refarm-site/catalog/models.py:68 src/refarm-site/pages/models.py:68
+#: stroyprombeton/admin.py:14
 msgid "parent"
 msgstr "родитель"
 
-#: env/src/refarm-site/catalog/models.py:106
+#: src/refarm-site/catalog/models.py:119
 msgid "Product"
 msgstr "Товар"
 
-#: env/src/refarm-site/catalog/models.py:107
+#: src/refarm-site/catalog/models.py:120
 msgid "Products"
 msgstr "Товары"
 
-#: env/src/refarm-site/catalog/models.py:115
-#: env/src/refarm-site/generic_admin/filters.py:9
+#: src/refarm-site/catalog/models.py:128
+#: src/refarm-site/generic_admin/filters.py:9
 msgid "price"
 msgstr "цена"
 
-#: env/src/refarm-site/catalog/models.py:120
+#: src/refarm-site/catalog/models.py:133
 msgid "in stock"
 msgstr "наличие"
 
-#: env/src/refarm-site/catalog/models.py:125
+#: src/refarm-site/catalog/models.py:138
 msgid "is popular"
 msgstr "популярность"
 
-#: env/src/refarm-site/generic_admin/filters.py:15
+#: src/refarm-site/generic_admin/filters.py:14
 msgid "rub"
 msgstr "руб"
 
-#: env/src/refarm-site/generic_admin/filters.py:49
+#: src/refarm-site/generic_admin/filters.py:48
 msgid "has images"
 msgstr "По картинкам"
 
-#: env/src/refarm-site/generic_admin/filters.py:55
+#: src/refarm-site/generic_admin/filters.py:53
 msgid "Has images"
 msgstr "С картинками"
 
-#: env/src/refarm-site/generic_admin/filters.py:56
+#: src/refarm-site/generic_admin/filters.py:54
 msgid "Has no images"
 msgstr "Без картинок"
 
-#: env/src/refarm-site/generic_admin/filters.py:72
+#: src/refarm-site/generic_admin/filters.py:70
 msgid "has content"
 msgstr "По контенту"
 
-#: env/src/refarm-site/generic_admin/filters.py:78
+#: src/refarm-site/generic_admin/filters.py:75
 msgid "Has content"
 msgstr "С контентом"
 
-#: env/src/refarm-site/generic_admin/filters.py:79
+#: src/refarm-site/generic_admin/filters.py:76
 msgid "Has no content"
 msgstr "Без контента"
 
-#: env/src/refarm-site/generic_admin/inlines.py:25
+#: src/refarm-site/generic_admin/inlines.py:25
 msgid "Category ID"
 msgstr "ID категории"
 
-#: env/src/refarm-site/generic_admin/inlines.py:44
-#: env/src/refarm-site/generic_admin/mixins.py:109
+#: src/refarm-site/generic_admin/inlines.py:44
+#: src/refarm-site/generic_admin/mixins.py:114
 msgid "Parent ID"
 msgstr "ID родителя"
 
-#: env/src/refarm-site/generic_admin/inlines.py:51
+#: src/refarm-site/generic_admin/inlines.py:51
 msgid "Image"
 msgstr "картинка"
 
-#: env/src/refarm-site/generic_admin/inlines.py:70
+#: src/refarm-site/generic_admin/inlines.py:70
 msgid "current image"
 msgstr "текущая картинка"
 
-#: env/src/refarm-site/generic_admin/mixins.py:32
+#: src/refarm-site/generic_admin/mixins.py:32
 msgid "item was"
 msgstr "сущность была"
 
-#: env/src/refarm-site/generic_admin/mixins.py:34
+#: src/refarm-site/generic_admin/mixins.py:34
 msgid "items were"
 msgstr "сущностей было"
 
-#: env/src/refarm-site/generic_admin/mixins.py:41
+#: src/refarm-site/generic_admin/mixins.py:41
 msgid "marked as active"
 msgstr "сделать активным"
 
-#: env/src/refarm-site/generic_admin/mixins.py:47
+#: src/refarm-site/generic_admin/mixins.py:47
 msgid "marked as non-active"
 msgstr "сделать не активным"
 
-#: env/src/refarm-site/generic_admin/mixins.py:49
+#: src/refarm-site/generic_admin/mixins.py:49
 msgid "Make active"
 msgstr "Сделать активными"
 
-#: env/src/refarm-site/generic_admin/mixins.py:50
+#: src/refarm-site/generic_admin/mixins.py:50
 msgid "Make inactive"
 msgstr "Сделать неактивными"
 
-#: env/src/refarm-site/generic_admin/mixins.py:97
-#: env/src/refarm-site/generic_admin/models.py:92
+#: src/refarm-site/generic_admin/mixins.py:101
+#: src/refarm-site/generic_admin/models.py:116
 msgid "Parent"
 msgstr "Родитель"
 
-#: env/src/refarm-site/generic_admin/models.py:79
-#: env/src/refarm-site/generic_admin/templates/admin/table_editor.html:122
+#: src/refarm-site/generic_admin/models.py:103
+#: src/refarm-site/generic_admin/templates/admin/table_editor.html:122
 msgid "Price"
 msgstr "Цена"
 
-#: env/src/refarm-site/generic_admin/models.py:98
-#: env/src/refarm-site/generic_admin/models.py:122
+#: src/refarm-site/generic_admin/models.py:122
+#: src/refarm-site/generic_admin/models.py:146
 msgid "Id"
 msgstr ""
 
-#: env/src/refarm-site/generic_admin/models.py:108
+#: src/refarm-site/generic_admin/models.py:132
 msgid "Link"
 msgstr "Ссылка"
 
-#: env/src/refarm-site/generic_admin/templates/admin/base.html:44
+#: src/refarm-site/generic_admin/templates/admin/base.html:45
 msgid "Welcome,"
-msgstr ""
+msgstr "Добро пожаловать,"
 
-#: env/src/refarm-site/generic_admin/templates/admin/base.html:49
+#: src/refarm-site/generic_admin/templates/admin/base.html:50
 msgid "View site"
-msgstr ""
+msgstr "Перейти на сайт"
 
-#: env/src/refarm-site/generic_admin/templates/admin/base.html:54
+#: src/refarm-site/generic_admin/templates/admin/base.html:55
 msgid "Documentation"
-msgstr ""
+msgstr "Документация"
 
-#: env/src/refarm-site/generic_admin/templates/admin/base.html:58
+#: src/refarm-site/generic_admin/templates/admin/base.html:59
 msgid "Change password"
-msgstr ""
+msgstr "Сменить пароль"
 
-#: env/src/refarm-site/generic_admin/templates/admin/base.html:60
+#: src/refarm-site/generic_admin/templates/admin/base.html:61
 msgid "Log out"
-msgstr ""
+msgstr "Выйти"
 
-#: env/src/refarm-site/generic_admin/templates/admin/base.html:71
-#: env/src/refarm-site/generic_admin/templates/admin/change_form.html:24
+#: src/refarm-site/generic_admin/templates/admin/base.html:72
+#: src/refarm-site/generic_admin/templates/admin/change_form.html:24
 msgid "Home"
-msgstr ""
+msgstr "Домашняя страница"
 
-#: env/src/refarm-site/generic_admin/templates/admin/change_form.html:30
+#: src/refarm-site/generic_admin/templates/admin/change_form.html:30
 msgid "Add"
-msgstr ""
+msgstr "Добавить"
 
-#: env/src/refarm-site/generic_admin/templates/admin/change_form.html:43
+#: src/refarm-site/generic_admin/templates/admin/change_form.html:43
 msgid "History"
-msgstr ""
+msgstr "История"
 
-#: env/src/refarm-site/generic_admin/templates/admin/change_form.html:46
+#: src/refarm-site/generic_admin/templates/admin/change_form.html:46
 msgid "View on site"
-msgstr ""
+msgstr "Смотреть на сайте"
 
-#: env/src/refarm-site/generic_admin/templates/admin/change_form.html:62
-#: env/src/refarm-site/generic_admin/templates/admin/login.html:24
+#: src/refarm-site/generic_admin/templates/admin/change_form.html:62
+#: src/refarm-site/generic_admin/templates/admin/login.html:24
 msgid "Please correct the error below."
-msgstr ""
+msgstr "Пожалуйста, исправьте ошибку ниже."
 
-#: env/src/refarm-site/generic_admin/templates/admin/change_form.html:63
-#: env/src/refarm-site/generic_admin/templates/admin/login.html:25
+#: src/refarm-site/generic_admin/templates/admin/change_form.html:63
+#: src/refarm-site/generic_admin/templates/admin/login.html:25
 msgid "Please correct the errors below."
-msgstr ""
+msgstr "Пожалуйста, исправьте ошибки ниже."
 
-#: env/src/refarm-site/generic_admin/templates/admin/includes/sidebar.html:13
-#: env/src/refarm-site/generic_admin/views.py:300
+#: src/refarm-site/generic_admin/templates/admin/includes/sidebar.html:13
+#: src/refarm-site/generic_admin/views.py:305
 msgid "Table editor"
 msgstr "Табличный редактор"
 
-#: env/src/refarm-site/generic_admin/templates/admin/login.html:41
+#: src/refarm-site/generic_admin/templates/admin/login.html:41
 #, python-format
 msgid ""
 "You are authenticated as %(username)s, but are not authorized to access this "
 "page. Would you like to login to a different account?"
 msgstr ""
 
-#: env/src/refarm-site/generic_admin/templates/admin/login.html:61
+#: src/refarm-site/generic_admin/templates/admin/login.html:61
 msgid "Forgotten your password or username?"
-msgstr ""
+msgstr "Забыли пароль или имя пользователя?"
 
-#: env/src/refarm-site/generic_admin/templates/admin/login.html:65
+#: src/refarm-site/generic_admin/templates/admin/login.html:65
 msgid "Log in"
-msgstr ""
+msgstr "Войти"
 
-#: env/src/refarm-site/generic_admin/templates/admin/table_editor.html:14
+#: src/refarm-site/generic_admin/templates/admin/table_editor.html:14
 msgid "Show filters"
 msgstr "Показать фильтры"
 
-#: env/src/refarm-site/generic_admin/templates/admin/table_editor.html:20
+#: src/refarm-site/generic_admin/templates/admin/table_editor.html:20
 msgid "Filter fields"
 msgstr "Поля фильтра"
 
-#: env/src/refarm-site/generic_admin/templates/admin/table_editor.html:35
+#: src/refarm-site/generic_admin/templates/admin/table_editor.html:35
 msgid "Sorting fields"
 msgstr "Поля сортировки"
 
-#: env/src/refarm-site/generic_admin/templates/admin/table_editor.html:41
+#: src/refarm-site/generic_admin/templates/admin/table_editor.html:41
 msgid "Update table editor"
 msgstr "Обновить табличный редактор"
 
-#: env/src/refarm-site/generic_admin/templates/admin/table_editor.html:44
+#: src/refarm-site/generic_admin/templates/admin/table_editor.html:44
 msgid "Drop filters"
 msgstr "Сбросить фильтры"
 
-#: env/src/refarm-site/generic_admin/templates/admin/table_editor.html:51
+#: src/refarm-site/generic_admin/templates/admin/table_editor.html:51
 msgid "Search"
 msgstr "Поиск"
 
-#: env/src/refarm-site/generic_admin/templates/admin/table_editor.html:53
+#: src/refarm-site/generic_admin/templates/admin/table_editor.html:53
 msgid "Enter product name, product ID, category name or price..."
 msgstr "Введите название продукта, id продукта, название категории или цену"
 
-#: env/src/refarm-site/generic_admin/templates/admin/table_editor.html:62
-#: env/src/refarm-site/generic_admin/templates/admin/table_editor.html:98
+#: src/refarm-site/generic_admin/templates/admin/table_editor.html:62
+#: src/refarm-site/generic_admin/templates/admin/table_editor.html:98
 msgid "Add new product"
 msgstr "Добавить новый товар"
 
-#: env/src/refarm-site/generic_admin/templates/admin/table_editor.html:75
+#: src/refarm-site/generic_admin/templates/admin/table_editor.html:75
 msgid "Are you sure, that you want to delete"
 msgstr "Вы уверены, что хотите удалить"
 
-#: env/src/refarm-site/generic_admin/templates/admin/table_editor.html:79
+#: src/refarm-site/generic_admin/templates/admin/table_editor.html:79
 msgid "Accept"
 msgstr "Подтвердить"
 
-#: env/src/refarm-site/generic_admin/templates/admin/table_editor.html:82
-#: env/src/refarm-site/generic_admin/templates/admin/table_editor.html:132
+#: src/refarm-site/generic_admin/templates/admin/table_editor.html:82
+#: src/refarm-site/generic_admin/templates/admin/table_editor.html:132
 msgid "Cancel"
 msgstr "Отменить"
 
-#: env/src/refarm-site/generic_admin/templates/admin/table_editor.html:101
+#: src/refarm-site/generic_admin/templates/admin/table_editor.html:101
 msgid "New product was successfully added"
 msgstr "Новый продукт был успешно сохранён"
 
-#: env/src/refarm-site/generic_admin/templates/admin/table_editor.html:108
+#: src/refarm-site/generic_admin/templates/admin/table_editor.html:108
 msgid "Name"
 msgstr "Имя"
 
-#: env/src/refarm-site/generic_admin/templates/admin/table_editor.html:135
+#: src/refarm-site/generic_admin/templates/admin/table_editor.html:135
 msgid "Refresh table editor"
 msgstr "Обновить табличный редактор"
 
-#: env/src/refarm-site/generic_admin/templates/admin/table_editor.html:138
+#: src/refarm-site/generic_admin/templates/admin/table_editor.html:138
 msgid "Save product"
 msgstr "Сохранить товар"
 
-#: env/src/refarm-site/images/models.py:49
-#: env/src/refarm-site/images/models.py:64
+#: src/refarm-site/images/models.py:49 src/refarm-site/images/models.py:64
 msgid "image"
 msgstr "картинка"
 
-#: env/src/refarm-site/images/models.py:50
+#: src/refarm-site/images/models.py:50
 msgid "images"
 msgstr "картинки"
 
-#: env/src/refarm-site/images/models.py:60
-#: env/src/refarm-site/pages/models.py:22
+#: src/refarm-site/images/models.py:60 src/refarm-site/pages/models.py:21
+#: src/refarm-site/pages/models.py:97
 msgid "title"
 msgstr "заголовок"
 
-#: env/src/refarm-site/images/models.py:61
-#: env/src/refarm-site/pages/models.py:59
+#: src/refarm-site/images/models.py:61 src/refarm-site/pages/models.py:71
 msgid "slug"
 msgstr ""
 
-#: env/src/refarm-site/images/models.py:62
-#: env/src/refarm-site/pages/models.py:20
+#: src/refarm-site/images/models.py:62 src/refarm-site/pages/models.py:20
+#: src/refarm-site/pages/models.py:95
 msgid "description"
 msgstr "описание"
 
-#: env/src/refarm-site/images/models.py:63
+#: src/refarm-site/images/models.py:63
 msgid "created"
 msgstr "дата создания"
 
-#: env/src/refarm-site/images/models.py:65
+#: src/refarm-site/images/models.py:65
 msgid "is main"
 msgstr "главная"
 
-#: env/src/refarm-site/pages/apps.py:7
+#: src/refarm-site/pages/apps.py:7
 msgid "pages"
 msgstr "страницы"
 
-#: env/src/refarm-site/pages/models.py:19
+#: src/refarm-site/pages/models.py:19 src/refarm-site/pages/models.py:94
 msgid "keywords"
 msgstr "ключевые слова"
 
-#: env/src/refarm-site/pages/models.py:21
+#: src/refarm-site/pages/models.py:22 src/refarm-site/pages/models.py:96
 msgid "seo text"
 msgstr "seo текст"
 
-#: env/src/refarm-site/pages/models.py:42
+#: src/refarm-site/pages/models.py:25
+msgid "Page Template"
+msgstr "Шаблон"
+
+#: src/refarm-site/pages/models.py:26
+msgid "Page Templates"
+msgstr "Шаблоны"
+
+#: src/refarm-site/pages/models.py:54
 msgid "Page"
 msgstr "Страница"
 
-#: env/src/refarm-site/pages/models.py:43
+#: src/refarm-site/pages/models.py:55
 msgid "Pages"
 msgstr "Страницы"
 
-#: env/src/refarm-site/pages/models.py:64
+#: src/refarm-site/pages/models.py:76
 msgid "is active"
 msgstr "активность"
 
-#: env/src/refarm-site/pages/models.py:66
+#: src/refarm-site/pages/models.py:78
 msgid "position"
 msgstr "позиция"
 
-#: env/src/refarm-site/pages/models.py:67
+#: src/refarm-site/pages/models.py:79
 msgid "content"
 msgstr "контент"
 
-#: env/src/refarm-site/pages/models.py:72
+#: src/refarm-site/pages/models.py:84
 msgid "date published"
 msgstr "дата публикации"
 
-#: env/src/refarm-site/pages/models.py:77
+#: src/refarm-site/pages/models.py:89
 msgid "This field will be shown in the breadcrumbs, menu items and etc."
 msgstr "Это поле будет отображаться в хлебных крошках, меню и т.д."
 
-#: env/src/refarm-site/pages/models.py:78
+#: src/refarm-site/pages/models.py:90
 msgid "menu title"
 msgstr "заголовок в меню"
 
-#: env/src/refarm-site/pages/models.py:176
+#: src/refarm-site/pages/models.py:102
+msgid "page template"
+msgstr "шаблон"
+
+#: src/refarm-site/pages/models.py:232
 msgid "Custom Page"
 msgstr "Служебная страница"
 
-#: env/src/refarm-site/pages/models.py:177
+#: src/refarm-site/pages/models.py:233
 msgid "Custom Pages"
 msgstr "Служебные страницы"
 
-#: env/src/refarm-site/pages/models.py:189
+#: src/refarm-site/pages/models.py:245
 msgid "Flat Page"
 msgstr "Простая страница"
 
-#: env/src/refarm-site/pages/models.py:190
+#: src/refarm-site/pages/models.py:246
 msgid "Flat Pages"
 msgstr "Простые страницы"
 
@@ -390,11 +399,15 @@ msgstr "отзывы клиентов"
 msgid "Stroyprombeton administration"
 msgstr "Админка Stroyprombeton"
 
+#: stroyprombeton/apps.py:7
+msgid "Stroyprombeton"
+msgstr "Стройпромбетон"
+
 #: stroyprombeton/models.py:21 stroyprombeton/models.py:48
 msgid "specification"
 msgstr "документация"
 
-#: stroyprombeton/models.py:38 stroyprombeton/models.py:66
+#: stroyprombeton/models.py:38 stroyprombeton/models.py:69
 msgid "category"
 msgstr "категория"
 
@@ -442,29 +455,33 @@ msgstr "диаметр внешний"
 msgid "diameter in"
 msgstr "диаметр внутренний"
 
-#: stroyprombeton/models.py:67
+#: stroyprombeton/models.py:70
 msgid "categories"
 msgstr "категории"
 
-#: stroyprombeton/models.py:77
+#: stroyprombeton/models.py:80
 msgid "product"
 msgstr "товар"
 
-#: stroyprombeton/models.py:78
+#: stroyprombeton/models.py:81
 msgid "products"
 msgstr "товары"
 
-#: stroyprombeton/models.py:98 stroyprombeton/models.py:99
+#: stroyprombeton/models.py:101 stroyprombeton/models.py:102
 msgid "News"
 msgstr "Новости"
 
-#: stroyprombeton/models.py:107 stroyprombeton/models.py:108
+#: stroyprombeton/models.py:110 stroyprombeton/models.py:111
 msgid "Regions"
 msgstr "Регионы"
 
-#: stroyprombeton/models.py:116 stroyprombeton/models.py:117
+#: stroyprombeton/models.py:119 stroyprombeton/models.py:120
 msgid "Client feedbacks"
 msgstr "Отзывы клиентов"
+
+#: stroyprombeton/settings/base.py:126
+msgid "Russian"
+msgstr ""
 
 #: stroyprombeton/views/admin.py:10
 #, python-format

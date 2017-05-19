@@ -40,14 +40,32 @@
       <div class="row">
         <div class="col-xs-12 col-sm-8 col-lg-7 col-lg-offset-1">
           <div class="center-xs start-sm application-title">
-            Оставьте свою заявку, мы вам перезвоним, как только оператор будет свободен.
+            <ul class="application-contacts">
+              <li class="application-contacts-item">
+                СПб
+                <a class="application-contacts-link" href="{{ site_info.phone.spb_1_url }}">
+                  {{ site_info.phone.spb_1 }}
+                </a>
+              </li>
+              <li class="application-contacts-item">
+                Мск
+                <a class="application-contacts-link" href="{{ site_info.phone.moscow_1_url }}">
+                  {{ site_info.phone.moscow_1 }}
+                </a>
+              </li>
+              <li class="application-contacts-item">
+                <a class="application-contacts-link" href="mailto:{{ site_info.email }}">
+                  {{ site_info.email }}
+                </a>
+              </li>
+            </ul>
           </div>
         </div>
 
         <div class="col-xs-12 col-sm-4 col-md-3 center-xs start-sm end-md">
           <div class="application-btn">
             <button class="btn btn-white js-open-modal"
-                    data-modal-id="backcall-modal">Свяжитесь со мной</button>
+                    data-modal-id="backcall-modal">Заказать звонок</button>
           </div>
         </div>
       </div>

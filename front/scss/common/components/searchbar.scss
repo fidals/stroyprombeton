@@ -3,10 +3,11 @@
 .searchbar {
   @include transition(background-color);
   background: $c-nav-bg;
-  height: $h-searchbar;
+  height: $h-searchbar + 11;
   padding: 3px 0 0;
 
   @include media($md) {
+    height: $h-searchbar;
     background: $c-searchbar-bg;
     padding: 0;
   }
@@ -16,7 +17,7 @@
       background: none;
       padding: 0;
       position: relative;
-      top: 390px;
+      top: 380px;
       z-index: 1;
     }
   }
@@ -65,6 +66,26 @@
 
     &-link:hover {
       color: $c-application-bg;
+    }
+  }
+
+  &.searchbar-banner {
+    .searchbar-contacts-wrap {
+      @include media($md) {
+        padding-top: 0;
+      }
+    }
+
+    .search {
+      &-field {
+        border-radius: 10px;
+        height: $h-search-field + 5;
+      }
+
+      &-btn {
+        font-size: $f-size-base + 5;
+        padding: 7px 20px 5px 18px;
+      }
     }
   }
 }

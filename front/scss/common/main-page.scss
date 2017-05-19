@@ -85,23 +85,65 @@
   color: $c-white;
   padding: 15px 0;
 
-  @include media($md) {
-    height: 63px;
+  @include media($sm) {
     padding: 0;
+  }
+
+  @include media($md) {
+    height: 45px;
   }
 
   &-title {
     font-size: $f-size-base - 2;
     margin: 0 0 15px;
+  }
+
+  &-contacts {
+    padding-top: 0;
+
+    @include media($sm) {
+      padding-top: 11px;
+    }
 
     @include media($md) {
-      margin: 22px 0 0;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    &-item {
+      @include white-text-shadow;
+      color: $c-white;
+      font-size: $f-size-base - 1;
+      font-weight: 600;
+
+      @include media($lg) {
+        font-size: $f-size-base;
+      }
+    }
+
+    &-item:last-of-type {
+      @include media($lg) {
+        margin-right: 0;
+      }
+    }
+
+    &-link {
+      color: $c-white;
+    }
+
+    &-link:hover {
+      color: $c-btn-white-bg-hover;
     }
   }
 
   &-btn {
+    @include media($sm) {
+      line-height: 5;
+    }
+
     @include media($md) {
-      margin: 10px 0 0;
+      margin: 6px 0 0;
+      line-height: 1;
     }
   }
 }

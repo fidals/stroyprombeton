@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/1.9/ref/settings/
 
 import os
 from datetime import datetime
+from django.utils.translation import ugettext_lazy as _
 import dj_database_url
 
 
@@ -120,6 +121,10 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_L10N = True
 USE_TZ = True
+
+LANGUAGES = [
+    ('ru', _('Russian')),
+]
 
 LOCALE_PATHS = [os.path.join(BASE_DIR, 'stroyprombeton/locale')]
 FORMAT_MODULE_PATH = [

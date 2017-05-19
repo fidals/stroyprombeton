@@ -8,6 +8,11 @@
     $searchField: $('.js-search-field'),
     $btnScrollTop: $('#btn-scroll-to-top'),
     bannerClass: 'searchbar-banner',
+    $searchbarWrap: $('.searchbar-wrap'),
+    $searchbarContactsWrap: $('.searchbar-contacts-wrap'),
+    searchbarClasses: 'col-md-4',
+    searchbarIndexClasses: 'col-md-11 col-lg-10',
+    searchbarContactsClasses: 'col-xs-12 col-md-8 col-lg-6'
   };
 
   const searchbarInitTopValue = parseInt(DOM.$searchbar.css('top'), 10);
@@ -48,6 +53,13 @@
    */
   function moveSearchBar() {
     if (!DOM.$application.length) return;
+
+    if (DOM.$searchbar.hasClass('searchbar-banner')) {
+      DOM.$searchbarContactsWrap.hide();
+    } else {
+      DOM.$searchbarContactsWrap.show();
+    }
+
     const scrollTop = $(window).scrollTop();
     const offset = DOM.$application.offset().top - DOM.$nav.height();
 
@@ -55,8 +67,14 @@
 
     if (scrollTop > offset) {
       DOM.$searchbar.removeClass(DOM.bannerClass);
+      DOM.$searchbarWrap.removeClass(DOM.searchbarIndexClasses);
+      DOM.$searchbarWrap.addClass(DOM.searchbarClasses);
+      DOM.$searchbarContactsWrap.addClass(DOM.searchbarContactsClasses);
     } else {
       DOM.$searchbar.addClass(DOM.bannerClass);
+      DOM.$searchbarContactsWrap.removeClass(DOM.searchbarContactsClasses);
+      DOM.$searchbarWrap.removeClass(DOM.searchbarClasses);
+      DOM.$searchbarWrap.addClass(DOM.searchbarIndexClasses);
     }
   }
 
