@@ -18,7 +18,7 @@
         {% endif %}
       </a>
       <div class="newslist-item-title">
-        <a class="newslist-title-link" href="{{ page.url }}">{{ page.title }}</a>
+        <a class="newslist-title-link" href="{{ page.url }}">{{ page.display_title }}</a>
       </div>
       <div class="news-date">
         {% with page_extra_info=page.content|get_page_metadata %}
@@ -30,7 +30,7 @@
         {% endwith %}
       </div>
       <div class="newslist-item-text">
-        {{ page.description|truncatechars:190 }}
+        {{ page.display_description|truncatechars:190 }}
       </div>
 
       <div class="newslist-item-more">

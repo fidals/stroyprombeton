@@ -398,7 +398,7 @@ class Search(SeleniumTestCase):
     def test_search_by_id(self):
         """We able to search by Product id."""
         product = Product.objects.first()
-        [product_id, product_h1] = [product.id, product.page.h1]
+        [product_id, product_h1] = [product.id, product.page.display_h1]
         button_submit = self.browser.find_element_by_id('search-btn')
 
         self.input.clear()

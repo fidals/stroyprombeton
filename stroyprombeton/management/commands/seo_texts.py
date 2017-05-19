@@ -7,8 +7,6 @@ from django.db.models.expressions import Q
 
 from stroyprombeton.models import ProductPage, CategoryPage
 
-# https://goo.gl/5qYGp1
-flag_symbol = '\U0001F6A9'
 
 product_page = {
     'content': '''
@@ -17,76 +15,15 @@ product_page = {
 У нас нет фиксированный цены доставки, поэтому звоните менеджеру, чтобы ее узнать.
 Менеджер поможет выбрать способ доставки, рассчитает стоимость и назовет срок.
 Следим за тем, чтобы изделия доставляли без дефектов, поэтому даем гарантию.''',
-    'title': '{} - {}. Цена: {}. {}. Купить с доставкой по Москве, Санкт-Петербург и всей России',
-    'keywords': '{} {}',
-    'description': flag_symbol + ' Купить {} {} на заводе железобетонных изделий "СТК-Промбетон"',
-}
-
-category_page = {
-    'title': '{} - низкие цены от производителя. Купить с доставкой по Москве, Санкт-Петербург и '
-             'всей России',
-    'description': flag_symbol + ' Купить {} на заводе железобетонных изделий «СТК-Промбетон»',
-    'keywords': '{}',
 }
 
 population_settings = [
-    {
-        'populate_model': CategoryPage,
-        'populate_fields': {
-            'title': {
-                'template': {
-                    'text': category_page['title'],
-                    'variables': ['h1'],
-                },
-            },
-            'description': {
-                'template': {
-                    'text': category_page['description'],
-                    'variables': ['h1'],
-                },
-            },
-            'keywords': {
-                'template': {
-                    'text': category_page['keywords'],
-                    'variables': ['h1'],
-                },
-            },
-        },
-    },
     {
         'populate_model': ProductPage,
         'populate_fields': {
             'content': {
                 'template': {
                     'text': product_page['content'],
-                    'variables': ['name', 'model.mark'],
-                },
-            },
-            'title': {
-                'template': {
-                    'text': product_page['title'],
-                    'variables': [
-                        'model.mark', 'name', 'model.price', 'model.category.specification'
-                    ],
-                    'correction': {
-                        'model.price': (
-                            lambda e, v: v + ' руб'
-                            if not float(v) == 0 else
-                            'по запросу'
-                        ),
-                        'name': lambda e, v: v.replace(e.model.mark, ''),
-                    }
-                },
-            },
-            'description': {
-                'template': {
-                    'text': product_page['description'],
-                    'variables': ['name', 'model.mark'],
-                },
-            },
-            'keywords': {
-                'template': {
-                    'text': product_page['keywords'],
                     'variables': ['name', 'model.mark'],
                 },
             },

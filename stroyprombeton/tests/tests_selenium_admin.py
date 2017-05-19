@@ -272,7 +272,7 @@ class AdminPage(SeleniumTestCase, HelpersMixin, AdminMixin):
         # self.open_js_tree_nodes()
         # tree_item = (self.browser.find_element_by_id(self.root_category_id)
         #              .find_element_by_tag_name('a'))
-        # category_h1 = Category.objects.get(id=self.root_category_id).page.h1
+        # category_h1 = Category.objects.get(id=self.root_category_id).page.display_h1
         #
         # # open context menu and click at redirect to site's page
         # self.context_click(tree_item)

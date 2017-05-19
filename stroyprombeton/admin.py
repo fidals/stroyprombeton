@@ -102,6 +102,7 @@ class StbCategoryPageAdmin(admin_models.CategoryPageAdmin):
 stb_admin_site = StbAdminSite(name='stb_admin')
 
 # Pages
+stb_admin_site.register(pages_models.PageTemplate, admin_models.CustomPageTemplateAdmin)
 stb_admin_site.register(pages_models.CustomPage, StbCustomPageAdmin)
 stb_admin_site.register(pages_models.FlatPage, StbFlatPageAdmin)
 
