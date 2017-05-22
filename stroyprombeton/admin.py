@@ -51,6 +51,15 @@ class StbImageInline(inlines.ImageInline):
 class StbCategoryInline(inlines.CategoryInline):
     model = stb_models.Category
 
+    fieldsets = ((None, {
+        'classes': ('primary-chars', ),
+        'fields': (
+            ('name', 'id'),
+            ('parent', 'correct_parent_id'),
+            ('specification', ),
+        )
+    }),)
+
 
 class StbCustomPageAdmin(admin_models.CustomPageAdmin):
     form = CustomWidgetsForm
