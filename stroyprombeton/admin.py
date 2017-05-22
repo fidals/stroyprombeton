@@ -28,6 +28,33 @@ class ParentFilter(admin.SimpleListFilter):
         return queryset.filter(parent__slug=self.value())
 
 
+class SpecificationFilter(admin.SimpleListFilter):
+
+    title = _('specification')
+    parameter_name = 'specification'
+
+    def lookups(self, request, model_admin):
+        return (
+            ('yes', _('Has specification')),
+            ('no', _('Has no specification')),
+        )
+
+    def queryset(self, request, queryset):
+
+        if not self.value():
+            return
+
+        related_model_name = queryset.first().related_model_name
+        lookup = {
+            '{}__specification'.format(related_model_name): '',
+        }
+        without_spec = self.value() == 'no'
+        return (
+            queryset.filter(**lookup) if without_spec
+            else queryset.exclude(**lookup)
+        )
+
+
 class CustomWidgetsForm(forms.ModelForm):
     class Meta:
         widgets = {
@@ -106,6 +133,12 @@ class StbProductPageAdmin(admin_models.ProductPageAdmin):
 class StbCategoryPageAdmin(admin_models.CategoryPageAdmin):
     form = CustomWidgetsForm
     inlines = [StbCategoryInline, StbImageInline]
+    list_filter = [
+        'is_active',
+        filters.HasContent,
+        filters.HasImages,
+        SpecificationFilter,
+    ]
 
 
 stb_admin_site = StbAdminSite(name='stb_admin')
