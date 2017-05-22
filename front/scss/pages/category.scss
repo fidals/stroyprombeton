@@ -33,6 +33,14 @@
     }
   }
 
+  &-w {
+    @include media($md) {
+      margin-right: $m-category-filter-margin-right;
+      flex-basis: 20.667%;
+      max-width: 20.667%;
+    }
+  }
+
   &-title {
     border-bottom: 1px solid $c-table-border;
     font-weight: 600;
@@ -51,10 +59,6 @@
 
   &-item {
     margin-bottom: 25px;
-
-    @include media($sm) {
-      margin-bottom: 15px;
-    }
   }
 
   &-link {
