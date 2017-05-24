@@ -1,7 +1,7 @@
 {% load stb_extras %}
 
 <div class="container container-fluid">
-  <h1 class="heading-h1">{{ page.display_h1 }} {{ product.mark }}</h1>
+  <h1 class="heading-h1" itemprop="name">{{ page.display_h1 }} {{ product.mark }}</h1>
   {% if category %}
   <p id="js-category-description">
     <br>

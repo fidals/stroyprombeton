@@ -5,120 +5,131 @@
 
 {% block content %}
   {% include 'components/breadcrumbs.html' with page=page only %}
-  {% include 'components/page_h1.html' with page=page product=product only %}
 
-  <section class="product-serial">
-    <div class="container container-fluid">
-      {% if product.code %}
-        <span class="product-serial-title">Код</span>
-        <span class="product-serial-val">{{ product.code }}</span>
-      {% endif %}
+  <div itemscope itemtype="http://schema.org/Product">
 
-      {% if product.specification %}
-        <span class="product-serial">
-          <span class="product-serial-title">Серия</span>
-          <a href="{{ product.category.url }}" class="product-serial-val link-on-top-level">
-            {{ product.specification }}
+    {% include 'components/page_h1.html' with page=page product=product only %}
+
+    <section class="product-serial">
+      <div class="container container-fluid">
+        {% if product.code %}
+          <span class="product-serial-title">Код</span>
+          <span class="product-serial-val">{{ product.code }}</span>
+        {% endif %}
+
+        {% if product.specification %}
+          <span class="product-serial">
+            <span class="product-serial-title">Серия</span>
+            <a href="{{ product.category.url }}" class="product-serial-val link-on-top-level">
+              {{ product.specification }}
+            </a>
+          </span>
+        {% endif %}
+
+        {% if product.mark %}
+          <span class="product-serial-title">Марка</span>
+          <span class="product-serial-val">{{ product.mark }}</span>
+        {% endif %}
+
+          <a class="category-price" href="{% url 'product_pdf' product.category.id %}">
+            Скачать прайс <sup>[PDF]</sup>
           </a>
-        </span>
-      {% endif %}
+      </div>
+    </section>
 
-      {% if product.mark %}
-        <span class="product-serial-title">Марка</span>
-        <span class="product-serial-val">{{ product.mark }}</span>
-      {% endif %}
-
-        <a class="category-price" href="{% url 'product_pdf' product.category.id %}">
-          Скачать прайс <sup>[PDF]</sup>
-        </a>
-    </div>
-  </section>
-
-  <section class="product-info">
-    <div class="container container-fluid">
-      <div class="row">
-        <div class="col-xs-12 col-md-7 col-lg-6 col-lg-offset-1">
-          <div class="product-img-wrapper js-photoswipe">
-            {% include 'catalog/product_image.html' with product=product only %}
+    <section class="product-info">
+      <div class="container container-fluid">
+        <div class="row">
+          <div class="col-xs-12 col-md-7 col-lg-6 col-lg-offset-1">
+            <div class="product-img-wrapper js-photoswipe">
+              {% include 'catalog/product_image.html' with product=product only %}
+            </div>
           </div>
-        </div>
 
-        <div class="col-xs-12 col-md-5">
-          <div class="product-characteristics row">
-            <div class="col-xs-12 col-md-8">
-              <table class="product-characteristics-table table">
-                <colgroup>
-                  <col class="product-characteristics-table-col-key">
-                  <col class="product-characteristics-table-col-value">
-                </colgroup>
-                {% show_field_if_exist product.length 'Длина (мм)' %}
-                {% show_field_if_exist product.width 'Ширина (мм)' %}
-                {% show_field_if_exist product.height 'Высота (мм)' %}
-                {% show_field_if_exist product.diameter_out 'Внешний диаметр (мм)' %}
-                {% show_field_if_exist product.diameter_in 'Внутренний диаметр (мм)' %}
-                {% show_field_if_exist product.weight|floatformat:'0' 'Масса (кг)' %}
-                {% show_field_if_exist product.volume 'Объем (м<sup>3</sup>)' %}
+          <div class="col-xs-12 col-md-5">
+            <div class="product-characteristics row">
+              <div class="col-xs-12 col-md-8">
+                <table class="product-characteristics-table table">
+                  <colgroup>
+                    <col class="product-characteristics-table-col-key">
+                    <col class="product-characteristics-table-col-value">
+                  </colgroup>
+                  {% show_field_if_exist product.length 'Длина (мм)' %}
+                  {% show_field_if_exist product.width 'Ширина (мм)' %}
+                  {% show_field_if_exist product.height 'Высота (мм)' %}
+                  {% show_field_if_exist product.diameter_out 'Внешний диаметр (мм)' %}
+                  {% show_field_if_exist product.diameter_in 'Внутренний диаметр (мм)' %}
+                  {% show_field_if_exist product.weight|floatformat:'0' 'Масса (кг)' %}
+                  {% show_field_if_exist product.volume 'Объем (м<sup>3</sup>)' %}
+                </table>
+              </div>
+            </div>
+            <div class="product-order">
+              <table class="product-order-table table">
+                <tr>
+                  <th class="product-order-table-th">Цена</th>
+                  <th class="product-order-table-th">Кол-во</th>
+                  <th class="product-order-table-th">Итог</th>
+                </tr>
+                <tr>
+                  <td class="product-order-table-col-price js-product-price">
+                    <div itemprop="offers" itemscope itemtype="http://schema.org/Offer">
+                      {{ product.price|format_price }}
+                      <meta itemprop="price" content="{{ product.price|floatformat:2 }}">
+                      <meta itemprop="priceCurrency" content="RUB">
+                    </div>
+                  </td>
+                  <td class="product-order-table-col-count">
+                    {% include 'catalog/count_input.html' %}
+                  </td>
+                  <td class="product-order-table-col-total">
+                    <span class="js-product-sum">{{ product.price|format_price }}</span>
+                  </td>
+                </tr>
               </table>
+
+              <div class="public-offer product-order-public-offer">Не является публичной офертой</div>
+
+              <div class="product-order-submit">
+                <button class="btn buy-product" id="buy-product" data-product-id="{{ product.id }}"
+                        type="submit">Заказать</button>
+              </div>
+
             </div>
           </div>
-          <div class="product-order">
-            <table class="product-order-table table">
-              <tr>
-                <th class="product-order-table-th">Цена</th>
-                <th class="product-order-table-th">Кол-во</th>
-                <th class="product-order-table-th">Итог</th>
-              </tr>
-              <tr>
-                <td class="product-order-table-col-price js-product-price">
-                  {{ product.price|format_price }}
-                </td>
-                <td class="product-order-table-col-count">
-                  {% include 'catalog/count_input.html' %}
-                </td>
-                <td class="product-order-table-col-total">
-                  <span class="js-product-sum">{{ product.price|format_price }}</span>
-                </td>
-              </tr>
-            </table>
+        </div>
 
-            <div class="public-offer product-order-public-offer">Не является публичной офертой</div>
-
-            <div class="product-order-submit">
-              <button class="btn buy-product" id="buy-product" data-product-id="{{ product.id }}"
-                      type="submit">Заказать</button>
+        <div class="row">
+          <div class="col-xs-12 col-lg-offset-1">
+            <h2 class="product-describe-title">
+              О доставке {{ page.display_h1 }} марки {{ product.mark }}
+            </h2>
+            <div class="product-describe-text">
+              <span itemprop="description">
+                <p>
+                Организуем доставку {{ page.display_h1 }} марки {{ product.mark }} по всей России автомобильным, железнодорожным, водным транспортом. Можно воспользоваться самовывозом.
+                </p>
+                <br>
+                <p>
+                У нас нет фиксированной цены доставки, поэтому звоните менеджеру, чтобы ее узнать. Менеджер поможет выбрать способ доставки, рассчитает стоимость и назовет срок.
+                </p>
+                <br>
+                <p>
+                На каждое изделие выдается паспорт в соответствии с ГОСТ 13015-2012.
+                </p>
+              </span>
+              <br>
+                Тип изделия &mdash; <a href="{{ product_categories.0.url }}" class="link-on-top-level">{{ product_categories.0.name }};</a> класс &mdash; <a href="{{ product_categories.1.url }}" class="link-on-top-level">{{ product_categories.1.name }};</a> вид &mdash; <a href="{{ product_categories.2.url }}" class="link-on-top-level">{{ product_categories.2.name }}.</a>
+              </p>
+              <br>
             </div>
-
           </div>
         </div>
-      </div>
 
-      <div class="row">
-        <div class="col-xs-12 col-lg-offset-1">
-          <h2 class="product-describe-title">
-            О доставке {{ page.display_h1 }} марки {{ product.mark }}
-          </h2>
-          <div class="product-describe-text">
-            <p>
-            Организуем доставку {{ page.display_h1 }} марки {{ product.mark }} по всей России автомобильным, железнодорожным, водным транспортом. Можно воспользоваться самовывозом.
-            </p>
-            <br>
-            <p>
-            У нас нет фиксированной цены доставки, поэтому звоните менеджеру, чтобы ее узнать. Менеджер поможет выбрать способ доставки, рассчитает стоимость и назовет срок.
-            </p>
-            <br>
-            <p>
-            На каждое изделие выдается паспорт в соответствии с ГОСТ 13015-2012.
-            </p>
-            <br>
-              Тип изделия &mdash; <a href="{{ product_categories.0.url }}" class="link-on-top-level">{{ product_categories.0.name }};</a> класс &mdash; <a href="{{ product_categories.1.url }}" class="link-on-top-level">{{ product_categories.1.name }};</a> вид &mdash; <a href="{{ product_categories.2.url }}" class="link-on-top-level">{{ product_categories.2.name }}.</a>
-            </p>
-            <br>
-          </div>
-        </div>
       </div>
+    </section>
 
-    </div>
-  </section>
+  </div>
 
   {% if sibling_with_images %}
     {% include 'catalog/product_siblings.html' with sibling_with_images=sibling_with_images only %}
