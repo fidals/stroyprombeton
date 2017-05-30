@@ -10,25 +10,7 @@
     <div class="row">
       <div class="col-xs-12 col-sm-7 col-sm-offset-2">
         <form method="post">{% csrf_token %}
-          {% for field in form %}
-            <div class="input-label">
-              <label for="{{ field.name }}">{{ field.label }}</label>
-              {% if field.field.required %}
-                <span class="input-label-asterisk">*</span>
-              {% endif %}
-            </div>
-
-            <div class="input-field-wrapper">
-              {{ field }}
-              {% if field == form.activity %}<i class="fa fa-angle-down input-angle-down"></i>{% endif %}
-              {% include 'components/input_validation_icons.html' %}
-              {{ field.errors }}
-            </div>
-          {% endfor %}
-
-          <div class="btn-submit-page-form">
-            <button class="btn" type="submit">Заказать</button>
-          </div>
+          {{ order_page_content }}
         </form>
       </div>
     </div>

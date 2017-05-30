@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.core.urlresolvers import reverse_lazy
 from django.http import HttpResponse
+from django.template import Template, Context
 from django.views.decorators.http import require_POST
 from django.views.generic import FormView, TemplateView
 
@@ -59,6 +60,16 @@ class OrderPrice(FormView, CustomPageView):
         current_app='stroyprombeton',
         args=('price-success',)
     )
+
+    def get_context_data(self, **kwargs):
+        context = super(CustomPageView, self).get_context_data(**kwargs)
+        page = context['page']
+        page_content_context = Context({'form': context['form']})
+        page_content_template = Template(page.content)
+        return {
+            **context,
+            'order_page_content': page_content_template.render(page_content_context)
+        }
 
     def post(self, request, *args, **kwargs):
         form = self.get_form()
