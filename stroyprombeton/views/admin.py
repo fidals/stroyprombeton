@@ -29,9 +29,9 @@ class GenericTableEditor:
 
     excluded_related_model_fields = {
         'page': [
-            'content', 'related_model_name', 'date_published', 'stroyprombeton_category',
-            'stroyprombeton_product', 'parent', 'children', 'images', 'type', 'id', 'slug',
-            'name', 'lft', 'rght', 'tree_id', 'level'
+            'children', 'content', 'date_published', 'id', 'images', 'level', 'lft',
+            'name', 'parent', 'related_model_name', 'rght', 'stroyprombeton_category',
+            'stroyprombeton_product', 'slug', 'template', 'tree_id', 'type'
         ],
     }
 

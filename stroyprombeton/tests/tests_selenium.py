@@ -76,8 +76,8 @@ class CartMixin:
 
         click_and_wait(self.browser.find_element_by_id('buy-product'), waiting_time=waiting_time)
 
-    def buy_on_category_page(self):
-        click_and_wait(self.browser.find_element_by_class_name('js-category-buy'))
+    def buy_on_category_page(self, waiting_time=1):
+        click_and_wait(self.browser.find_element_by_class_name('js-category-buy'), waiting_time)
 
     def cart(self):
         return self.browser.find_element_by_class_name('cart-wrapper')
@@ -263,8 +263,8 @@ class CategoryPage(SeleniumTestCase, CartMixin):
 
     def test_category_tooltip(self):
         """We should see tooltip after clicking on `Заказать` button."""
-        self.buy_on_category_page()
         tooltip = self.browser.find_element_by_class_name('js-popover')
+        self.buy_on_category_page(waiting_time=0.5)
 
         self.assertTrue(tooltip.is_displayed())
 

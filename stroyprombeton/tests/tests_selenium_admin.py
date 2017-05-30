@@ -326,9 +326,11 @@ class TableEditor(SeleniumTestCase, AdminMixin, HelpersMixin):
         editable_input.send_keys(str(new_data) + Keys.ENTER)
         wait()
 
-    def get_cell(self, index=0):
+    def get_cell(self, index=0, name=None):
         """Return WebElement for subsequent manipulations by index."""
         table = self.browser.find_element_by_class_name('jqgrow')
+        if name:
+            return table.find_element_by_css_selector('td[aria-describedby="' + name + '"]')
         return table.find_elements_by_tag_name('td')[index]
 
     def get_current_price(self, index):
@@ -447,11 +449,11 @@ class TableEditor(SeleniumTestCase, AdminMixin, HelpersMixin):
         self.assertNotEqual(first_product_id_before, first_product_id_after)
 
     def test_sort_table_by_price(self):
-        first_product_price_before = self.get_cell(3).text
-        price_header = self.browser.find_elements_by_class_name('ui-jqgrid-sortable')[3]
+        first_product_price_before = self.get_cell(name='jqGrid_price').text
+        price_header = self.browser.find_element_by_id('jqgh_jqGrid_price')
         price_header.click()
         price_header.click()
-        first_product_price_after = self.get_cell(3).text
+        first_product_price_after = self.get_cell(name='jqGrid_price').text
 
         self.assertNotEqual(first_product_price_before, first_product_price_after)
 
