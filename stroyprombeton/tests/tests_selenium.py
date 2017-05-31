@@ -1,3 +1,4 @@
+from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.remote.webelement import WebElement
@@ -385,16 +386,6 @@ class Search(SeleniumTestCase):
         self.assertTrue(self.browser.find_element_by_link_text('Category root #0'))
         self.assertTrue(self.browser.find_element_by_link_text('Category #0 of #1'))
 
-    def test_search_results_empty(self):
-        """Search results for wrong term should contain empty result set"""
-        send_keys_and_wait(self.input, 'Not existing search query')
-        button_submit = self.browser.find_element_by_id('search-btn')
-
-        click_and_wait(button_submit)
-        h1 = self.browser.find_element_by_tag_name('h1')
-
-        self.assertTrue(h1.text == 'По вашему запросу ничего не найдено')
-
     def test_search_by_id(self):
         """We able to search by Product id."""
         product = Product.objects.first()
@@ -410,12 +401,23 @@ class Search(SeleniumTestCase):
 
     def test_inactive_product_not_in_search_autocomplete(self):
         test_product = Product.objects.first()
-        test_product.is_active = False
-        test_product.save()
+        test_product.page.is_active = False
+        test_product.page.save()
 
         send_keys_and_wait(self.input, test_product.name)
 
-        self.assertFalse(self.autocomplete.is_displayed())
+        with self.assertRaises(NoSuchElementException):
+            self.browser.find_element_by_link_text(test_product.name)
+
+    def test_search_results_empty(self):
+        """Search results for wrong term should contain empty result set"""
+        send_keys_and_wait(self.input, 'Not existing search query')
+        button_submit = self.browser.find_element_by_id('search-btn')
+
+        click_and_wait(button_submit)
+        h1 = self.browser.find_element_by_tag_name('h1')
+
+        self.assertTrue(h1.text == 'По вашему запросу ничего не найдено')
 
 
 class IndexPage(SeleniumTestCase):

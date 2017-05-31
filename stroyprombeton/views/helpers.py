@@ -12,16 +12,13 @@ from stroyprombeton.models import Product, Category
 set_csrf_cookie = method_decorator(ensure_csrf_cookie, name='dispatch')
 
 MODEL_MAP = {
-    'product': Product.objects.annotate(
-        search_field=Concat(
-            F('name'), Value(' '),
-            F('mark'), Value(' '),
-            F('specification'),
-            output_field=CharField(),
-        )
+    'product': Product.objects.filter(
+        page__is_active=True,
     ),
-    'category': Category,
-    'page': Page,
+    'category': Category.objects.filter(
+        page__is_active=True,
+    ),
+    'page': Page.objects.filter(is_active=True),
 }
 
 
