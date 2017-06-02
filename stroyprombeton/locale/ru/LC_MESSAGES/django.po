@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-05-16 14:43+0000\n"
+"POT-Creation-Date: 2017-05-31 13:11+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -24,43 +24,43 @@ msgstr ""
 msgid "catalog"
 msgstr "каталог"
 
-#: src/refarm-site/catalog/models.py:57
+#: src/refarm-site/catalog/models.py:80
 #: src/refarm-site/generic_admin/templates/admin/table_editor.html:115
 msgid "Category"
 msgstr "Категория"
 
-#: src/refarm-site/catalog/models.py:58
+#: src/refarm-site/catalog/models.py:81
 msgid "Categories"
 msgstr "Категории"
 
-#: src/refarm-site/catalog/models.py:61 src/refarm-site/catalog/models.py:123
+#: src/refarm-site/catalog/models.py:84 src/refarm-site/catalog/models.py:146
 #: src/refarm-site/pages/models.py:57
 msgid "name"
 msgstr "название"
 
-#: src/refarm-site/catalog/models.py:68 src/refarm-site/pages/models.py:68
-#: stroyprombeton/admin.py:14
+#: src/refarm-site/catalog/models.py:91 src/refarm-site/pages/models.py:68
+#: stroyprombeton/admin.py:18
 msgid "parent"
 msgstr "родитель"
 
-#: src/refarm-site/catalog/models.py:119
+#: src/refarm-site/catalog/models.py:142
 msgid "Product"
 msgstr "Товар"
 
-#: src/refarm-site/catalog/models.py:120
+#: src/refarm-site/catalog/models.py:143
 msgid "Products"
 msgstr "Товары"
 
-#: src/refarm-site/catalog/models.py:128
+#: src/refarm-site/catalog/models.py:151
 #: src/refarm-site/generic_admin/filters.py:9
 msgid "price"
 msgstr "цена"
 
-#: src/refarm-site/catalog/models.py:133
+#: src/refarm-site/catalog/models.py:156
 msgid "in stock"
 msgstr "наличие"
 
-#: src/refarm-site/catalog/models.py:138
+#: src/refarm-site/catalog/models.py:161
 msgid "is popular"
 msgstr "популярность"
 
@@ -383,29 +383,54 @@ msgstr "Простая страница"
 msgid "Flat Pages"
 msgstr "Простые страницы"
 
-#: stroyprombeton/admin.py:19
+#: stroyprombeton/admin.py:23
 msgid "news"
 msgstr "новости"
 
-#: stroyprombeton/admin.py:20
+#: stroyprombeton/admin.py:24
 msgid "regions"
 msgstr "регионы"
 
-#: stroyprombeton/admin.py:21
+#: stroyprombeton/admin.py:25
 msgid "client feedbacks"
 msgstr "отзывы клиентов"
 
-#: stroyprombeton/admin.py:43
+#: stroyprombeton/admin.py:36
+msgid "characteristics equality"
+msgstr "По совпадению характеристик"
+
+#: stroyprombeton/admin.py:41
+msgid "Only same h1"
+msgstr "Только по h1"
+
+#: stroyprombeton/admin.py:42
+msgid "Same h1, characteristics, price"
+msgstr "По h1, характеристикам, цене"
+
+#: stroyprombeton/admin.py:86 stroyprombeton/models.py:21
+#: stroyprombeton/models.py:48
+msgid "specification"
+msgstr "документация"
+
+#: stroyprombeton/admin.py:91
+#, fuzzy
+#| msgid "specification"
+msgid "Has specification"
+msgstr "Есть документация"
+
+#: stroyprombeton/admin.py:92
+#, fuzzy
+#| msgid "specification"
+msgid "Has no specification"
+msgstr "Нет документации"
+
+#: stroyprombeton/admin.py:123
 msgid "Stroyprombeton administration"
 msgstr "Админка Stroyprombeton"
 
 #: stroyprombeton/apps.py:7
 msgid "Stroyprombeton"
 msgstr "Стройпромбетон"
-
-#: stroyprombeton/models.py:21 stroyprombeton/models.py:48
-msgid "specification"
-msgstr "документация"
 
 #: stroyprombeton/models.py:38 stroyprombeton/models.py:69
 msgid "category"
@@ -479,7 +504,7 @@ msgstr "Регионы"
 msgid "Client feedbacks"
 msgstr "Отзывы клиентов"
 
-#: stroyprombeton/settings/base.py:126
+#: stroyprombeton/settings/base.py:125
 msgid "Russian"
 msgstr ""
 
