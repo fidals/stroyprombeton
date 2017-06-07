@@ -5,6 +5,7 @@ from selenium.webdriver.remote.webelement import WebElement
 from seleniumrequests import Remote  # We use this instead of standard selenium
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
+from django.core import mail
 from django.conf import settings
 from django.db.models import Count
 from django.template.defaultfilters import floatformat
@@ -14,7 +15,7 @@ from django.urls import reverse
 from pages.models import Page
 
 from stroyprombeton.models import Category, Product
-from stroyprombeton.tests.helpers import wait
+from stroyprombeton.tests.helpers import wait, disable_celery
 
 
 def hover(browser, element):
@@ -205,6 +206,53 @@ class OrderPage(SeleniumTestCase, CartMixin):
         total_price = self.browser.find_element_by_class_name('order-total-val').text
 
         self.assertEqual(expected_price, total_price)
+
+    @disable_celery
+    def test_order_email(self):
+        self.buy_on_product_page()
+        self.proceed_order_page()
+
+        code = Product.objects.get(id=1).code
+        counter = self.browser.find_element_by_class_name('js-count-input')
+        counter.clear()
+        send_keys_and_wait(counter, 42)
+        total_price = self.browser.find_element_by_class_name('order-total-val').text
+
+        customer_data = [
+            ('id_name', 'Name'), ('id_phone', '22222222222'),
+            ('id_email', 'test@test.test'), ('id_company', 'Some Company'),
+            ('id_address', 'Санкт-Петербург'), ('id_comment', 'Some comment')
+        ]
+        for element, value in customer_data:
+            self.browser.find_element_by_id(element).send_keys(value)
+
+        Action.click_and_wait(
+            self.browser.find_element_by_css_selector('.btn-order-form .btn')
+        )
+
+        sent_mail_body = mail.outbox[0].body
+
+        self.assertInHTML(
+            '<td style="border-color:#e4e4e4;padding:10px">{0}</td>'
+            .format(code),
+            sent_mail_body
+        )
+        self.assertIn(
+            '<a href="http://www.stroyprombeton.ru{0}"'
+            .format(reverse('product', args=(1,))),
+            sent_mail_body
+        )
+        self.assertInHTML(
+            '<td style="border-color:#e4e4e4;padding:10px;font-weight:bold">{0}</td>'
+            .format(total_price),
+            sent_mail_body
+        )
+
+        to_check = ['<b>Name</b>', '<b>+2 (222) 222 22 22</b>',
+                    'test@test.test', '<b>Some Company</b>',
+                    '<b>Санкт-Петербург</b>', '<b>Some comment</b>']
+        for html_chunk in to_check:
+            self.assertInHTML(html_chunk, sent_mail_body)
 
 
 class CategoryPage(SeleniumTestCase, CartMixin):
@@ -425,21 +473,39 @@ class IndexPage(SeleniumTestCase):
         super(IndexPage, self).setUp()
         self.browser.get(self.live_server_url)
 
-    def test_backcall_request(self):
-        self.browser.find_element_by_class_name('js-open-modal').click()
-        modal = self.browser.find_element_by_class_name('js-modal')
-
-        self.assertTrue(modal.is_displayed())
+    def fill_and_send_backcall_request_form(self):
+        self.browser.execute_script('$("#id_name").val("");')
+        self.browser.execute_script('$("#id_phone").val("");')
 
         name_field = self.browser.find_element_by_id('id_name')
         phone_field = self.browser.find_element_by_id('id_phone')
 
         send_keys_and_wait(name_field, 'Yo')
-        send_keys_and_wait(phone_field, '+22222222222')
+        send_keys_and_wait(phone_field, '22222222222')
 
         send_btn = self.browser.find_element_by_class_name('js-send-backcall')
         send_btn.click()
-        wait()
+        wait(3)
+
+    def test_backcall_request(self):
+        self.browser.find_element_by_class_name('js-open-modal').click()
+        modal = self.browser.find_element_by_class_name('js-modal')
+        send_btn = self.browser.find_element_by_class_name('js-send-backcall')
+
+        self.assertTrue(modal.is_displayed())
+
+        self.fill_and_send_backcall_request_form()
 
         self.assertTrue(send_btn.get_attribute('disabled'))
         self.assertFalse(modal.is_displayed())
+
+    @disable_celery
+    def test_backcall_request_email(self):
+        """Back call email should contains input name and phone number"""
+        self.browser.find_element_by_class_name('js-open-modal').click()
+        self.fill_and_send_backcall_request_form()
+
+        sent_mail_body = mail.outbox[0].body
+
+        self.assertIn('name: Yo', sent_mail_body)
+        self.assertIn('phone: +2 (222) 222 22 22', sent_mail_body)

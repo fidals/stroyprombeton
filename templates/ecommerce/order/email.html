@@ -3,19 +3,19 @@
 
 {% include 'ecommerce/email_header.html' %}
 
-<p style="margin: 0 0 1.15em; font-family: Arial, sans-serif;">
-  <span style="font-size: 18px;">Здравствуйте!</span>
+<p style="margin:0 0 1.15em;font-family:Arial,sans-serif">
+  <span style="font-size:18px">Здравствуйте!</span>
   <br>
   <span>{% if order.name %}Уважаемый(ая) {{ order.name }}. {% endif %}<b>Ваш заказ:</b></span>
 </p>
 
-<table width="100%" border="1" style="border: none; border-collapse: collapse; font-size: 16px;">
+<table width="100%" border="1" style="border:none;border-collapse:collapse;font-size:16px">
   <thead>
     <tr align="center">
-      <th width="10%" style="border-color: #E4E4E4; padding: 10px; font-weight:bold;">Код</th>
-      <th width="50%" style="border-color: #E4E4E4; padding: 10px; font-weight:bold;">Наименование и марка</th>
-      <th width="15%" style="border-color: #E4E4E4; padding: 10px; font-weight:bold;">Кол-во</th>
-      <th width="15%" style="border-color: #E4E4E4; padding: 10px; font-weight:bold;">Цена</th>
+      <th width="10%" style="border-color:#E4E4E4;padding:10px;font-weight:bold">Код</th>
+      <th width="50%" style="border-color:#E4E4E4;padding:10px;font-weight:bold">Наименование и марка</th>
+      <th width="15%" style="border-color:#E4E4E4;padding:10px;font-weight:bold">Кол-во</th>
+      <th width="15%" style="border-color:#E4E4E4;padding:10px;font-weight:bold">Цена</th>
     </tr>
   </thead>
 
@@ -23,25 +23,25 @@
     {% for position in order.items %}
       <tr align="center"
         {% if forloop.counter|divisibleby:2 %}
-          style="background: #fafafa;"
+          style="background:#FAFAFA"
         {% endif %}>
-        <td style="border-color: #e4e4e4; padding: 10px;">
-          {% get_product_field position.product_id 'code' %}
+        <td style="border-color:#E4E4E4;padding:10px"><!--
+        -->{% get_product_field position.product_id 'code' %}
         </td>
-        <td style="border-color: #E4E4E4; padding: 10px; text-align: left;">
+        <td style="border-color:#E4E4E4;padding:10px;text-align:left">
           <a href="{% full_url 'product' position.product_id %}"
-             style="text-decoration: none;">
-            {{ position.name }} {% get_product_field position.product_id 'mark' %}
+             style="text-decoration: none"><!--
+             -->{{ position.name }} {% get_product_field position.product_id 'mark' %}
           </a>
         </td>
-        <td style="border-color: #E4E4E4; padding: 10px;">
-          {{ position.quantity }} шт.
+        <td style="border-color:#E4E4E4;padding:10px"><!--
+        -->{{ position.quantity }} шт.
         </td>
-        <td style="border-color: #E4E4E4; padding: 10px;">
+        <td style="border-color:#E4E4E4;padding:10px"><!--
           {% if position.price %}
-            {{ position.price|format_price }}
+         -->{{ position.price|format_price }}
           {% else %}
-            По запросу
+         -->По запросу
           {% endif %}
         </td>
       </tr>
@@ -50,9 +50,9 @@
     <tr align="center">
       <td></td>
       <td></td>
-      <td style="border-color: #E4E4E4; padding: 10px; font-weight: bold;">Итог:</td>
-      <td style="border-color: #E4E4E4; padding: 10px; font-weight: bold;">
-        {{ order.total_price|format_price }}
+      <td style="border-color:#E4E4E4;padding:10px;font-weight:bold">Итог:</td>
+      <td style="border-color:#E4E4E4;padding:10px;font-weight:bold"><!--
+      -->{{ order.total_price|format_price }}
       </td>
     </tr>
   </tbody>
