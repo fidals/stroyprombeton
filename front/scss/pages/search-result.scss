@@ -1,0 +1,36 @@
+@import "../utilities/variables";
+@import "../utilities/mixins";
+
+.search-result {
+  border-bottom: 1px solid $c-separator-grey;
+  margin-bottom: 50px;
+
+  @include media($sm) {
+    margin-bottom: 100px;
+  }
+
+  .table-td {
+    text-align: center;
+  }
+
+  .table-th {
+    display: none;
+
+    @include media($sm) {
+      display: table-cell;
+    }
+
+    &.table-th-name {
+      text-align: left;
+    }
+  }
+
+  .table-td.table-name {
+    flex: 65%;
+    text-align: left;
+  }
+
+  .table-td.table-price {
+    flex: 35%;
+  }
+}
