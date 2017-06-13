@@ -233,8 +233,8 @@ class OrderPage(SeleniumTestCase, CartMixin):
         sent_mail_body = mail.outbox[0].body
 
         self.assertInHTML(
-            '<td style="border-color:#e4e4e4;padding:10px">{0}</td>'
-            .format(code),
+            '<td style="border-color:#E4E4E4;padding:10px">{0}</td>'
+            .format(str(code)),
             sent_mail_body
         )
         self.assertIn(
@@ -243,13 +243,13 @@ class OrderPage(SeleniumTestCase, CartMixin):
             sent_mail_body
         )
         self.assertInHTML(
-            '<td style="border-color:#e4e4e4;padding:10px;font-weight:bold">{0}</td>'
+            '<td style="border-color:#E4E4E4;padding:10px;font-weight:bold">{0}</td>'
             .format(total_price),
             sent_mail_body
         )
 
         to_check = ['<b>Name</b>', '<b>+2 (222) 222 22 22</b>',
-                    'test@test.test', '<b>Some Company</b>',
+                    '<b>test@test.test</b>', '<b>Some Company</b>',
                     '<b>Санкт-Петербург</b>', '<b>Some comment</b>']
         for html_chunk in to_check:
             self.assertInHTML(html_chunk, sent_mail_body)
