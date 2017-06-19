@@ -58,18 +58,24 @@ class CharacteristicsEqualityFilter(admin.SimpleListFilter):
             ))
 
         if self.value() == 'h1':
-            return queryset.filter(id__in=find_duplicates_by_field(queryset, 'h1'))
+            ids = [
+                find_duplicates_by_field(queryset, field_name)
+                for field_name in ['name', 'stroyprombeton_product__mark']
+            ]
+            return queryset.filter(id__in=set.intersection(*ids))
 
         if self.value() == 'all':
-            ids = [find_duplicates_by_field(queryset, field_name) for field_name in [
-                'stroyprombeton_product__price', 'stroyprombeton_product__code',
-                'stroyprombeton_product__mark', 'stroyprombeton_product__specification',
-                'stroyprombeton_product__length', 'stroyprombeton_product__width',
-                'stroyprombeton_product__height', 'stroyprombeton_product__weight',
-                'stroyprombeton_product__volume', 'stroyprombeton_product__diameter_out',
-                'stroyprombeton_product__diameter_in', 'description', 'title', 'h1'
-            ]]
-
+            ids = [
+                find_duplicates_by_field(queryset, field_name)
+                for field_name in [
+                    'stroyprombeton_product__price', 'stroyprombeton_product__code',
+                    'stroyprombeton_product__mark', 'stroyprombeton_product__specification',
+                    'stroyprombeton_product__length', 'stroyprombeton_product__width',
+                    'stroyprombeton_product__height', 'stroyprombeton_product__weight',
+                    'stroyprombeton_product__volume', 'stroyprombeton_product__diameter_out',
+                    'stroyprombeton_product__diameter_in', 'description', 'title', 'name', 'h1'
+                ]
+            ]
             return queryset.filter(id__in=set.intersection(*ids))
 
 
