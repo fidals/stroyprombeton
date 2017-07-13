@@ -89,13 +89,13 @@ def get_objects_attributes(objects, attribute='name:3') -> str:
         count = int(count)
     except ValueError:
         count = None
-    values = list({
-        filter(None,
+    values = list(set(
+        list(filter(None,
             map(lambda x: remove_specification(x[0], x[1]) if x[1] else x[0],
                 map(lambda x: (getattr(x, attribute, None), x.specification), objects)
             )
-        )
-    })
+        ))
+    ))
 
     if count:
         values = values[:count]
