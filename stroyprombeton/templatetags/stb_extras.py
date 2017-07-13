@@ -85,9 +85,11 @@ def remove_specification(value, specification):
 @register.filter
 def get_objects_attributes(objects, attribute='name') -> str:
     return ', '.join(
-        filter(None,
-            map(lambda x: remove_specification(x[0], x[1]) if x[1] else x[0],
-                map(lambda x: (getattr(x, attribute, None), x.specification), objects)
+        set(
+            filter(None,
+                map(lambda x: remove_specification(x[0], x[1]) if x[1] else x[0],
+                    map(lambda x: (getattr(x, attribute, None), x.specification), objects)
+                )
             )
         )
     )
