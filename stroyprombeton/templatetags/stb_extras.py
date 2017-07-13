@@ -83,16 +83,24 @@ def remove_specification(value, specification):
 
 
 @register.filter
-def get_objects_attributes(objects, attribute='name') -> str:
-    return ', '.join(
-        set(
-            filter(None,
-                map(lambda x: remove_specification(x[0], x[1]) if x[1] else x[0],
-                    map(lambda x: (getattr(x, attribute, None), x.specification), objects)
-                )
+def get_objects_attributes(objects, attribute='name:3') -> str:
+    try:
+        attribute, count = attribute.split(':')
+        count = int(count)
+    except ValueError:
+        count = None
+    values = list({
+        filter(None,
+            map(lambda x: remove_specification(x[0], x[1]) if x[1] else x[0],
+                map(lambda x: (getattr(x, attribute, None), x.specification), objects)
             )
         )
-    )
+    })
+
+    if count:
+        values = values[:count]
+
+    return ', '.join(values)
 
 
 def parse_page_metadata(content: str, delimiter_pattern=r'[\-]{3,}') -> (dict, str):
