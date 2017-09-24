@@ -1,4 +1,4 @@
-class StbBackcall extends Backcall {
+class StbBackcall extends Backcall {  // Ignore ESLintBear (no-undef)
   constructor(sendBtnClass) {
     super(sendBtnClass);
 
@@ -44,4 +44,4 @@ class StbBackcall extends Backcall {
   }
 }
 
-const backcall = new StbBackcall('js-send-backcall');
+const backcall = new StbBackcall('js-send-backcall');  // Ignore ESLintBear (no-unused-vars)

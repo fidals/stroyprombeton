@@ -32,11 +32,11 @@
   }
 
   function countIncrease(_, input) {
-    $(input).val((i, val) => ++val);
+    $(input).val((i, val) => ++val);  // Ignore ESLintBear (no-param-reassign)
   }
 
   function countDecrease(_, input) {
-    $(input).val((i, val) => (val > 1) ? --val : val);
+    $(input).val((i, val) => ((val > 1) ? --val : val));  // Ignore ESLintBear (no-param-reassign)
   }
 
   function productPriceSum() {

@@ -10,7 +10,7 @@ from copy import copy
 from datetime import datetime
 
 from django.http import QueryDict
-from django.test import TestCase, override_settings
+from django.test import TestCase
 from django.urls import reverse
 
 from pages.models import CustomPage, FlatPage, ModelPage
@@ -19,6 +19,31 @@ from stroyprombeton.models import Category, Product
 from stroyprombeton.tests.tests_forms import PriceFormTest
 
 CATEGORY_ROOT_NAME = 'Category root #0'
+
+
+class TestPageMixin:
+
+    @property
+    def page(self):
+        return self.response.context['page']
+
+    def test_response_status_code(self):
+        self.assertEqual(self.response.status_code, 200)
+
+    def test_page(self):
+        self.assertTrue(self.page)
+
+    def test_h1(self):
+        self.assertEqual(
+            self.page.h1,
+            self.data['page'].h1
+        )
+
+    def test_content(self):
+        self.assertEqual(
+            self.page.content,
+            self.data['page'].content
+        )
 
 
 class CategoryTree(TestCase):
@@ -38,16 +63,17 @@ class CategoryTree(TestCase):
         self.assertTrue(quantity > 0)
 
 
-class CategoryTile(TestCase):
+class CategoryTile(TestCase, TestPageMixin):
     """
-    Test for CategoryPage view under the condition, that using CategoryTile
-    template.
+    Test for CategoryPage view.
+
+    With condition, that using CategoryTile template.
     """
 
     def setUp(self):
         """Create root and child category."""
         # TODO - move it in test_db. http://bit.ly/tail_2_test_db
-        self.root_data = {
+        self.data = {
             'name': 'Test root category',
             'page': ModelPage.objects.create(
                 content='Козырьки устанавливают над входами зданий.',
@@ -55,7 +81,7 @@ class CategoryTile(TestCase):
             ),
         }
 
-        self.root_category = Category.objects.create(**self.root_data)
+        self.root_category = Category.objects.create(**self.data)
 
         self.child_data = {
             'name': 'Test child category',
@@ -70,47 +96,31 @@ class CategoryTile(TestCase):
 
         self.response = self.client.get('/gbi/categories/{}/'.format(self.root_category.id))
 
-    def test_response_status_code(self):
-        status_code = self.response.status_code
-
-        self.assertEqual(status_code, 200)
-
-    def test_page(self):
-        page = self.response.context['page']
-
-        self.assertTrue(page)
-
-    def test_h1(self):
-        h1 = self.response.context['category'].page.h1
-
-        self.assertEqual(h1, self.root_data['page'].h1)
-
-    def test_content(self):
-        content = self.response.context['page'].content
-
-        self.assertEqual(content, self.root_data['page'].content)
-
     def test_children_categories_quantity(self):
-        quantity = len(self.response.context['children'])
-
-        self.assertEqual(quantity, 1)
+        self.assertEqual(
+            len(self.response.context['children']),
+            1
+        )
 
     def test_children_category_name(self):
-        name = self.response.context['children'][0].name
+        self.assertEqual(
+            self.response.context['children'][0].name,
+            self.child_data['name']
+        )
 
-        self.assertEqual(name, self.child_data['name'])
 
-
-class CategoryTable(TestCase):
+class CategoryTable(TestCase, TestPageMixin):
     """
-    Test for CategoryPage view under the condition, that using CategoryTable
-    template.
+    Test for CategoryPage view.
+
+    With condition, that using CategoryTable template.
     """
+
     fixtures = ['dump.json']
 
     def setUp(self):
         """Create category and product."""
-        self.root_data = {
+        category_data = {
             'name': 'Test root category',
             'page': ModelPage.objects.create(
                 name='Козырьки',
@@ -118,9 +128,9 @@ class CategoryTable(TestCase):
             )
         }
 
-        root_category = Category.objects.create(**self.root_data)
+        root_category = Category.objects.create(**category_data)
 
-        self.product_data = {
+        self.data = {
             'price': 1447.21,
             'code': 350,
             'name': 'Test product name',
@@ -132,49 +142,34 @@ class CategoryTable(TestCase):
             )
         }
 
-        Product.objects.create(**self.product_data)
+        Product.objects.create(**self.data)
 
         self.response = self.client.get('/gbi/categories/{}/'.format(root_category.id))
 
-    def test_response_status_code(self):
-        status_code = self.response.status_code
-
-        self.assertEqual(status_code, 200)
-
-    def test_page(self):
-        page = self.response.context['page']
-
-        self.assertTrue(page)
-
-    def test_h1(self):
-        h1 = self.response.context['page'].h1
-
-        self.assertEqual(h1, self.root_data['page'].h1)
-
-    def test_content(self):
-        content = self.response.context['page'].content
-
-        self.assertEqual(content, self.root_data['page'].content)
+    @property
+    def products_with_images(self):
+        return self.response.context['products_with_images'][0][0]
 
     def test_products_quantity(self):
-        quantity = len(self.response.context['products_with_images'])
-
-        self.assertEqual(quantity, 1)
+        self.assertEqual(len(self.response.context['products_with_images']), 1)
 
     def test_product_name(self):
-        name = self.response.context['products_with_images'][0][0].name
-
-        self.assertEqual(name, self.product_data['name'])
+        self.assertEqual(
+            self.products_with_images.name,
+            self.data['name']
+        )
 
     def test_product_price(self):
-        price = float(self.response.context['products_with_images'][0][0].price)
-
-        self.assertEqual(price, self.product_data['price'])
+        self.assertEqual(
+            float(self.products_with_images.price),
+            self.data['price']
+        )
 
     def test_product_code(self):
-        code = self.response.context['products_with_images'][0][0].code
-
-        self.assertEqual(code, self.product_data['code'])
+        self.assertEqual(
+            self.products_with_images.code,
+            self.data['code']
+        )
 
     def test_inactive_product_not_in_category(self):
         test_product = Product.objects.first()
@@ -185,21 +180,21 @@ class CategoryTable(TestCase):
         self.assertNotIn(test_product, response.context['products_with_images'])
 
 
-class Product_(TestCase):
+class Product_(TestCase, TestPageMixin):
     """Test for ProductPage view."""
 
     fixtures = ['dump.json']
 
     def setUp(self):
         """Create category and product."""
-        root_data = {
+        category_data = {
             'name': 'Test root category',
-            'page': ModelPage.objects.create(h1='Category')
+            'page': ModelPage.objects.create(h1='Category', content='Test category')
         }
 
-        root_category = Category.objects.create(**root_data)
+        root_category = Category.objects.create(**category_data)
 
-        self.product_data = {
+        self.data = {
             'category': root_category,
             'name': 'Test product name',
             'price': 1447.21,
@@ -220,87 +215,61 @@ class Product_(TestCase):
             )
         }
 
-        product = Product.objects.create(**self.product_data)
+        product = Product.objects.create(**self.data)
 
         self.response = self.client.get('/gbi/products/{}/'.format(product.id))
 
-    def test_response_status_code(self):
-        status_code = self.response.status_code
-
-        self.assertEqual(status_code, 200)
-
-    def test_page(self):
-        page = self.response.context['page']
-
-        self.assertTrue(page)
-
-    def test_h1(self):
-        h1 = self.response.context['page'].h1
-
-        self.assertEqual(h1, self.product_data['page'].h1)
+    @property
+    def product(self):
+        return self.response.context['product']
 
     def test_product_name(self):
-        name = self.response.context['product'].name
-
-        self.assertEqual(name, self.product_data['name'])
+        self.assertEqual(self.product.name, self.data['name'])
 
     def test_product_price(self):
-        price = float(self.response.context['product'].price)
-
-        self.assertEqual(price, self.product_data['price'])
+        self.assertEqual(float(self.product.price), self.data['price'])
 
     def test_product_code(self):
-        code = self.response.context['product'].code
-
-        self.assertEqual(code, self.product_data['code'])
+        self.assertEqual(self.product.code, self.data['code'])
 
     def test_product_mark(self):
-        mark = int(self.response.context['product'].mark)
-
-        self.assertEqual(mark, self.product_data['mark'])
+        self.assertEqual(int(self.product.mark), self.data['mark'])
 
     def test_product_length(self):
-        length = self.response.context['product'].length
-
-        self.assertEqual(length, self.product_data['length'])
+        self.assertEqual(self.product.length, self.data['length'])
 
     def test_product_width(self):
-        width = self.response.context['product'].width
-
-        self.assertEqual(width, self.product_data['width'])
+        self.assertEqual(self.product.width, self.data['width'])
 
     def test_product_height(self):
-        height = self.response.context['product'].height
-
-        self.assertEqual(height, self.product_data['height'])
+        self.assertEqual(self.product.height, self.data['height'])
 
     def test_product_diameter_in(self):
-        diameter_in = self.response.context['product'].diameter_in
-
-        self.assertEqual(diameter_in, self.product_data['diameter_in'])
+        self.assertEqual(
+            self.product.diameter_in,
+            self.data['diameter_in']
+        )
 
     def test_product_diameter_out(self):
-        diameter_out = self.response.context['product'].diameter_out
-
-        self.assertEqual(diameter_out, self.product_data['diameter_out'])
+        self.assertEqual(
+            self.product.diameter_out,
+            self.data['diameter_out']
+        )
 
     def test_product_weight(self):
-        weight = self.response.context['product'].weight
-
-        self.assertEqual(weight, self.product_data['weight'])
+        self.assertEqual(self.product.weight, self.data['weight'])
 
     def test_product_volume(self):
-        volume = self.response.context['product'].volume
-
-        self.assertEqual(volume, self.product_data['volume'])
+        self.assertEqual(self.product.volume, self.data['volume'])
 
     def test_product_specification(self):
-        specification = self.response.context['product'].specification
-
-        self.assertEqual(specification, self.product_data['specification'])
+        self.assertEqual(
+            self.product.specification,
+            self.data['specification']
+        )
 
     def test_inactive_product_unavailable(self):
-        product_id = self.response.context['product'].id
+        product_id = self.product.id
 
         ModelPage.objects.filter(stroyprombeton_product=product_id).update(is_active=False)
         response = self.client.get(reverse('product', args=(product_id,)))
@@ -315,6 +284,7 @@ class AbstractFormViewTest:
 
     Subclasses should also inherit TestCase!
     """
+
     URL = ''
     SUCCESS_URL = ''
     FORM_TEST = None

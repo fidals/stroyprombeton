@@ -35,7 +35,6 @@ class ImportTest(TestCase):
 
     def test_yandex_import(self):
         """`price` command should generate non empty files."""
-
         for pricelist in self.PRICE_FILES:
             file_name = self.get_price_file_path(pricelist)
             self.assertIn(pricelist, os.listdir(settings.ASSETS_DIR))

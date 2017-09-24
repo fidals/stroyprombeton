@@ -1,21 +1,16 @@
+from django.core import mail
+from django.db.models import Count
+from django.template.defaultfilters import floatformat
+from django.urls import reverse
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.remote.webelement import WebElement
-from seleniumrequests import Remote  # We use this instead of standard selenium
-from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
-
-from django.core import mail
-from django.conf import settings
-from django.db.models import Count
-from django.template.defaultfilters import floatformat
-from django.test import LiveServerTestCase
-from django.urls import reverse
 
 from pages.models import Page
 
 from stroyprombeton.models import Category, Product
-from stroyprombeton.tests.helpers import wait, disable_celery
+from stroyprombeton.tests.helpers import wait, disable_celery, BaseSeleniumTestCase
 
 
 def hover(browser, element):
@@ -28,26 +23,10 @@ def header_product_count(self):
     return self.browser.find_element_by_class_name('js-header-product-count').text
 
 
-class SeleniumTestCase(LiveServerTestCase):
+class SeleniumTestCase(BaseSeleniumTestCase):
     """Common superclass for running selenium-based tests."""
 
     fixtures = ['dump.json']
-
-    @classmethod
-    def setUpClass(cls):
-        """Instantiate browser instance."""
-        super(SeleniumTestCase, cls).setUpClass()
-        cls.browser = Remote(command_executor='http://stb-selenium-hub:4444/wd/hub',
-                             desired_capabilities=DesiredCapabilities.CHROME)
-
-        cls.browser.implicitly_wait(5)
-        cls.browser.set_window_size(1920, 1080)
-
-    @classmethod
-    def tearDownClass(cls):
-        """Close selenium session."""
-        cls.browser.quit()
-        super(SeleniumTestCase, cls).tearDownClass()
 
 
 class Action(WebElement):
@@ -163,7 +142,10 @@ class OrderPage(SeleniumTestCase, CartMixin):
         self.product_remove = 'js-remove'
 
     def proceed_order_page(self):
-        self.browser.get(self.live_server_url + reverse(Page.CUSTOM_PAGES_URL_NAME, args=('order', )))
+        self.browser.get(
+            self.live_server_url +
+            reverse(Page.CUSTOM_PAGES_URL_NAME, args=('order', ))
+        )
 
     def test_order_page_actual_count_of_rows(self):
         self.buy_on_product_page()
@@ -319,7 +301,6 @@ class CategoryPage(SeleniumTestCase, CartMixin):
 
     def test_load_more_products(self):
         """We able to load more products by clicking on `Load more` link."""
-
         before_load_products = self.get_tables_rows_count()
         click_and_wait(self.get_load_more_button())
         after_load_products = self.get_tables_rows_count()
@@ -328,10 +309,11 @@ class CategoryPage(SeleniumTestCase, CartMixin):
 
     def test_load_more_button_disabled_state_with_few_products(self):
         """
+        Test the load more link state.
+
         `Load more` link should be disabled by default if there are less
         than PRODUCTS_TO_LOAD products on page.
         """
-
         self.browser.get(self.deep_children_category)
 
         self.assertIn('disabled', self.get_load_more_button_classes())
@@ -347,7 +329,6 @@ class CategoryPage(SeleniumTestCase, CartMixin):
 
     def test_filter_products(self):
         """We are able to filter products by typing in filter field."""
-
         filter_field = self.browser.find_element_by_id('search-filter')
         before_filter_products = self.get_tables_rows_count()
         send_keys_and_wait(filter_field, '#10')
@@ -357,6 +338,8 @@ class CategoryPage(SeleniumTestCase, CartMixin):
 
     def test_filter_products_and_disabled_state(self):
         """
+        Test the load more lint state.
+
         If we filter products and load more products several times - we should
         see that `Load more` link becomes disabled. That means that there are
         no more filtered products to load from server.
@@ -372,7 +355,7 @@ class CategoryPage(SeleniumTestCase, CartMixin):
 
 
 class Search(SeleniumTestCase):
-    """Selenium-based tests for Search"""
+    """Selenium-based tests for Search."""
 
     def setUp(self):
         self.browser.get(self.live_server_url)
@@ -390,15 +373,16 @@ class Search(SeleniumTestCase):
         return self.browser.find_element_by_class_name('js-search-field')
 
     def fill_input(self):
-        """Enter correct search term"""
+        """Enter correct search term."""
         send_keys_and_wait(self.input, self.query)
 
     def test_autocomplete_can_expand_and_collapse(self):
         """
-        Autocomplete should minimize during user typing correct search query
-        Autocomplete should minimize by removing search query
-        """
+        Test the autocomplete behavior.
 
+        Autocomplete should minimize during user typing correct search query
+        Autocomplete should minimize by removing search query.
+        """
         # fill input and autocomplete expands
         self.assertTrue(self.autocomplete.is_displayed())
 
@@ -409,8 +393,7 @@ class Search(SeleniumTestCase):
         self.assertFalse(self.autocomplete.is_displayed())
 
     def test_autocomplete_item_link(self):
-        """First autocomplete item should link on category page by click"""
-
+        """First autocomplete item should link on category page by click."""
         first_item = self.autocomplete.find_element_by_css_selector(':first-child')
         click_and_wait(first_item)
 
@@ -419,7 +402,8 @@ class Search(SeleniumTestCase):
     def test_autocomplete_see_all_item(self):
         """
         Autocomplete should contain "see all" item.
-        "See all" item links on search results page
+
+        "See all" item links on search results page.
         """
         last_item = self.autocomplete.find_element_by_class_name('search-more-link')
         click_and_wait(last_item)
@@ -427,7 +411,7 @@ class Search(SeleniumTestCase):
         self.assertTrue('/search/' in self.browser.current_url)
 
     def test_search_have_results(self):
-        """Search results page should contain links on relevant pages"""
+        """Search results page should contain links on relevant pages."""
         button_submit = self.browser.find_element_by_id('search-btn')
         click_and_wait(button_submit)
 
@@ -458,7 +442,7 @@ class Search(SeleniumTestCase):
             self.browser.find_element_by_link_text(test_product.name)
 
     def test_search_results_empty(self):
-        """Search results for wrong term should contain empty result set"""
+        """Search results for wrong term should contain empty result set."""
         send_keys_and_wait(self.input, 'Not existing search query')
         button_submit = self.browser.find_element_by_id('search-btn')
 
@@ -501,7 +485,7 @@ class IndexPage(SeleniumTestCase):
 
     @disable_celery
     def test_backcall_request_email(self):
-        """Back call email should contains input name and phone number"""
+        """Back call email should contains input name and phone number."""
         self.browser.find_element_by_class_name('js-open-modal').click()
         self.fill_and_send_backcall_request_form()
 

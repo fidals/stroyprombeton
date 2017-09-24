@@ -1,15 +1,10 @@
-from selenium.webdriver.common.action_chains import ActionChains
-from selenium.webdriver.common.keys import Keys
-from seleniumrequests import Remote  # We use this instead of standard selenium
-from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
-
-from django.test import LiveServerTestCase
-from django.conf import settings
 from django.test import override_settings
 from django.urls import reverse
+from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.common.keys import Keys
 
 from stroyprombeton.models import Product, Category
-from stroyprombeton.tests.helpers import wait
+from stroyprombeton.tests.helpers import wait, BaseSeleniumTestCase
 
 
 class HelpersMixin:
@@ -44,24 +39,10 @@ class AdminMixin:
 
 
 @override_settings(LANGUAGE_CODE='ru-ru', LANGUAGES=(('ru', 'Russian'),))
-class SeleniumTestCase(LiveServerTestCase):
+class SeleniumTestCase(BaseSeleniumTestCase):
     """Common superclass for running selenium-based tests."""
+
     fixtures = ['dump.json', 'admin.json']
-
-    @classmethod
-    def setUpClass(cls):
-        """Instantiate browser instance."""
-        super(SeleniumTestCase, cls).setUpClass()
-        cls.browser = Remote(command_executor='http://stb-selenium-hub:4444/wd/hub',
-                             desired_capabilities=DesiredCapabilities.CHROME)
-        cls.browser.implicitly_wait(5)
-        cls.browser.set_window_size(1920, 1080)
-
-    @classmethod
-    def tearDownClass(cls):
-        """Close selenium session."""
-        cls.browser.quit()
-        super(SeleniumTestCase, cls).tearDownClass()
 
 
 class AdminPage(SeleniumTestCase, HelpersMixin, AdminMixin):
@@ -143,6 +124,7 @@ class AdminPage(SeleniumTestCase, HelpersMixin, AdminMixin):
     def test_product_price_filter(self):
         """
         Price filter is able to filter products by set range.
+
         In this case we filter products with 1000 - 2000 price range.
         """
         # separated var for debugging
@@ -155,9 +137,7 @@ class AdminPage(SeleniumTestCase, HelpersMixin, AdminMixin):
         self.assertTrue(product_price >= 1000)
 
     def test_image_filter(self):
-        """
-        Image filter is able to filter pages by the presence of the image.
-        """
+        """Image filter is able to filter pages by the presence of the image."""
         self.browser.get(self.change_products_url)
         self.browser.find_element_by_xpath(self.filter_by_has_image).click()
         wait()
@@ -174,9 +154,7 @@ class AdminPage(SeleniumTestCase, HelpersMixin, AdminMixin):
         self.assertTrue('300' in table)
 
     def test_content_filter(self):
-        """
-        Content filter is able to filter pages by the presence of the content.
-        """
+        """Content filter is able to filter pages by the presence of the content."""
         self.browser.get(self.change_products_url)
         self.browser.find_element_by_xpath(self.filter_by_has_content).click()
         wait()
@@ -226,7 +204,6 @@ class AdminPage(SeleniumTestCase, HelpersMixin, AdminMixin):
 
     def test_sidebar_not_on_dashboard(self):
         """Sidebar should be not only on dashboard page."""
-
         self.browser.get(self.change_products_url)
         sidebar = self.browser.find_element_by_class_name('sidebar')
 
@@ -468,14 +445,19 @@ class TableEditor(SeleniumTestCase, AdminMixin, HelpersMixin):
         self.assertNotEqual(rows_before, rows_after)
 
     def test_filters_equals_table_headers(self):
-        """Headers in TE should be equal to chosen filters respectively."""
+        """
+        Test headers.
+
+        Headers in TE should be equal to chosen filters respectively.
+        """
         self.open_filters()
         self.check_filters_and_table_headers_equality()
 
     def test_save_and_drop_custom_filters(self):
         """
-        Headers in TE should be generated based on user settings in localStorage.
+        Test headers.
 
+        Headers in TE should be generated based on user settings in localStorage.
         This test case is contains save & drop cases cause they are depends on each other.
         """
         self.browser.refresh()

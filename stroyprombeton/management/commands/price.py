@@ -36,7 +36,6 @@ class Command(BaseCommand):
     @staticmethod
     def get_context_for_yml(utm):
         """Create context dictionary for rendering files."""
-
         def put_utm(product):
             """Put UTM attribute to product."""
             utm_marks = [
@@ -53,7 +52,8 @@ class Command(BaseCommand):
 
         def put_crumbs(product):
             """
-            Crumbs for google merchant.
+            Put crumbs for google merchant.
+
             https://goo.gl/b0UJQp
             """
             product.crumbs = ' > '.join(
@@ -65,9 +65,9 @@ class Command(BaseCommand):
             """Filter product list and patch it for rendering."""
             products_except_others = (
                 Product.objects
-                    .select_related('page')
-                    .prefetch_related('category', 'category__page')
-                    .filter(category__in=categories_, price__gt=0)
+                .select_related('page')
+                .prefetch_related('category', 'category__page')
+                .filter(category__in=categories_, price__gt=0)
             )
             result_products = (
                 put_crumbs(put_utm(product))

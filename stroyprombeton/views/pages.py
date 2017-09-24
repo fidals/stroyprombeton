@@ -12,9 +12,9 @@ from pages.models import FlatPage, CustomPage
 def get_cached_regions():
     regions_query = (
         CustomPage.objects
-            .prefetch_related('children')
-            .filter(slug='regions')
-            .first()
+        .prefetch_related('children')
+        .filter(slug='regions')
+        .first()
     )
 
     cached_regions = get_cached_trees(
@@ -39,9 +39,9 @@ class IndexPage(pages.views.CustomPageView):
 
         pages_query = (
             FlatPage.objects
-                .select_related('parent')
-                .filter(parent__slug__in=['news', 'client-feedbacks'], is_active=True)
-                .iterator()
+            .select_related('parent')
+            .filter(parent__slug__in=['news', 'client-feedbacks'], is_active=True)
+            .iterator()
         )
 
         pages = {
@@ -67,8 +67,8 @@ class ClientFeedbacksPageView(pages.views.CustomPageView):
 
         feedbacks = (
             FlatPage.objects
-                .filter(parent__slug='client-feedbacks')
-                .order_by('position')
+            .filter(parent__slug='client-feedbacks')
+            .order_by('position')
         )
 
         return {

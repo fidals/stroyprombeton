@@ -112,6 +112,7 @@ class PriceForm(BaseContactForm):
 class OrderForm(forms.ModelForm):
     """
     Form for making orders. Based on Order model.
+
     Define required contact information about a customer.
     """
 

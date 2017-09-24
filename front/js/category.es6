@@ -42,14 +42,14 @@
   }
 
   /**
-   * Moves category description to bottom of page 
+   * Moves category description to bottom of page
    */
-  function moveCategoryDescription() {
+  function moveCategoryDescription() {  // Ignore ESLintBear (consistent-return)
     if (!DOM.$seoCategoryDescription.length) {
       return 0;
-    };
+    }
     DOM.$seoCategoryDescription.detach().appendTo(DOM.$seoCategoryDescriptionDestination);
-  };
+  }
 
   /**
    * Get product quantity & id from DOM.
@@ -137,8 +137,8 @@
     let count = 0;
     let index = 0;
 
-    while ((index = source.indexOf(word)) >= 0) {
-      source = source.substring(index + word.length);
+    while ((index = source.indexOf(word)) >= 0) {  // Ignore ESLintBear (no-cond-assign)
+      source = source.substring(index + word.length);  // Ignore ESLintBear (no-param-reassign)
       count += 1;
     }
 

@@ -197,7 +197,7 @@ const customColModels = [
         },
         srcformat: 'Y-m-d',
         newformat: 'd/m/Y',
-        parseRe: /[Tt\\\/:_;.,\t\s-]/,
+        parseRe: /[Tt\\\/:_;.,\t\s-]/,  // Ignore ESLintBear (no-useless-escape)
         masks: {
           ISO8601Long: 'Y-m-d H:i:s',
           ISO8601Short: 'Y-m-d',
@@ -227,8 +227,8 @@ const toggleFilterBtnText = {
   hide: 'Скрыть фильтры',
 };
 
-new AdminCommonPlugins();
-new AdminSidebar();
-const stbFilters = new TableEditorFilters(toggleFilterBtnText);
-const stbColModel = new TableEditorColModel(customColModels, stbFilters);
-new TableEditor(stbColModel);
+new AdminCommonPlugins();  // Ignore ESLintBear (no-undef)
+new AdminSidebar();  // Ignore ESLintBear (no-undef)
+const stbFilters = new TableEditorFilters(toggleFilterBtnText);  // Ignore ESLintBear (no-undef)
+const stbColModel = new TableEditorColModel(customColModels, stbFilters);  // Ignore ESLintBear (no-undef)
+new TableEditor(stbColModel);  // Ignore ESLintBear (no-undef)

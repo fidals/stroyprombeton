@@ -92,7 +92,6 @@ class OrderPriceSuccess(TemplateView):
 @require_POST
 def order_backcall(request):
     """Send email about ordered Backcall."""
-
     name, phone, url = ec_views.get_keys_from_post(
         request,
         'orderData[id_name]',

@@ -1,11 +1,11 @@
 from django.conf import settings
-from ecommerce.mailer import send as send_mail
 from django.template.loader import render_to_string
+
+from ecommerce.mailer import send as send_mail
 
 
 def send_form(*, form, template, subject):
     """Send given form to email."""
-
     message = render_to_string(
         template,
         {

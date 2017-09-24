@@ -30,7 +30,7 @@ def create_image_models():
         file_short_name, _ = os.path.splitext(file_.name)
 
         # create Image model object based on current image
-        page = get_page(category_id=category_id)
+        page = get_page(category_id=category_id)  # Ignore CPDBear
 
         if not page:
             return

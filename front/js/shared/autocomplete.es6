@@ -1,4 +1,4 @@
-const autocomplete = (() => {
+const autocomplete = (() => {  // Ignore ESLintBear (no-unused-vars)
   const config = {
     url: '/search/autocomplete/',
     searchInput: '.js-search-field',
@@ -32,7 +32,7 @@ const autocomplete = (() => {
   };
 
   const init = () => {
-    new autoComplete(autoCompleteConfig);
+    new autoComplete(autoCompleteConfig);  // Ignore ESLintBear (new-cap)
   };
 
   /**
@@ -44,7 +44,7 @@ const autocomplete = (() => {
    * @return string
    */
   const highlight = (name, search) => {
-    const preparedSearch = search.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+    const preparedSearch = search.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');  // Ignore ESLintBear (no-useless-escape)
     const regexp = new RegExp(`(${preparedSearch.split(' ').join('|')})`, 'gi');
 
     return name.replace(regexp, '<b>$1</b>');

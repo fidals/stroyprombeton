@@ -6,7 +6,6 @@ from django.template.defaultfilters import floatformat
 
 from images.models import ImageMixin
 from pages.models import Page
-from pages.templatetags.pages_extras import breadcrumbs
 
 from stroyprombeton.models import Category, Product
 
@@ -89,13 +88,20 @@ def get_objects_attributes(objects, attribute='name:3') -> str:
         count = int(count)
     except ValueError:
         count = None
-    values = list(set(
-        list(filter(None,
-            map(lambda x: remove_specification(x[0], x[1]) if x[1] else x[0],
-                map(lambda x: (getattr(x, attribute, None), x.specification), objects)
+    values = list(
+        set(
+            filter(
+                None,
+                map(
+                    lambda x: remove_specification(x[0], x[1]) if x[1] else x[0],
+                    map(
+                        lambda x: (getattr(x, attribute, None), x.specification),
+                        objects
+                    )
+                )
             )
-        ))
-    ))
+        )
+    )
 
     if count:
         values = values[:count]
@@ -105,9 +111,11 @@ def get_objects_attributes(objects, attribute='name:3') -> str:
 
 def parse_page_metadata(content: str, delimiter_pattern=r'[\-]{3,}') -> (dict, str):
     """
-    Returns dictionary with metadata extracted from content
-    (for example {'delivery-time': 'Август, 2014'))
-    and content body without metadata headers
+    Parse metadata.
+
+    Return dictionary with metadata extracted from content and content body
+    without metadata headers.
+    For example: {'delivery-time': 'Август, 2014'}
     """
     metadata = {}
 

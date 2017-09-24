@@ -94,7 +94,7 @@ services:
   #     - 5555
   #     - 5900
 
-  stb-selenium-hub:
+  stb-selenium:
     image: selenium/standalone-chrome-debug:3.3.0
     restart: always
     ports:
@@ -104,6 +104,13 @@ services:
       - stb-backend
     volumes: # https://github.com/SeleniumHQ/docker-selenium#running-the-images
       - /dev/shm:/dev/shm
+
+  stb-lint:
+    image: fidals/coala-ci
+    working_dir: /usr/app/src/
+    volumes_from:
+      - stb-source
+      - stb-python
 
 networks:
   stb-backend:

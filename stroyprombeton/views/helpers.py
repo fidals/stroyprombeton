@@ -1,7 +1,5 @@
-from django.db.models import F, Value, CharField
-from django.db.models.functions import Concat
-from django.views.decorators.csrf import ensure_csrf_cookie
 from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import ensure_csrf_cookie
 
 from pages.models import Page
 
@@ -24,5 +22,4 @@ MODEL_MAP = {
 
 def get_keys_from_post(request, *args):
     """Get a list of given keys from request.POST object."""
-
     return [request.POST.get(arg) for arg in args]

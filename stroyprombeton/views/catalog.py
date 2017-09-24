@@ -2,7 +2,7 @@ from csv import writer as CSVWriter
 
 from django.conf import settings
 from django.shortcuts import render
-from django.http import Http404, StreamingHttpResponse
+from django.http import StreamingHttpResponse
 from django.views.generic.list import ListView
 from django.views.generic.detail import DetailView
 
@@ -65,9 +65,7 @@ def fetch_products(request):
 
 
 class CSVExportBuffer:
-    """
-    Pseudo-buffer that required for streaming csv response
-    """
+    """Pseudo-buffer that required for streaming csv response."""
 
     def write(self, value):
         return value
@@ -105,6 +103,7 @@ def categories_csv_export(request, filename='categories.csv', breadcrumbs_delimi
 
 class CategoryTree(ListView):
     """Show list of root categories."""
+
     template_name = 'catalog/catalog.html'
     context_object_name = 'categories'
 
@@ -211,10 +210,10 @@ class ProductPage(catalog.ProductPage):
         ]
 
         product_ancestors = product.page.get_ancestors_fields('name', 'get_absolute_url')
-        offset = 1 # "каталог" page
+        offset = 1  # "каталог" page
         limit = 3
         product_categories = [
-            {'name': name, 'url': url(),}
+            {'name': name, 'url': url()}
             for (name, url) in product_ancestors[offset:offset + limit]
         ]
 

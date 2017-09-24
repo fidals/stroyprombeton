@@ -1,14 +1,14 @@
 # DO NOT RUN THIS COMMAND ON PROD
-import os
 import json
-import pymysql
+import os
 from datetime import datetime
 from unidecode import unidecode
 
-from django.db import transaction
+import pymysql
 from django.conf import settings
 from django.core.files.images import ImageFile
 from django.core.management.base import BaseCommand
+from django.db import transaction
 from django.utils.text import slugify
 
 from images.models import Image
@@ -138,9 +138,9 @@ class Command(BaseCommand):
             """Make data mutable and remove all escape characters."""
             remove_esc_char = (
                 lambda string: string
-                    .replace('\n', '')
-                    .replace('\r', '')
-                    .replace('\t', '')
+                .replace('\n', '')
+                .replace('\r', '')
+                .replace('\t', '')
             )
 
             check = (lambda raw: remove_esc_char(raw) if isinstance(raw, str) else raw)
@@ -163,13 +163,17 @@ class Command(BaseCommand):
 
     def insert_data_to_DB(self, data: dict):
         """Insert data in category, product, post and static_page tables."""
-
         def get_date(date):
             return date if date else datetime.now()
 
-        to_int = (lambda obj: int(obj) if obj else 0)
-        to_float = (lambda obj: float(obj) if obj else 0)
-        is_exist = lambda obj: obj if obj else ''
+        def to_int(obj):
+            return int(obj) if obj else 0
+
+        def to_float(obj):
+            return float(obj) if obj else 0
+
+        def is_exist(obj):
+            return obj if obj else ''
 
         def create_categories(data: list):
             for category_data in data:
@@ -190,7 +194,7 @@ class Command(BaseCommand):
                 try:
                     category.page = page
                     category.save()
-                except:
+                except:  # Ignore PycodestyleBear (E722)
                     page.slug = '{}-{}'.format(page.slug, category.id)
                     page.save()
                     category.page = page
@@ -235,7 +239,7 @@ class Command(BaseCommand):
                 try:
                     product.page = page
                     product.save()
-                except:
+                except:  # Ignore PycodestyleBear (E722)
                     page.slug = '{}-{}'.format(page.slug, product.id)
                     page.save()
                     product.page = page

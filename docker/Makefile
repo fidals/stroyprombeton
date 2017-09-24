@@ -11,3 +11,9 @@ test-env-up: static
 test: test-env-up
 	docker-compose exec stb-python python manage.py test --liveserver=stb-python:8001-8010 --parallel=8
 	docker-compose stop
+
+
+lint:
+	@docker-compose up -d stb-python
+	@docker run --rm --volumes-from stb-python --workdir=/usr/app/src -it coala/base coala
+	@docker-compose stop

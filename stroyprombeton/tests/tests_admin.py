@@ -46,8 +46,10 @@ class AdminPage(TestCase):
 
     def test_flat_page_changelist_display_list(self):
         """
-        Pages model's changelist-page must have all needed columns, which was define
-        in Admin.py
+        Test a changelist-page required columns.
+
+        Pages model's changelist-page must have all needed columns, which was
+        define in Admin.py.
         """
         response = self.client.get(
             reverse('stb_admin:pages_flatpage_changelist'))
@@ -56,7 +58,12 @@ class AdminPage(TestCase):
             self.assertContains(response, field)
 
     def test_flat_page_change_fieldset(self):
-        """Pages model's change-page must have all needed fields, which was define in Admin.py"""
+        """
+        Test a change-page required fields.
+
+        Pages model's change-page must have all needed fields, which was
+        define in Admin.py.
+        """
         response = self.client.get(
             reverse(
                 'stb_admin:pages_flatpage_change', args=(FlatPage.objects.all().first().id, )
@@ -68,8 +75,10 @@ class AdminPage(TestCase):
 
     def test_category_page_changelist_display_list(self):
         """
-        Categories model's changelist-page must have all needed columns, which was define
-        in Admin.py
+        Test a changelist-page required columns.
+
+        Categories model's changelist-page must have all needed columns, which
+        was define in Admin.py.
         """
         response = self.client.get(
             reverse('stb_admin:stroyprombeton_categorypage_changelist'))
@@ -79,7 +88,10 @@ class AdminPage(TestCase):
 
     def test_category_page_change_fieldset(self):
         """
-        Categories model's change-page must have all needed fields, which was define in Admin.py
+        Test a change-page required fields.
+
+        Categories model's change-page must have all needed fields, which was
+        define in Admin.py.
         """
         response = self.client.get(
             reverse(
@@ -97,8 +109,10 @@ class AdminPage(TestCase):
 
     def test_products_changelist_display_list(self):
         """
-        Products model's changelist-page must have all needed columns, which was define
-        in Admin.py
+        Test a changelist-page required columns.
+
+        Products model's changelist-page must have all needed columns, which
+        was define in Admin.py.
         """
         response = self.client.get(
             reverse('stb_admin:stroyprombeton_productpage_changelist'))
@@ -107,7 +121,12 @@ class AdminPage(TestCase):
             self.assertContains(response, field)
 
     def test_products_change_fieldset(self):
-        """Products model's change-page must have all needed fields, which was define in Admin.py"""
+        """
+        Test a change-page required fields.
+
+        Products model's change-page must have all needed fields, which was
+        define in Admin.py.
+        """
         response = self.client.get(
             reverse(
                 'stb_admin:stroyprombeton_productpage_change', args=(

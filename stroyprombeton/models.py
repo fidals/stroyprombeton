@@ -62,7 +62,7 @@ class Product(AbstractProduct, page_models.PageMixin):
 
 
 class CategoryPage(page_models.ModelPage):
-    """Proxy model for Admin"""
+    """Proxy model for Admin."""
 
     class Meta(page_models.ModelPage.Meta):
         proxy = True
@@ -73,7 +73,7 @@ class CategoryPage(page_models.ModelPage):
 
 
 class ProductPage(page_models.ModelPage):
-    """Proxy model for Admin"""
+    """Proxy model for Admin."""
 
     class Meta(page_models.ModelPage.Meta):
         proxy = True

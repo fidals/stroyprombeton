@@ -15,4 +15,4 @@ unidecode
 ua-parser
 user-agents
 -e git+https://github.com/selwin/django-user_agents#egg=django_user_agents
--e git+https://github.com/fidals/refarm-site.git@d56224f162a45b7dd83a2e69c29bd3269dfcf1b4#egg=refarm-site
+-e git+https://github.com/fidals/refarm-site.git#egg=refarm-site

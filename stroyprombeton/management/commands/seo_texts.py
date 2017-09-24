@@ -5,7 +5,7 @@ from django.core.management.base import BaseCommand
 from django.db import transaction
 from django.db.models.expressions import Q
 
-from stroyprombeton.models import ProductPage, CategoryPage
+from stroyprombeton.models import ProductPage
 
 
 product_page = {
@@ -37,6 +37,7 @@ def populate_entities(populate_model, populate_fields, overwrite=False):
     def get_by_attrs(entity_, attrs: str) -> str:
         """
         Get value for template from attribute chain.
+
         >>> entity_ = ProductPage.objects.get(parent__name='Pipe')
         >>> get_by_attrs(entity_, 'model.category.page.name')
         >>> 'Pipe'

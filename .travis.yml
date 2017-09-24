@@ -8,9 +8,6 @@ language: python
 env:
   global:
     - DOCKER_COMPOSE_VERSION=1.11.2
-  matrix:
-    - DJANGO_SETTINGS_MODULE=stroyprombeton.settings.dev
-    - DJANGO_SETTINGS_MODULE=stroyprombeton.settings.prod
 
 before_install:
   - sudo rm /usr/local/bin/docker-compose
@@ -21,12 +18,25 @@ before_install:
 install:
   - cd docker
   - sudo docker-compose build > docker-build.log 2>&1
-  - sudo docker-compose up stb-nodejs > gulp-build.log 2>&1
+  - sudo docker-compose run --rm stb-nodejs > gulp-build.log 2>&1
   - sudo docker-compose exec stb-python python manage.py collectstatic --noinput > django-collectstatic.log 2>&1
-  - sudo docker-compose up -d
+  - sudo docker-compose up -d stb-selenium
 
-script:
-  - sudo docker-compose exec stb-python python manage.py test --liveserver=stb-python:8001-8010 --parallel=8
+jobs:
+  include:
+    - stage: unit tests & lint
+      script: sudo docker-compose exec stb-python python manage.py test -v 3 --liveserver=stb-python:8020-8030 --parallel=6
+      env:
+        - DJANGO_SETTINGS_MODULE=stroyprombeton.settings.dev
+    - stage: unit tests & lint
+      script: sudo docker-compose exec stb-python python manage.py test -v 3 --liveserver=stb-python:8020-8030 --parallel=6
+      env:
+        - DJANGO_SETTINGS_MODULE=stroyprombeton.settings.prod
+    - stage: unit tests & lint
+      script:
+        - sudo docker-compose run --rm stb-lint
+      env:
+        - DJANGO_SETTINGS_MODULE=stroyprombeton.settings.dev
 
 after_failure:
   - docker-compose logs
