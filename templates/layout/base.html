@@ -8,13 +8,17 @@
 
   <link rel="icon" type="image/x-icon" href="{% static 'images/favicon.ico' %}">
 
-  <style type="text/css">
-    .no-fouc {display: none;}
-  </style>
+  {% block stylesheets %}
+    <link rel="stylesheet" href="{% static 'css/styles.min.css' %}">
+  {% endblock %}
+
+  <!--[if lt IE 10 ]>
+    <link rel="stylesheet" href="{% static 'css/ie.min.css' %}">
+  <![endif]-->
 
 </head>
 
-<body class="{% block body_class %}{% endblock %} no-fouc">
+<body class="{% block body_class %}{% endblock %}">
   <div id="desktop-wrapper">
     <header class="header">
       {% include 'components/navigation_bar.html' %}
@@ -50,14 +54,6 @@
   {% endblock %}
 
   <div class="btn btn-scroll-to-top" id="btn-scroll-to-top">Наверх</div>
-
-  {% block stylesheets %}
-    <link rel="stylesheet" href="{% static 'css/styles.min.css' %}">
-  {% endblock %}
-
-  <!--[if lt IE 10 ]>
-    <link rel="stylesheet" href="{% static 'css/ie.min.css' %}">
-  <![endif]-->
 
   {% block jslibs %}
     <script src="{% static 'js/main-vendors.min.js' %}"></script>

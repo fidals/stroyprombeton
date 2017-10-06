@@ -13,7 +13,6 @@
     searchbarClasses: 'col-md-4',
     searchbarIndexClasses: 'col-md-11 col-lg-10',
     searchbarContactsClasses: 'col-xs-12 col-md-8 col-lg-6',
-    foucElement: $('.no-fouc'),
   };
 
   const searchbarInitTopValue = parseInt(DOM.$searchbar.css('top'), 10);
@@ -21,7 +20,6 @@
   const init = () => {
     moveSearchBar();
     setUpListeners();
-    removeFOUCElement();
   };
 
   function setUpListeners() {
@@ -82,10 +80,6 @@
 
   function preventEmptySearch(event) {
     if (!DOM.$searchField.val()) event.preventDefault();
-  }
-
-  function removeFOUCElement() {
-    DOM.foucElement.removeClass('no-fouc');
   }
 
   init();
