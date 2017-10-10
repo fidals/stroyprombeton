@@ -8,6 +8,8 @@ from django.test import TestCase
 from pages.models import Page
 
 from django.core.management import call_command
+
+from stroyprombeton.models import Category, Product
 from stroyprombeton.management.commands.seo_texts import populate_entities
 
 
@@ -91,3 +93,41 @@ class SeoTexts(TestCase):
 
         self.assertEqual(first_page_content, test_first_page_content)
         self.assertNotEqual(second_page_content, test_second_page_content)
+
+
+class RemoveDuplicates(TestCase):
+
+    def test_remove_similar_products(self):
+        """Test that management command 'remove_product_duplicates' actually works."""
+        category = Category.objects.create(name='category #1')
+        products = [
+            Product.objects.create(
+                name='product #1',
+                category=category,
+                code='123',
+            ),
+            Product.objects.create(
+                name='product #2',
+                category=category,
+                code='321',
+            ),
+            Product.objects.create(
+                name='product #3',
+                category=category,
+                code='321',
+            ),
+        ]
+        self.assertEqual(Product.objects.count(), 3)
+        # remove all products with same 'code' and 'category' column values
+        call_command(
+            'remove_product_duplicates',
+            'code', 'category',
+            noinput='true',
+        )
+        # we're assuming that products which created later
+        # have high priority, so second product (#2) should be removed
+        self.assertEqual(Product.objects.count(), 2)
+        self.assertEqual(
+            list(Product.objects.all()),
+            [products[0], products[-1]]
+        )

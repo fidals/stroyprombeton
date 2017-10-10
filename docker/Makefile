@@ -6,7 +6,7 @@ build: static
 	docker-compose -f docker-compose-production.yml build
 
 test-env-up: static
-	docker-compose up -d stb-selenium-hub
+	docker-compose up -d stb-selenium
 
 test: test-env-up
 	docker-compose exec stb-python python manage.py test --liveserver=stb-python:8001-8010 --parallel=8
