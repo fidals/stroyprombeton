@@ -10,6 +10,6 @@
 {% block jslinks %}
   {{ block.super }}
 
-  <script src="{% static 'js/pages-vendors.min.js' %}"></script>
-  <script src="{% static 'js/pages.min.js' %}"></script>
+  <script defer src="{% static 'js/pages-vendors.min.js' %}"></script>
+  <script defer src="{% static 'js/pages.min.js' %}"></script>
 {% endblock %}

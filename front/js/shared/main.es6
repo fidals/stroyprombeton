@@ -18,8 +18,13 @@
   const searchbarInitTopValue = parseInt(DOM.$searchbar.css('top'), 10);
 
   const init = () => {
-    moveSearchBar();
-    setUpListeners();
+    // Wait until body is rendered due to bugs with FOUC
+    if ($('body').is(':visible')) {
+      moveSearchBar();
+      setUpListeners();
+    } else {
+      setTimeout(init, 100);
+    };
   };
 
   function setUpListeners() {
