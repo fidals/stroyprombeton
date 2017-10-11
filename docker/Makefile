@@ -12,6 +12,12 @@ test: test-env-up
 	docker-compose exec stb-python python manage.py test --liveserver=stb-python:8001-8010 --parallel=8
 	docker-compose stop
 
+# @todo run backup before deploy
+deploy:
+	docker-compose -f docker-compose-production.yml stop
+	docker-compose -f docker-compose-production.yml pull
+	docker-compose -f docker-compose-production.yml rm stb-source
+	docker-compose -f docker-compose-production.yml up -d
 
 lint:
 	@docker-compose up -d stb-python
