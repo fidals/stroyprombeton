@@ -37,6 +37,11 @@ jobs:
         - sudo docker-compose run --rm stb-lint
       env:
         - DJANGO_SETTINGS_MODULE=stroyprombeton.settings.dev
+    - stage: unit tests & lint
+      script:
+        - sudo docker-compose run --rm stb-pdd
+      env:
+        - DJANGO_SETTINGS_MODULE=stroyprombeton.settings.dev
 
 after_failure:
   - docker-compose logs
