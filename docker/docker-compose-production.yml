@@ -121,6 +121,7 @@ services:
       - stb-source
     ports:
       - '$VIRTUAL_HOST_EXPOSE_PORT:80'
+      - '$VIRTUAL_HOST_DOCS_EXPOSE_PORT:86'
     networks:
       - stb-frontend
     command: nginx -g 'daemon off;'
