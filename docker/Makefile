@@ -1,25 +1,40 @@
+dc=docker-compose
+d=docker
+dcp=docker-compose -f docker-compose-production.yml
+
+# for local env
 static:
-	docker-compose up stb-nodejs
-	docker-compose exec stb-python python manage.py collectstatic --noinput
+	$(dc) up stb-nodejs
 
+# for local env
 build: static
-	docker-compose -f docker-compose-production.yml build
+	$(dc) build stb-python && $(dcp) build
+	$(dcp) push
 
+# for local env
 test-env-up: static
-	docker-compose up -d stb-selenium
+	$(dc) up -d stb-selenium
 
+# for local env
 test: test-env-up
-	docker-compose exec stb-python python manage.py test --liveserver=stb-python:8001-8010 --parallel=8
-	docker-compose stop
+	$(dc) exec stb-python python manage.py test --liveserver=stb-python:8001-8010 --parallel=8
+	$(dc) stop
 
 # @todo #117 run backup before deploy
+# for serv env
 deploy:
-	docker-compose -f docker-compose-production.yml stop
-	docker-compose -f docker-compose-production.yml pull
-	docker-compose -f docker-compose-production.yml rm stb-source
-	docker-compose -f docker-compose-production.yml up -d
+	$(dcp) pull
+	$(dcp) stop
+	$(dcp) rm stb-source
+	$(dcp) up -d
+	$(dcp) exec stb-python python manage.py migrate
+	# launch "collectstatic" not on local env because ManifestStaticStorage writes to db
+	$(dcp) exec stb-python python manage.py collectstatic --noinput
+	$(dcp) exec stb-python bash -c "cd doc/ && make html"
+	$(dcp) stop && dc up -d  # to make fresh collected static visible immediately
 
+# for local env
 lint:
-	@docker-compose up -d stb-python
-	@docker run --rm --volumes-from stb-python --workdir=/usr/app/src -it coala/base coala
-	@docker-compose stop
+	$(dc) up -d stb-python
+	$(d) run --rm --volumes-from stb-python --workdir=/usr/app/src -it coala/base coala
+	$(dc) stop

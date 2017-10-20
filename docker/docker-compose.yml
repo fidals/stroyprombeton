@@ -38,8 +38,9 @@ services:
     build:
       context: ..
       dockerfile: docker/node/Dockerfile
+    image: fidals/stb-nodejs:latest
     container_name: stb-nodejs
-    command: bash -c 'npm install && npm install -g gulp-cli && gulp build'
+    command: bash -c 'gulp watch || (npm install && npm install -g gulp-cli && gulp build && gulp watch)'
     volumes_from:
       - stb-source
       - stb-python
