@@ -151,6 +151,22 @@ services:
       - '5674:5672'
       - '15674:15672'
 
+  # Контейнер при запуске создаёт бэкап.
+  # Бэкап - это несколько архивов: database.tar.gz, media.tar.gz, static.tar.gz
+  # в директории /opt/backup/stroyprombeton
+  stb-backup-data:
+    image: alpine:latest
+    container_name: stb-backup-data
+    volumes_from:
+      - stb-source
+    volumes:
+      - ../etc/stb-backup-entrypoint.sh:/usr/bin/entrypoint.sh
+      - /opt/backup/stroyprombeton:/opt/backup
+      - /opt/database/stroyprombeton:/usr/app/src/database
+    entrypoint:
+      - sh
+      - /usr/bin/entrypoint.sh
+
 networks:
   stb-backend:
   stb-frontend:

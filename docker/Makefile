@@ -20,6 +20,10 @@ test: test-env-up
 	$(dc) exec stb-python python manage.py test --liveserver=stb-python:8001-8010 --parallel=8
 	$(dc) stop
 
+# for serv env
+backup:
+	$(dcp) up stb-backup-data
+
 # @todo #117 run backup before deploy
 # for serv env
 deploy:
