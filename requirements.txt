@@ -14,5 +14,5 @@ tblib
 unidecode
 ua-parser
 user-agents
--e git+https://github.com/selwin/django-user_agents#egg=django_user_agents
--e git+https://github.com/fidals/refarm-site.git#egg=refarm-site
+https://github.com/selwin/django-user_agents/archive/master.zip
+https://github.com/fidals/refarm-site/archive/master.zip

@@ -29,7 +29,7 @@ services:
       - stb-backend
       - stb-frontend
     volumes:
-      - /src/ # contains refarm-site modules
+      - $DEPS_DIR # contains refarm-site modules
     volumes_from:
       - stb-source
     command: python manage.py runserver 0.0.0.0:$VIRTUAL_HOST_PORT
@@ -40,10 +40,12 @@ services:
       dockerfile: docker/node/Dockerfile
     image: fidals/stb-nodejs:latest
     container_name: stb-nodejs
-    command: bash -c 'gulp watch || (npm install && npm install -g gulp-cli && gulp build && gulp watch)'
+    command: bash -c 'gulp watch || (npm install && npm install -g gulp-cli && gulp build)'
     volumes_from:
       - stb-source
       - stb-python
+    environment:
+      - DEPS_DIR=$DEPS_DIR
 
   stb-postgres:
     image: postgres:9.5

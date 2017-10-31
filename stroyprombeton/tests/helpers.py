@@ -1,6 +1,8 @@
 import time
 
+from django.conf import settings
 from django.test import override_settings, LiveServerTestCase
+from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from seleniumrequests import Remote
 
@@ -20,10 +22,10 @@ class BaseSeleniumTestCase(LiveServerTestCase):
         """Instantiate browser instance."""
         super().setUpClass()
         cls.browser = Remote(
-            command_executor='http://stb-selenium:4444/wd/hub',
+            command_executor=settings.SELENIUM_URL,
             desired_capabilities=DesiredCapabilities.CHROME
         )
-
+        cls.wait = WebDriverWait(cls.browser, 120)
         cls.browser.implicitly_wait(30)
         cls.browser.set_window_size(1920, 1080)
 

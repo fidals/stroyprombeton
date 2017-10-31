@@ -5,6 +5,8 @@ from django.urls import reverse
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.remote.webelement import WebElement
 
 from pages.models import Page
@@ -20,7 +22,10 @@ def hover(browser, element):
 
 
 def header_product_count(self):
-    return self.browser.find_element_by_class_name('js-header-product-count').text
+    element = self.wait.until(EC.visibility_of_element_located(
+        (By.CLASS_NAME, 'js-header-product-count')
+    ))
+    return element.text
 
 
 class SeleniumTestCase(BaseSeleniumTestCase):

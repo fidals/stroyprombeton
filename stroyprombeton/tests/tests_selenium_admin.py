@@ -1,7 +1,9 @@
 from django.test import override_settings
 from django.urls import reverse
 from selenium.webdriver.common.action_chains import ActionChains
+from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support import expected_conditions as EC
 
 from stroyprombeton.models import Product, Category
 from stroyprombeton.tests.helpers import wait, BaseSeleniumTestCase
@@ -492,21 +494,30 @@ class TableEditor(SeleniumTestCase, AdminMixin, HelpersMixin):
         new_entity_text = 'A New stuff'
 
         # Trigger entity creation modal & input data:
-        self.browser.find_element_by_css_selector('button[data-target="#add-entity"]').click()
+        ActionChains(self.browser).move_to_element(
+            self.wait.until(EC.presence_of_element_located(
+                (By.CSS_SELECTOR, 'button[data-target="#add-entity"]')
+            ))
+        ).click().perform()
+        self.wait.until(EC.visibility_of_element_located(
+            (By.ID, 'add-entity-form')
+        ))
+
         self.browser.find_element_by_id('entity-name').send_keys(new_entity_text)
         self.browser.find_element_by_id('entity-price').send_keys(123)
 
         # Check is autocomplete works for category search by manual triggering it:
         self.browser.find_element_by_id('entity-category').send_keys('Category #0')
-        wait()
         self.trigger_autocomplete('#entity-category')
-        wait()
-        autocomplete = self.browser.find_element_by_class_name('ui-autocomplete')
+        autocomplete = self.wait.until(EC.visibility_of_element_located(
+            (By.CLASS_NAME, 'ui-autocomplete')
+        ))
 
         # Choose category from autocomplete dropdown & save new entity:
         autocomplete.find_element_by_class_name('ui-menu-item-wrapper').click()
         self.browser.find_element_by_id('entity-save').click()
-        wait()
+
+        self.wait.until_not(EC.element_to_be_clickable((By.ID, 'entity-save')))
 
         # If entity was successfully changed `refresh_btn` should become active:
         refresh_btn = self.browser.find_element_by_id('refresh-table')
@@ -518,7 +529,6 @@ class TableEditor(SeleniumTestCase, AdminMixin, HelpersMixin):
         first_row = self.browser.find_element_by_id('jqGrid').find_element_by_class_name('jqgrow')
         name_cell = first_row.find_elements_by_tag_name('td')[1]
         self.assertEqual(name_cell.get_attribute('title'), new_entity_text)
-        wait()
 
         # We are able to change newly created entity:
         self.test_edit_product_name()

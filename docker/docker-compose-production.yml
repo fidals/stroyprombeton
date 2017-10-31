@@ -31,7 +31,7 @@ services:
     ports:
       - $VIRTUAL_HOST_PORT
     volumes:
-      - /src/ # contains refarm-site modules
+      - $DEPS_DIR # contains refarm-site modules
     volumes_from:
       - stb-source
     networks:

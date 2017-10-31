@@ -175,6 +175,8 @@ LOGGING = {
     },
 }
 
+SELENIUM_URL = os.environ.get('SELENIUM_URL', 'http://stb-selenium:4444/wd/hub')
+
 # Is required for Docker container
 WKHTMLTOPDF_CMD = 'xvfb-run wkhtmltopdf'
 

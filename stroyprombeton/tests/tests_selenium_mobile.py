@@ -1,6 +1,7 @@
 from selenium import webdriver
 
 from django.core.urlresolvers import reverse
+from django.conf import settings
 from django.test import LiveServerTestCase
 
 from stroyprombeton.models import Product
@@ -22,7 +23,7 @@ class SeleniumTestCase(LiveServerTestCase):
                 'deviceName': 'Apple iPhone 5'
             },
         }
-        cls.browser = webdriver.Remote(command_executor='http://stb-selenium:4444/wd/hub',
+        cls.browser = webdriver.Remote(command_executor=settings.SELENIUM_URL,
                                        desired_capabilities=capabilities)
         cls.browser.implicitly_wait(5)
         cls.browser.set_window_size(640, 320)
