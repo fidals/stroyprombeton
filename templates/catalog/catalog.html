@@ -16,7 +16,7 @@
           {% if request|is_pc %}
             {% with image=category.page.main_image  %}
               {% if image %}
-                {% thumbnail image '494x290' as resized_image %}
+                {% thumbnail image '494x290' format='PNG' as resized_image %}
                   <img class="catalog-img" src="{{ resized_image.url }}" alt="{{ category.name }}">
                 {% endthumbnail %}
               {% else %}

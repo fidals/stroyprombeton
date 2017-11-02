@@ -4,7 +4,7 @@
 
 {% with big_img=product.page.main_image %}
   {% if big_img %}
-    {% thumbnail big_img '556x416' as thumbnail %}
+    {% thumbnail big_img '556x416' format='PNG' as thumbnail %}
       <img
         class="product-img img-centered img-responsive js-photoswipe-slide"
         src="{{ thumbnail.url }}"

@@ -20,7 +20,7 @@
         <div class="drawing-images">
           {% for image in page.images.all %}
             {% with big_img=image.image %}
-              {% thumbnail big_img '200x150' as resize_image %}
+              {% thumbnail big_img '200x150' format='PNG' as resize_image %}
                 <img
                   class="drawing-images-item js-photoswipe-slide"
                   src="{{ resize_image.url }}"

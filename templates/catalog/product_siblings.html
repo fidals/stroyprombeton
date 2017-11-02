@@ -20,7 +20,7 @@
 
               <div class="slider-item-image">
                 {% if image %}
-                  {% thumbnail image.image '360x238' as resized_image %}
+                  {% thumbnail image.image '360x238' format='PNG' as resized_image %}
                     <img class="img-responsive img-stretched"
                          data-lazy="{{ resized_image.url }}"
                          alt="{% get_img_alt sibling.page %}">

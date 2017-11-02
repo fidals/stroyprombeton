@@ -5,7 +5,7 @@
   <section class="category-about">
     {% with image=page.main_image  %}
       {% if image %}
-        {% thumbnail image '204x138' as cropped_image %}
+        {% thumbnail image '204x138' format='PNG' as cropped_image %}
           <div class="category-about-img">
             <img src="{{ cropped_image.url }}">
           </div>

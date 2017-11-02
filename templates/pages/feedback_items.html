@@ -11,7 +11,7 @@
         {% else %}
           col-sm-4
         {% endif %}">
-        {% thumbnail big_img 'x270' as thumbnail %}
+        {% thumbnail big_img 'x270' format='PNG' as thumbnail %}
           <img
             class="feedbacks-img img-responsive js-photoswipe-slide"
             src="{{ thumbnail.url }}"

@@ -7,7 +7,7 @@
     <li class="newslist-item">
       <a class="newslist-item-img" href="{{ page.url }}">
         {% if page.main_image %}
-          {% thumbnail page.main_image '262x240' as image %}
+          {% thumbnail page.main_image '262x240' format='PNG' as image %}
             <img class="img-responsive img-stretched" src="{{ image.url }}"
                  alt="{% get_img_alt page %}">
           {% endthumbnail %}
