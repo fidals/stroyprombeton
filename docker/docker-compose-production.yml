@@ -25,6 +25,7 @@ services:
       - DJANGO_SETTINGS_MODULE=$DJANGO_SETTINGS_MODULE
       - DATABASE_URL=postgres://$DB_USER:$DB_PASS@stb-postgres/$DB_NAME
       - BROCKER_URL=amqp://$RABBITMQ_DEFAULT_USER:$RABBITMQ_DEFAULT_PASS@stb-rabbitmq:5672/
+      - ENV_TYPE=$ENV_TYPE
     depends_on:
       - stb-postgres
       - stb-rabbitmq

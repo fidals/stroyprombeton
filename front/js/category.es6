@@ -155,6 +155,7 @@
     const fetchData = {
       categoryId: getCategoryId(),
       offset: getLoadedProductsCount(),
+      limit: config.productsToFetch,
       filterValue: getFilterTerm(),
       filtered: getFilterTerm().length > 0,
     };
@@ -179,7 +180,8 @@
       categoryId: getCategoryId(),
       filterValue,
       filtered: filterValue.length >= 3,
-      offset: config.productsToFetch,
+      offset: 0,
+      limit: config.productsToFetch,
     };
 
     fetchProducts(fetchData)
@@ -200,6 +202,7 @@
       categoryId: data.categoryId,
       term: data.filterValue,
       offset: data.offset,
+      limit: data.limit,
       filtered: data.filtered,
     });
   }

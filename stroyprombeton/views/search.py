@@ -1,95 +1,38 @@
-from django.http import JsonResponse
+from django.conf import settings
 
-from catalog.views import search
-from catalog.models import trigram_search
+from search import views as search_views, search as search_engine
+from pages.models import Page
 from ecommerce.forms import OrderBackcallForm
 
-from stroyprombeton.views.helpers import MODEL_MAP
+from stroyprombeton.models import Product, Category
 
 
-class AbstractSearch:
+class Search(search_views.SearchView):
 
-    model_map = MODEL_MAP
-
-    lookups = [
-        'name',
-        'specification',
-    ]
-
-    minimum_similarity = 0.3
-
-    # Warning: Dirty fix. Search CBV need refactoring
-    # Tail task: https://goo.gl/FFlpFF
-    def search(self, term, limit, ordering=None):
-        stripped_term = term.strip()
-
-        product_lookups = [
-            'name',
-            'mark',
-            'specification',
-        ]
-
-        categories = trigram_search(self.category, stripped_term, self.lookups)
-        products = trigram_search(self.product, stripped_term, product_lookups)
-
-        categories = (
-            categories
-            .filter(similarity__gt=self.minimum_similarity)[:limit]
+    # ignore CPDBear
+    search_entities = [
+        search_engine.Search(
+            name='category',
+            # @todo #85 Create active() shortcut filter
+            #  instead of using .filter(page__is_active=True)
+            qs=Category.objects.filter(page__is_active=True),
+            # ignore CPDBear
+            fields=['name', 'specification'],
+            min_similarity=settings.TRIGRAM_MIN_SIMILARITY,
+        ),
+        search_engine.Search(
+            name='product',
+            qs=Product.objects.filter(page__is_active=True),
+            fields=['name', 'mark', 'specification', 'id'],
+            min_similarity=settings.TRIGRAM_MIN_SIMILARITY,
+        ),
+        search_engine.Search(
+            name='page',
+            qs=Page.objects.filter(is_active=True),
+            fields=['name'],
+            min_similarity=settings.TRIGRAM_MIN_SIMILARITY,
         )
-
-        left_limit = limit - len(categories)
-        products = (
-            products
-            .filter(similarity__gt=self.minimum_similarity)[:left_limit]
-        )
-
-        return categories, products
-
-
-class Autocomplete(AbstractSearch, search.Autocomplete):
-
-    see_all_label = 'Показать все результаты'
-
-    # Extend default ordering fields
-    extra_ordering_fields = ('name', 'code')
-
-    # Extend default search fields
-    extra_entity_fields = {
-        'product': {
-            'code',
-            'mark',
-            'specification',
-        },
-    }
-
-
-class AdminAutocomplete(search.AdminAutocomplete):
-
-    model_map = MODEL_MAP
-
-    lookups = [
-        'name',
     ]
-
-    def get(self, request):
-        term, page_type = request.GET.get('term'), request.GET.get('pageType')
-        if page_type not in self.model_map:
-            return
-
-        current_model = self.model_map[page_type]
-
-        autocomplete_items = trigram_search(
-            current_model,
-            term,
-            self.lookups
-        )[:self.autocomplete_limit]
-
-        names = [item.name for item in autocomplete_items]
-
-        return JsonResponse(names, safe=False)
-
-
-class Search(AbstractSearch, search.Search):
 
     def get_context_data(self, **kwargs):
         context = super(Search, self).get_context_data(**kwargs)
@@ -98,3 +41,46 @@ class Search(AbstractSearch, search.Search):
             **context,
             'backcall_form': OrderBackcallForm(),
         }
+
+
+class Autocomplete(search_views.AutocompleteView):
+
+    # ignore CPDBear
+    search_entities = [
+        search_engine.Search(
+            name='product',
+            qs=Product.objects.filter(page__is_active=True),
+            fields=['name', 'code', 'mark', 'specification'],
+            template_fields=['name', 'mark', 'specification', 'url'],
+            min_similarity=settings.TRIGRAM_MIN_SIMILARITY,
+        ),
+    ]
+
+    see_all_label = settings.SEARCH_SEE_ALL_LABEL
+
+
+class AdminAutocomplete(search_views.AdminAutocompleteView):
+
+    # ignore CPDBear
+    search_entities = [
+        search_engine.Search(
+            name='category',
+            qs=Category.objects.filter(page__is_active=True),
+            # ignore CPDBear
+            fields=['name'],
+            min_similarity=settings.TRIGRAM_MIN_SIMILARITY,
+        ),
+        # ignore CPDBear
+        search_engine.Search(
+            name='product',
+            qs=Product.objects.filter(page__is_active=True),
+            fields=['name'],
+            min_similarity=settings.TRIGRAM_MIN_SIMILARITY,
+        ),
+        search_engine.Search(
+            name='pages',
+            qs=Page.objects.filter(is_active=True),
+            fields=['name'],
+            min_similarity=settings.TRIGRAM_MIN_SIMILARITY,
+        )
+    ]

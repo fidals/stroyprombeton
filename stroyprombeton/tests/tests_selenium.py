@@ -70,7 +70,9 @@ class CartMixin:
 
     def show_cart(self):
         hover(self.browser, self.cart())
-        wait()
+        self.wait.until(EC.visibility_of_element_located(
+            (By.CLASS_NAME, 'cart')
+        ))
 
     def positions(self):
         return self.browser.find_elements_by_class_name('cart-item')
@@ -334,6 +336,9 @@ class CategoryPage(SeleniumTestCase, CartMixin):
 
     def test_filter_products(self):
         """We are able to filter products by typing in filter field."""
+        self.wait.until(EC.visibility_of_element_located(
+            (By.ID, 'search-filter')
+        ))
         filter_field = self.browser.find_element_by_id('search-filter')
         before_filter_products = self.get_tables_rows_count()
         send_keys_and_wait(filter_field, '#10')
@@ -398,11 +403,13 @@ class Search(SeleniumTestCase):
         self.assertFalse(self.autocomplete.is_displayed())
 
     def test_autocomplete_item_link(self):
-        """First autocomplete item should link on category page by click."""
+        """Every autocomplete item should contain link on page."""
+        self.wait.until(EC.visibility_of_element_located(
+            (By.CLASS_NAME, 'autocomplete-suggestion')
+        ))
         first_item = self.autocomplete.find_element_by_css_selector(':first-child')
         click_and_wait(first_item)
-
-        self.assertTrue('/gbi/categories/' in self.browser.current_url)
+        self.assertTrue('/gbi/products/' in self.browser.current_url)
 
     def test_autocomplete_see_all_item(self):
         """
@@ -424,7 +431,7 @@ class Search(SeleniumTestCase):
         self.assertTrue(self.browser.find_element_by_link_text('Category #0 of #1'))
 
     def test_search_by_id(self):
-        """We able to search by Product id."""
+        """We are able to search by Product id."""
         product = Product.objects.first()
         [product_id, product_h1] = [product.id, product.page.display_h1]
         button_submit = self.browser.find_element_by_id('search-btn')
@@ -448,13 +455,14 @@ class Search(SeleniumTestCase):
 
     def test_search_results_empty(self):
         """Search results for wrong term should contain empty result set."""
+        self.input.clear()
         send_keys_and_wait(self.input, 'Not existing search query')
         button_submit = self.browser.find_element_by_id('search-btn')
 
         click_and_wait(button_submit)
         h1 = self.browser.find_element_by_tag_name('h1')
 
-        self.assertTrue(h1.text == 'По вашему запросу ничего не найдено')
+        self.assertTrue(h1.text == 'Nothing was found on your request')
 
 
 class IndexPage(SeleniumTestCase):

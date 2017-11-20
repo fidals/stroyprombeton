@@ -309,7 +309,9 @@ class TableEditor(SeleniumTestCase, AdminMixin, HelpersMixin):
         """Return WebElement for subsequent manipulations by index."""
         table = self.browser.find_element_by_class_name('jqgrow')
         if name:
-            return table.find_element_by_css_selector('td[aria-describedby="{0}"]'.format(name))
+            return self.wait.until(EC.visibility_of_element_located(
+                (By.CSS_SELECTOR, f'td[aria-describedby="{name}"]')
+            ))
         return table.find_elements_by_tag_name('td')[index]
 
     def get_current_price(self, index):

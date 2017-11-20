@@ -6,10 +6,11 @@ They all should be using Django's TestClient.
 
 All Selenium-tests should be located in tests_selenium.
 """
+import json
 from copy import copy
 from datetime import datetime
 
-from django.http import QueryDict
+from django.http import HttpResponse, QueryDict
 from django.test import TestCase
 from django.urls import reverse
 
@@ -19,6 +20,10 @@ from stroyprombeton.models import Category, Product
 from stroyprombeton.tests.tests_forms import PriceFormTest
 
 CATEGORY_ROOT_NAME = 'Category root #0'
+
+
+def json_to_dict(response: HttpResponse) -> dict():
+    return json.loads(response.content)
 
 
 class TestPageMixin:
@@ -375,6 +380,74 @@ class Search(TestCase):
         url = self.get_search_url(term=self.WRONG_TERM)
         response = self.client.get(url)
         self.assertNotContains(response, self.WRONG_TERM)
+
+
+class TestSearch(TestCase):
+    """Test all search methods: search page and autocompletes."""
+
+    fixtures = ['dump.json']
+    TERM = 'Prod'
+    WRONG_TERM = 'Bugaga'  # it's short for trigram search testing
+
+    def test_search_has_results(self):
+        """Search page should contain at least one result for right term."""
+        term = self.TERM
+        response = self.client.get(
+            f'/search/?term={term}',
+            follow=True
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, '<div class="search-result-item">')
+
+    def test_search_no_results(self):
+        """Search page should not contain results for wrong term."""
+        term = self.WRONG_TERM
+        response = self.client.get(
+            f'/search/?term={term}',
+            follow=True
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertNotContains(response, '<div class="search-result-item">')
+
+    def test_autocomplete_has_results(self):
+        """Autocomplete should contain at least one result for right term."""
+        term = self.TERM
+        response = self.client.get(
+            reverse('autocomplete') + f'?term={term}'
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(json_to_dict(response))
+        self.assertContains(response, term)
+
+    def test_autocomplete_no_results(self):
+        """Autocomplete should not contain results for wrong term."""
+        term = self.WRONG_TERM
+        response = self.client.get(
+            reverse('autocomplete') + f'?term={term}'
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(json_to_dict(response))
+        self.assertNotContains(response, term)
+
+    def test_admin_autocomplete_has_results(self):
+        """Admin autocomplete should contain at least one result for right term."""
+        term = self.TERM
+        page_type = 'product'
+        querystring = f'?term={term}&pageType={page_type}'
+        response = self.client.get(reverse('admin_autocomplete') + querystring)
+        self.assertEqual(response.status_code, 200)
+        self.assertTrue(json_to_dict(response))
+        self.assertContains(response, term)
+
+    def test_admin_autocomplete_no_results(self):
+        """Admin autocomplete should contain no results for wrong term."""
+        term = self.WRONG_TERM
+        page_type = 'product'
+        querystring = f'?term={term}&pageType={page_type}'
+        response = self.client.get(reverse('admin_autocomplete') + querystring)
+        self.assertEqual(response.status_code, 200)
+        self.assertFalse(json_to_dict(response))
+        self.assertNotContains(response, term)
 
 
 class ProductPrice(TestCase):

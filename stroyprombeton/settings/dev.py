@@ -6,8 +6,9 @@ DEBUG = True
 ALLOWED_HOSTS = ['*']
 
 # http://bit.ly/sorl-thumbnail-docs
+# to suppress tests failings. Tests have no static
 TEMPLATE_DEBUG = True
-THUMBNAIL_DEBUG = True
+THUMBNAIL_DEBUG = False
 
 SITE_DOMAIN_NAME = 'stage.stroyprombeton.ru'
 

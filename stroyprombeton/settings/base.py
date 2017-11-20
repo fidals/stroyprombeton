@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'django.contrib.admin',
     'images',
     'pages',
+    'search',
     'catalog',
     'ecommerce',
     'wkhtmltopdf',
@@ -90,6 +91,7 @@ TEMPLATES = [
                 'ecommerce.context_processors.cart',
                 'stroyprombeton.context_processors.site_info',
             ],
+            'debug': DEBUG,
         },
     },
 ]
@@ -373,3 +375,13 @@ CATEGORY_GENT_NAMES = {  # gent - родительный падеж
     456: 'общегражданского и промышленного строительства',
     458: 'строительства инженерных сетей',
 }
+
+ENV_TYPE = os.environ.get('ENV_TYPE', 'PROD')  # LOCAL | CI | PROD
+
+# 'Prod' <-> 'Product #1 of Category #0 of Category #1' = 0.17
+# About trigram similarity: https://goo.gl/uYFcxN
+TRIGRAM_MIN_SIMILARITY = 0.15
+
+# settings for product list from CategoryPage
+PRODUCTS_ORDERING = ['code', 'name', 'mark']
+PRODUCTS_PER_PAGE = 30

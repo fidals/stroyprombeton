@@ -8,23 +8,20 @@ from django.views.generic.detail import DetailView
 
 from wkhtmltopdf.views import PDFTemplateView
 
-from catalog.models import search as filter_
 from catalog.views import catalog
 from images.models import Image
 from pages.models import CustomPage, ModelPage
 from pages.templatetags.pages_extras import breadcrumbs as get_page_breadcrumbs
+from search.search import search as filter_
 
 from stroyprombeton.models import Product, Category, CategoryPage as CategoryPageModel
 from stroyprombeton.views.helpers import set_csrf_cookie, get_keys_from_post
 
-PRODUCTS_ORDERING = ['code', 'name', 'mark']
-PRODUCTS_PER_PAGE = 30
-
 
 def fetch_products(request):
     """Filter product table on Category page by Name, code, specification."""
-    category_id, term, offset, filtered = get_keys_from_post(
-        request, 'categoryId', 'term', 'offset', 'filtered',
+    category_id, term, offset, limit, filtered = get_keys_from_post(
+        request, 'categoryId', 'term', 'offset', 'limit', 'filtered',
     )
     term = term.strip()
 
@@ -32,7 +29,7 @@ def fetch_products(request):
     products = (
         Product.objects
         .filter(page__is_active=True)
-        .get_by_category(category, ordering=PRODUCTS_ORDERING)
+        .get_by_category(category, ordering=settings.PRODUCTS_ORDERING)
     )
 
     if filtered == 'true' and term:
@@ -42,12 +39,14 @@ def fetch_products(request):
             'mark__icontains',
             'specification__icontains',
         ]
-        products = filter_(term, products, lookups, ordering=PRODUCTS_ORDERING)
+        products = filter_(
+            term, products, lookups, ordering=settings.PRODUCTS_ORDERING
+        )
 
     offset = int(offset)
-    left_product_count = products.count() - offset
-    size = min(left_product_count, PRODUCTS_PER_PAGE)
-    products = products.get_offset(offset, size)
+    limit = int(limit or settings.PRODUCTS_PER_PAGE)
+    limit = min(limit, products.count(), settings.PRODUCTS_PER_PAGE)
+    products = products.get_offset(offset, limit)
 
     images = Image.objects.get_main_images_by_pages(
         product.page for product in products
@@ -129,7 +128,7 @@ class CategoryPage(catalog.CategoryPage, ListView):
 
     # for ListView
     page_kwarg = 'page_index'
-    paginate_by = PRODUCTS_PER_PAGE
+    paginate_by = settings.PRODUCTS_PER_PAGE
 
     def get_object(self, queryset=None):
         category_pk = self.kwargs.get(self.pk_url_kwarg)
@@ -141,7 +140,7 @@ class CategoryPage(catalog.CategoryPage, ListView):
         self.object_list = (
             Product.objects
             .filter(page__is_active=True)
-            .get_by_category(self.object.model, ordering=PRODUCTS_ORDERING)
+            .get_by_category(self.object.model, ordering=settings.PRODUCTS_ORDERING)
             .select_related('page')
         )
         return super(CategoryPage, self).get(*args, **kwargs)
@@ -154,13 +153,13 @@ class CategoryPage(catalog.CategoryPage, ListView):
         products = (
             Product.objects
             .filter(page__is_active=True)
-            .get_by_category(category, ordering=PRODUCTS_ORDERING)
+            .get_by_category(category, ordering=settings.PRODUCTS_ORDERING)
             .select_related('page')
         )
 
         # offset products for seo-robots & for users:
         products_offset = products.get_offset(
-            PRODUCTS_PER_PAGE * (page_index - 1), PRODUCTS_PER_PAGE
+            settings.PRODUCTS_PER_PAGE * (page_index - 1), settings.PRODUCTS_PER_PAGE
         )
 
         images = Image.objects.get_main_images_by_pages(
@@ -242,7 +241,7 @@ class ProductPDF(PDFTemplateView, DetailView):
         products = (
             Product.objects
             .filter(page__is_active=True)
-            .get_by_category(category, ordering=PRODUCTS_ORDERING)
+            .get_by_category(category, ordering=settings.PRODUCTS_ORDERING)
             .select_related('page')
         )
 

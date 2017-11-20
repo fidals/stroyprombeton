@@ -37,7 +37,8 @@ deploy:
 	$(dcp) rm stb-source
 	$(dcp) up -d
 	$(dcp) exec stb-python python manage.py migrate
-	# launch "collectstatic" not on local env because ManifestStaticStorage writes to db
+	# launch "collectstatic" not in build env, but on deploy.
+	# Because ManifestStaticStorage writes to db
 	$(dcp) exec stb-python python manage.py collectstatic --noinput
 	$(dcp) exec stb-python bash -c "cd doc/ && make html"
 	$(dcp) stop && dc up -d  # to make fresh collected static visible immediately

@@ -31,6 +31,8 @@ pipeline:
     commands:
       - python manage.py collectstatic --noinput
       - python manage.py test -v 3 --parallel --liveserver=test:8020-8030
+    depends_on:
+      - selenium
     volumes:
       - /tmp/cache/drone/stroyprombeton/site-packages/${DRONE_COMMIT_SHA}/site-packages:/usr/local/lib/python3.6/site-packages
 
@@ -53,6 +55,7 @@ pipeline:
 
 services:
   postgres:
+    group: build
     image: postgres
     environment:
       - POSTGRES_USER=postgres
@@ -60,13 +63,15 @@ services:
       - POSTGRES_DB=test
 
   rabbitmq:
+    group: build
     image: rabbitmq
     environment:
       - RABBITMQ_DEFAULT_USER=rabbitmq
       - RABBITMQ_DEFAULT_PASS=test
 
   selenium:
-    image: selenium/standalone-chrome-debug:3.3.0
+    group: build
+    image: selenium/standalone-chrome:3.6.0
     environment: # https://github.com/SeleniumHQ/docker-selenium/issues/392
       - DBUS_SESSION_BUS_ADDRESS=/dev/null
     shm_size: 4G

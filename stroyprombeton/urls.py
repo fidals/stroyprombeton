@@ -13,7 +13,7 @@ from stroyprombeton.admin import stb_admin_site
 
 admin_urls = [
     url(r'^', stb_admin_site.urls),
-    url(r'^autocomplete/$', views.AdminAutocomplete.as_view()),
+    url(r'^autocomplete/$', views.AdminAutocomplete.as_view(), name='admin_autocomplete'),
     url(r'^get-tree-items/$', views.Tree.as_view()),
     url(r'^redirect-to-product/$', views.RedirectToProduct.as_view()),
     url(r'^table-editor-api/$', views.TableEditorAPI.as_view()),
