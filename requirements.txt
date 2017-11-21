@@ -10,6 +10,7 @@ psycopg2
 pymysql
 selenium
 selenium-requests
+Sphinx
 tblib
 unidecode
 ua-parser
