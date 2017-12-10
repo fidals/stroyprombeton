@@ -13,6 +13,7 @@ from datetime import datetime
 from django.http import HttpResponse, QueryDict
 from django.test import TestCase
 from django.urls import reverse
+from django.utils.translation import ugettext as _
 
 from pages.models import CustomPage, FlatPage, ModelPage
 
@@ -381,6 +382,13 @@ class Search(TestCase):
         response = self.client.get(url)
         self.assertNotContains(response, self.WRONG_TERM)
 
+    def test_search_by_id(self):
+        """Search view should return redirect on model page, if id was received as term."""
+        product = Product.objects.first()
+        url = self.get_search_url(term=str(product.id))
+        response = self.client.get(url, follow=True)
+        self.assertContains(response, product.page.display_h1)
+
 
 class TestSearch(TestCase):
     """Test all search methods: search page and autocompletes."""
@@ -397,7 +405,11 @@ class TestSearch(TestCase):
             follow=True
         )
         self.assertEqual(response.status_code, 200)
-        self.assertContains(response, '<div class="search-result-item">')
+        self.assertContains(response, _('Product'))
+        # search page should contain not only results.
+        # But markup, menu links and so on.
+        self.assertContains(response, '<title>')
+        self.assertContains(response, '<td class="table-td table-name">')
 
     def test_search_no_results(self):
         """Search page should not contain results for wrong term."""

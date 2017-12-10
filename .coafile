@@ -9,6 +9,7 @@ ignore = stroyprombeton/**/__init__.py,stroyprombeton/**/__pycache__/**,front/**
 [all.python]
 bears = CPDBear,PycodestyleBear,PyDocStyleBear,PyFlakesBear
 files = stroyprombeton/**/*.py
+ignore = stroyprombeton/migrations/*.py,stroyprombeton/**/__init__.py,stroyprombeton/**/__pycache__/**,front/**/vendors/**,front/(images|fonts|build)/**,stroyprombeton/migrations/**,stroyprombeton/settings/**,node_modules/**,src/**
 minimum_tokens = 35
 max_line_length = 100
 pycodestyle_ignore = E305

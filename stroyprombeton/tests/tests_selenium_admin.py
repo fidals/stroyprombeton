@@ -307,7 +307,9 @@ class TableEditor(SeleniumTestCase, AdminMixin, HelpersMixin):
 
     def get_cell(self, index=0, name=None):
         """Return WebElement for subsequent manipulations by index."""
-        table = self.browser.find_element_by_class_name('jqgrow')
+        table = self.wait.until(EC.visibility_of_element_located(
+            (By.CLASS_NAME, 'jqgrow')
+        ))
         if name:
             return self.wait.until(EC.visibility_of_element_located(
                 (By.CSS_SELECTOR, f'td[aria-describedby="{name}"]')
@@ -348,6 +350,9 @@ class TableEditor(SeleniumTestCase, AdminMixin, HelpersMixin):
 
         for index, item in enumerate(filters):
             filter_text = item.text.lower().replace(':', '')
+            # STB call category "раздел", but refarm call it "категория"
+            if 'раздел' in filter_text.lower():
+                continue
             table_header = self.browser.find_elements_by_class_name('ui-th-div')[index + 1]
             table_header_text = table_header.text.lower().replace(':', '')
 

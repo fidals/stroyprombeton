@@ -254,19 +254,21 @@ class CategoryPage(SeleniumTestCase, CartMixin):
         cls.quantity = 'js-count-input'
 
     def setUp(self):
-        server = self.live_server_url
-        self.testing_url = lambda category_id: server + reverse('category', args=(category_id,))
+        def testing_url(category_id):
+            return server + reverse('category', args=(category_id,))
 
+        server = self.live_server_url
         root_category = Category.objects.filter(parent=None).first()
         children_category = Category.objects.filter(parent=root_category).first()
         category_with_product_less_then_load_limit = Category.objects.annotate(
             prod_count=Count('products')).exclude(prod_count=0).filter(
                 prod_count__lt=self.PRODUCTS_TO_LOAD).first()
 
-        self.root_category = self.testing_url(root_category.id)
-        self.children_category = self.testing_url(children_category.id)
-        self.deep_children_category = self.testing_url(
-            category_with_product_less_then_load_limit.id)
+        self.root_category = testing_url(root_category.id)
+        self.children_category = testing_url(children_category.id)
+        self.deep_children_category = testing_url(
+            category_with_product_less_then_load_limit.id
+        )
 
         self.browser.get(self.root_category)
 
@@ -369,7 +371,6 @@ class Search(SeleniumTestCase):
 
     def setUp(self):
         self.browser.get(self.live_server_url)
-        wait()
         # query contains whitespace to prevent urlencoding errors
         self.query = 'category'
         self.fill_input()
@@ -384,6 +385,9 @@ class Search(SeleniumTestCase):
 
     def fill_input(self):
         """Enter correct search term."""
+        self.wait.until(EC.presence_of_element_located(
+            (By.CLASS_NAME, 'js-search-field')
+        ))
         send_keys_and_wait(self.input, self.query)
 
     def test_autocomplete_can_expand_and_collapse(self):
@@ -404,11 +408,16 @@ class Search(SeleniumTestCase):
 
     def test_autocomplete_item_link(self):
         """Every autocomplete item should contain link on page."""
+        self.wait.until(EC.presence_of_element_located(
+            (By.CLASS_NAME, 'autocomplete-suggestion')
+        ))
         self.wait.until(EC.visibility_of_element_located(
             (By.CLASS_NAME, 'autocomplete-suggestion')
         ))
-        first_item = self.autocomplete.find_element_by_css_selector(':first-child')
-        click_and_wait(first_item)
+        first_item = self.autocomplete.find_element_by_class_name('autocomplete-suggestion')
+        first_item.click()
+
+        self.wait.until(EC.url_contains('/gbi/products/'))
         self.assertTrue('/gbi/products/' in self.browser.current_url)
 
     def test_autocomplete_see_all_item(self):
@@ -430,19 +439,6 @@ class Search(SeleniumTestCase):
         self.assertTrue(self.browser.find_element_by_link_text('Category root #0'))
         self.assertTrue(self.browser.find_element_by_link_text('Category #0 of #1'))
 
-    def test_search_by_id(self):
-        """We are able to search by Product id."""
-        product = Product.objects.first()
-        [product_id, product_h1] = [product.id, product.page.display_h1]
-        button_submit = self.browser.find_element_by_id('search-btn')
-
-        self.input.clear()
-        send_keys_and_wait(self.input, product_id)
-        button_submit.click()
-        h1 = self.browser.find_element_by_tag_name('h1')
-
-        self.assertTrue(h1.text == product_h1)
-
     def test_inactive_product_not_in_search_autocomplete(self):
         test_product = Product.objects.first()
         test_product.page.is_active = False
@@ -462,7 +458,7 @@ class Search(SeleniumTestCase):
         click_and_wait(button_submit)
         h1 = self.browser.find_element_by_tag_name('h1')
 
-        self.assertTrue(h1.text == 'Nothing was found on your request')
+        self.assertTrue(h1.text == 'По вашему запросу ничего не найдено')
 
 
 class IndexPage(SeleniumTestCase):

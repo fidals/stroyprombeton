@@ -30,7 +30,7 @@ pipeline:
       - SELENIUM_URL=http://selenium:4444/wd/hub
     commands:
       - python manage.py collectstatic --noinput
-      - python manage.py test -v 3 --parallel --liveserver=test:8020-8030
+      - python manage.py test -v 3 --liveserver=test:8020-8030 --parallel=6
     depends_on:
       - selenium
     volumes:

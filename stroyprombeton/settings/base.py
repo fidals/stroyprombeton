@@ -183,7 +183,7 @@ SELENIUM_URL = os.environ.get('SELENIUM_URL', 'http://stb-selenium:4444/wd/hub')
 WKHTMLTOPDF_CMD = 'xvfb-run wkhtmltopdf'
 
 # 60 days in seconds
-CACHED_TIME = 60 * (24*60*60)
+CACHED_TIME = 60 * (24 * 60 * 60)
 
 # -------- SITE DATA -------- #
 BASE_URL = 'http://www.stroyprombeton.ru'
@@ -262,7 +262,10 @@ CUSTOM_PAGES = {
     },
     'index': {
         'slug': '',
-        'title': 'Завод ЖБИ «СТК-ПромБетон» | Производство ЖБИ в Санкт-Петербурге, железобетонные изделия СПб',
+        'title': (
+            'Завод ЖБИ «СТК-ПромБетон» | Производство ЖБИ в Санкт-Петербурге,'
+            ' железобетонные изделия СПб'
+        ),
         'name': 'Завод железобетонных изделий «СТК-Промбетон»',
         'menu_title': 'Главная',
     },
@@ -356,13 +359,21 @@ PARTNERS = [
         'alt': 'Производят железобетонные изделия',
     },
     {
-        'url': 'http://stkm-energo.ru/?utm_source=STB_site&utm_medium=backlink&utm_campaign=backlink_traffic',
+        'url': (
+            'http://stkm-energo.ru/'
+            '?utm_source=STB_site&utm_medium=backlink'
+            '&utm_campaign=backlink_traffic'
+        ),
         'logo': 'images/partner-modulenergo-logo.png',
         'text': 'Проектируют и возводят <br> энергообъекты',
         'alt': 'Проектируют и возводят <br> энергообъекты',
     },
     {
-        'url': 'http://www.stk-metal.ru/?utm_source=STB_site&utm_medium=backlink&utm_campaign=backlink_traffic',
+        'url': (
+            'http://www.stk-metal.ru/'
+            '?utm_source=STB_site&utm_medium=backlink'
+            '&utm_campaign=backlink_traffic'
+        ),
         'logo': 'images/partner-stkmetall-logo.png',
         'text': 'Проектируют и производят металлоконструкции',
         'alt': 'Проектируют и производят металлоконструкции',

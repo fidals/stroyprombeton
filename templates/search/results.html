@@ -1,6 +1,5 @@
 {% extends 'layout/inner_page.html' %}
 
-{% load stb_extras %}
 
 {% block content %}
   {% include 'components/breadcrumbs.html' %}
@@ -29,8 +28,7 @@
             </thead>
 
             <tbody>
-              {% search_result categories 'Раздел' %}
-              {% search_result products 'Изделие' %}
+              {% include 'search/items_list.html' with items=items only %}
             </tbody>
           </table>
 

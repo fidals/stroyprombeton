@@ -27,11 +27,11 @@ msgstr "каталог"
 #: src/refarm-site/catalog/models.py:80
 #: src/refarm-site/generic_admin/templates/admin/table_editor.html:115
 msgid "Category"
-msgstr "Категория"
+msgstr "Раздел"
 
 #: src/refarm-site/catalog/models.py:81
 msgid "Categories"
-msgstr "Категории"
+msgstr "Разделы"
 
 #: src/refarm-site/catalog/models.py:84 src/refarm-site/catalog/models.py:146
 #: src/refarm-site/pages/models.py:57
@@ -45,11 +45,11 @@ msgstr "родитель"
 
 #: src/refarm-site/catalog/models.py:142
 msgid "Product"
-msgstr "Товар"
+msgstr "Изделие"
 
 #: src/refarm-site/catalog/models.py:143
 msgid "Products"
-msgstr "Товары"
+msgstr "Изделия"
 
 #: src/refarm-site/catalog/models.py:151
 #: src/refarm-site/generic_admin/filters.py:9

@@ -29,14 +29,6 @@ def customer_info(value, title):
     }
 
 
-@register.inclusion_tag('tags/search_result.html')
-def search_result(items, item_type):
-    return {
-        'items': items,
-        'item_type': item_type,
-    }
-
-
 @register.filter
 def format_price(price):
     if price:

@@ -1,0 +1,30 @@
+{% load pages_extras %}
+
+{% for item in items %}
+  <tr class="table-tr" id="{{ item.id }}">
+    <td class="table-td table-type">{{ item|verbose_type }}</td>
+    <td class="table-td table-photo text-center">
+      {% include 'catalog/category_product_image.html' with image=item.page.main_image only %}
+    </td>
+    <td class="table-td table-code">
+      {% if item.code %}
+        {{ item.code }}
+      {% else %}
+        <p class="text-center">-</p>
+      {% endif %}
+    </td>
+    <td class="table-td table-name">
+      <a class="table-link" href="{{ item.get_absolute_url }}">
+        {{ item.name }} {{ item.mark }} {{ item.specification }}
+      </a>
+    </td>
+    {% if item|hasattr_:'price' %}
+      <td class="table-td table-price">
+        {{ item.price|default:'По запросу' }}
+    {% else %}
+      <td class="table-td table-price text-center">
+        -
+    {% endif %}
+    </td>
+  </tr>
+{% endfor %}
