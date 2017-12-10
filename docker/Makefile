@@ -43,7 +43,7 @@ backup:
 deploy:
 	$(dcp) pull
 	$(dcp) stop
-	$(dcp) rm stb-source
+	$(dcp) rm -f stb-source
 	$(dcp) up -d
 	$(dcp) exec stb-python python manage.py migrate
 	# launch "collectstatic" not in build env, but on deploy.

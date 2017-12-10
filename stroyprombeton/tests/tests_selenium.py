@@ -63,7 +63,11 @@ class CartMixin:
         click_and_wait(self.browser.find_element_by_id('buy-product'), waiting_time=waiting_time)
 
     def buy_on_category_page(self, waiting_time=1):
-        click_and_wait(self.browser.find_element_by_class_name('js-category-buy'), waiting_time)
+        buy_button = self.browser.find_element_by_class_name('js-category-buy')
+        buy_button.click()
+        self.wait.until(EC.visibility_of_element_located(
+            (By.CLASS_NAME, 'js-cart')
+        ))
 
     def cart(self):
         return self.browser.find_element_by_class_name('cart-wrapper')
@@ -373,7 +377,6 @@ class Search(SeleniumTestCase):
         self.browser.get(self.live_server_url)
         # query contains whitespace to prevent urlencoding errors
         self.query = 'category'
-        self.fill_input()
 
     @property
     def autocomplete(self):
@@ -383,12 +386,19 @@ class Search(SeleniumTestCase):
     def input(self):
         return self.browser.find_element_by_class_name('js-search-field')
 
-    def fill_input(self):
+    def fill_input(self, query='', wait_after=False):
         """Enter correct search term."""
+        query = query or self.query
         self.wait.until(EC.presence_of_element_located(
             (By.CLASS_NAME, 'js-search-field')
         ))
-        send_keys_and_wait(self.input, self.query)
+        self.input.send_keys(query)
+        print('query', query)
+        self.browser.save_screenshot('s1.png')
+        if wait_after:
+            self.wait.until(EC.visibility_of_element_located(
+                (By.CLASS_NAME, 'autocomplete-suggestions')
+            ))
 
     def test_autocomplete_can_expand_and_collapse(self):
         """
@@ -397,23 +407,19 @@ class Search(SeleniumTestCase):
         Autocomplete should minimize during user typing correct search query
         Autocomplete should minimize by removing search query.
         """
-        # fill input and autocomplete expands
+        self.fill_input(wait_after=True)
+        # input was filled, so autocomplete should expand
         self.assertTrue(self.autocomplete.is_displayed())
 
         # remove search term ...
-        send_keys_and_wait(self.input, Keys.BACKSPACE * len(self.query))
+        self.fill_input(query=Keys.BACKSPACE * len(self.query))
 
-        # ... and autocomplete collapse
+        # ... and autocomplete should collapse
         self.assertFalse(self.autocomplete.is_displayed())
 
     def test_autocomplete_item_link(self):
         """Every autocomplete item should contain link on page."""
-        self.wait.until(EC.presence_of_element_located(
-            (By.CLASS_NAME, 'autocomplete-suggestion')
-        ))
-        self.wait.until(EC.visibility_of_element_located(
-            (By.CLASS_NAME, 'autocomplete-suggestion')
-        ))
+        self.fill_input(wait_after=True)
         first_item = self.autocomplete.find_element_by_class_name('autocomplete-suggestion')
         first_item.click()
 
@@ -426,6 +432,7 @@ class Search(SeleniumTestCase):
 
         "See all" item links on search results page.
         """
+        self.fill_input(wait_after=True)
         last_item = self.autocomplete.find_element_by_class_name('search-more-link')
         click_and_wait(last_item)
 
@@ -433,6 +440,7 @@ class Search(SeleniumTestCase):
 
     def test_search_have_results(self):
         """Search results page should contain links on relevant pages."""
+        self.fill_input(wait_after=False)
         button_submit = self.browser.find_element_by_id('search-btn')
         click_and_wait(button_submit)
 
@@ -443,21 +451,18 @@ class Search(SeleniumTestCase):
         test_product = Product.objects.first()
         test_product.page.is_active = False
         test_product.page.save()
-
-        send_keys_and_wait(self.input, test_product.name)
+        self.fill_input(query=test_product.name, wait_after=False)
 
         with self.assertRaises(NoSuchElementException):
             self.browser.find_element_by_link_text(test_product.name)
 
     def test_search_results_empty(self):
         """Search results for wrong term should contain empty result set."""
-        self.input.clear()
-        send_keys_and_wait(self.input, 'Not existing search query')
+        self.fill_input(query='Not existing search query', wait_after=False)
         button_submit = self.browser.find_element_by_id('search-btn')
-
-        click_and_wait(button_submit)
+        button_submit.click()
+        self.wait.until(EC.url_contains('search'))
         h1 = self.browser.find_element_by_tag_name('h1')
-
         self.assertTrue(h1.text == 'По вашему запросу ничего не найдено')
 
 
