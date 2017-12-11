@@ -62,12 +62,16 @@ class CartMixin:
 
         click_and_wait(self.browser.find_element_by_id('buy-product'), waiting_time=waiting_time)
 
-    def buy_on_category_page(self, waiting_time=1):
+    def buy_on_category_page(self, wait=True):
+        self.wait.until(EC.element_to_be_clickable(
+            (By.CLASS_NAME, 'js-category-buy')
+        ))
         buy_button = self.browser.find_element_by_class_name('js-category-buy')
         buy_button.click()
-        self.wait.until(EC.visibility_of_element_located(
-            (By.CLASS_NAME, 'js-cart')
-        ))
+        if wait:
+            self.wait.until(EC.visibility_of_element_located(
+                (By.CLASS_NAME, 'js-cart')
+            ))
 
     def cart(self):
         return self.browser.find_element_by_class_name('cart-wrapper')
@@ -251,6 +255,7 @@ class OrderPage(SeleniumTestCase, CartMixin):
 class CategoryPage(SeleniumTestCase, CartMixin):
 
     PRODUCTS_TO_LOAD = 30
+    SELENIUM_TIMEOUT = 60
 
     @classmethod
     def setUpClass(cls):
@@ -262,6 +267,9 @@ class CategoryPage(SeleniumTestCase, CartMixin):
             return server + reverse('category', args=(category_id,))
 
         server = self.live_server_url
+        # CI always have problems with CategoryPage timeouts
+        self.browser.set_page_load_timeout(self.SELENIUM_TIMEOUT)
+        self.browser.set_script_timeout(self.SELENIUM_TIMEOUT)
         root_category = Category.objects.filter(parent=None).first()
         children_category = Category.objects.filter(parent=root_category).first()
         category_with_product_less_then_load_limit = Category.objects.annotate(
@@ -308,7 +316,7 @@ class CategoryPage(SeleniumTestCase, CartMixin):
     def test_category_tooltip(self):
         """We should see tooltip after clicking on `Заказать` button."""
         tooltip = self.browser.find_element_by_class_name('js-popover')
-        self.buy_on_category_page(waiting_time=0.5)
+        self.buy_on_category_page()
 
         self.assertTrue(tooltip.is_displayed())
 
@@ -393,8 +401,6 @@ class Search(SeleniumTestCase):
             (By.CLASS_NAME, 'js-search-field')
         ))
         self.input.send_keys(query)
-        print('query', query)
-        self.browser.save_screenshot('s1.png')
         if wait_after:
             self.wait.until(EC.visibility_of_element_located(
                 (By.CLASS_NAME, 'autocomplete-suggestions')
