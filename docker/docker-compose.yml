@@ -9,7 +9,7 @@ services:
       - ./../:/usr/app/src/ # code volume
       - $REFARM_SRC:$DEPS_DIR
       # leaved it here as example of code mounting for debugging
-#      - $REFARM_SRC/search:/root/.local/lib/python3.6/site-packages/search
+      # - $REFARM_SRC/search:/root/.local/lib/python3.6/site-packages/search
     command: sh -c "top > /dev/null"
 
   stb-python:
@@ -33,6 +33,9 @@ services:
     networks:
       - stb-backend
       - stb-frontend
+    volumes:
+      # contains refarm-site modules
+      - $DEPS_DIR
     volumes_from:
       - stb-source
     command: python manage.py runserver 0.0.0.0:$VIRTUAL_HOST_PORT
@@ -46,6 +49,7 @@ services:
     # (gulp build && gulp watch) - it's convenient to get built static js before start watching
     command: bash -c '(gulp build && gulp watch) || (npm install && npm install -g gulp-cli && gulp build)'
     volumes_from:
+      - stb-python
       - stb-source
     environment:
       - DEPS_DIR=$DEPS_DIR
@@ -60,7 +64,7 @@ services:
     networks:
       - stb-backend
     volumes:
-      - /var/lib/postgresql/data
+      - /opt/database/stroyprombeton/:/var/lib/postgresql/data
 
   stb-rabbitmq:
     image: rabbitmq:management-alpine

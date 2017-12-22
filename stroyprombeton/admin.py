@@ -6,6 +6,7 @@ from django.contrib.postgres.aggregates import ArrayAgg
 from django.contrib.redirects.models import Redirect
 from django.db.models import Func, Value
 from django.utils.translation import ugettext_lazy as _
+from django_select2.forms import ModelSelect2Widget
 
 from pages import models as pages_models
 from generic_admin import models as admin_models, inlines, sites, filters
@@ -138,6 +139,20 @@ class StbCategoryInline(inlines.CategoryInline):
         )
     }),)
 
+    def formfield_for_dbfield(self, db_field, **kwargs):
+        if db_field.name == 'parent':
+            kwargs['widget'] = ModelSelect2Widget(
+                model=stb_models.Category,
+                search_fields=[
+                    'name__icontains',
+                    'pk__startswith',
+                ],
+            )
+        return super(StbCategoryInline, self).formfield_for_dbfield(
+            db_field,
+            **kwargs,
+        )
+
 
 class StbCustomPageAdmin(admin_models.CustomPageAdmin):
     form = CustomWidgetsForm
@@ -173,6 +188,20 @@ class StbProductInline(inlines.ProductInline):
             'volume',
         )
     }),)
+
+    def formfield_for_dbfield(self, db_field, **kwargs):
+        if db_field.name == 'category':
+            kwargs['widget'] = ModelSelect2Widget(
+                model=stb_models.Category,
+                search_fields=[
+                    'name__icontains',
+                    'pk__startswith',
+                ],
+            )
+        return super(StbProductInline, self).formfield_for_dbfield(
+            db_field,
+            **kwargs,
+        )
 
 
 class StbProductPageAdmin(admin_models.ProductPageAdmin):

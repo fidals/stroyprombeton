@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'cachalot',
     'generic_admin',
     'django.contrib.admin',
+    'django_select2',
     'images',
     'pages',
     'search',
