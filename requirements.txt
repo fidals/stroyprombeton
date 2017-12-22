@@ -4,6 +4,7 @@ Django==1.10
 django-debug-toolbar
 django-widget-tweaks
 django-wkhtmltopdf
+django-cachalot
 openpyxl
 pillow
 psycopg2

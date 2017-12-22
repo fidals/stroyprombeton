@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'mptt',
     'widget_tweaks',
     'sorl.thumbnail',
+    'cachalot',
     'generic_admin',
     'django.contrib.admin',
     'images',
