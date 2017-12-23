@@ -47,5 +47,4 @@ deploy: backup
 	# launch "collectstatic" not in build env, but on deploy.
 	# Because ManifestStaticStorage writes to db
 	$(dcp) exec stb-python python manage.py collectstatic --noinput
-	$(dcp) exec stb-python bash -c "cd doc/ && make html"
 	$(dcp) stop && $(dcp) up -d  # to make fresh collected static visible immediately
