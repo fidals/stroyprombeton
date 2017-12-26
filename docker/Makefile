@@ -37,6 +37,14 @@ restore:
 backup:
 	$(dcp) up stb-backup-data
 
+# start dev environment
+dev: build
+	$(dc) up -d stb-python
+	$(dc) exec stb-python python manage.py migrate
+	# launch "collectstatic" not in static recipe because ManifestStaticStorage writes to db
+	$(dc) exec stb-python python manage.py collectstatic --noinput
+	$(dc) stop && $(dc) up -d  # to make fresh collected static visible immediately
+
 # for serv env
 deploy: backup
 	$(dcp) pull
