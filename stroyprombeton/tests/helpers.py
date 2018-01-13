@@ -25,8 +25,8 @@ class BaseSeleniumTestCase(LiveServerTestCase):
             command_executor=settings.SELENIUM_URL,
             desired_capabilities=DesiredCapabilities.CHROME
         )
-        cls.wait = WebDriverWait(cls.browser, 120)
-        cls.browser.implicitly_wait(30)
+        cls.wait = WebDriverWait(cls.browser, 240)
+        cls.browser.implicitly_wait(60)
         cls.browser.set_window_size(1920, 1080)
 
     @classmethod

@@ -16,7 +16,6 @@ before_install:
 
 install:
   - cd docker
-  - docker-compose build > docker-build.log 2>&1
 
 jobs:
   include:

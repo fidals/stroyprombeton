@@ -221,14 +221,19 @@ USE_CELERY = False
 
 # Email configs
 # It is fake-pass. Correct pass will be created on `docker-compose up` stage from `docker/.env`
-EMAIL_HOST = 'smtp.yandex.ru'
+EMAIL_HOST = os.environ.get('EMAIL_HOST', 'smtp.yandex.ru')
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', 'mailer@stroyprombeton.ru')
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', 'so_secret_pass')
-EMAIL_HOST_USER = 'mailer@stroyprombeton.ru'
-EMAIL_PORT = 587
-EMAIL_RECIPIENT = 'info@stroyprombeton.ru'
-EMAIL_SENDER = 'mailer@stroyprombeton.ru'
-EMAIL_USE_TLS = True
-SHOP_EMAIL = 'info@stroyprombeton.ru'
+EMAIL_PORT = os.environ.get('EMAIL_PORT', 465)
+EMAIL_SENDER = os.environ.get('EMAIL_SENDER', 'mailer@stroyprombeton.ru')
+EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', True)
+
+# @todo #160 List mail recipients in config
+#  Remove `EMAIL_RECIPIENT` and `SHOP_EMAIL` settings
+#  and env vars. And add EMAIL_RECIPIENTS
+
+EMAIL_RECIPIENT = os.environ.get('EMAIL_RECIPIENT', 'info@stroyprombeton.ru')
+SHOP_EMAIL = os.environ.get('SHOP_EMAIL', 'info@stroyprombeton.ru')
 
 # Uncomment for http->https change
 # os.environ['HTTPS'] = 'on'
