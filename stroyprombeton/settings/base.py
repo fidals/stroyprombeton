@@ -226,7 +226,7 @@ EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', 'mailer@stroyprombeton.ru')
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', 'so_secret_pass')
 EMAIL_PORT = os.environ.get('EMAIL_PORT', 465)
 EMAIL_SENDER = os.environ.get('EMAIL_SENDER', 'mailer@stroyprombeton.ru')
-EMAIL_USE_TLS = os.environ.get('EMAIL_USE_TLS', True)
+EMAIL_USE_SSL = os.environ.get('EMAIL_USE_SSL', True)
 
 # @todo #160 List mail recipients in config
 #  Remove `EMAIL_RECIPIENT` and `SHOP_EMAIL` settings
