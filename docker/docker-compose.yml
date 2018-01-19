@@ -111,7 +111,7 @@ services:
     image: selenium/standalone-chrome:3.6.0
     restart: always
     ports:
-      - '4444:4444'
+      - '4444'
       - '5900'
     networks:
       - stb-backend

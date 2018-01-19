@@ -62,9 +62,25 @@ pipeline:
       - docker-compose -f docker-compose-production.yml build --no-cache stb-python
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+      # in case if "Push Hooks" is enabled in Drone settings GUI
       - /root/prog/stroyprombeton/docker/.env:/drone/src/github.com/fidals/stroyprombeton/commit/${DRONE_COMMIT_SHA}/docker/.env
+      # in case if "Pull Request Hooks" is enabled in Drone settings GUI
+      - /root/prog/stroyprombeton/docker/.env:/drone/src/github.com/fidals/stroyprombeton/pull/${DRONE_PULL_REQUEST}/docker/.env
     when:
       branch: master
+
+  lint:
+    image: docker/compose:1.17.1
+    commands:
+      - cd docker
+      - docker-compose run --rm stb-lint
+      - docker-compose run --rm stb-pdd
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /root/prog/stroyprombeton/docker/.env:/drone/src/github.com/fidals/stroyprombeton/commit/${DRONE_COMMIT_SHA}/docker/.env
+    when:
+      branch:
+       exclude: master
 
   docker-push:
     image: docker:latest

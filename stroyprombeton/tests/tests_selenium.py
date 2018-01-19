@@ -417,6 +417,7 @@ class Search(SeleniumTestCase):
                 (By.CLASS_NAME, 'autocomplete-suggestions')
             ))
 
+    @expectedFailure
     def test_autocomplete_can_expand_and_collapse(self):
         """
         Test the autocomplete behavior.
