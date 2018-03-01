@@ -1,3 +1,6 @@
+[![PDD status](http://www.0pdd.com/svg?name=fidals/stroyprombeton)](http://www.0pdd.com/p?name=fidals/stroyprombeton)
+
+
 # Stroyprombeton's documentation
 
 ## Деплой
