@@ -3,6 +3,9 @@
 
 # Stroyprombeton's documentation
 
+## Команда
+[Линк на роли в команде](https://docs.google.com/document/d/1N-K7m4GFDTS2WtJndP2BGCRzdvNe6PXsd7vVpGil1Vc/edit#) разработки сайтов.
+
 ## Деплой
 
 todo: Create delivery
