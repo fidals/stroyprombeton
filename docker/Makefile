@@ -14,8 +14,7 @@ static:
 
 # for local env
 build: static
-	$(dc) build stb-python && $(dcp) build
-	$(dcp) push
+	$(dc) build stb-python
 
 # for local env
 test: static
@@ -46,6 +45,10 @@ dev: build
 	$(dc) stop && $(dc) up -d  # to make fresh collected static visible immediately
 
 # for serv env
+build-production: build
+	$(dcp) build
+	$(dcp) push
+
 deploy: backup
 	$(dcp) pull
 	$(dcp) stop

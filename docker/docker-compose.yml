@@ -6,8 +6,8 @@ services:
     image: busybox
     container_name: stb-source
     volumes:
-      - ./../:/usr/app/src/ # code volume
-      - $REFARM_SRC:$DEPS_DIR
+      # code volume
+      - ./../:/usr/app/src/
       # leaved it here as example of code mounting for debugging
       # - $REFARM_SRC/search:/root/.local/lib/python3.6/site-packages/search
     command: sh -c "top > /dev/null"
