@@ -227,13 +227,10 @@ EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', 'so_secret_pass')
 EMAIL_PORT = os.environ.get('EMAIL_PORT', 465)
 EMAIL_SENDER = os.environ.get('EMAIL_SENDER', 'mailer@stroyprombeton.ru')
 EMAIL_USE_SSL = os.environ.get('EMAIL_USE_SSL', True)
-
-# @todo #160 List mail recipients in config
-#  Remove `EMAIL_RECIPIENT` and `SHOP_EMAIL` settings
-#  and env vars. And add EMAIL_RECIPIENTS
-
-EMAIL_RECIPIENT = os.environ.get('EMAIL_RECIPIENT', 'info@stroyprombeton.ru')
-SHOP_EMAIL = os.environ.get('SHOP_EMAIL', 'info@stroyprombeton.ru')
+EMAIL_RECIPIENTS = os.environ.get(
+    'EMAIL_RECIPIENTS',
+    'info@stroyprombeton.ru,info2@stroyprombeton.ru'
+).split(',')
 
 # Uncomment for http->https change
 # os.environ['HTTPS'] = 'on'

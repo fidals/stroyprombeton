@@ -19,6 +19,6 @@ def send_form(*, form, template, subject):
         subject='Stroyprombeton | {}'.format(subject),
         message=message,
         from_email=settings.EMAIL_SENDER,
-        recipient_list=[settings.SHOP_EMAIL],
+        recipient_list=settings.EMAIL_RECIPIENTS,
         html_message=message
     )

@@ -55,7 +55,7 @@ class ImportTest(TestCase):
         self.assertTrue(site_url, settings.BASE_URL)
 
         site_email = self.pricelist_body.find('email').text
-        self.assertTrue(site_email, settings.SHOP_EMAIL)
+        self.assertTrue(site_email, settings.EMAIL_RECIPIENTS)
 
         site_cpa = self.pricelist_body.find('cpa').text
         self.assertTrue(site_cpa, 0)
