@@ -8,8 +8,9 @@ from django.db.models import Func, Value
 from django.utils.translation import ugettext_lazy as _
 from django_select2.forms import ModelSelect2Widget
 
+from ecommerce.models import Position
 from pages import models as pages_models
-from generic_admin import models as admin_models, inlines, sites, filters
+from generic_admin import models as admin_models, inlines, mixins, sites, filters
 
 from stroyprombeton import models as stb_models
 from stroyprombeton.views import TableEditor
@@ -123,6 +124,11 @@ class StbAdminSite(sites.SiteWithTableEditor):
     table_editor_view = TableEditor
 
 
+class PositionInline(admin.StackedInline):
+
+    model = Position
+
+
 class StbImageInline(inlines.ImageInline):
     form = CustomWidgetsForm
 
@@ -228,6 +234,14 @@ class StbCategoryPageAdmin(admin_models.CategoryPageAdmin):
     ]
 
 
+class OrderAdmin(mixins.PermissionsControl):
+
+    add = True
+    inlines = [PositionInline]
+    list_display = ['email', 'phone', 'name', 'company', 'address', 'city', 'paid']
+    search_fields = ['email', 'phone', 'name', 'company']
+    list_display_links = ['email']
+
 stb_admin_site = StbAdminSite(name='stb_admin')
 
 # Pages
@@ -241,6 +255,7 @@ stb_admin_site.register(stb_models.CategoryPage, StbCategoryPageAdmin)
 stb_admin_site.register(stb_models.NewsForAdmin, StbFlatPageAdmin)
 stb_admin_site.register(stb_models.RegionsForAdmin, StbFlatPageAdmin)
 stb_admin_site.register(stb_models.ClientFeedbacksForAdmin, StbFlatPageAdmin)
+stb_admin_site.register(stb_models.Order, OrderAdmin)
 
 # Redirects
 stb_admin_site.register(Redirect)

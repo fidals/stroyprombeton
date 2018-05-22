@@ -14,3 +14,6 @@ stb.json
 docker/.env
 celerybeat*
 fake_db.py
+.vscode/
+package-lock.json
+report.xml
