@@ -92,7 +92,7 @@ services:
       - EMAIL_PORT=$EMAIL_PORT
       - EMAIL_SENDER=$EMAIL_SENDER
       - EMAIL_USE_SSL=$EMAIL_USE_SSL
-      - EMAIL_RECIPIENT=$EMAIL_RECIPIENT
+      - EMAIL_RECIPIENTS=$EMAIL_RECIPIENTS
       - SHOP_EMAIL=$SHOP_EMAIL
     depends_on:
       - stb-python

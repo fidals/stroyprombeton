@@ -2,6 +2,7 @@ import time
 
 from django.conf import settings
 from django.test import override_settings, LiveServerTestCase
+from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from seleniumrequests import Remote
@@ -25,8 +26,9 @@ class BaseSeleniumTestCase(LiveServerTestCase):
             command_executor=settings.SELENIUM_URL,
             desired_capabilities=DesiredCapabilities.CHROME
         )
-        cls.wait = WebDriverWait(cls.browser, 240)
-        cls.browser.implicitly_wait(60)
+        cls.wait = WebDriverWait(cls.browser, 60)
+        cls.browser.implicitly_wait(30)
+        cls.browser.set_window_position(0, 0)
         cls.browser.set_window_size(1920, 1080)
 
     @classmethod
@@ -34,3 +36,19 @@ class BaseSeleniumTestCase(LiveServerTestCase):
         """Close selenium session."""
         cls.browser.quit()
         super().tearDownClass()
+
+    def click(self, click_locator):
+        self.wait.until(EC.element_to_be_clickable(
+            click_locator
+        )).click()
+
+    def click_and_wait(self, click_locator, wait_condition):
+        self.click(click_locator)
+        self.wait.until(wait_condition)
+
+    def send_keys_and_wait(self, keys, locator, expected_keys=''):
+        el = self.wait.until(EC.visibility_of_element_located(locator))
+        el.clear()
+        str_keys = str(keys)
+        el.send_keys(str_keys)
+        self.wait.until(EC.text_to_be_present_in_element_value(locator, expected_keys or str_keys))

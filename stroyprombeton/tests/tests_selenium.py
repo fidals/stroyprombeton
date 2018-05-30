@@ -16,14 +16,6 @@ from stroyprombeton.models import Category, Product
 from stroyprombeton.tests.helpers import wait, disable_celery, BaseSeleniumTestCase
 
 
-def wait_page_loading(browser):
-    ui.WebDriverWait(browser, 120).until(
-        EC.visibility_of_element_located(
-            (By.CLASS_NAME, 'content')
-        )
-    )
-
-
 def hover(browser, element):
     """Perform a hover over an element."""
     hover_action = ActionChains(browser).move_to_element(element)
@@ -43,33 +35,22 @@ class SeleniumTestCase(BaseSeleniumTestCase):
     fixtures = ['dump.json']
 
 
-class Action(WebElement):
-    @classmethod
-    def click_and_wait(cls, element, waiting_time=1):
-        element.click()
-        wait(waiting_time)
+class CartTestCase(SeleniumTestCase):
 
-    @classmethod
-    def send_keys_and_wait(cls, element, *value, waiting_time=1):
-        element.send_keys(*value)
-        wait(waiting_time)
-
-
-click_and_wait = Action.click_and_wait
-send_keys_and_wait = Action.send_keys_and_wait
-
-
-class CartMixin:
     def buy_on_product_page(self, *, product_id=1, quantity=None, waiting_time=1):
         product_page = (self.live_server_url + reverse('product', args=(product_id,)))
         self.browser.get(product_page)
 
         if quantity:
-            q = self.browser.find_element_by_class_name('js-count-input')
-            q.clear()
-            send_keys_and_wait(q, quantity, waiting_time=waiting_time)
+            self.send_keys_and_wait(
+                quantity,
+                (By.CLASS_NAME, 'js-count-input'),
+            )
 
-        click_and_wait(self.browser.find_element_by_id('buy-product'), waiting_time=waiting_time)
+        self.click_and_wait(
+            (By.ID, 'buy-product'),
+            EC.visibility_of_element_located((By.CLASS_NAME, 'cart')),
+        )
 
     def buy_on_category_page(self, wait=True):
         self.wait.until(EC.element_to_be_clickable(
@@ -91,15 +72,17 @@ class CartMixin:
             (By.CLASS_NAME, 'cart')
         ))
 
-    def positions(self):
-        return self.browser.find_elements_by_class_name('cart-item')
+    def positions(self, browser=None):
+        browser = browser or self.browser
+        return browser.find_elements_by_class_name('cart-item')
 
     def positions_count(self):
         self.show_cart()
         return len(self.positions())
 
 
-class HeaderCart(SeleniumTestCase, CartMixin):
+class HeaderCart(CartTestCase):
+
     def setUp(self):
         super(HeaderCart, self).setUp()
         self.browser.get(self.live_server_url)
@@ -127,20 +110,29 @@ class HeaderCart(SeleniumTestCase, CartMixin):
         self.buy_on_product_page()
         self.buy_on_product_page(product_id=2)
         self.show_cart()
-        click_and_wait(self.browser.find_element_by_class_name('js-remove'))
 
+        def wait_reducing(browser):
+            return before_count > len(browser.find_elements_by_class_name('cart-item'))
+
+        before_count = self.positions_count()
+        self.click_and_wait(
+            (By.CLASS_NAME, 'js-remove'), wait_reducing
+        )
         self.assertEqual(self.positions_count(), 1)
 
     def test_flush_cart(self):
         self.buy_on_product_page()
         self.buy_on_product_page(product_id=2)
         self.show_cart()
-        click_and_wait(self.browser.find_element_by_class_name('js-flush-cart'))
-
+        self.click_and_wait(
+            (By.CLASS_NAME, 'js-flush-cart'),
+            EC.presence_of_element_located((By.CLASS_NAME, 'cart-empty-text')),
+        )
         self.assert_cart_is_empty()
 
 
-class ProductPage(SeleniumTestCase, CartMixin):
+class ProductPage(CartTestCase):
+
     def test_buy_product(self):
         self.buy_on_product_page()
 
@@ -159,17 +151,33 @@ class ProductPage(SeleniumTestCase, CartMixin):
         self.assertIn('42', header_product_count(self))
 
 
-class OrderPage(SeleniumTestCase, CartMixin):
+class OrderPage(CartTestCase):
+
     def setUp(self):
-        super(OrderPage, self).setUp()
+        super().setUp()
         self.product_row = 'js-product-row'
-        self.product_remove = 'js-remove'
+        self.product_remove = 'order-icon-remove'
+
+    def remove_product(self):
+        def wait_reducing(browser):
+            return before_count > len(browser.find_elements_by_class_name(self.product_row))
+
+        before_count = len(self.browser.find_elements_by_class_name(self.product_row))
+        # delete first product in table
+        self.click_and_wait((By.CLASS_NAME, self.product_remove), wait_reducing)
 
     def proceed_order_page(self):
         self.browser.get(
             self.live_server_url +
             reverse(Page.CUSTOM_PAGES_URL_NAME, args=('order', ))
         )
+        self.wait.until(EC.visibility_of_element_located(
+            (By.TAG_NAME, 'h1')
+        ))
+
+    def get_total(self, browser=None):
+        browser = browser or self.browser
+        return browser.find_element_by_class_name('order-total-val').text
 
     def test_order_page_actual_count_of_rows(self):
         self.buy_on_product_page()
@@ -184,8 +192,7 @@ class OrderPage(SeleniumTestCase, CartMixin):
         self.buy_on_product_page(product_id=2)
         self.proceed_order_page()
 
-        product_row = self.browser.find_element_by_class_name(self.product_row)
-        click_and_wait(product_row.find_element_by_class_name(self.product_remove))
+        self.remove_product()
         products_in_table = self.browser.find_elements_by_class_name(self.product_row)
 
         self.assertEqual(len(products_in_table), 1)
@@ -194,8 +201,7 @@ class OrderPage(SeleniumTestCase, CartMixin):
         self.buy_on_product_page()
         self.proceed_order_page()
 
-        product_row = self.browser.find_element_by_class_name(self.product_row)
-        click_and_wait(product_row.find_element_by_class_name(self.product_remove))
+        self.remove_product()
         order_wrapper_text = self.browser.find_element_by_class_name('js-order-contain').text
 
         self.assertIn('Нет выбранных позиций', order_wrapper_text)
@@ -204,12 +210,15 @@ class OrderPage(SeleniumTestCase, CartMixin):
         self.buy_on_product_page()
         self.proceed_order_page()
 
-        counter = self.browser.find_element_by_class_name('js-count-input')
-        counter.clear()
-        send_keys_and_wait(counter, 42)
+        total = self.get_total()
+        def wait_total_changes(driver):
+            return self.get_total(driver) != total
+
+        self.send_keys_and_wait(42, (By.CLASS_NAME, 'js-count-input'))
+        self.wait.until(wait_total_changes)
         product_price = Product.objects.get(id=1).price
         expected_price = floatformat(str(product_price * 42), 0) + ' руб'
-        total_price = self.browser.find_element_by_class_name('order-total-val').text
+        total_price = self.get_total()
 
         self.assertEqual(expected_price, total_price)
 
@@ -219,21 +228,32 @@ class OrderPage(SeleniumTestCase, CartMixin):
         self.proceed_order_page()
 
         code = Product.objects.get(id=1).code
-        counter = self.browser.find_element_by_class_name('js-count-input')
-        counter.clear()
-        send_keys_and_wait(counter, 42)
-        total_price = self.browser.find_element_by_class_name('order-total-val').text
 
+        # @todo #137 Setting a number of items flush all other fields on order page.
+        #  Steps to reproduce the bug:
+        #  1. Add products to a cart and open an order page
+        #  2. Fill the fields (name, email, phone, etc.)
+        #  2. Change the number of any item
+
+        # self.send_keys_and_wait(
+        #     42, (By.CLASS_NAME, 'js-count-input'),
+        # )
+        total_price = self.get_total()
+        expected_phone = '+2 (222) 222 22 22'
         customer_data = [
-            ('id_name', 'Name'), ('id_phone', '22222222222'),
-            ('id_email', 'test@test.test'), ('id_company', 'Some Company'),
+            ('id_name', 'Name'), ('id_email', 'test@test.test'), ('id_company', 'Some Company'),
             ('id_address', 'Санкт-Петербург'), ('id_comment', 'Some comment')
         ]
-        for element, value in customer_data:
-            self.browser.find_element_by_id(element).send_keys(value)
 
-        Action.click_and_wait(
-            self.browser.find_element_by_css_selector('.btn-order-form .btn')
+        for element, value in customer_data:
+            self.send_keys_and_wait(value, (By.ID, element))
+        self.send_keys_and_wait('22222222222', (By.ID, 'id_phone'), expected_phone)
+
+        self.click_and_wait(
+            (By.CSS_SELECTOR, '.btn-order-form .btn'),
+            EC.text_to_be_present_in_element(
+                (By.TAG_NAME, 'h1'), 'Ваш заказ принят'
+            ),
         )
 
         sent_mail_body = mail.outbox[0].body
@@ -254,14 +274,12 @@ class OrderPage(SeleniumTestCase, CartMixin):
             sent_mail_body
         )
 
-        to_check = ['<b>Name</b>', '<b>+2 (222) 222 22 22</b>',
-                    '<b>test@test.test</b>', '<b>Some Company</b>',
-                    '<b>Санкт-Петербург</b>', '<b>Some comment</b>']
-        for html_chunk in to_check:
-            self.assertInHTML(html_chunk, sent_mail_body)
+        for _, html_chunk in customer_data:
+            self.assertInHTML(f'<b>{html_chunk}</b>', sent_mail_body)
+        self.assertInHTML(f'<b>{expected_phone}</b>', sent_mail_body)
 
 
-class CategoryPage(SeleniumTestCase, CartMixin):
+class CategoryPage(CartTestCase):
 
     PRODUCTS_TO_LOAD = 30
     SELENIUM_TIMEOUT = 60
@@ -269,7 +287,9 @@ class CategoryPage(SeleniumTestCase, CartMixin):
     @classmethod
     def setUpClass(cls):
         super(CategoryPage, cls).setUpClass()
-        cls.quantity = 'js-count-input'
+        cls.quantity_class = 'js-count-input'
+        cls.load_more_id = 'load-more-products'
+        cls.filter_id = 'search-filter'
 
     def setUp(self):
         def testing_url(category_id):
@@ -291,15 +311,21 @@ class CategoryPage(SeleniumTestCase, CartMixin):
             category_with_product_less_then_load_limit.id
         )
         self.browser.get(self.root_category)
+        self.wait.until(EC.visibility_of_element_located((By.TAG_NAME, 'h1')))
 
-    def get_tables_rows_count(self):
-        return len(self.browser.find_elements_by_class_name('table-tr'))
+    def get_tables_rows_count(self, browser=None):
+        browser = browser or self.browser
+        return len(browser.find_elements_by_class_name('table-tr'))
 
-    def get_load_more_button(self):
-        return self.browser.find_element_by_id('load-more-products')
+    def click_load_more_button(self):
+        def wait_loading(browser):
+            return product_count < self.get_tables_rows_count(browser)
+        product_count = self.get_tables_rows_count()
+        self.click_and_wait((By.ID, self.load_more_id), wait_loading)
 
-    def get_load_more_button_classes(self):
-        return self.get_load_more_button().get_attribute('class')
+    def get_load_more_button_classes(self, browser=None):
+        browser = browser or self.browser
+        return browser.find_element_by_id(self.load_more_id).get_attribute('class')
 
     def test_buy_product(self):
         self.buy_on_category_page()
@@ -316,9 +342,7 @@ class CategoryPage(SeleniumTestCase, CartMixin):
         self.assertIn('2', header_product_count(self))
 
     def test_buy_product_with_quantity(self):
-        first_product_count = self.browser.find_element_by_class_name(self.quantity)
-        first_product_count.clear()
-        send_keys_and_wait(first_product_count, '42')
+        self.send_keys_and_wait(42, (By.CLASS_NAME, self.quantity_class))
         self.buy_on_category_page()
 
         self.assertEqual(self.positions_count(), 1)
@@ -334,7 +358,7 @@ class CategoryPage(SeleniumTestCase, CartMixin):
     def test_load_more_products(self):
         """We able to load more products by clicking on `Load more` link."""
         before_load_products = self.get_tables_rows_count()
-        click_and_wait(self.get_load_more_button())
+        self.click_load_more_button()
         after_load_products = self.get_tables_rows_count()
 
         self.assertTrue(before_load_products < after_load_products)
@@ -352,24 +376,22 @@ class CategoryPage(SeleniumTestCase, CartMixin):
 
     def test_load_more_button_disabled_state(self):
         self.browser.get(self.children_category)
-        load_more_button = self.get_load_more_button()
-        click_and_wait(load_more_button)
-        click_and_wait(load_more_button)
-        click_and_wait(load_more_button)
+        self.click_load_more_button()
+        self.click_load_more_button()
 
         self.assertIn('disabled', self.get_load_more_button_classes())
 
     def test_filter_products(self):
         """We are able to filter products by typing in filter field."""
-        self.wait.until(EC.visibility_of_element_located(
-            (By.ID, 'search-filter')
-        ))
-        filter_field = self.browser.find_element_by_id('search-filter')
+        def wait_filter(browser):
+            return 'disabled' in self.get_load_more_button_classes(browser)
+
         before_filter_products = self.get_tables_rows_count()
-        send_keys_and_wait(filter_field, '#10')
+        self.send_keys_and_wait('#10', (By.ID, self.filter_id))
+        self.wait.until(wait_filter)
         after_filter_products = self.get_tables_rows_count()
 
-        self.assertTrue(before_filter_products > after_filter_products)
+        self.assertGreater(before_filter_products, after_filter_products)
 
     def test_filter_products_and_disabled_state(self):
         """
@@ -379,12 +401,9 @@ class CategoryPage(SeleniumTestCase, CartMixin):
         see that `Load more` link becomes disabled. That means that there are
         no more filtered products to load from server.
         """
-        filter_field = self.browser.find_element_by_id('search-filter')
-        send_keys_and_wait(filter_field, '#10')
-
-        load_more_button = self.get_load_more_button()
-        click_and_wait(load_more_button)
-        click_and_wait(load_more_button)
+        self.send_keys_and_wait('#1', (By.ID, self.filter_id))
+        self.click_load_more_button()
+        self.click_load_more_button()
 
         self.assertIn('disabled', self.get_load_more_button_classes())
 
@@ -396,28 +415,39 @@ class Search(SeleniumTestCase):
         self.browser.get(self.live_server_url)
         # query contains whitespace to prevent urlencoding errors
         self.query = 'category'
+        self.wrong_query = 'Not existing search query'
+        self.search_url = '/search/'
 
     @property
     def autocomplete(self):
-        return self.browser.find_element_by_class_name('autocomplete-suggestions')
-
-    @property
-    def input(self):
-        return self.browser.find_element_by_class_name('js-search-field')
-
-    def fill_input(self, query='', wait_after=False):
-        """Enter correct search term."""
-        query = query or self.query
-        self.wait.until(EC.presence_of_element_located(
-            (By.CLASS_NAME, 'js-search-field')
+        return self.wait.until(EC.presence_of_element_located(
+            (By.CLASS_NAME, 'autocomplete-suggestions')
         ))
-        self.input.send_keys(query)
-        if wait_after:
-            self.wait.until(EC.visibility_of_element_located(
-                (By.CLASS_NAME, 'autocomplete-suggestions')
-            ))
 
-    @expectedFailure
+    def search_loaded_condition(self):
+        return EC.url_contains(self.search_url)
+
+    def clear_input(self, number):
+        self.wait.until(EC.visibility_of_element_located(
+            (By.CLASS_NAME, 'js-search-field')
+        )).send_keys(Keys.BACKSPACE * number)
+        self.wait.until_not(EC.visibility_of(self.autocomplete))
+
+    def fill_input(self, query=''):
+        """Enter correct search term."""
+        self.send_keys_and_wait(query or self.query, (By.CLASS_NAME, 'js-search-field'))
+
+    def fill_input_and_wait(self, query=''):
+        self.fill_input(query)
+        self.wait.until(EC.visibility_of(self.autocomplete))
+
+    def search(self, query=''):
+        self.fill_input(query)
+        self.click_and_wait(
+            (By.CLASS_NAME, 'search-btn'),
+            self.search_loaded_condition(),
+        )
+
     def test_autocomplete_can_expand_and_collapse(self):
         """
         Test the autocomplete behavior.
@@ -425,46 +455,41 @@ class Search(SeleniumTestCase):
         Autocomplete should minimize during user typing correct search query
         Autocomplete should minimize by removing search query.
         """
-        self.fill_input(wait_after=True)
+        self.fill_input_and_wait()
         # input was filled, so autocomplete should expand
         self.assertTrue(self.autocomplete.is_displayed())
 
         # remove search term ...
-        self.fill_input(query=Keys.BACKSPACE * len(self.query))
+        self.clear_input(len(self.query))
 
         # ... and autocomplete should collapse
         self.assertFalse(self.autocomplete.is_displayed())
 
     def test_autocomplete_item_link(self):
         """Every autocomplete item should contain link on page."""
-        self.fill_input(wait_after=True)
-        first_item = self.autocomplete.find_element_by_class_name('autocomplete-suggestion')
-        first_item.click()
+        self.fill_input_and_wait()
+        self.autocomplete.find_element_by_class_name('autocomplete-suggestion').click()
 
         self.wait.until(EC.url_contains('/gbi/products/'))
         self.assertTrue('/gbi/products/' in self.browser.current_url)
 
-    # @todo #160 Repair Search test
-    #  `stroyprombeton.tests.tests_selenium.Search#test_autocomplete_see_all_item`
-
-    @expectedFailure
     def test_autocomplete_see_all_item(self):
         """
         Autocomplete should contain "see all" item.
 
         "See all" item links on search results page.
         """
-        self.fill_input(wait_after=True)
-        last_item = self.autocomplete.find_element_by_class_name('search-more-link')
-        click_and_wait(last_item)
+        self.fill_input_and_wait()
+        self.click_and_wait(
+            (By.CLASS_NAME, 'search-more-link'),
+            self.search_loaded_condition(),
+        )
 
-        self.assertTrue('/search/' in self.browser.current_url)
+        self.assertTrue(self.search_url in self.browser.current_url)
 
     def test_search_have_results(self):
         """Search results page should contain links on relevant pages."""
-        self.fill_input(wait_after=False)
-        button_submit = self.browser.find_element_by_id('search-btn')
-        click_and_wait(button_submit)
+        self.search()
 
         self.assertTrue(self.browser.find_element_by_link_text('Category root #0'))
         self.assertTrue(self.browser.find_element_by_link_text('Category #0 of #1'))
@@ -473,24 +498,31 @@ class Search(SeleniumTestCase):
         test_product = Product.objects.first()
         test_product.page.is_active = False
         test_product.page.save()
-        self.fill_input(query=test_product.name, wait_after=False)
+        self.fill_input(query=test_product.name)
 
-        with self.assertRaises(NoSuchElementException):
-            self.browser.find_element_by_link_text(test_product.name)
+        product_not_exist = EC.invisibility_of_element_located(
+            (By.LINK_TEXT, test_product.url)
+        )
+        self.assertTrue(product_not_exist(self.browser))
 
     def test_search_results_empty(self):
         """Search results for wrong term should contain empty result set."""
-        self.fill_input(query='Not existing search query', wait_after=False)
-        button_submit = self.browser.find_element_by_id('search-btn')
-        button_submit.click()
-        self.wait.until(EC.url_contains('search'))
+        self.search(query=self.wrong_query)
+
         h1 = self.browser.find_element_by_tag_name('h1')
         self.assertTrue(h1.text == 'По вашему запросу ничего не найдено')
 
+    def test_autocomplete_results_empty(self):
+        """Autocomplete does not display for wrong query."""
+        self.fill_input(query=self.wrong_query)
+
+        self.assertFalse(self.autocomplete.is_displayed())
+
 
 class IndexPage(SeleniumTestCase):
+
     def setUp(self):
-        super(IndexPage, self).setUp()
+        super().setUp()
         self.browser.get(self.live_server_url)
 
     def fill_and_send_backcall_request_form(self):
@@ -500,16 +532,21 @@ class IndexPage(SeleniumTestCase):
         name_field = self.browser.find_element_by_id('id_name')
         phone_field = self.browser.find_element_by_id('id_phone')
 
-        send_keys_and_wait(name_field, 'Yo')
-        send_keys_and_wait(phone_field, '22222222222')
+        self.send_keys_and_wait('Yo', (By.ID, 'id_name'))
+        self.send_keys_and_wait('22222222222', (By.ID, 'id_phone'), '+2 (222) 222 22 22')
 
-        send_btn = self.browser.find_element_by_class_name('js-send-backcall')
-        send_btn.click()
-        wait(3)
+        self.click_and_wait(
+            (By.CLASS_NAME, 'js-send-backcall'),
+            EC.invisibility_of_element_located((By.CLASS_NAME, 'js-modal')),
+        )
 
     def test_backcall_request(self):
-        self.browser.find_element_by_class_name('js-open-modal').click()
-        modal = self.browser.find_element_by_class_name('js-modal')
+        self.wait.until(EC.element_to_be_clickable((
+            (By.CLASS_NAME, 'js-open-modal')
+        ))).click()
+        modal = self.wait.until(EC.visibility_of_element_located(
+            (By.CLASS_NAME, 'js-modal')
+        ))
         send_btn = self.browser.find_element_by_class_name('js-send-backcall')
 
         self.assertTrue(modal.is_displayed())

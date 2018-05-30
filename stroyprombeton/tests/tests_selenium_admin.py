@@ -4,11 +4,14 @@ from django.test import override_settings
 from django.urls import reverse
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.by import By
+from selenium.common import exceptions
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
 
 from stroyprombeton.models import Product, Category
 from stroyprombeton.tests.helpers import wait, BaseSeleniumTestCase
+
+# @todo #137:120m Remove the rest of wait(...) calls in favor of explicit the WebDriverWait.
 
 
 class HelpersMixin:
@@ -19,11 +22,13 @@ class HelpersMixin:
 
     def context_click(self, element):
         ActionChains(self.browser).context_click(element).perform()
-        wait()
 
 
-class AdminMixin:
+@override_settings(LANGUAGE_CODE='ru-ru', LANGUAGES=(('ru', 'Russian'),))
+class AdminTestCase(BaseSeleniumTestCase):
+    """Common superclass for running selenium-based tests."""
 
+    fixtures = ['dump.json', 'admin.json']
     admin_urlconf = 'admin:index'
     login = 'admin'
     password = 'asdfjkl;'
@@ -39,17 +44,12 @@ class AdminMixin:
         password_field.send_keys(self.password)
         login_form = self.browser.find_element_by_id('login-form')
         login_form.submit()
-        wait()
+        self.wait.until(EC.visibility_of_element_located(
+            (By.CLASS_NAME, 'admin')
+        ))
 
 
-@override_settings(LANGUAGE_CODE='ru-ru', LANGUAGES=(('ru', 'Russian'),))
-class SeleniumTestCase(BaseSeleniumTestCase):
-    """Common superclass for running selenium-based tests."""
-
-    fixtures = ['dump.json', 'admin.json']
-
-
-class AdminPage(SeleniumTestCase, HelpersMixin, AdminMixin):
+class AdminPage(AdminTestCase, HelpersMixin):
     """Selenium-based tests for Admin page UI."""
 
     title_text = 'Админка Stroyprombeton'
@@ -66,7 +66,7 @@ class AdminPage(SeleniumTestCase, HelpersMixin, AdminMixin):
 
     @classmethod
     def setUpClass(cls):
-        super(AdminPage, cls).setUpClass()
+        super().setUpClass()
         cls.change_products_url = cls.live_server_url + reverse(
             'admin:stroyprombeton_productpage_changelist')
 
@@ -79,7 +79,6 @@ class AdminPage(SeleniumTestCase, HelpersMixin, AdminMixin):
             parent_id=self.children_category_id).first().id)
         self.tree_product_id = str(Product.objects.filter(
             category_id=self.deep_children_category_id).first().id)
-
         self.sign_in()
 
     @property
@@ -89,36 +88,46 @@ class AdminPage(SeleniumTestCase, HelpersMixin, AdminMixin):
     def get_table_with_products(self):
         return self.browser.find_element_by_class_name(self.product_table)
 
+    def open_side_bar(self):
+        if 'collapsed' in self.browser.find_element_by_tag_name('body').get_attribute('class'):
+            self.browser.find_element_by_class_name('js-toggle-sidebar').click()
+
     def open_js_tree_nodes(self):
-        def get_change_state_button(id):
-            return self.browser.find_element_by_id(id).find_element_by_tag_name('i')
+        def open_node(id):
+            def is_expand(browser):
+                try:
+                    el = browser.find_element_by_id(id)
+                    is_opened = 'open' in el.get_attribute('class')
+                    aria_expanded = el.get_attribute('aria-expanded') == 'true'
+                    return is_opened and aria_expanded
+                except exceptions.StaleElementReferenceException:
+                    return False
 
-        def change_state_by_id(id):
-            get_change_state_button(id).click()
-            wait()
+            # wait jstree lazy-loading
+            self.wait.until(EC.invisibility_of_element_located(
+                (By.CLASS_NAME, 'jstree-loading')
+            ))
+            # wait(...) is required here because tree node is slowly initialized
+            # and WebDriverWait does not help us
+            wait(0.5)
 
-        def is_node_open(id):
-            return self.browser.find_element_by_id(
-                id).find_elements_by_class_name('jstree-children')
+            if not is_expand(self.browser):
+                self.browser.find_element_by_id(id).find_element_by_tag_name('i').click()
+                self.wait.until(is_expand)
 
-        def open_node(*args):
-            for id in args:
-                if not is_node_open(id):
-                    # open node
-                    change_state_by_id(id=id)
+        def open_nodes(*args):
+            for id_ in args:
+                open_node(id_)
 
-        def open_sidebar():
-            """Sidebar should be opened before the tests."""
-            if self.browser.find_elements_by_class_name('collapsed'):
-                self.browser.find_element_by_class_name('js-toggle-sidebar').click()
-                wait()
-
-        open_sidebar()
-        open_node(
+        self.open_side_bar()
+        open_nodes(
             self.root_category_id,
             self.children_category_id,
             self.deep_children_category_id
         )
+        self.wait.until(EC.visibility_of_element_located(
+            (By.ID, self.tree_product_id)
+        ))
 
     def test_login(self):
         """We are able to login to Admin page."""
@@ -221,12 +230,12 @@ class AdminPage(SeleniumTestCase, HelpersMixin, AdminMixin):
 
     def test_tree_redirect_to_entity_edit_page(self):
         """Test redirect to edit entity page by click on jstree's item."""
-        self.open_js_tree_nodes()
         expected_h1 = ['Change category', 'Изменить категория']
 
         # click at tree's item should redirect us to entity edit page
-        root_node = self.browser.find_element_by_id(self.root_category_id)
-        root_node.find_element_by_tag_name('a').click()
+        root_node = self.wait.until(EC.visibility_of_element_located(
+            (By.ID, f'{self.root_category_id}_anchor')
+        )).click()
         wait()
         test_h1 = self.first_h1
 
@@ -247,7 +256,9 @@ class AdminPage(SeleniumTestCase, HelpersMixin, AdminMixin):
         test_search_value = self.browser.find_element_by_id('search-field').get_attribute('value')
         self.assertTrue(test_search_value)
 
-    # TODO. This test shouldn't work because of new tab opening.
+    # @todo #137 Fix test_tree_redirect_to_entity_site_page test.
+    #  This test shouldn't work because of new tab opening.
+
     # def test_tree_redirect_to_entity_site_page(self):
     #     """Click at tree's context menu item should redirect us to entity's site page."""
         # self.open_js_tree_nodes()
@@ -278,7 +289,7 @@ class AdminPage(SeleniumTestCase, HelpersMixin, AdminMixin):
         self.assertTrue('collapsed' in body_classes)
 
 
-class TableEditor(SeleniumTestCase, AdminMixin, HelpersMixin):
+class TableEditor(AdminTestCase, HelpersMixin):
     """Selenium-based tests for Table Editor [TE]."""
 
     new_product_name = 'Product'
@@ -293,12 +304,6 @@ class TableEditor(SeleniumTestCase, AdminMixin, HelpersMixin):
     def refresh_table_editor_page(self):
         self.browser.find_element_by_id('admin-editor-link').click()
         wait()
-
-    def trigger_autocomplete(self, selector):
-        """Programmatically trigger jQ autocomplete widget."""
-        self.browser.execute_script(
-            '$("' + selector + '").autocomplete("search");'
-        )
 
     def update_input_value(self, index, new_data):
         """Clear input, pass new data and emulate Return keypress."""
@@ -499,10 +504,6 @@ class TableEditor(SeleniumTestCase, AdminMixin, HelpersMixin):
 
         self.assertTrue(popover.is_displayed())
 
-    # @todo #TABLEEDITOR-TEST Fix a TableEditor.test_new_entity_creation test.
-    #  test_new_entity_creation does not pass.
-    #  You can find error traceback here: https://ci.fidals.com/fidals/stroyprombeton/106
-    @unittest.skip('Test does not pass. You can find this issue in GitHub.')
     def test_new_entity_creation(self):
         new_entity_text = 'A New stuff'
 
@@ -516,30 +517,35 @@ class TableEditor(SeleniumTestCase, AdminMixin, HelpersMixin):
             (By.ID, 'add-entity-form')
         ))
 
-        self.browser.find_element_by_id('entity-name').send_keys(new_entity_text)
-        self.browser.find_element_by_id('entity-price').send_keys(123)
+        self.send_keys_and_wait(new_entity_text, (By.ID, 'entity-name'))
+        self.send_keys_and_wait('123', (By.ID, 'entity-price'))
 
         # Check is autocomplete works for category search by manual triggering it:
-        self.browser.find_element_by_id('entity-category').send_keys('Category #0')
-        self.trigger_autocomplete('#entity-category')
+        # Choose category from autocomplete dropdown & save new entity:
+        autocomplete_class = 'ui-autocomplete'
+        self.send_keys_and_wait('Category #0', (By.ID, 'entity-category'))
         autocomplete = self.wait.until(EC.visibility_of_element_located(
-            (By.CLASS_NAME, 'ui-autocomplete')
+            (By.CLASS_NAME, autocomplete_class)
+        ))
+        autocomplete.find_element_by_class_name('ui-menu-item-wrapper').click()
+        self.wait.until_not(EC.visibility_of_element_located(
+            (By.CLASS_NAME, autocomplete_class)
         ))
 
-        # Choose category from autocomplete dropdown & save new entity:
-        autocomplete.find_element_by_class_name('ui-menu-item-wrapper').click()
-        self.browser.find_element_by_id('entity-save').click()
-
-        self.wait.until_not(EC.element_to_be_clickable((By.ID, 'entity-save')))
+        save_id = 'entity-save'
+        self.wait.until(EC.element_to_be_clickable((By.ID, save_id))).click()
+        self.wait.until_not(EC.element_to_be_clickable((By.ID, save_id)))
 
         # If entity was successfully changed `refresh_btn` should become active:
-        refresh_btn = self.browser.find_element_by_id('refresh-table')
-        self.assertFalse(refresh_btn.get_attribute('disabled'))
-
-        # After click on `refresh_btn` TE should be updated:
+        refresh_btn = self.wait.until(EC.element_to_be_clickable(
+            (By.ID, 'refresh-table'))
+        )
         refresh_btn.click()
-        self.browser.find_element_by_id('add-entity').click()
-        first_row = self.browser.find_element_by_id('jqGrid').find_element_by_class_name('jqgrow')
+        # After click on `refresh_btn` TE should be updated:
+        self.wait.until(EC.element_to_be_clickable((By.CLASS_NAME, 'close'))).click()
+        first_row = self.wait.until(EC.visibility_of_element_located(
+            (By.CLASS_NAME, 'jqgrow')
+        ))
         name_cell = first_row.find_elements_by_tag_name('td')[1]
         self.assertEqual(name_cell.get_attribute('title'), new_entity_text)
 
