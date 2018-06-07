@@ -36,14 +36,6 @@ pipeline:
     volumes:
       - /tmp/cache/drone/stroyprombeton/site-packages/${DRONE_COMMIT_SHA}/site-packages:/usr/local/lib/python3.6/site-packages
 
-  test-notify:
-    image: plugins/slack
-    channel: drone
-    webhook: ${SLACK_WEBHOOK}
-    when:
-      status: [ success, failure ]
-    secrets: [ SLACK_WEBHOOK ]
-
   pip-clean:
     image: busybox
     commands:
@@ -98,17 +90,6 @@ pipeline:
       branch: master
     secrets: [ DOCKER_HUB_LOGIN, DOCKER_HUB_PASSWORD ]
 
-  docker-build-notify:
-    image: plugins/slack
-    channel: drone
-    webhook: ${SLACK_WEBHOOK}
-    template: >
-      *{{build.status}}* docker-compose build & push <{{ build.link }}|{{ repo.owner}}/{{ repo.name }}> ({{ build.branch }}) by {{ build.author }}
-    when:
-      status: [ success, failure ]
-      branch: master
-    secrets: [ SLACK_WEBHOOK ]
-
 services:
   postgres:
     group: build
@@ -133,3 +114,4 @@ services:
     shm_size: 4G
     volumes: # https://github.com/SeleniumHQ/docker-selenium#running-the-images
       - /dev/shm:/dev/shm
+
