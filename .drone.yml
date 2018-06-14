@@ -7,6 +7,9 @@ pipeline:
       - mv /usr/local/lib/python3.6/site-packages /usr/app/deps
     volumes:
       - /tmp/cache/drone/stroyprombeton/site-packages/${DRONE_COMMIT_SHA}:/usr/app/deps
+    when:
+      event: [push, pull_request]
+      branch: master
 
   npm:
     image: node
@@ -19,6 +22,9 @@ pipeline:
     volumes:
       - /tmp/cache/drone/stroyprombeton/node_modules:/drone/src/github.com/fidals/stroyprombeton/commit/${DRONE_COMMIT_SHA}/node_modules
       - /tmp/cache/drone/stroyprombeton/site-packages/${DRONE_COMMIT_SHA}/site-packages:/usr/app/deps
+    when:
+      event: [push, pull_request]
+      branch: master
 
   test:
     image: fidals/stb:dev
@@ -31,10 +37,11 @@ pipeline:
     commands:
       - python manage.py collectstatic --noinput
       - python manage.py test -v 3 --liveserver=test:8020-8030 --parallel=6
-    depends_on:
-      - selenium
     volumes:
       - /tmp/cache/drone/stroyprombeton/site-packages/${DRONE_COMMIT_SHA}/site-packages:/usr/local/lib/python3.6/site-packages
+    when:
+      event: [push, pull_request]
+      branch: master
 
   pip-clean:
     image: busybox
@@ -44,6 +51,22 @@ pipeline:
       - /tmp/cache/drone/stroyprombeton/site-packages/:/site-packages/
     when:
       status: [ success, failure ]
+    when:
+      event: [push, pull_request]
+      branch: master
+
+  lint:
+    image: docker/compose:1.17.1
+    commands:
+      - cd docker
+      - docker-compose run --rm stb-lint
+      - docker-compose run --rm stb-pdd
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /root/prog/stroyprombeton/docker/.env:/drone/src/github.com/fidals/stroyprombeton/commit/${DRONE_COMMIT_SHA}/docker/.env
+    when:
+      event: [push, pull_request]
+      branch: master
 
   docker-build:
     image: docker/compose:1.17.1
@@ -59,20 +82,8 @@ pipeline:
       # in case if "Pull Request Hooks" is enabled in Drone settings GUI
       - /root/prog/stroyprombeton/docker/.env:/drone/src/github.com/fidals/stroyprombeton/pull/${DRONE_PULL_REQUEST}/docker/.env
     when:
+      event: push
       branch: master
-
-  lint:
-    image: docker/compose:1.17.1
-    commands:
-      - cd docker
-      - docker-compose run --rm stb-lint
-      - docker-compose run --rm stb-pdd
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-      - /root/prog/stroyprombeton/docker/.env:/drone/src/github.com/fidals/stroyprombeton/commit/${DRONE_COMMIT_SHA}/docker/.env
-    when:
-      branch:
-       exclude: master
 
   docker-push:
     image: docker:latest
@@ -89,6 +100,9 @@ pipeline:
     when:
       branch: master
     secrets: [ DOCKER_HUB_LOGIN, DOCKER_HUB_PASSWORD ]
+    when:
+      event: push
+      branch: master
 
 services:
   postgres:
