@@ -1,3 +1,5 @@
+branches: master
+
 pipeline:
   pip-install:
     image: python
@@ -9,7 +11,6 @@ pipeline:
       - /tmp/cache/drone/stroyprombeton/site-packages/${DRONE_COMMIT_SHA}:/usr/app/deps
     when:
       event: [push, pull_request]
-      branch: master
 
   npm:
     image: node:slim
@@ -24,7 +25,6 @@ pipeline:
       - /tmp/cache/drone/stroyprombeton/site-packages/${DRONE_COMMIT_SHA}/site-packages:/usr/app/deps
     when:
       event: [push, pull_request]
-      branch: master
 
   test:
     image: fidals/stb:dev
@@ -48,7 +48,6 @@ pipeline:
       - /tmp/cache/drone/stroyprombeton/site-packages/${DRONE_COMMIT_SHA}/site-packages:/usr/local/lib/python3.6/site-packages
     when:
       event: [push, pull_request]
-      branch: master
 
   lint:
     image: docker/compose:1.17.1
@@ -64,7 +63,6 @@ pipeline:
       - /root/prog/stroyprombeton/docker/.env:/drone/src/github.com/fidals/stroyprombeton/commit/${DRONE_COMMIT_SHA}/docker/.env
     when:
       event: [push, pull_request]
-      branch: master
 
   docker-build:
     image: docker/compose:1.17.1
@@ -79,7 +77,6 @@ pipeline:
       - /root/prog/stroyprombeton/docker/.env:/drone/src/github.com/fidals/stroyprombeton/pull/${DRONE_PULL_REQUEST}/docker/.env
     when:
       event: push
-      branch: master
 
   docker-push:
     image: docker:latest
@@ -93,12 +90,9 @@ pipeline:
       - docker push fidals/stb:prod
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-    when:
-      branch: master
     secrets: [ DOCKER_HUB_LOGIN, DOCKER_HUB_PASSWORD ]
     when:
       event: push
-      branch: master
 
   pip-clean:
     image: busybox
@@ -107,6 +101,7 @@ pipeline:
     volumes:
       - /tmp/cache/drone/stroyprombeton/site-packages/:/site-packages/
     when:
+      event: [ push, pull_request ]
       status: [ success, failure ]
 
   npm-clean:
@@ -116,6 +111,7 @@ pipeline:
     volumes:
       - /tmp/cache/drone/stroyprombeton/node_modules:/drone/src/github.com/fidals/stroyprombeton/pull/${DRONE_PULL_REQUEST}/node_modules
     when:
+      event: [ push, pull_request ]
       status: [ success, failure ]
 
 services:
@@ -126,6 +122,8 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=test
       - POSTGRES_DB=test
+    when:
+      event: [push, pull_request]
 
   rabbitmq:
     group: build
@@ -133,6 +131,8 @@ services:
     environment:
       - RABBITMQ_DEFAULT_USER=rabbitmq
       - RABBITMQ_DEFAULT_PASS=test
+    when:
+      event: [push, pull_request]
 
   selenium:
     group: build
@@ -144,3 +144,5 @@ services:
     shm_size: 4G
     volumes: # https://github.com/SeleniumHQ/docker-selenium#running-the-images
       - /dev/shm:/dev/shm
+    when:
+      event: [push, pull_request]
