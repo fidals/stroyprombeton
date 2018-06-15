@@ -447,7 +447,7 @@ class Search(SeleniumTestCase):
             self.search_loaded_condition(),
         )
 
-    # @todo #142:30m Resurrect selenium test
+    # @todo #142:30m Resurrect test for expanding of autocomplete
     @unittest.skip('Fix after se#344 resolving.')
     def test_autocomplete_can_expand_and_collapse(self):
         """
@@ -474,7 +474,7 @@ class Search(SeleniumTestCase):
         self.wait.until(EC.url_contains('/gbi/products/'))
         self.assertTrue('/gbi/products/' in self.browser.current_url)
 
-    # @todo #142:15m Resurrect selenium test
+    # @todo #142:15m Resurrect test for see all link of autocomplete
     @unittest.skip('Fix after se#344 resolving.')
     def test_autocomplete_see_all_item(self):
         """
