@@ -1,14 +1,13 @@
+import unittest
+
 from django.core import mail
 from django.db.models import Count
 from django.template.defaultfilters import floatformat
 from django.urls import reverse
-from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC, ui
-from selenium.webdriver.remote.webelement import WebElement
-from unittest import expectedFailure
 
 from pages.models import Page
 
@@ -448,6 +447,8 @@ class Search(SeleniumTestCase):
             self.search_loaded_condition(),
         )
 
+    # @todo #142:30m Resurrect selenium test
+    @unittest.skip('Fix after se#344 resolving.')
     def test_autocomplete_can_expand_and_collapse(self):
         """
         Test the autocomplete behavior.
@@ -473,6 +474,8 @@ class Search(SeleniumTestCase):
         self.wait.until(EC.url_contains('/gbi/products/'))
         self.assertTrue('/gbi/products/' in self.browser.current_url)
 
+    # @todo #142:15m Resurrect selenium test
+    @unittest.skip('Fix after se#344 resolving.')
     def test_autocomplete_see_all_item(self):
         """
         Autocomplete should contain "see all" item.

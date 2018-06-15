@@ -12,7 +12,7 @@ pipeline:
       branch: master
 
   npm:
-    image: node
+    image: node:slim
     environment:
       - DEPS_DIR=/usr/app/deps
     commands:
@@ -31,26 +31,21 @@ pipeline:
     environment:
       - TEST_ENV=true
       - DJANGO_SETTINGS_MODULE=stroyprombeton.settings.dev
-      - DATABASE_URL=postgres://postgres:test@postgres/test
-      - BROCKER_URL=amqp://rabbitmq:test@rabbitmq:5672/
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=test
+      - POSTGRES_URL=postgres
+      - POSTGRES_DB=test
+      - RABBITMQ_DEFAULT_USER=rabbitmq
+      - RABBITMQ_DEFAULT_PASS=test
+      - RABBITMQ_URL=rabbitmq
+      - RABBITMQ_PORT=5672
       - SELENIUM_URL=http://selenium:4444/wd/hub
     commands:
+      - python manage.py migrate
       - python manage.py collectstatic --noinput
-      - python manage.py test -v 3 --liveserver=test:8020-8030 --parallel=6
+      - python manage.py test --liveserver=test:8021-8029 --parallel
     volumes:
       - /tmp/cache/drone/stroyprombeton/site-packages/${DRONE_COMMIT_SHA}/site-packages:/usr/local/lib/python3.6/site-packages
-    when:
-      event: [push, pull_request]
-      branch: master
-
-  pip-clean:
-    image: busybox
-    commands:
-      - rm -rf /site-packages/${DRONE_COMMIT_SHA}
-    volumes:
-      - /tmp/cache/drone/stroyprombeton/site-packages/:/site-packages/
-    when:
-      status: [ success, failure ]
     when:
       event: [push, pull_request]
       branch: master
@@ -59,10 +54,13 @@ pipeline:
     image: docker/compose:1.17.1
     commands:
       - cd docker
-      - docker-compose run --rm stb-lint
-      - docker-compose run --rm stb-pdd
+      - docker-compose run --rm lint
+      - docker-compose run --rm pdd
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+      # @todo #142:60m Explore why drone `lint` and `docker-build` use .env
+      #  Both of them should not as it seems. Write doc why or rm them.
+      # in case if "Push Hooks" is enabled in Drone settings GUI
       - /root/prog/stroyprombeton/docker/.env:/drone/src/github.com/fidals/stroyprombeton/commit/${DRONE_COMMIT_SHA}/docker/.env
     when:
       event: [push, pull_request]
@@ -72,9 +70,7 @@ pipeline:
     image: docker/compose:1.17.1
     commands:
       - cd docker
-      - docker-compose -f docker-compose.yml build --no-cache stb-python
-      - docker-compose -f docker-compose-production.yml build --no-cache stb-source
-      - docker-compose -f docker-compose-production.yml build --no-cache stb-python
+      - docker-compose -f docker-compose-build.yml build --no-cache nodejs python-dev python-prod
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       # in case if "Push Hooks" is enabled in Drone settings GUI
@@ -92,7 +88,7 @@ pipeline:
       - DOCKER_HUB_PASSWORD=${DOCKER_HUB_PASSWORD}
     commands:
       - docker login -u $DOCKER_HUB_LOGIN -p $DOCKER_HUB_PASSWORD
-      - docker push fidals/stb-source:prod
+      - docker push fidals/stb-nodejs:prod
       - docker push fidals/stb:dev
       - docker push fidals/stb:prod
     volumes:
@@ -103,6 +99,24 @@ pipeline:
     when:
       event: push
       branch: master
+
+  pip-clean:
+    image: busybox
+    commands:
+      - rm -rf /site-packages/${DRONE_COMMIT_SHA}
+    volumes:
+      - /tmp/cache/drone/stroyprombeton/site-packages/:/site-packages/
+    when:
+      status: [ success, failure ]
+
+  npm-clean:
+    image: busybox
+    commands:
+      - rm -rf /drone/src/github.com/fidals/stroyprombeton/pull/${DRONE_PULL_REQUEST}/node_modules/*
+    volumes:
+      - /tmp/cache/drone/stroyprombeton/node_modules:/drone/src/github.com/fidals/stroyprombeton/pull/${DRONE_PULL_REQUEST}/node_modules
+    when:
+      status: [ success, failure ]
 
 services:
   postgres:
@@ -122,10 +136,11 @@ services:
 
   selenium:
     group: build
-    image: selenium/standalone-chrome:3.6.0
+    image: selenium/standalone-chrome-debug:3.10.0
     environment: # https://github.com/SeleniumHQ/docker-selenium/issues/392
       - DBUS_SESSION_BUS_ADDRESS=/dev/null
+      - SCREEN_WIDTH=1920
+      - SCREEN_HEIGHT=1080
     shm_size: 4G
     volumes: # https://github.com/SeleniumHQ/docker-selenium#running-the-images
       - /dev/shm:/dev/shm
-

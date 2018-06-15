@@ -12,6 +12,8 @@ media/
 stroyprombeton/settings/local.py
 stb.json
 docker/.env
+docker/env_files/*
+!docker/env_files/*.dist
 celerybeat*
 fake_db.py
 .vscode/

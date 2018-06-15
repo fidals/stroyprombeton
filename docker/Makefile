@@ -1,61 +1,99 @@
 dc=docker-compose
 d=docker
-dcp=docker-compose -f docker-compose-production.yml
+dcb=$(dc) -f docker-compose-build.yml
+dcp=$(dc) -f docker-compose-production.yml
 
+.PHONY: migrate create-env build-static watch-static \
+build test backup restore \
+generate-production-static-data deploy
+
+
+# ---------------------- Dev section ----------------------
 migrate:
-	$(dc) exec stb-python python manage.py migrate
+	$(dc) exec app python manage.py migrate
 
-# for local env
-static:
-	@docker-compose run --rm stb-nodejs bash -c "\
-		npm install && \
-		npm install -g gulp-cli && \
-		gulp build"
+fixtures:
+	$(dc) run --rm app bash -c "\
+		python manage.py loaddata stroyprombeton/fixtures/admin.json \
+		&& python manage.py loaddata stroyprombeton/fixtures/dump.json \
+	"
 
-# for local env
-build: static
-	$(dc) build stb-python
+prices:
+	$(dc) exec app python manage.py price
 
-# for local env
-test: static
-	$(dc) up -d stb-selenium
-	$(dc) exec stb-python python manage.py test --liveserver=stb-python:8001-8010 --parallel=8
+create-env:
+	@bash ./create-env.sh
+
+create-config:
+	@bash ./create-config.sh
+
+build-static:
+	$(dc) run --rm nodejs gulp build
+
+watch-static:
+	$(dc) run --rm nodejs gulp watch
+
+collectstatic:
+	$(dc) exec app python manage.py collectstatic --noinput
+
+test: build-static
+	$(dc) up -d selenium
+	$(dc) exec app python manage.py test --liveserver=app:8001-8009 --parallel
 	$(dc) stop
 
-# for local env
 lint:
-	$(dc) up -d stb-python
-	$(d) run --rm --volumes-from stb-python --workdir=/usr/app/src -it coala/base coala
+	$(dc) up -d app
+	$(dc) run --rm lint
 	$(dc) stop
 
-# for local env
-restore:
-	@bash ../etc/stb-backup-restore.sh
 
-# for serv env
+deploy-dev:
+	$(MAKE) create-env
+	# uncomment in #167
+	# $(MAKE) create-config
+	$(dc) pull
+	$(dc) up -d app
+	$(MAKE) build-static
+	$(MAKE) migrate
+	# Create admin user with login/pass: admin/asdfjkl;
+	$(MAKE) fixtures
+	# Launch "collectstatic" not in static recipe because ManifestStaticStorage writes to db
+	$(MAKE) collectstatic
+	# to make fresh collected static visible immediately
+	$(dc) stop app && $(dc) up -d app
+
+
+# ---------------------- Production deploy section ----------------------
+# @todo #142:60m Resurrect backup system.
+#  Right now it's too dangerous and not used.
 backup:
-	$(dcp) up stb-backup-data
+	$(dcp) run --rm backup-data sh /usr/bin/entrypoint.sh
 
-# start dev environment
-dev: build
-	$(dc) up -d stb-python
-	$(dc) exec stb-python python manage.py migrate
-	# launch "collectstatic" not in static recipe because ManifestStaticStorage writes to db
-	$(dc) exec stb-python python manage.py collectstatic --noinput
-	$(dc) stop && $(dc) up -d  # to make fresh collected static visible immediately
+restore:
+	@bash ../etc/backup/backup-restore.sh
 
-# for serv env
-build-production: build
-	$(dcp) build
-	$(dcp) push
+generate-production-static-data:
+	$(dcp) exec app python manage.py price
 
-deploy: backup
+# drone should do this in working flow.
+# But if drone don't do this for some reasons,
+# you can run this recipe from local machine.
+prepare-deploy:
+	rm -rf front/build
+	$(dc) stop app && $(dcp) stop app
+	$(dc) rm -f app && $(dcp) rm -f app
+	$(MAKE) build-static
+	$(dcb) build --no-cache python-dev python-prod
+	$(dcb) push python-dev python-prod
+
+deploy:
 	$(dcp) pull
 	$(dcp) stop
-	$(dcp) rm -f stb-source
-	$(dcp) up -d
-	$(dcp) exec stb-python python manage.py migrate
-	# launch "collectstatic" not in build env, but on deploy.
-	# Because ManifestStaticStorage writes to db
-	$(dcp) exec stb-python python manage.py collectstatic --noinput
-	$(dcp) stop && $(dcp) up -d  # to make fresh collected static visible immediately
+	# to flush nginx's inner static caches
+	$(dcp) rm -f app nginx && $(dcp) up -d app nginx
+	$(dcp) exec app python manage.py migrate
+	$(MAKE) -j generate-production-static-data
+	# Launch "collectstatic" not in static recipe because ManifestStaticStorage writes to db
+	$(dcp) exec app python manage.py collectstatic --noinput
+	# to make fresh collected static visible immediately
+	$(dcp) stop && $(dcp) up -d

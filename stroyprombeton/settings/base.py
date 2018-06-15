@@ -155,12 +155,13 @@ INTERNAL_IPS = (
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-DATABASE_URL = 'postgres://user:pass@host/db_name'
+
+DATABASE_URL = (
+    f'postgres://{os.environ["POSTGRES_USER"]}:{os.environ["POSTGRES_PASSWORD"]}'
+    f'@{os.environ["POSTGRES_URL"]}/{os.environ["POSTGRES_DB"]}'
+)
 DATABASES = {
-    'default': dj_database_url.config(
-        env='DATABASE_URL',
-        default=DATABASE_URL
-    )
+    'default': dj_database_url.parse(DATABASE_URL),
 }
 
 LOGGING = {
@@ -179,7 +180,7 @@ LOGGING = {
     },
 }
 
-SELENIUM_URL = os.environ.get('SELENIUM_URL', 'http://stb-selenium:4444/wd/hub')
+SELENIUM_URL = os.environ.get('SELENIUM_URL', 'http://selenium:4444/wd/hub')
 
 # Is required for Docker container
 WKHTMLTOPDF_CMD = 'xvfb-run wkhtmltopdf'

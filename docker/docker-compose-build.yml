@@ -1,0 +1,27 @@
+version: '2'
+
+services:
+
+  python-dev:
+    image: fidals/stb:dev
+    build:
+      context: ../
+      dockerfile: docker/images/python/Dockerfile.dev
+
+  python-prod:
+    image: fidals/stb:prod
+    build:
+      context: ../
+      dockerfile: docker/images/python/Dockerfile.prod
+
+  nodejs:
+    image: fidals/stb-nodejs:dev
+    build:
+      context: ../
+      dockerfile: docker/images/node/Dockerfile
+
+  nginx:
+    image: fidals/stb-nginx:prod
+    build:
+      context: ../
+      dockerfile: docker/images/nginx/Dockerfile

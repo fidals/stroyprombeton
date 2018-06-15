@@ -78,7 +78,8 @@ class CategoryTile(TestCase, TestPageMixin):
 
     def setUp(self):
         """Create root and child category."""
-        # TODO - move it in test_db. http://bit.ly/tail_2_test_db
+        # @todo #142:30m Move tests custom data to test_db.
+        #  Use this command `stroyprombeton/management/commands/test_db.py`
         self.data = {
             'name': 'Test root category',
             'page': ModelPage.objects.create(

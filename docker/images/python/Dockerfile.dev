@@ -1,0 +1,12 @@
+FROM python:slim
+
+RUN apt-get update \
+    && apt-get install --no-install-recommends --no-install-suggests -y \
+    make wkhtmltopdf xvfb gettext
+    && apt-get -y --purge autoremove \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /usr/app/src/
+
+COPY . .
+RUN pip install -r requirements.txt
