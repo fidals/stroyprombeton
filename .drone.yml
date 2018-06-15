@@ -60,7 +60,7 @@ pipeline:
       - /var/run/docker.sock:/var/run/docker.sock
       # @todo #142:60m Explore why drone `lint` and `docker-build` use .env
       #  Both of them should not as it seems. Write doc why or rm them.
-      # in case if "Push Hooks" is enabled in Drone settings GUI
+      #  in case if "Push Hooks" is enabled in Drone settings GUI
       - /root/prog/stroyprombeton/docker/.env:/drone/src/github.com/fidals/stroyprombeton/commit/${DRONE_COMMIT_SHA}/docker/.env
     when:
       event: [push, pull_request]
