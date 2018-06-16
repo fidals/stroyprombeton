@@ -42,10 +42,8 @@ test: build-static
 	$(dc) stop
 
 lint:
-	$(dc) up -d app
-	$(dc) run --rm lint
+	$(dc) run --rm lint coala
 	$(dc) stop
-
 
 deploy-dev:
 	$(MAKE) create-env

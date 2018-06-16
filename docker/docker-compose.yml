@@ -80,15 +80,12 @@ services:
     volumes:
       - /dev/shm:/dev/shm
 
-  # @todo #142:60m Resurrect coala.
-  #  Already done it at se#302.
   lint:
     image: fidals/coala-ci
-    env_file:
-      - env_files/paths
     working_dir: $SRC_DIR
-#    volumes:
-#      - ./../:$SRC_DIR
+    command: coala
+    volumes_from:
+      - app
 
   pdd:
     image: fidals/pdd-ci

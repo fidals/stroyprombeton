@@ -40,7 +40,7 @@
   }
 
   function productPriceSum() {
-    if (isNaN(productPrice)) return;
+    if (isNaN(productPrice)) return;  // Ignore ESLintBear (no-restricted-globals)
     DOM.$productPriceSum.text(`${productPrice * $(DOM.countInput).val()} руб.`);
   }
 

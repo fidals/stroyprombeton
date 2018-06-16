@@ -19,3 +19,4 @@ fake_db.py
 .vscode/
 package-lock.json
 report.xml
+database

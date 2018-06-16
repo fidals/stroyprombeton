@@ -1,5 +1,3 @@
-import unittest
-
 from django.test import override_settings
 from django.urls import reverse
 from selenium.webdriver.common.action_chains import ActionChains
@@ -233,7 +231,7 @@ class AdminPage(AdminTestCase, HelpersMixin):
         expected_h1 = ['Change category', 'Изменить категория']
 
         # click at tree's item should redirect us to entity edit page
-        root_node = self.wait.until(EC.visibility_of_element_located(
+        self.wait.until(EC.visibility_of_element_located(
             (By.ID, f'{self.root_category_id}_anchor')
         )).click()
         wait()

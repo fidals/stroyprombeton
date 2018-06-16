@@ -24,7 +24,7 @@
       setUpListeners();
     } else {
       setTimeout(init, 100);
-    };
+    }
   };
 
   function setUpListeners() {
