@@ -13,7 +13,6 @@ https://docs.djangoproject.com/en/1.9/ref/settings/
 import os
 from datetime import datetime
 from django.utils.translation import ugettext_lazy as _
-import dj_database_url
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -156,12 +155,15 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 
-DATABASE_URL = (
-    f'postgres://{os.environ["POSTGRES_USER"]}:{os.environ["POSTGRES_PASSWORD"]}'
-    f'@{os.environ["POSTGRES_URL"]}/{os.environ["POSTGRES_DB"]}'
-)
 DATABASES = {
-    'default': dj_database_url.parse(DATABASE_URL),
+   'default': {
+       'ENGINE': 'django.db.backends.postgresql',
+       'NAME': os.environ['POSTGRES_DB'],
+       'USER': os.environ['POSTGRES_USER'],
+       'PASSWORD': os.environ['POSTGRES_PASSWORD'],
+       'HOST': os.environ['POSTGRES_URL'],
+       'PORT': '5432',
+   }
 }
 
 LOGGING = {
