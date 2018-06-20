@@ -52,7 +52,7 @@ const plugins = [
   }),
 ];
 
-const buildDir = 'front/build';
+const buildDir = process.env.FRONT_BUILD_DIR;
 const ecommercePaths = getAppSrcPaths('ecommerce');
 const genericAdminPaths = getAppSrcPaths('generic_admin');
 
@@ -186,7 +186,7 @@ gulp.task('build', () => {
 // ================================================================
 // Clear : Clear destination dir before build.
 // ================================================================
-gulp.task('clear', () => del(`${buildDir}/**/*`));
+gulp.task('clear', () => del(`${buildDir}/**/*`, { force: true }));
 
 // ================================================================
 // Styles : Build all stylesheets.

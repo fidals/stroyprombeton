@@ -22,6 +22,8 @@ services:
     networks:
       - stb-backend
       - stb-frontend
+    volumes_from:
+      - nodejs
     volumes:
       - ./../:$SRC_DIR
       # contains refarm-site modules
@@ -34,8 +36,12 @@ services:
 
   nodejs:
     image: fidals/stb-nodejs:dev
-    volumes_from:
-      - app
+    volumes:
+      - $FRONT_BUILD_DIR
+      # for SE's front development
+      - ../gulpfile.babel.js:/usr/app/src_front/gulpfile.babel.js
+      - ../package.json:/usr/app/src_front/package.json
+      - ../front:/usr/app/src_front/front
     env_file:
       - env_files/paths
 
