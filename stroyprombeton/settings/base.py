@@ -154,6 +154,9 @@ INTERNAL_IPS = (
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
+# to activate django connections pool for persistent connections.
+# https://docs.djangoproject.com/en/1.11/ref/databases/#persistent-connections
+CONN_MAX_AGE = None
 
 DATABASES = {
    'default': {
