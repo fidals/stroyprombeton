@@ -1,3 +1,5 @@
+from os import environ
+
 from .base import *
 
 
@@ -14,17 +16,11 @@ SITE_DOMAIN_NAME = 'stage.stroyprombeton.ru'
 
 USE_CELERY = False
 
+def show_toolbar(request):
+    # Display debug toolbar when running on development config
+    # With exception for test environment
+    return not environ.get('TEST_ENV', False)
 
-"""
-    @todo #106 Включить в dev-среде django-debug-toolbar по-умолчанию
-     Но в CI его нужно отключать, т.к. возникают ошибки
-
-     def show_toolbar(request):
-         # Always display debug toolbar when running on development config
-         return True
-
-     DEBUG_TOOLBAR_CONFIG = {
-         'SHOW_TOOLBAR_CALLBACK': show_toolbar,
-     }
-
-"""
+DEBUG_TOOLBAR_CONFIG = {
+    'SHOW_TOOLBAR_CALLBACK': show_toolbar,
+}
