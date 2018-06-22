@@ -41,9 +41,20 @@ test: build-static
 	$(dc) exec app python manage.py test --liveserver=app:8001-8009 --parallel
 	$(dc) stop
 
+lint-code:
+	$(dc) run --rm lint
+
+lint-pdd:
+	$(dc) run --rm pdd pdd --verbose \
+		--exclude=node_modules/**/* --exclude=static/**/* \
+		--exclude=media/**/* --exclude=doc/build/**/* \
+		--exclude=.idea/**/* \
+		--exclude=front/images \
+	    -f report.xml
+
 lint:
-	$(dc) run --rm lint coala
-	$(dc) stop
+	$(MAKE) lint-code
+	$(MAKE) lint-pdd
 
 deploy-dev:
 	$(MAKE) create-env
