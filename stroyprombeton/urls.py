@@ -4,8 +4,8 @@ from django.conf.urls.static import static
 from django.contrib.sitemaps import views as sitemaps_view
 from django.views.decorators.cache import cache_page
 
-from pages.models import Page
-from pages.views import robots, SitemapPage
+from pages.views import RobotsView, SitemapPage
+from pages.urls import custom_page_url
 
 from stroyprombeton import sitemaps, views
 from stroyprombeton.admin import stb_admin_site
@@ -31,20 +31,20 @@ catalog_urls = [
         views.categories_csv_export, name='categories-export'),
 ]
 
-url_name = Page.CUSTOM_PAGES_URL_NAME
 custom_pages = [
-    url(r'^(?P<page>)$', views.IndexPage.as_view(), name=url_name),
-    url(r'^(?P<page>client-feedbacks)/$', views.ClientFeedbacksPageView.as_view(), name=url_name),
-    url(r'^(?P<page>gbi)/$', views.CategoryTree.as_view(), name=url_name),
-    url(r'^(?P<page>news)/$', views.NewsPageView.as_view(), name=url_name),
-    url(r'^(?P<page>price-success)/$', views.OrderPriceSuccess.as_view(), name=url_name),
-    url(r'^(?P<page>order)/$', views.OrderPage.as_view(), name=url_name),
-    url(r'^(?P<page>order-drawing)/$', views.OrderDrawing.as_view(), name=url_name),
-    url(r'^(?P<page>order-price)/$', views.OrderPrice.as_view(), name=url_name),
-    url(r'^(?P<page>order-success)/$', views.OrderSuccess.as_view(), name=url_name),
-    url(r'^(?P<page>regions)/$', views.RegionsPageView.as_view(), name=url_name),
-    url(r'^(?P<page>search)/$', views.Search.as_view(), name=url_name),
-    url(r'^(?P<page>sitemap)/$', SitemapPage.as_view(), name=url_name),
+    custom_page_url(r'^(?P<page>)$', views.IndexPage.as_view()),
+    custom_page_url(r'^robots\.txt$', RobotsView.as_view(in_db=True)),
+    custom_page_url(r'^(?P<page>client-feedbacks)/$', views.ClientFeedbacksPageView.as_view()),
+    custom_page_url(r'^(?P<page>gbi)/$', views.CategoryTree.as_view()),
+    custom_page_url(r'^(?P<page>news)/$', views.NewsPageView.as_view()),
+    custom_page_url(r'^(?P<page>price-success)/$', views.OrderPriceSuccess.as_view()),
+    custom_page_url(r'^(?P<page>order)/$', views.OrderPage.as_view()),
+    custom_page_url(r'^(?P<page>order-drawing)/$', views.OrderDrawing.as_view()),
+    custom_page_url(r'^(?P<page>order-price)/$', views.OrderPrice.as_view()),
+    custom_page_url(r'^(?P<page>order-success)/$', views.OrderSuccess.as_view()),
+    custom_page_url(r'^(?P<page>regions)/$', views.RegionsPageView.as_view()),
+    custom_page_url(r'^(?P<page>search)/$', views.Search.as_view()),
+    custom_page_url(r'^(?P<page>sitemap)/$', SitemapPage.as_view()),
 ]
 
 ecommerce_urls = [
@@ -78,7 +78,6 @@ urlpatterns = [
     url(r'^fetch-products/$', views.fetch_products, name='fetch_products'),
     url(r'^page/', include('pages.urls')),
     url(r'^price-success/', views.OrderPriceSuccess.as_view(), name='order_price_success'),
-    url(r'^robots\.txt$', robots),
     url(r'^search/', include(search_urls)),
     url(r'^shop/', include(ecommerce_urls)),
     url(r'^sitemap\.xml$', cached_view(sitemaps_view.index),

@@ -76,10 +76,11 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'stroyprombeton.urls'
 
+TEMPLATE_DIR = os.path.join(BASE_DIR, 'templates')
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')],
+        'DIRS': [TEMPLATE_DIR],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -259,6 +260,11 @@ SITE_INFO = {
     },
 }
 
+
+def get_robots_content():
+    with open(os.path.join(TEMPLATE_DIR, 'robots.txt')) as robots_file:
+        return robots_file.read()
+
 CUSTOM_PAGES = {
     'category-tree': {
         'slug': 'gbi',
@@ -319,6 +325,10 @@ CUSTOM_PAGES = {
     'order-drawing': {
         'slug': 'order-drawing',
         'name': 'Оформление запроса на изготовление по индивидуальным чертежам',
+    },
+    'robots': {
+        'slug': 'robots',
+        'content': get_robots_content(),
     },
 }
 
