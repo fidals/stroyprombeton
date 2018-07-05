@@ -20,6 +20,7 @@ services:
     ports:
       - $VIRTUAL_HOST_PORT
     volumes:
+      - ../stroyprombeton/settings/local.py:$SRC_DIR/stroyprombeton/settings/local.py
       # contains refarm-site modules
       - $DEPS_DIR
       # source code volume
@@ -63,6 +64,8 @@ services:
       - env_files/paths
     depends_on:
       - app
+    volumes:
+      - ../stroyprombeton/settings/local.py:$SRC_DIR/stroyprombeton/settings/local.py
     networks:
       - stb-backend
     command: celery -A stroyprombeton beat -l info
@@ -77,6 +80,8 @@ services:
       - env_files/paths
     depends_on:
       - app
+    volumes:
+      - ../stroyprombeton/settings/local.py:$SRC_DIR/stroyprombeton/settings/local.py
     networks:
       - stb-backend
     command: celery -A stroyprombeton worker -E -n worker.default@%%h -l info -Q default
@@ -91,6 +96,8 @@ services:
       - env_files/paths
     depends_on:
       - app
+    volumes:
+      - ../stroyprombeton/settings/local.py:$SRC_DIR/stroyprombeton/settings/local.py
     networks:
       - stb-backend
     command: celery -A stroyprombeton worker -E -n worker.default@%%h -l info -Q default
