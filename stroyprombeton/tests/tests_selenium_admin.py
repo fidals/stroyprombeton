@@ -549,3 +549,38 @@ class TableEditor(AdminTestCase, HelpersMixin):
 
         # We are able to change newly created entity:
         self.test_edit_product_name()
+
+    def get_field_from_jqgrid(self, fieldname, row):
+        tr = (
+            self.browser
+            .find_elements_by_class_name('jqgrow')[row]
+        )
+
+        return next(
+            td.text for td in tr.find_elements_by_tag_name('td')
+            if td.get_attribute('aria-describedby') == f'jqGrid_{fieldname}'
+        )
+
+    def test_mark_search_on_table_editor(self):
+        """
+        Search mark on table editor.
+
+        @todo #215 Fill two Product's mark fields for fixtures and fix a related test
+        """
+        self.refresh_table_editor_page()
+
+        mark_in_first_row_table = self.get_field_from_jqgrid('mark', 0).strip()
+
+        # mark_from_db = Product.objects.exclude(mark="").first().mark.strip()
+        # second_mark_from_db = Product.objects.exclude(mark="").exclude(mark=mark_from_db).first().mark.strip()
+        # if mark_in_first_row_table == mark_from_db:
+        #     mark_from_db = second_mark_from_db
+
+        # search_field = self.browser.find_element_by_id('search-field')
+        # search_field.send_keys(mark_from_db)
+        # wait(2)
+        # mark_found = self.get_field_from_jqgrid('mark', 0).strip()
+
+        # self.assertNotEqual(mark_in_first_row_table, mark_found)
+
+        # self.assertEqual(mark_found, mark_from_db)

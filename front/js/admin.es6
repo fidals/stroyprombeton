@@ -149,7 +149,8 @@ const customColModels = [
     name: 'mark',
     label: 'марка',
     editable: true,
-    width: 80,
+    width: 40,
+    search: true,
   },
   {
     name: 'specification',
@@ -227,8 +228,22 @@ const toggleFilterBtnText = {
   hide: 'Скрыть фильтры',
 };
 
+class STBTableEditor extends TableEditor {
+  constructor (colModel, dialogs) {
+    super(colModel, dialogs);
+
+    this.filterFields = [
+      'name',
+      'mark',
+      'category_name',
+      'price',
+    ];
+
+  }
+}
+
 new AdminCommonPlugins();  // Ignore ESLintBear (no-undef)
 new AdminSidebar();  // Ignore ESLintBear (no-undef)
 const stbFilters = new TableEditorFilters(toggleFilterBtnText);  // Ignore ESLintBear (no-undef)
 const stbColModel = new TableEditorColModel(customColModels, stbFilters);  // Ignore ESLintBear (no-undef)
-new TableEditor(stbColModel);  // Ignore ESLintBear (no-undef)
+new STBTableEditor(stbColModel);  // Ignore ESLintBear (no-undef)
