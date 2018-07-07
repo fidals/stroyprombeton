@@ -51,6 +51,7 @@ INSTALLED_APPS = [
     'django.contrib.admin',
     'django_select2',
     'images',
+    'refarm_redirects',
     'pages',
     'search',
     'catalog',
@@ -72,6 +73,7 @@ MIDDLEWARE = [
     'django.middleware.locale.LocaleMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django_user_agents.middleware.UserAgentMiddleware',
+    'refarm_redirects.middleware.RedirectAllMiddleware',
 ]
 
 ROOT_URLCONF = 'stroyprombeton.urls'

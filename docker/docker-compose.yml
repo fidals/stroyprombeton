@@ -27,7 +27,7 @@ services:
       # contains refarm-site modules
       - $DEPS_DIR
       # Thus, you can work with apps related to the refarm-site
-      # - $REFARM_SRC/stbarch:/root/.local/lib/python3.6/site-packages/stbarch
+      #- $REFARM_DIR/stbarch:/root/.local/lib/python3.6/site-packages/stbarch
     # @todo #150 Validate if `.env` is full
     #  Is full means '.env` contains all keynames from `.env.dist`
     command: python manage.py runserver 0.0.0.0:$VIRTUAL_HOST_PORT
@@ -35,7 +35,7 @@ services:
   nodejs:
     image: fidals/stb-nodejs:dev
     volumes:
-      # for SE's front development
+      # for STB's front development
       - ../gulpfile.babel.js:/usr/app/src/gulpfile.babel.js
       - ../package.json:/usr/app/src/package.json
       - ../front:/usr/app/src/front

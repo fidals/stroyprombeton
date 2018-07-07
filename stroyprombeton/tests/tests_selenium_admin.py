@@ -563,6 +563,7 @@ class TableEditor(AdminTestCase, HelpersMixin):
             if td.get_attribute('aria-describedby') == f'jqGrid_{fieldname}'
         )
 
+    # @todo #380:30m Resurrect test `test_mark_search_on_table_editor`
     @unittest.skip('Require filled value for marks.')
     def test_mark_search_on_table_editor(self):
         """
