@@ -327,7 +327,7 @@ CUSTOM_PAGES = {
         'name': 'Оформление запроса на изготовление по индивидуальным чертежам',
     },
     'robots': {
-        'slug': 'robots',
+        'slug': 'robots.txt',
         'content': get_robots_content(),
     },
 }

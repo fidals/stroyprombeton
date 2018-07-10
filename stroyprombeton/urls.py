@@ -33,7 +33,7 @@ catalog_urls = [
 
 custom_pages = [
     custom_page_url(r'^(?P<page>)$', views.IndexPage.as_view()),
-    custom_page_url(r'^robots\.txt$', RobotsView.as_view(in_db=True)),
+    custom_page_url(r'^(?P<page>robots\.txt)/$', RobotsView.as_view(in_db=True)),
     custom_page_url(r'^(?P<page>client-feedbacks)/$', views.ClientFeedbacksPageView.as_view()),
     custom_page_url(r'^(?P<page>gbi)/$', views.CategoryTree.as_view()),
     custom_page_url(r'^(?P<page>news)/$', views.NewsPageView.as_view()),
