@@ -22,6 +22,8 @@ services:
     networks:
       - stb-backend
       - stb-frontend
+    # @todo #236:30m Remove the app service's depedency from a nodejs service.
+    #  We can take prebuilt frontend files through host machine.
     volumes_from:
       - nodejs
     volumes:

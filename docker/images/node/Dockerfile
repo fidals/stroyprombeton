@@ -25,3 +25,8 @@ RUN npm install -g gulp-cli
 RUN npm install imagemin-jpegtran imagemin-svgo imagemin-gifsicle imagemin-optipng --save
 RUN npm install --no-optional
 RUN gulp build
+
+# @todo #236:30m Add CMD command to nodejs/Dockerfile.
+#  CMD must call "gulp watch" or "gulp build" depending on the presence of
+#  frontend built files. A  command example:
+#  bash -c "[ '$(ls -A /usr/app/src_front/front)' ] && gulp watch || gulp build"
