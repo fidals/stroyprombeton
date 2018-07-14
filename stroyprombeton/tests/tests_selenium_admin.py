@@ -563,28 +563,30 @@ class TableEditor(AdminTestCase, HelpersMixin):
             if td.get_attribute('aria-describedby') == f'jqGrid_{fieldname}'
         )
 
-    # @todo #380:30m Resurrect test `test_mark_search_on_table_editor`
+    # @todo #238:15m Resurrect test `test_mark_search_on_table_editor`
+    #  Fill two Product's mark fields for fixtures and fix a related test.
     @unittest.skip('Require filled value for marks.')
     def test_mark_search_on_table_editor(self):
-        """
-        Search mark on table editor.
+        """Search mark on table editor."""
+        self.refresh_table_editor_page()
 
-        @todo #215 Fill two Product's mark fields for fixtures and fix a related test
-        """
-        # self.refresh_table_editor_page()
+        mark_in_first_row_table = self.get_field_from_jqgrid('mark', 0).strip()
 
-        # mark_in_first_row_table = self.get_field_from_jqgrid('mark', 0).strip()
+        mark_from_db = Product.objects.exclude(mark='').first().mark.strip()
+        second_mark_from_db = (
+            Product.objects
+            .exclude(mark="")
+            .exclude(mark=mark_from_db)
+            .first().mark.strip()
+        )
+        if mark_in_first_row_table == mark_from_db:
+            mark_from_db = second_mark_from_db
 
-        # mark_from_db = Product.objects.exclude(mark='').first().mark.strip()
-        # second_mark_from_db = Product.objects.exclude(mark='').first().mark
-        # if mark_in_first_row_table == mark_from_db:
-        #     mark_from_db = second_mark_from_db
+        search_field = self.browser.find_element_by_id('search-field')
+        search_field.send_keys(mark_from_db)
+        wait(2)
+        mark_found = self.get_field_from_jqgrid('mark', 0).strip()
 
-        # search_field = self.browser.find_element_by_id('search-field')
-        # search_field.send_keys(mark_from_db)
-        # wait(2)
-        # mark_found = self.get_field_from_jqgrid('mark', 0).strip()
+        self.assertNotEqual(mark_in_first_row_table, mark_found)
 
-        # self.assertNotEqual(mark_in_first_row_table, mark_found)
-
-        # self.assertEqual(mark_found, mark_from_db)
+        self.assertEqual(mark_found, mark_from_db)
