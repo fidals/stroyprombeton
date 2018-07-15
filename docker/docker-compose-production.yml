@@ -159,7 +159,7 @@ services:
   backup-data:
     build:
       context: ..
-      dockerfile: docker/cron/Dockerfile
+      dockerfile: docker/images/cron/Dockerfile
     container_name: stb-backup-data
     volumes_from:
       - app
