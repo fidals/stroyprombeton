@@ -12,6 +12,8 @@ STAGE_SECRET_KEY=another-secret-key
 
 # URL to required services
 POSTGRES_URL=postgres
+REDIS_URL=redis
+REDIS_PORT=6379
 RABBITMQ_URL=rabbitmq
 RABBITMQ_PORT=5672
 
