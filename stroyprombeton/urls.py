@@ -4,6 +4,7 @@ from django.conf.urls.static import static
 from django.contrib.sitemaps import views as sitemaps_view
 from django.views.decorators.cache import cache_page
 
+from pages.models import CustomPage
 from pages.views import RobotsView, SitemapPage
 from pages.urls import custom_page_url
 
@@ -33,7 +34,10 @@ catalog_urls = [
 
 custom_pages = [
     custom_page_url(r'^(?P<page>)$', views.IndexPage.as_view()),
-    custom_page_url(r'^(?P<page>robots\.txt)$', RobotsView.as_view(in_db=True)),
+    custom_page_url(
+        r'^(?P<page>robots\.txt)$',
+        RobotsView.as_view(in_db=True, objects=CustomPage.objects.filter(slug='robots.txt')),
+    ),
     custom_page_url(r'^(?P<page>client-feedbacks)/$', views.ClientFeedbacksPageView.as_view()),
     custom_page_url(r'^(?P<page>gbi)/$', views.CategoryTree.as_view()),
     custom_page_url(r'^(?P<page>news)/$', views.NewsPageView.as_view()),
