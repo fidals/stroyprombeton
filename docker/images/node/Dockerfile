@@ -12,15 +12,19 @@ RUN apt-get update \
     && apt-get -y --purge autoremove \
     && rm -rf /var/lib/apt/lists/*
 
+COPY package.json package.json
+COPY gulpfile.babel.js gulpfile.babel.js
+COPY front/ front
+
 # we use `--no-optional` because some optional npm dependencies fail on install
 RUN npm install -g gulp-cli
 # Took decision from SO: https://goo.gl/3uXZxw
 RUN npm install imagemin-jpegtran imagemin-svgo imagemin-gifsicle imagemin-optipng --save
 RUN npm install --no-optional
 
-COPY package.json package.json
-COPY gulpfile.babel.js gulpfile.babel.js
-COPY front/ front
+# Run it to check if `gulp build` works.
+# There was problems with it. See stb#258 github issue.
+RUN gulp build
 
 # Keeps track of changes if static files are built, otherwise builds them
 CMD bash -c "[ '$(ls -A /usr/app/src/build)' ] && gulp watch || (gulp build && gulp watch)"

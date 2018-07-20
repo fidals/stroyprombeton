@@ -37,7 +37,6 @@ services:
     volumes:
       # for STB's front development
       - ../gulpfile.babel.js:/usr/app/src/gulpfile.babel.js
-      - ../package.json:/usr/app/src/package.json
       - ../front:/usr/app/src/front
       - ../front/build:/usr/app/src/build
     env_file:
