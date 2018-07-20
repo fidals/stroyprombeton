@@ -41,7 +41,11 @@ pipeline:
       - RABBITMQ_URL=rabbitmq
       - RABBITMQ_PORT=5672
       - SELENIUM_URL=http://selenium:4444/wd/hub
+      # Hardcoded env values because of drone secret's bug. See stb#263
+      - SELENIUM_TIMEOUT_SECONDS=120
+      - SELENIUM_WAIT_SECONDS=120
     commands:
+      - echo $SELENIUM_TIMEOUT_SECONDS $SELENIUM_WAIT_SECONDS
       - python manage.py migrate
       - python manage.py collectstatic --noinput
       - python manage.py test --liveserver=test:8021-8029 --parallel
@@ -151,8 +155,6 @@ services:
       - DBUS_SESSION_BUS_ADDRESS=/dev/null
       - SCREEN_WIDTH=1920
       - SCREEN_HEIGHT=1080
-      - SELENIUM_WAIT_SECONDS=${SELENIUM_WAIT_SECONDS}
-      - SELENIUM_TIMEOUT_SECONDS=${SELENIUM_TIMEOUT_SECONDS}
     shm_size: 4G
     volumes: # https://github.com/SeleniumHQ/docker-selenium#running-the-images
       - /dev/shm:/dev/shm

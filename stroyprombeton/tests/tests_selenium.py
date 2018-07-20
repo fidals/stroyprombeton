@@ -451,8 +451,6 @@ class Search(SeleniumTestCase):
             self.search_loaded_condition(),
         )
 
-    # @todo #142:30m Resurrect test for expanding of autocomplete
-    @unittest.skip('Fix after se#344 resolving.')
     def test_autocomplete_can_expand_and_collapse(self):
         """
         Test the autocomplete behavior.
@@ -470,8 +468,6 @@ class Search(SeleniumTestCase):
         # ... and autocomplete should collapse
         self.assertFalse(self.autocomplete.is_displayed())
 
-    # @todo #380:30m Resurrect test `test_autocomplete_item_link`
-    @unittest.skip
     def test_autocomplete_item_link(self):
         """Every autocomplete item should contain link on page."""
         self.fill_input_and_wait()
@@ -480,8 +476,6 @@ class Search(SeleniumTestCase):
         self.wait.until(EC.url_contains('/gbi/products/'))
         self.assertTrue('/gbi/products/' in self.browser.current_url)
 
-    # @todo #142:15m Resurrect test for see all link of autocomplete
-    @unittest.skip('Fix after se#344 resolving.')
     def test_autocomplete_see_all_item(self):
         """
         Autocomplete should contain "see all" item.
