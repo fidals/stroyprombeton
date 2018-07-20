@@ -362,6 +362,18 @@ class IndexPage(TestCase):
         self.assertContains(response, region.url)
 
 
+class RobotsPage(TestCase):
+
+    fixtures = ['dump.json']
+
+    def setUp(self):
+        self.response = self.client.get('/robots.txt')
+
+    @unittest.skip('Will be resurrected at se#420')
+    def test_robots_success(self):
+        self.assertEqual(self.response.status_code, 200)
+
+
 class Search(TestCase):
 
     fixtures = ['dump.json']
