@@ -136,8 +136,8 @@ services:
     networks:
       - stb-backend
     ports:
-      - '5673:5672'
-      - '15673:15672'
+      - 5672
+      - 15672
 
   redis:
     image: redis:alpine
@@ -151,7 +151,7 @@ services:
     networks:
       - stb-backend
     ports:
-      - '6380:6379'
+      - 6379
 
   # Контейнер делает бэкапы по крону.
   # Бэкап - это несколько архивов: database.tar.gz, media.tar.gz, static.tar.gz
