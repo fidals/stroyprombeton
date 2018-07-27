@@ -86,6 +86,7 @@ const path = {
       ],
 
       common: [
+        ecommercePaths.trackers,
         'front/js/shared/services/*.es6',
         ecommercePaths.backcall,
         'front/js/shared/*.es6',
@@ -149,6 +150,7 @@ const path = {
     js: [
       'front/js/**/*',
       ecommercePaths.watch,
+      ecommercePaths.trackers,
       genericAdminPaths.watch.js,
     ],
     images: 'front/images/**/*',

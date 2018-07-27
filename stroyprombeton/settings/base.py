@@ -155,7 +155,6 @@ STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesSto
 #  Change `build` name for some more clear.
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'front/build'),  # for prod app
-    os.path.join(BASE_DIR, 'build'),  # for dev app
     ASSETS_DIR,
 ]
 

@@ -9,6 +9,8 @@
   const init = () => {
     pluginsInit();
     setUpListeners();
+    const productId = DOM.$addToCart.attr('data-product-id');
+    if (productId) mediator.publish('onProductDetail', productId);
   };
 
   function pluginsInit() {
@@ -61,7 +63,10 @@
     };
 
     server.addToCart(id, count)
-      .then(data => mediator.publish('onCartUpdate', data));
+      .then((data) => {
+        mediator.publish('onCartUpdate', data);
+        mediator.publish('onProductAdd', [id, count]);
+      });
   }
 
   init();

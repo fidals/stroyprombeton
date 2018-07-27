@@ -14,19 +14,22 @@
     mediator.subscribe('onCartUpdate', render, showCart);
 
     // Bind events on static parent cause of dynamic product list in Cart.
-    DOM.$cartWrapper.on('click', DOM.flushCart, () => flushCart());
-    DOM.$cartWrapper.on('click', DOM.removeFromCart, (event) => {
-      removeFromCart(event.target.getAttribute('data-product-id'));
-    });
+    DOM.$cartWrapper.on('click', DOM.flushCart, flushCart);
+    DOM.$cartWrapper.on('click', DOM.removeFromCart, removeFromCart);
   }
 
   /**
    * Remove Product from Cart by given id.
-   * @param {string} productId
+   * @param {object} event
    */
-  function removeFromCart(productId) {
+  function removeFromCart(event) {
+    const productId = event.target.getAttribute('data-product-id');
+    const productCount = event.target.getAttribute('data-product-count');
     server.removeFromCart(productId)
-      .then(data => mediator.publish('onCartUpdate', data));
+      .then((data) => {
+        mediator.publish('onCartUpdate', data);
+        mediator.publish('onProductRemove', [productId, productCount]);
+      });
   }
 
   /**
