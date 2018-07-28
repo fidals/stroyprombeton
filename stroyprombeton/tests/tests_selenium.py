@@ -414,6 +414,8 @@ class CategoryPage(CartTestCase):
 class Search(SeleniumTestCase):
     """Selenium-based tests for Search."""
 
+    INPUT_LOCATOR = (By.CLASS_NAME, 'js-search-field')
+
     def setUp(self):
         self.browser.get(self.live_server_url)
         # query contains whitespace to prevent urlencoding errors
@@ -432,13 +434,13 @@ class Search(SeleniumTestCase):
 
     def clear_input(self, number):
         self.wait.until(EC.visibility_of_element_located(
-            (By.CLASS_NAME, 'js-search-field')
+            self.INPUT_LOCATOR
         )).send_keys(Keys.BACKSPACE * number)
         self.wait.until_not(EC.visibility_of(self.autocomplete))
 
     def fill_input(self, query=''):
         """Enter correct search term."""
-        self.send_keys_and_wait(query or self.query, (By.CLASS_NAME, 'js-search-field'))
+        self.send_keys_and_wait(query or self.query, self.INPUT_LOCATOR)
 
     def fill_input_and_wait(self, query=''):
         self.fill_input(query)
@@ -464,6 +466,7 @@ class Search(SeleniumTestCase):
 
         # remove search term ...
         self.clear_input(len(self.query))
+        self.wait.until(EC.text_to_be_present_in_element(self.INPUT_LOCATOR, ''))
 
         # ... and autocomplete should collapse
         self.assertFalse(self.autocomplete.is_displayed())

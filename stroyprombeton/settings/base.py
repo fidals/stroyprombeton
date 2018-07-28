@@ -144,17 +144,8 @@ ASSETS_DIR = os.path.join(BASE_DIR, 'assets')
 
 STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
 
-# @todo #257:30m Cleanup front/build usage.
-#  Now different places stores front/build dir
-#  by different ways without no reason:
-#  - Host machine stores it at ./front/build
-#  - App dev - in ./build
-#  - App prod - in ./front/build
-#  - Nodejs - in ./build
-#  Store all this stuff in the similar way.
-#  Change `build` name for some more clear.
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'front/build'),  # for prod app
+    os.path.join(BASE_DIR, 'front_build'),
     ASSETS_DIR,
 ]
 

@@ -22,7 +22,7 @@ pipeline:
       - gulp build
     volumes:
       - /tmp/cache/drone/stroyprombeton/site-packages/${DRONE_COMMIT_SHA}/site-packages:/usr/app/deps
-      - /tmp/cache/drone/stroyprombeton/front_build/${DRONE_COMMIT_SHA}:/drone/src/github.com/fidals/stroyprombeton/build
+      - /tmp/cache/drone/stroyprombeton/front_build/${DRONE_COMMIT_SHA}:/drone/src/github.com/fidals/stroyprombeton/front_build
     when:
       event: [push, pull_request]
 
@@ -42,8 +42,8 @@ pipeline:
       - RABBITMQ_PORT=5672
       - SELENIUM_URL=http://selenium:4444/wd/hub
       # Hardcoded env values because of drone secret's bug. See stb#263
-      - SELENIUM_TIMEOUT_SECONDS=120
-      - SELENIUM_WAIT_SECONDS=120
+      - SELENIUM_TIMEOUT_SECONDS=180
+      - SELENIUM_WAIT_SECONDS=180
     commands:
       - echo $SELENIUM_TIMEOUT_SECONDS $SELENIUM_WAIT_SECONDS
       - python manage.py migrate
@@ -51,7 +51,7 @@ pipeline:
       - python manage.py test --liveserver=test:8021-8029 --parallel
     volumes:
       - /tmp/cache/drone/stroyprombeton/site-packages/${DRONE_COMMIT_SHA}/site-packages:/usr/local/lib/python3.6/site-packages
-      - /tmp/cache/drone/stroyprombeton/front_build/${DRONE_COMMIT_SHA}:/drone/src/github.com/fidals/stroyprombeton/front/build
+      - /tmp/cache/drone/stroyprombeton/front_build/${DRONE_COMMIT_SHA}:/drone/src/github.com/fidals/stroyprombeton/front_build
     when:
       event: [push, pull_request]
 
@@ -71,7 +71,7 @@ pipeline:
         --exclude=node_modules/**/* --exclude=static/**/*
         --exclude=media/**/* --exclude=doc/build/**/*
         --exclude=.idea/**/*
-        --exclude=front/build
+        --exclude=front_build
         --exclude=front/images
         --exclude=**/*.pyc
         --exclude=**/*.jpg
@@ -88,7 +88,7 @@ pipeline:
       - docker-compose -f docker-compose-build.yml build --no-cache nodejs python-dev python-prod
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - /tmp/cache/drone/stroyprombeton/front_build/${DRONE_COMMIT_SHA}:/drone/src/github.com/fidals/stroyprombeton/front/build
+      - /tmp/cache/drone/stroyprombeton/front_build/${DRONE_COMMIT_SHA}:/drone/src/github.com/fidals/stroyprombeton/front_build
     when:
       event: push
 
