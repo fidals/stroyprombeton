@@ -24,3 +24,7 @@ def show_toolbar(request):
 DEBUG_TOOLBAR_CONFIG = {
     'SHOW_TOOLBAR_CALLBACK': show_toolbar,
 }
+
+SELENIUM_URL = os.environ.get('SELENIUM_URL', 'http://selenium:4444/wd/hub')
+SELENIUM_WAIT_SECONDS = int(os.environ['SELENIUM_WAIT_SECONDS'])
+SELENIUM_TIMEOUT_SECONDS = int(os.environ['SELENIUM_TIMEOUT_SECONDS'])

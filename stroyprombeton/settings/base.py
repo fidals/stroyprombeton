@@ -188,10 +188,6 @@ LOGGING = {
     },
 }
 
-SELENIUM_URL = os.environ.get('SELENIUM_URL', 'http://selenium:4444/wd/hub')
-SELENIUM_WAIT_SECONDS = int(os.environ['SELENIUM_WAIT_SECONDS'])
-SELENIUM_TIMEOUT_SECONDS = int(os.environ['SELENIUM_TIMEOUT_SECONDS'])
-
 # Is required for Docker container
 WKHTMLTOPDF_CMD = 'xvfb-run wkhtmltopdf'
 
