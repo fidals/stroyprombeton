@@ -1,0 +1,8 @@
+# Identify the dependencies folder
+DEPS_DIR=/drone/deps
+# Identify the source folder
+SRC_DIR=/usr/app/src
+SRC_DIR_PROD=/home/andre/prog/stroyprombeton
+
+REFARM_DIR=../../refarm-site
+POSTGRES_DATA_DIR=/var/fidals/stb_db

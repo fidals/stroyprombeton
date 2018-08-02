@@ -1,28 +1,33 @@
 branches: master
 
+workspace:
+  base: /drone
+  path: stroyprombeton/
+
+
 pipeline:
   pip-install:
     image: python
     commands:
       - pip install -r requirements.txt
-      - rm -rf /usr/app/deps/site-packages
-      - mv /usr/local/lib/python3.6/site-packages /usr/app/deps
-    volumes:
-      - /tmp/cache/drone/stroyprombeton/site-packages/${DRONE_COMMIT_SHA}:/usr/app/deps
+      - rm -rf /drone/deps/site-packages
+      - mv /usr/local/lib/python3.6/site-packages /drone/deps
     when:
       event: [push, pull_request]
 
+  # @todo #457:60m Rm npm step.
+  #  Currently npm fails, when we touch it.
+  #  https://ci.fidals.com/fidals/stroyprombeton/318/8
+  #  Example code from SE:
+  #  https://github.com/fidals/shopelectro/pull/462
   npm:
     image: node:slim
     environment:
-      - DEPS_DIR=/usr/app/deps
+      - DEPS_DIR=/drone/deps
     commands:
       - npm install
       - npm install -g gulp-cli
       - gulp build
-    volumes:
-      - /tmp/cache/drone/stroyprombeton/site-packages/${DRONE_COMMIT_SHA}/site-packages:/usr/app/deps
-      - /tmp/cache/drone/stroyprombeton/front_build/${DRONE_COMMIT_SHA}:/drone/src/github.com/fidals/stroyprombeton/front_build
     when:
       event: [push, pull_request]
 
@@ -30,7 +35,7 @@ pipeline:
     image: fidals/stb:dev
     environment:
       - TEST_ENV=true
-      - DEPS_DIR=/usr/app/deps
+      - DEPS_DIR=/drone/deps
       - DJANGO_SETTINGS_MODULE=stroyprombeton.settings.dev
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=test
@@ -45,13 +50,10 @@ pipeline:
       - SELENIUM_TIMEOUT_SECONDS=180
       - SELENIUM_WAIT_SECONDS=180
     commands:
-      - echo $SELENIUM_TIMEOUT_SECONDS $SELENIUM_WAIT_SECONDS
+      - cp -r /drone/deps /usr/local/lib/python3.6/site-packages
       - python manage.py migrate
       - python manage.py collectstatic --noinput
       - python manage.py test --liveserver=test:8021-8029 --parallel
-    volumes:
-      - /tmp/cache/drone/stroyprombeton/site-packages/${DRONE_COMMIT_SHA}/site-packages:/usr/local/lib/python3.6/site-packages
-      - /tmp/cache/drone/stroyprombeton/front_build/${DRONE_COMMIT_SHA}:/drone/src/github.com/fidals/stroyprombeton/front_build
     when:
       event: [push, pull_request]
 
@@ -69,7 +71,7 @@ pipeline:
     commands:
       - pdd --verbose
         --exclude=node_modules/**/* --exclude=static/**/*
-        --exclude=media/**/* --exclude=doc/build/**/*
+        --exclude=media/**/*
         --exclude=.idea/**/*
         --exclude=front_build
         --exclude=front/images
@@ -80,15 +82,14 @@ pipeline:
       event: [push, pull_request]
 
   docker-build:
-    image: docker/compose:1.17.1
+    image: docker/compose:1.22.0
     environment:
-      - DEPS_DIR=/usr/app/deps
+      - DEPS_DIR=/drone/deps
     commands:
       - cd docker
       - docker-compose -f docker-compose-build.yml build --no-cache nodejs python-dev python-prod
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-      - /tmp/cache/drone/stroyprombeton/front_build/${DRONE_COMMIT_SHA}:/drone/src/github.com/fidals/stroyprombeton/front_build
     when:
       event: push
 
@@ -108,25 +109,18 @@ pipeline:
     when:
       event: push
 
-  pip-clean:
-    image: busybox
+  docker-up:
+    image: docker/compose:1.22.0
     commands:
-      - rm -rf /site-packages/${DRONE_COMMIT_SHA}
+      - cd docker/
+      - cp drone_env/* env_files/
+      - cp drone_env/.env .
+      - docker-compose up -d app
+      - docker-compose stop
     volumes:
-      - /tmp/cache/drone/stroyprombeton/site-packages/:/site-packages/
+      - /var/run/docker.sock:/var/run/docker.sock
     when:
-      event: [ push, pull_request ]
-      status: [ success, failure ]
-
-  npm-clean:
-    image: busybox
-    commands:
-      - rm -rf /drone/src/github.com/fidals/stroyprombeton/pull/${DRONE_PULL_REQUEST}/node_modules/*
-    volumes:
-      - /tmp/cache/drone/stroyprombeton/node_modules:/drone/src/github.com/fidals/stroyprombeton/pull/${DRONE_PULL_REQUEST}/node_modules
-    when:
-      event: [ push, pull_request ]
-      status: [ success, failure ]
+      event: [push, pull_request]
 
 services:
   postgres:
