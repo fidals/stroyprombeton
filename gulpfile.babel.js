@@ -234,7 +234,7 @@ function vendorJS(source, destination, fileName) {
     .pipe($.changed(path.build.js, { extension: '.js' }))
     .pipe($.concat(`${fileName}.js`))
     .pipe($.rename({ suffix: '.min' }))
-    .pipe($.uglify())
+    .pipe($.uglify({ mangle: { reserved: ['ga'] } }))
     .pipe(gulp.dest(destination));
 }
 
@@ -249,7 +249,12 @@ function appJS(source, destination, fileName) {
       compact: false,
     }))
     .pipe($.rename({ suffix: '.min' }))
-    .pipe($.if(env.production, $.uglify()))
+    .pipe($.if(
+      env.production,
+      $.uglify({
+        mangle: { reserved: ['ga'] },
+      })
+    ))
     .pipe($.if(env.development, $.sourcemaps.write('.')))
     .pipe(gulp.dest(destination))
     .pipe($.livereload());
