@@ -16,19 +16,27 @@ pipeline:
     when:
       event: [push, pull_request]
 
-  # @todo #457:60m Rm npm step.
-  #  Currently npm fails, when we touch it.
-  #  https://ci.fidals.com/fidals/stroyprombeton/318/8
-  #  Example code from SE:
-  #  https://github.com/fidals/shopelectro/pull/462
-  npm:
-    image: node:slim
+  nodejs-build:  # with `npm install` inside
+    image: docker/compose:1.22.0
+    commands:
+      - cd docker/
+      # nodejs build is not in `docker-build` section,
+      # because we have this deps:
+      # build nodejs -> gulp build -> build python-prod
+      - docker-compose -f docker-compose-build.yml build nodejs
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    when:
+      event: [push, pull_request]
+
+  gulp-build:
+    image: fidals/stb-nodejs:dev
     group: deps
     environment:
-      - DEPS_DIR=/drone/deps
+      # deps from nodejs image
+      - DEPS_DIR=/usr/app/deps
     commands:
-      - npm install
-      - npm install -g gulp-cli
+      - cp -r /usr/app/src/node_modules .
       - gulp build
     when:
       event: [push, pull_request]
@@ -88,7 +96,7 @@ pipeline:
       - DEPS_DIR=/drone/deps
     commands:
       - cd docker
-      - docker-compose -f docker-compose-build.yml build --no-cache nodejs python-dev python-prod
+      - docker-compose -f docker-compose-build.yml build --no-cache python-dev python-prod
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
     when:

@@ -36,7 +36,7 @@ services:
     image: fidals/stb-nodejs:dev
     volumes:
       # for STB's front development
-      - ../gulpfile.babel.js:/usr/app/src/gulpfile.babel.js
+#      - ../gulpfile.babel.js:/usr/app/src/gulpfile.babel.js
       - ../front:/usr/app/src/front
       - ../front_build:/usr/app/src/front_build
     env_file:
