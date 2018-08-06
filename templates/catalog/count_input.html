@@ -2,6 +2,7 @@
   <input class="table-count-input text-center js-count-input"
          value="{{ product.quantity|default:'1' }}"
          data-id="{{ product.id }}" type="number"
+         data-last-count="{{ product.quantity|default:'1' }}"
          min="1" max="1000" step="1" pattern="[0-9]{4}">
   <i class="input-caret input-caret-up fa fa-caret-up js-count-input-up"
      aria-hidden="true">

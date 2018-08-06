@@ -19,16 +19,26 @@
   }
 
   /**
+   * Get id and count of a removed product.
+   * @param {object}
+   */
+  function getRemovedProductData(removed) {
+    return {
+      id: removed.getAttribute('data-product-id'),
+      quantity: removed.getAttribute('data-product-count'),
+    };
+  }
+
+  /**
    * Remove Product from Cart by given id.
    * @param {object} event
    */
   function removeFromCart(event) {
-    const productId = event.target.getAttribute('data-product-id');
-    const productCount = event.target.getAttribute('data-product-count');
-    server.removeFromCart(productId)
+    const { id, quantity } = getRemovedProductData(event.target);
+    server.removeFromCart(id)
       .then((data) => {
         mediator.publish('onCartUpdate', data);
-        mediator.publish('onProductRemove', [productId, productCount]);
+        mediator.publish('onProductRemove', [id, quantity]);
       });
   }
 
@@ -36,8 +46,14 @@
    * Remove all Products from Cart.
    */
   function flushCart() {
+    const productsData = $(DOM.removeFromCart)
+      .map((_, el) => getRemovedProductData(el))
+      .get();
     server.flushCart()
-      .then(data => mediator.publish('onCartUpdate', data));
+      .then(data => {
+        mediator.publish('onCartUpdate', data);
+        mediator.publish('onCartClear', [productsData]);
+      });
   }
 
   /**

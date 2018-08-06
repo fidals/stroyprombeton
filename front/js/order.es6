@@ -23,7 +23,7 @@
   }
 
   const getProductId = $target => $target.closest(DOM.productRow).data('product-id');
-  const getProductCount = $target => $target.find(DOM.productCount).val();
+  const getProductCount = $target => $target.closest(DOM.productRow).find(DOM.productCount).val();
   const getProductName = $target => $.trim($target.find('a').text());
 
   const getProductsData = () => {
@@ -42,11 +42,19 @@
    */
   function changeProductCount(event) {
     const $target = $(event.target);
-    const productID = getProductId($target);
+    const productId = getProductId($target);
     const newCount = getProductCount($target);
+    const countDiff = newCount - $target.attr('data-last-count');
 
-    server.changeInCart(productID, newCount)
-      .then(data => mediator.publish('onCartUpdate', { html: data }));
+    server.changeInCart(productId, newCount)
+      .then((data) => {
+        mediator.publish('onCartUpdate', { html: data });
+        if (countDiff > 0) {
+          mediator.publish('onProductAdd', [productId, countDiff]);
+        } else {
+          mediator.publish('onProductRemove', [productId, Math.abs(countDiff)]);
+        }
+      });
   }
 
   /**
@@ -64,7 +72,6 @@
     const $target = $(event.target);
     const productId = getProductId($target);
     const productCount = getProductCount($target);
-
     server.removeFromCart(productId)
       .then((data) => {
         mediator.publish('onCartUpdate', { html: data });
