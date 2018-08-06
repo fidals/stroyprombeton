@@ -86,22 +86,6 @@ services:
       - stb-backend
     command: celery -A stroyprombeton worker -E -n worker.default@%%h -l info -Q default
 
-  celery-default-worker:
-    image: fidals/stb:prod
-    container_name: stb-celery-default-worker
-    restart: always
-    env_file:
-      - env_files/app
-      - env_files/credentials
-      - env_files/paths
-    depends_on:
-      - app
-    volumes:
-      - ../stroyprombeton/settings/local.py:$SRC_DIR/stroyprombeton/settings/local.py
-    networks:
-      - stb-backend
-    command: celery -A stroyprombeton worker -E -n worker.default@%%h -l info -Q default
-
   nginx:
     image: fidals/stb-nginx:prod
     container_name: stb-nginx
@@ -122,6 +106,7 @@ services:
     container_name: stb-postgres
     env_file:
       - env_files/credentials
+      - env_files/app
     networks:
       - stb-backend
     volumes:
@@ -132,6 +117,7 @@ services:
     container_name: stb-rabbitmq
     restart: always
     env_file:
+      - env_files/app
       - env_files/credentials
     networks:
       - stb-backend

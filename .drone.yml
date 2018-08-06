@@ -8,6 +8,7 @@ workspace:
 pipeline:
   pip-install:
     image: python
+    group: deps
     commands:
       - pip install -r requirements.txt
       - rm -rf /drone/deps/site-packages
@@ -22,6 +23,7 @@ pipeline:
   #  https://github.com/fidals/shopelectro/pull/462
   npm:
     image: node:slim
+    group: deps
     environment:
       - DEPS_DIR=/drone/deps
     commands:
@@ -51,7 +53,6 @@ pipeline:
       - SELENIUM_WAIT_SECONDS=180
     commands:
       - cp -r /drone/deps /usr/local/lib/python3.6/site-packages
-      - python manage.py migrate
       - python manage.py collectstatic --noinput
       - python manage.py test --liveserver=test:8021-8029 --parallel
     when:

@@ -59,11 +59,9 @@ services:
       - env_files/credentials
     networks:
       - stb-backend
-    # @todo #142:30m Check why rabbitmq exposes it's ports to host machine.
-    #  And write doc or request some fix.
     ports:
-      - 5674:5672
-      - 15674:15672
+      - 5672
+      - 15672
 
   selenium:
     image: selenium/standalone-chrome-debug:3.10.0
