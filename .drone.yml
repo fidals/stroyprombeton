@@ -6,16 +6,6 @@ workspace:
 
 
 pipeline:
-  pip-install:
-    image: python
-    group: deps
-    commands:
-      - pip install -r requirements.txt
-      - rm -rf /drone/deps/site-packages
-      - mv /usr/local/lib/python3.6/site-packages /drone/deps
-    when:
-      event: [push, pull_request]
-
   nodejs-build:  # with `npm install` inside
     image: docker/compose:1.22.0
     commands:
@@ -41,6 +31,17 @@ pipeline:
     when:
       event: [push, pull_request]
 
+  python-build:
+    image: docker/compose:1.22.0
+    commands:
+      - cd docker/
+      # Build python images with sources and static files
+      - docker-compose -f docker-compose-build.yml build python-dev python-prod
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    when:
+      event: [push, pull_request]
+
   test:
     image: fidals/stb:dev
     environment:
@@ -60,7 +61,6 @@ pipeline:
       - SELENIUM_TIMEOUT_SECONDS=180
       - SELENIUM_WAIT_SECONDS=180
     commands:
-      - cp -r /drone/deps /usr/local/lib/python3.6/site-packages
       - python manage.py collectstatic --noinput
       - python manage.py test --liveserver=test:8021-8029 --parallel
     when:
@@ -89,18 +89,6 @@ pipeline:
         -f report.xml
     when:
       event: [push, pull_request]
-
-  docker-build:
-    image: docker/compose:1.22.0
-    environment:
-      - DEPS_DIR=/drone/deps
-    commands:
-      - cd docker
-      - docker-compose -f docker-compose-build.yml build --no-cache python-dev python-prod
-    volumes:
-      - /var/run/docker.sock:/var/run/docker.sock
-    when:
-      event: push
 
   docker-push:
     image: docker:latest
