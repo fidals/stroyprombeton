@@ -48,12 +48,10 @@ lint-code:
 	$(dc) run --rm lint
 
 lint-pdd:
-	$(dc) run --rm pdd pdd --verbose \
-		--exclude=node_modules/**/* --exclude=static/**/* \
-		--exclude=media/**/* --exclude=doc/build/**/* \
-		--exclude=.idea/**/* \
-		--exclude=front/images \
-	    -f report.xml
+	$(dc) run --rm pdd
+
+lint-pdd-verbose:
+	$(dc) run --rm pdd --verbose
 
 lint:
 	$(MAKE) lint-code

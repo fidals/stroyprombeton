@@ -94,5 +94,6 @@ make backup
 
 N.B.: Некоторые данные (например, медиафайлы) могут иметь большой размер. На момент написания этой заметки, архив с медиафайлами Stroyprombeton весил ~1GB.
 
-# Инструкции к фичам
+# Фичи
+- [Tracking aims](https://github.com/fidals/shopelectro/blob/master/doc/tracking_aims.md)
 - [Table Editor](https://github.com/fidals/stroyprombeton/blob/master/doc/table_editor.md)

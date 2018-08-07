@@ -98,13 +98,13 @@ services:
     command: pdd
     entrypoint:
       - pdd
-      - --verbose
+      - --exclude=venv/**/*
       - --exclude=node_modules/**/*
       - --exclude=static/**/*
       - --exclude=media/**/*
       - --exclude=doc/build/**/*
       - --exclude=.idea/**/*
-      - --exclude=front/build
+      - --exclude=front_build
       - --exclude=front/images
       - --exclude=**/*.pyc
       - --exclude=**/*.jpg
