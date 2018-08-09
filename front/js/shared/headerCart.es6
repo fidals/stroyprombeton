@@ -50,7 +50,7 @@
       .map((_, el) => getRemovedProductData(el))
       .get();
     server.flushCart()
-      .then(data => {
+      .then((data) => {
         mediator.publish('onCartUpdate', data);
         mediator.publish('onCartClear', [productsData]);
       });

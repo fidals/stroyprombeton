@@ -26,16 +26,14 @@
   const getProductCount = $target => $target.closest(DOM.productRow).find(DOM.productCount).val();
   const getProductName = $target => $.trim($target.find('a').text());
 
-  const getProductsData = () => {
-    return $(DOM.productRow).map((_, el) => {
-      let $el = $(el);
-      return {
-        id: getProductId($el),
-        name: getProductName($el),
-        quantity: getProductCount($el),
-      }
-    }).get()
-  }
+  const getProductsData = () => $(DOM.productRow).map((_, el) => {
+    const $el = $(el);
+    return {
+      id: getProductId($el),
+      name: getProductName($el),
+      quantity: getProductCount($el),
+    };
+  }).get();
 
   /**
    * Change Product's count in Cart with delay for better UX.

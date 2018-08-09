@@ -228,8 +228,8 @@ const toggleFilterBtnText = {
   hide: 'Скрыть фильтры',
 };
 
-class STBTableEditor extends TableEditor {
-  constructor (colModel, dialogs) {
+class STBTableEditor extends TableEditor {  // Ignore ESLintBear (no-undef)
+  constructor(colModel, dialogs) {
     super(colModel, dialogs);
 
     this.filterFields = [
@@ -238,7 +238,6 @@ class STBTableEditor extends TableEditor {
       'category_name',
       'price',
     ];
-
   }
 }
 

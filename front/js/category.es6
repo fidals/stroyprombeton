@@ -73,7 +73,7 @@
     const { id, count } = getProductInfo(event);
 
     server.addToCart(id, count)
-      .then(data => {
+      .then((data) => {
         mediator.publish('onCartUpdate', { html: data, target: event.target });
         mediator.publish('onProductAdd', [id, count]);
       });
