@@ -10,7 +10,7 @@ generate-production-static-data deploy
 
 # ---------------------- Dev section ----------------------
 migrate:
-	$(dc) exec app python manage.py migrate
+	$(dc) run --rm app python manage.py migrate
 
 fixtures:
 	$(dc) run --rm app bash -c "\
