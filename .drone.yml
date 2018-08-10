@@ -44,6 +44,7 @@ pipeline:
 
   test:
     image: fidals/stb:dev
+    secrets: [ SELENIUM_WAIT_SECONDS, SELENIUM_TIMEOUT_SECONDS ]
     environment:
       - TEST_ENV=true
       - DEPS_DIR=/drone/deps
@@ -58,8 +59,8 @@ pipeline:
       - RABBITMQ_PORT=5672
       - SELENIUM_URL=http://selenium:4444/wd/hub
       # Hardcoded env values because of drone secret's bug. See stb#263
-      - SELENIUM_TIMEOUT_SECONDS=180
-      - SELENIUM_WAIT_SECONDS=180
+      - SELENIUM_TIMEOUT_SECONDS=${SELENIUM_TIMEOUT_SECONDS}
+      - SELENIUM_WAIT_SECONDS=${SELENIUM_WAIT_SECONDS}
     commands:
       - python manage.py collectstatic --noinput
       - python manage.py test --liveserver=test:8021-8029 --parallel
