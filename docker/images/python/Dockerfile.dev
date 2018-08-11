@@ -2,7 +2,7 @@ FROM python:slim
 
 RUN apt-get update \
     && apt-get install --no-install-recommends --no-install-suggests -y \
-    make wkhtmltopdf xvfb gettext \
+    xorg wkhtmltopdf xvfb gettext \
     && apt-get -y --purge autoremove \
     && rm -rf /var/lib/apt/lists/*
 
