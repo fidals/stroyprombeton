@@ -5,8 +5,9 @@ django-redis
 django-widget-tweaks==1.4.2
 django-wkhtmltopdf==3.2.0
 django-cachalot==1.5.0
+ipython
 openpyxl==2.5.2
-Pillow==5.1.0
+Pillow==5.2.0
 psycopg2-binary==2.7.4
 PyMySQL==0.8.0
 selenium==3.11.0

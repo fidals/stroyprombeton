@@ -59,6 +59,14 @@ def create_pages():
                 position=i,
             )
 
+            # @todo #289:60m Save fixture images to `media` folder. se2
+            #  Now `test_db` django command goes like this:
+            #  - take file from tests folder
+            #  - generate filename and path using timestamp
+            #  - save generated path into db
+            # `test_db` don't copy file to generated path.
+            # Make this file accessible by default.
+            # Create test for file autocreating mech.
             Image.objects.create(
                 model=review,
                 image=ImageFile(open(REVIEW_IMAGE, mode='rb')),
