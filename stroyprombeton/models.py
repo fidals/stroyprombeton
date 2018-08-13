@@ -95,6 +95,10 @@ def get_manager(parent_slug):
     return FlatPageTypeManager()
 
 
+# @todo #172:60m Set "news" parent-page by default.
+#  At stb#172 PO had problems with creating news.
+#  Then dev should do 1h research to reinvent
+#  manually adding "news" parent-page rule.
 class NewsForAdmin(page_models.Page):
     class Meta:
         proxy = True
