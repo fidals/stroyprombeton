@@ -1,5 +1,3 @@
-import unittest
-
 from django.core import mail
 from django.db.models import Count
 from django.template.defaultfilters import floatformat
@@ -205,25 +203,24 @@ class OrderPage(CartTestCase):
 
         self.assertIn('Нет выбранных позиций', order_wrapper_text)
 
-    # @todo #200:30m Fix test_change_count_in_cart test.
-    #  Traceback: https://ci.fidals.com/fidals/stroyprombeton/72/8
-    @unittest.expectedFailure
     def test_change_count_in_cart(self):
-        self.buy_on_product_page()
+        product = Product.objects.get(id=1)
+        self.buy_on_product_page(product_id=product.id)
         self.proceed_order_page()
 
-        total = self.get_total()
+        change_count_to = 42
+        total_before = self.get_total()
 
         def wait_total_changes(driver):
-            return self.get_total(driver) != total
+            return self.get_total(driver) != total_before
 
-        self.send_keys_and_wait(42, (By.CLASS_NAME, 'js-count-input'))
+        self.send_keys_and_wait(change_count_to, (By.CLASS_NAME, 'js-count-input'))
         self.wait.until(wait_total_changes)
-        product_price = Product.objects.get(id=1).price
-        expected_price = floatformat(str(product_price * 42), 0) + ' руб'
-        total_price = self.get_total()
 
-        self.assertEqual(expected_price, total_price)
+        self.assertEqual(
+            f'{floatformat(str(product.price * change_count_to), 0)} руб',
+            self.get_total(),
+        )
 
     @disable_celery
     def test_order_email(self):
