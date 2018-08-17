@@ -22,9 +22,6 @@ pipeline:
   gulp-build:
     image: fidals/stb-nodejs:dev
     group: deps
-    environment:
-      # deps from nodejs image
-      - DEPS_DIR=/usr/app/deps
     commands:
       - cp -r /usr/app/src/node_modules .
       - gulp build
@@ -47,7 +44,6 @@ pipeline:
     secrets: [ SELENIUM_WAIT_SECONDS, SELENIUM_TIMEOUT_SECONDS ]
     environment:
       - TEST_ENV=true
-      - DEPS_DIR=/drone/deps
       - DJANGO_SETTINGS_MODULE=stroyprombeton.settings.dev
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=test

@@ -24,8 +24,6 @@ services:
       - stb-frontend
     volumes:
       - ./../:$SRC_DIR
-      # contains refarm-site modules
-      - $DEPS_DIR
       # Thus, you can work with apps related to the refarm-site
       #- $REFARM_DIR/stbarch:/root/.local/lib/python3.6/site-packages/stbarch
     # @todo #150 Validate if `.env` is full
@@ -35,12 +33,11 @@ services:
   nodejs:
     image: fidals/stb-nodejs:dev
     volumes:
-      # for STB's front development
-#      - ../gulpfile.babel.js:/usr/app/src/gulpfile.babel.js
+      # Uncomment next line if you dev refarm-site's front
+      # - ../../refarm-site/:$DEPS_DIR/
+      # - ../gulpfile.babel.js:/usr/app/src/gulpfile.babel.js
       - ../front:/usr/app/src/front
       - ../front_build:/usr/app/src/front_build
-    env_file:
-      - env_files/paths
 
   postgres:
     image: postgres:9.5

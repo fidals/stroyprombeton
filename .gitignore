@@ -6,7 +6,7 @@ doc/build/
 node_modules/
 env/
 src/
-front/build/
+front_build/
 static/
 media/
 stroyprombeton/settings/local.py
