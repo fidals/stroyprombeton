@@ -26,10 +26,8 @@ def fetch_products(request):
     term = term.strip()
 
     category = Category.objects.get(id=category_id)
-    products = (
-        Product.objects
-        .filter(page__is_active=True)
-        .get_by_category(category, ordering=settings.PRODUCTS_ORDERING)
+    products = Product.actives.get_category_descendants(
+        category, ordering=settings.PRODUCTS_ORDERING
     )
 
     if filtered == 'true' and term:
@@ -137,11 +135,8 @@ class CategoryPage(catalog.CategoryPage, ListView):
 
     def get(self, *args, **kwargs):
         self.object = self.get_object()
-        self.object_list = (
-            Product.objects
-            .filter(page__is_active=True)
-            .get_by_category(self.object.model, ordering=settings.PRODUCTS_ORDERING)
-            .select_related('page')
+        self.object_list = Product.actives.get_category_descendants(
+            self.object.model, ordering=settings.PRODUCTS_ORDERING
         )
         return super(CategoryPage, self).get(*args, **kwargs)
 
@@ -150,11 +145,8 @@ class CategoryPage(catalog.CategoryPage, ListView):
         category = context.get('category')
         page_index = int(self.request.GET.get('page_index', 1))
 
-        products = (
-            Product.objects
-            .filter(page__is_active=True)
-            .get_by_category(category, ordering=settings.PRODUCTS_ORDERING)
-            .select_related('page')
+        products = Product.actives.get_category_descendants(
+            category, ordering=settings.PRODUCTS_ORDERING
         )
 
         # offset products for seo-robots & for users:
@@ -191,13 +183,9 @@ class ProductPage(catalog.ProductPage):
         context = super(ProductPage, self).get_context_data(**kwargs)
         product = context[self.context_object_name]
 
-        siblings = (
-            Product.objects
-            .filter(page__is_active=True)
-            .get_by_category(product.category)
-            .exclude(id=product.id)
-            .select_related('page')
-        )
+        siblings = Product.actives.get_category_descendants(
+            product.category, ordering=settings.PRODUCTS_ORDERING
+        ).exclude(id=product.id)
 
         images = Image.objects.get_main_images_by_pages(
             sibling.page for sibling in siblings
@@ -238,11 +226,8 @@ class ProductPDF(PDFTemplateView, DetailView):
         context = super(ProductPDF, self).get_context_data(**kwargs)
         category = context[self.context_object_name]
 
-        products = (
-            Product.objects
-            .filter(page__is_active=True)
-            .get_by_category(category, ordering=settings.PRODUCTS_ORDERING)
-            .select_related('page')
+        products = Product.actives.get_category_descendants(
+            category, ordering=settings.PRODUCTS_ORDERING
         )
 
         return {
