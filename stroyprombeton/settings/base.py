@@ -416,3 +416,5 @@ TRIGRAM_MIN_SIMILARITY = 0.15
 # settings for product list from CategoryPage
 PRODUCTS_ORDERING = ['code', 'name', 'mark']
 PRODUCTS_PER_PAGE = 30
+
+PRODUCT_SIBLINGS_COUNT = 10

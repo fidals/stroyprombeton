@@ -183,10 +183,7 @@ class ProductPage(catalog.ProductPage):
         context = super(ProductPage, self).get_context_data(**kwargs)
         product = context[self.context_object_name]
 
-        siblings = Product.actives.get_category_descendants(
-            product.category, ordering=settings.PRODUCTS_ORDERING
-        ).exclude(id=product.id)
-
+        siblings = product.get_siblings(settings.PRODUCT_SIBLINGS_COUNT)
         images = Image.objects.get_main_images_by_pages(
             sibling.page for sibling in siblings
         )
