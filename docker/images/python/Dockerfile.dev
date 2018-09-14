@@ -1,4 +1,9 @@
-FROM python:slim
+# @todo #570:120m Upgrade python to 3.7
+#  3.7 version raises segfault and hangs up a test process.
+#  segfault log: https://ci.fidals.com/fidals/stroyprombeton/408/9
+#  hanging up log: https://ci.fidals.com/fidals/stroyprombeton/405
+
+FROM python:3.6-slim
 
 RUN apt-get update \
     && apt-get install --no-install-recommends --no-install-suggests -y \
