@@ -14,7 +14,7 @@ services:
       - TEST_ENV=true
       - PYTHONUNBUFFERED=0
     ports:
-      - $VIRTUAL_HOST_EXPOSE_PORT:$VIRTUAL_HOST_PORT
+      - $VIRTUAL_HOST_DEV_PORT:8000
       - $VIRTUAL_HOST_LIVESERVER_PORT
     depends_on:
       - postgres
@@ -28,7 +28,7 @@ services:
       #- $REFARM_DIR/stbarch:/root/.local/lib/python3.6/site-packages/stbarch
     # @todo #150 Validate if `.env` is full
     #  Is full means '.env` contains all keynames from `.env.dist`
-    command: python manage.py runserver 0.0.0.0:$VIRTUAL_HOST_PORT
+    command: python manage.py runserver 0.0.0.0:8000
 
   nodejs:
     image: fidals/stb-nodejs:dev

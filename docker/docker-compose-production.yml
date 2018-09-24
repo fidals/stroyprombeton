@@ -18,7 +18,7 @@ services:
       - rabbitmq
       - redis
     ports:
-      - $VIRTUAL_HOST_PORT
+      - 8000
     volumes:
       - ../stroyprombeton/settings/local.py:$SRC_DIR/stroyprombeton/settings/local.py
       # contains refarm-site modules
@@ -30,8 +30,11 @@ services:
     networks:
       - stb-backend
       - stb-frontend
-    command: gunicorn stroyprombeton.wsgi:application -c /etc/gunicorn.py -b 0.0.0.0:$VIRTUAL_HOST_PORT
+    command: gunicorn stroyprombeton.wsgi:application -c /etc/gunicorn.py -b 0.0.0.0:8000
 
+  # @todo #232:60m Create separated DB for stage.
+  #  Stage should have it's own data independent of production.
+  #  We'll test content change scripts with PO there.
   app-stage:
     image: fidals/stb:prod
     container_name: stb-python-stage
@@ -45,14 +48,14 @@ services:
       - postgres
       - rabbitmq
     ports:
-      - '$VIRTUAL_HOST_STAGE_EXPOSE_PORT:$VIRTUAL_HOST_STAGE_PORT'
+      - $VIRTUAL_HOST_STAGE_PORT:8001
     volumes:
       # contains refarm-site modules
       - $DEPS_DIR
     networks:
       - stb-backend
       - stb-frontend
-    command: gunicorn stroyprombeton.wsgi:application -c /etc/gunicorn.py -b 0.0.0.0:$VIRTUAL_HOST_STAGE_PORT
+    command: gunicorn stroyprombeton.wsgi:application -c /etc/gunicorn.py -b 0.0.0.0:8001
 
   celery-beat:
     image: fidals/stb:prod
@@ -95,7 +98,7 @@ services:
     volumes_from:
       - app
     ports:
-      - '$VIRTUAL_HOST_EXPOSE_PORT:80'
+        - $VIRTUAL_HOST_PORT:80
     networks:
       - stb-frontend
     command: nginx -g 'daemon off;'
