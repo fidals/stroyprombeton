@@ -33,8 +33,15 @@ const helpers = (() => {  // Ignore ESLintBear (no-unused-vars)
     };
   }
 
+  function getUrlEndpointParam(name) {
+    const regex = new RegExp(`\/${name}\/(.+?)\/`);  // Ignore ESLintBear (no-useless-escape)
+    const results = regex.exec(location.href);
+    return results === null ? '' : decodeURIComponent(results[1]);
+  }
+
   return {
     debounce,
+    getUrlEndpointParam,
     isPhoneValid,
     isEmailValid,
   };

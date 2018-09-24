@@ -7,12 +7,25 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from seleniumrequests import Remote
 
+from stroyprombeton.models import Tag, TagGroup
+
 disable_celery = override_settings(USE_CELERY=False)
 
 
 def wait(seconds=1):
     """Simple wrapper on time.sleep() method."""
     time.sleep(seconds)
+
+
+def create_doubled_tag(tag_from: Tag=None):
+    tag_from = tag_from or Tag.objects.first()
+    group_to = TagGroup.objects.exclude(id=tag_from.group.id).first()
+    tag_to = Tag.objects.create(
+        group=group_to, name=tag_from.name, position=tag_from.position
+    )
+    tag_to.products.set(tag_from.products.all())
+    tag_to.save()
+    return tag_to
 
 
 class BaseSeleniumTestCase(LiveServerTestCase):

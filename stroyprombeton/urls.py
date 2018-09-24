@@ -21,7 +21,10 @@ admin_urls = [
 ]
 
 catalog_urls = [
+    # @todo #187:60m Move url's arg `category_id` to `slug` as on SE
     url(r'^categories/(?P<category_id>[0-9]+)/$',
+        views.CategoryPage.as_view(), name='category'),
+    url(r'^categories/(?P<category_id>[\w-]+)/tags/(?P<tags>[\w_-]+)/$',
         views.CategoryPage.as_view(), name='category'),
     url(r'^categories/(?P<category_id>[0-9]+)/pdf/$',
         views.ProductPDF.as_view(), name='product_pdf'),

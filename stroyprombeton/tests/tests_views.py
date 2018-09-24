@@ -7,9 +7,15 @@ They all should be using Django's TestClient.
 All Selenium-tests should be located in tests_selenium.
 """
 import json
+import unittest
 from copy import copy
 from datetime import datetime
+from itertools import chain
+from operator import attrgetter
+from urllib.parse import urlencode
 
+from django.db.models import Q
+from django.conf import settings
 from django.http import HttpResponse, QueryDict
 from django.test import TestCase
 from django.urls import reverse
@@ -17,9 +23,12 @@ from django.utils.translation import ugettext as _
 
 from pages.models import CustomPage, FlatPage, ModelPage
 
-from stroyprombeton.models import Category, Product
+from stroyprombeton import models
+from stroyprombeton.tests.helpers import create_doubled_tag
 from stroyprombeton.tests.tests_forms import PriceFormTest
 
+
+CANONICAL_HTML_TAG = '<link rel="canonical" href="{path}">'
 CATEGORY_ROOT_NAME = 'Category root #0'
 
 
@@ -88,7 +97,7 @@ class CategoryTile(TestCase, TestPageMixin):
             ),
         }
 
-        self.root_category = Category.objects.create(**self.data)
+        self.root_category = models.Category.objects.create(**self.data)
 
         self.child_data = {
             'name': 'Test child category',
@@ -99,7 +108,7 @@ class CategoryTile(TestCase, TestPageMixin):
             )
         }
 
-        Category.objects.create(**self.child_data)
+        models.Category.objects.create(**self.child_data)
 
         self.response = self.client.get('/gbi/categories/{}/'.format(self.root_category.id))
 
@@ -135,7 +144,7 @@ class CategoryTable(TestCase, TestPageMixin):
             )
         }
 
-        root_category = Category.objects.create(**category_data)
+        root_category = models.Category.objects.create(**category_data)
 
         self.data = {
             'price': 1447.21,
@@ -149,42 +158,42 @@ class CategoryTable(TestCase, TestPageMixin):
             )
         }
 
-        Product.objects.create(**self.data)
+        models.Product.objects.create(**self.data)
 
         self.response = self.client.get('/gbi/categories/{}/'.format(root_category.id))
 
     @property
-    def products_with_images(self):
-        return self.response.context['products_with_images'][0][0]
+    def products_data(self):
+        return self.response.context['products_data'][0][0]
 
     def test_products_quantity(self):
-        self.assertEqual(len(self.response.context['products_with_images']), 1)
+        self.assertEqual(len(self.response.context['products_data']), 1)
 
     def test_product_name(self):
         self.assertEqual(
-            self.products_with_images.name,
+            self.products_data.name,
             self.data['name']
         )
 
     def test_product_price(self):
         self.assertEqual(
-            float(self.products_with_images.price),
+            float(self.products_data.price),
             self.data['price']
         )
 
     def test_product_code(self):
         self.assertEqual(
-            self.products_with_images.code,
+            self.products_data.code,
             self.data['code']
         )
 
     def test_inactive_product_not_in_category(self):
-        test_product = Product.objects.first()
+        test_product = models.Product.objects.first()
         test_product.page.is_active = False
         test_product.save()
 
         response = self.client.get(reverse('category', args=(test_product.category_id,)))
-        self.assertNotIn(test_product, response.context['products_with_images'])
+        self.assertNotIn(test_product, response.context['products_data'])
 
 
 class Product_(TestCase, TestPageMixin):
@@ -199,7 +208,7 @@ class Product_(TestCase, TestPageMixin):
             'page': ModelPage.objects.create(h1='Category', content='Test category')
         }
 
-        root_category = Category.objects.create(**category_data)
+        root_category = models.Category.objects.create(**category_data)
 
         self.data = {
             'category': root_category,
@@ -222,7 +231,7 @@ class Product_(TestCase, TestPageMixin):
             )
         }
 
-        product = Product.objects.create(**self.data)
+        product = models.Product.objects.create(**self.data)
 
         self.response = self.client.get('/gbi/products/{}/'.format(product.id))
 
@@ -396,7 +405,7 @@ class Search(TestCase):
 
     def test_search_by_id(self):
         """Search view should return redirect on model page, if id was received as term."""
-        product = Product.objects.first()
+        product = models.Product.objects.first()
         url = self.get_search_url(term=str(product.id))
         response = self.client.get(url, follow=True)
         self.assertContains(response, product.page.display_h1)
@@ -485,3 +494,199 @@ class ProductPrice(TestCase):
         self.assertTrue(self.response['Content-Type'] == 'application/pdf')
         self.assertTrue(self.response.context['category'].name == CATEGORY_ROOT_NAME)
         self.assertTrue(len(self.response.context['products']) > 100)
+
+
+# @todo #187:30m Rm code doubled method in tests
+#  SE contains this method too.
+#  Move it to refarm side.
+def reverse_catalog_url(
+    url: str,
+    route_kwargs: dict,
+    tags: models.TagQuerySet=None,
+    sorting: int=None,
+    query_string: dict=None,
+) -> str:
+    query_string = f'?{urlencode(query_string)}' if query_string else ''
+    if tags:
+        # PyCharm's option:
+        # noinspection PyTypeChecker
+        tags_slug = tags.as_url()
+        route_kwargs['tags'] = tags_slug
+    if sorting is not None:
+        route_kwargs['sorting'] = sorting
+
+    return f'{reverse(url, kwargs=route_kwargs)}{query_string}'
+
+
+class BaseCatalog(TestCase):
+
+    fixtures = ['dump.json']
+
+    def setUp(self):
+        self.category = models.Category.objects.root_nodes().select_related('page').first()
+        self.tags = models.Tag.objects.order_by(*settings.TAGS_ORDER).all()
+
+    def get_category_page(
+        self,
+        category: models.Category=None,
+        tags: models.TagQuerySet=None,
+        sorting: int=None,
+        query_string: dict=None,
+    ):
+        category = category or self.category
+        return self.client.get(reverse_catalog_url(
+            'category', {'category_id': category.id}, tags, query_string,
+        ))
+
+
+# @todo #187:60m Resurrect CatalogTags tests
+class CatalogTags(BaseCatalog):
+
+    def test_category_page_contains_all_tags(self):
+        """Category contains all Product's tags."""
+        response = self.get_category_page()
+
+        tags = set(chain.from_iterable(map(
+            lambda x: x.tags.all(), (
+                models.Product.objects
+                .get_by_category(self.category)
+                .prefetch_related('tags')
+            )
+        )))
+
+        tag_names = list(map(attrgetter('name'), tags))
+
+        for tag_name in tag_names:
+            self.assertContains(response, tag_name)
+
+    def test_has_canonical_meta_tag(self):
+        """Test that CategoryPage should contain canonical meta tag."""
+        response = self.get_category_page()
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(
+            response,
+            CANONICAL_HTML_TAG.format(path=response.request['PATH_INFO']),
+        )
+
+    def test_tags_page_has_no_canonical_meta_tag(self):
+        """Test that CategoryTagsPage should not contain canonical meta tag."""
+        # ignore CPDBear
+        response = self.get_category_page(tags=self.tags)
+        self.assertEqual(response.status_code, 200)
+        self.assertNotContains(
+            response,
+            CANONICAL_HTML_TAG.format(path=response.request['PATH_INFO']),
+        )
+
+    def test_paginated_tags_page_has_no_canonical_meta_tag(self):
+        """
+        Test CategoryTagsPage with canonical tags.
+
+        CategoryTagsPage with pagination (and sorting) options
+        should not contain canonical meta tag.
+        """
+        # ignore CPDBear
+        response = self.get_category_page(tags=self.tags, sorting=1)
+        self.assertEqual(response.status_code, 200)
+        self.assertNotContains(
+            response,
+            CANONICAL_HTML_TAG.format(path=response.request['PATH_INFO'])
+        )
+
+    def test_contains_product_with_certain_tags(self):
+        """Category page contains Product's related by certain tags."""
+        tags = self.tags
+        response = self.get_category_page(tags=tags)
+
+        products_count = len(list(filter(
+            lambda x: x.category.is_descendant_of(self.category),
+            models.Product.objects.filter(Q(tags=tags[0]) | Q(tags=tags[1]))
+        )))
+
+        self.assertContains(response, products_count)
+
+    @unittest.expectedFailure
+    def test_tag_titles_content_disjunction(self):
+        """
+        Test CategoryTagsPage with canonical tags.
+
+        CategoryTagsPage with tags "Напряжение 6В" и "Напряжение 24В"
+        should contain tag_titles var content: "6В или 24В".
+        """
+        tag_group = models.TagGroup.objects.first()
+        tags = tag_group.tags.order_by(*settings.TAGS_ORDER).all()
+        response = self.get_category_page(tags=tags)
+        self.assertEqual(response.status_code, 200)
+        delimiter = settings.TAGS_TITLE_DELIMITER
+        tag_titles = delimiter.join(t.name for t in tags)
+        self.assertContains(response, tag_titles)
+
+    @unittest.expectedFailure
+    def test_tag_titles_content_conjunction(self):
+        """
+        Test CategoryTagsPage with canonical tags.
+
+        CategoryTagsPage with tags "Напряжение 6В" и "Cила тока 1А" should
+        contain tag_titles var content: "6В и 1А".
+        """
+        tag_groups = models.TagGroup.objects.order_by('position', 'name').all()
+        tag_ids = [g.tags.first().id for g in tag_groups]
+        tags = models.Tag.objects.filter(id__in=tag_ids)
+        response = self.get_category_page(tags=tags)
+        self.assertEqual(response.status_code, 200)
+        delimiter = settings.TAG_GROUPS_TITLE_DELIMITER
+        tag_titles = delimiter.join(t.name for t in tags)
+        self.assertContains(response, tag_titles)
+
+    @unittest.expectedFailure
+    def test_tags_var(self):
+        """
+        Test CategoryTagsPage with canonical tags.
+
+        CategoryTagsPage should contain "tags" template var tag=each(tags) is Tag
+        class instance.
+        """
+        tags = models.Tag.objects.order_by(*settings.TAGS_ORDER).all()
+        response = self.get_category_page(tags=tags)
+        self.assertEqual(response.status_code, 200)
+        tag_names = ', '.join([t.name for t in tags])
+        self.assertContains(response, tag_names)
+
+    def test_doubled_tag(self):
+        """Category tags page filtered by the same tag from different tag groups."""
+        tag_ = create_doubled_tag()
+        response = self.get_category_page(
+            tags=models.Tag.objects.filter(id=tag_.id)
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, tag_.name)
+        delimiter = settings.TAG_GROUPS_TITLE_DELIMITER
+        self.assertNotContains(response, delimiter.join(2 * [tag_.name]))
+
+    @unittest.expectedFailure
+    def test_product_tag_linking(self):
+        """Product should contain links on CategoryTagPage for it's every tag."""
+        product = models.Product.objects.first()
+        self.assertGreater(product.tags.count(), 0)
+
+        property_links = [
+            reverse('category', kwargs={
+                'category_id': product.category.id,
+                'tags': tag_.slug,
+            }) for tag_ in product.tags.all()
+        ]
+        response = self.client.get(product.url)
+        for link in property_links:
+            self.assertContains(response, link)
+
+    def test_non_existing_tags_404(self):
+        """Product should contain links on CategoryTagPage for it's every tag."""
+        product = models.Product.objects.first()
+        self.assertGreater(product.tags.count(), 0)
+
+        bad_tag_url = reverse('category', kwargs={
+            'category_id': product.category.id,
+            'tags': 'non-existent-tag',
+        })
+        response = self.client.get(bad_tag_url)
+        self.assertEqual(response.status_code, 404)

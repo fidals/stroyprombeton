@@ -242,6 +242,7 @@ class OrderAdmin(mixins.PermissionsControl):
     search_fields = ['email', 'phone', 'name', 'company']
     list_display_links = ['email']
 
+
 stb_admin_site = StbAdminSite(name='stb_admin')
 
 # Pages

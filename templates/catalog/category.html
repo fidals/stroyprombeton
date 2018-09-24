@@ -39,6 +39,19 @@
             </ul>
           </div>
         {% endif %}
+
+        {% comment %}
+        @todo #187:30m Fix tags markup
+         Now added only html tags and now markup.
+        {% endcomment %}
+
+        {% include 'catalog/category_tags.html' with group_tags_pairs=group_tags_pairs only %}
+        {% if group_tags_pairs %}
+          <div class="tags-btns">
+            <button class="btn btn-blue js-apply-filter" disabled>Применить</button>
+            <button class="btn btn-pink js-clear-tag-filter">Сбросить</button>
+          </div>
+        {% endif %}
       </div>
 
       <div class="col-md-9 product-list">
@@ -55,7 +68,7 @@
             </tr>
           </thead>
           <tbody class="js-photoswipe" id="products-wrapper">
-            {% include 'catalog/category_products.html' with products_with_images=products_with_images only %}
+            {% include 'catalog/category_products.html' with products_data=products_data only %}
           </tbody>
         </table>
 

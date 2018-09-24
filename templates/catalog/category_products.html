@@ -1,6 +1,6 @@
 {% load stb_extras %}
 
-{% for product, image in products_with_images %}
+{% for product, image in products_data %}
   <tr class="table-tr" id="{{ product.id }}">
     <td class="table-td table-photo text-center">
       {% include 'catalog/category_product_image.html' with image=image.image page=product.page only %}

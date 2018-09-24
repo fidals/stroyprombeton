@@ -2,7 +2,7 @@ from django.db import models
 from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 
-from catalog.models import AbstractProduct, AbstractCategory
+from catalog import models as catalog_models
 from ecommerce.models import Order as ecOrder
 from mptt import models as mptt_models
 from pages import models as page_models
@@ -14,7 +14,7 @@ class Order(ecOrder):
     comment = models.TextField(default='', blank=True, verbose_name='comment')
 
 
-class Category(AbstractCategory, page_models.PageMixin):
+class Category(catalog_models.AbstractCategory, page_models.PageMixin):
     specification = models.TextField(
         default='',
         blank=True,
@@ -30,7 +30,7 @@ class Category(AbstractCategory, page_models.PageMixin):
         return reverse('category', args=(self.id,))
 
 
-class Product(AbstractProduct, page_models.PageMixin):
+class Product(catalog_models.AbstractProduct, page_models.PageMixin):
     category = models.ForeignKey(
         Category,
         on_delete=models.CASCADE,
@@ -41,6 +41,12 @@ class Product(AbstractProduct, page_models.PageMixin):
         blank=True,
         null=True,
         verbose_name=_('is new price'),
+    )
+    tags = models.ManyToManyField(
+        'Tag',
+        related_name='products',
+        blank=True,
+        verbose_name=_('tags'),
     )
     date_price_updated = models.DateField(auto_now_add=True, verbose_name=_('date price updated'))
     code = models.BigIntegerField(null=True, blank=True, verbose_name=_('code'))
@@ -124,3 +130,17 @@ class ClientFeedbacksForAdmin(page_models.Page):
         verbose_name_plural = _('Client feedbacks')
 
     objects = get_manager('client-feedbacks')
+
+
+class TagGroup(catalog_models.TagGroup):
+    pass
+
+
+class TagQuerySet(catalog_models.TagQuerySet):
+    pass
+
+
+class Tag(catalog_models.Tag):
+    group = models.ForeignKey(
+        TagGroup, on_delete=models.CASCADE, null=True, related_name='tags',
+    )

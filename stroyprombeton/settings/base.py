@@ -413,8 +413,27 @@ ENV_TYPE = os.environ.get('ENV_TYPE', 'PROD')  # LOCAL | CI | PROD
 # About trigram similarity: https://goo.gl/uYFcxN
 TRIGRAM_MIN_SIMILARITY = 0.15
 
-# settings for product list from CategoryPage
-PRODUCTS_ORDERING = ['code', 'name', 'mark']
-PRODUCTS_PER_PAGE = 30
 
+# random string to append to doubled slugs
+SLUG_HASH_SIZE = 5
+
+TAGS_URL_DELIMITER = '-or-'
+TAG_GROUPS_URL_DELIMITER = '-and-'
+
+TAGS_TITLE_DELIMITER = ' или '
+TAG_GROUPS_TITLE_DELIMITER = ' и '
+
+TAGS_ORDER = ['group__position', 'group__name', 'position', 'name']
+
+# Number of pagination neighbors shown for page.
+# If PAGINATION_NEIGHBORS = 4 and number of a page = 5,
+# then will be shown neighbors by number: 3, 4, 6, 7
+PAGINATION_NEIGHBORS = 10
+PRODUCTS_ON_PAGE_PC = 48
+PRODUCTS_ON_PAGE_MOB = 12
+CATEGORY_STEP_MULTIPLIERS = [12, 15, 24, 25, 48, 50, 60, 100]
+PRODUCTS_ORDERING = ['code', 'name', 'mark']
 PRODUCT_SIBLINGS_COUNT = 10
+
+# we wait se#567 to remove it
+CATEGORY_SORTING_OPTIONS = {}

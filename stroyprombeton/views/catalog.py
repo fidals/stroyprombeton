@@ -8,13 +8,14 @@ from django.views.generic.detail import DetailView
 
 from wkhtmltopdf.views import PDFTemplateView
 
+from catalog import context
 from catalog.views import catalog
 from images.models import Image
 from pages.models import CustomPage, ModelPage
 from pages.templatetags.pages_extras import breadcrumbs as get_page_breadcrumbs
 from search.search import search as filter_
 
-from stroyprombeton.models import Product, Category, CategoryPage as CategoryPageModel
+from stroyprombeton import context as stb_context, models
 from stroyprombeton.views.helpers import set_csrf_cookie, get_keys_from_post
 
 
@@ -25,8 +26,8 @@ def fetch_products(request):
     )
     term = term.strip()
 
-    category = Category.objects.get(id=category_id)
-    products = Product.actives.get_category_descendants(
+    category = models.Category.objects.get(id=category_id)
+    products = models.Product.actives.get_category_descendants(
         category, ordering=settings.PRODUCTS_ORDERING
     )
 
@@ -42,14 +43,14 @@ def fetch_products(request):
         )
 
     offset = int(offset)
-    limit = int(limit or settings.PRODUCTS_PER_PAGE)
-    limit = min(limit, products.count(), settings.PRODUCTS_PER_PAGE)
+    limit = int(limit or settings.PRODUCTS_ON_PAGE_PC)
+    limit = min(limit, products.count(), settings.PRODUCTS_ON_PAGE_PC)
     products = products.get_offset(offset, limit)
 
     images = Image.objects.get_main_images_by_pages(
         product.page for product in products
     )
-    products_with_images = [
+    products_data = [
         (product, images.get(product.page))
         for product in products
     ]
@@ -57,7 +58,7 @@ def fetch_products(request):
     return render(
         request,
         'catalog/category_products.html',
-        {'products_with_images': products_with_images}
+        {'products_data': products_data}
     )
 
 
@@ -86,7 +87,7 @@ def categories_csv_export(request, filename='categories.csv', breadcrumbs_delimi
     writer = CSVWriter(buf, delimiter='|')
 
     categories = serialize_categories(
-        CategoryPageModel.objects.filter(is_active=True)
+        models.CategoryPage.objects.filter(is_active=True)
     )
 
     response = StreamingHttpResponse(
@@ -105,7 +106,7 @@ class CategoryTree(ListView):
     context_object_name = 'categories'
 
     def get_queryset(self):
-        return Category.objects.filter(parent=None, page__is_active=True)
+        return models.Category.objects.filter(parent=None, page__is_active=True)
 
     def get_context_data(self, **kwargs):
         context = super(CategoryTree, self).get_context_data(**kwargs)
@@ -116,64 +117,40 @@ class CategoryTree(ListView):
 
 
 @set_csrf_cookie
-class CategoryPage(catalog.CategoryPage, ListView):
-
-    # for catalog.CategoryPage
-    related_model_name = Category().related_model_name
-    queryset = ModelPage.objects.prefetch_related(related_model_name)
+class CategoryPage(catalog.CategoryPage):
     pk_url_kwarg = 'category_id'
-    template_name = 'catalog/category.html'
-
-    # for ListView
-    page_kwarg = 'page_index'
-    paginate_by = settings.PRODUCTS_PER_PAGE
+    related_model_name = models.Category().related_model_name
+    queryset = ModelPage.objects.prefetch_related(related_model_name)
 
     def get_object(self, queryset=None):
         category_pk = self.kwargs.get(self.pk_url_kwarg)
         lookup = '{}__id'.format(self.related_model_name)
         return self.queryset.filter(**{lookup: category_pk}).get()
 
-    def get(self, *args, **kwargs):
-        self.object = self.get_object()
-        self.object_list = Product.actives.get_category_descendants(
-            self.object.model, ordering=settings.PRODUCTS_ORDERING
-        )
-        return super(CategoryPage, self).get(*args, **kwargs)
-
     def get_context_data(self, **kwargs):
-        context = super(CategoryPage, self).get_context_data(**kwargs)
-        category = context.get('category')
-        page_index = int(self.request.GET.get('page_index', 1))
-
-        products = Product.actives.get_category_descendants(
-            category, ordering=settings.PRODUCTS_ORDERING
+        """Add sorting options and view_types in context."""
+        context_ = (
+            stb_context.Category(
+                self.kwargs, self.request,
+                page=self.get_object(),
+                products=models.Product.objects.all(),
+                product_pages=models.ProductPage.objects.all(),
+            )
+            | stb_context.TaggedCategory(tags=models.Tag.objects.all())
+            | stb_context.SortingCategory()  # requires TaggedCategory
+            | context.PaginationCategory()  # requires SortingCategory
+            | context.DBTemplate()  # requires TaggedCategory
         )
-
-        # offset products for seo-robots & for users:
-        products_offset = products.get_offset(
-            settings.PRODUCTS_PER_PAGE * (page_index - 1), settings.PRODUCTS_PER_PAGE
-        )
-
-        images = Image.objects.get_main_images_by_pages(
-            product.page for product in products_offset
-        )
-        products_with_images = [
-            (product, images.get(product.page))
-            for product in products_offset
-        ]
-
         return {
-            **context,
-            'paginator_links': context['paginator'].page_range,
-            'pagination_param': self.page_kwarg,
-            'products_with_images': products_with_images,
+            **super().get_context_data(**kwargs),
+            **context_.get_context_data(),
         }
 
 
 @set_csrf_cookie
 class ProductPage(catalog.ProductPage):
     queryset = (
-        Product.objects
+        models.Product.objects
         .filter(page__is_active=True)
         .select_related('page')
         .prefetch_related('page__images')
@@ -209,7 +186,7 @@ class ProductPage(catalog.ProductPage):
 
 
 class ProductPDF(PDFTemplateView, DetailView):
-    model = Category
+    model = models.Category
     context_object_name = 'category'
     pk_url_kwarg = 'category_id'
     template_name = 'catalog/product_pdf_price.html'
@@ -223,7 +200,7 @@ class ProductPDF(PDFTemplateView, DetailView):
         context = super(ProductPDF, self).get_context_data(**kwargs)
         category = context[self.context_object_name]
 
-        products = Product.actives.get_category_descendants(
+        products = models.Product.actives.get_category_descendants(
             category, ordering=settings.PRODUCTS_ORDERING
         )
 

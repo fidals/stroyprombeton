@@ -11,7 +11,7 @@ files = stroyprombeton/**/*.py
 ignore = stroyprombeton/migrations/*.py,stroyprombeton/**/__init__.py,stroyprombeton/**/__pycache__/**,front/**/vendors/**,front/(images|fonts|build)/**,stroyprombeton/migrations/**,stroyprombeton/settings/**,node_modules/**,src/**
 minimum_tokens = 35
 max_line_length = 100
-pycodestyle_ignore = E305
+pycodestyle_ignore = W503
 pydocstyle_ignore = D100,D101,D102,D103,D104,D105,D106,D203,D212
 language = Python 3
 

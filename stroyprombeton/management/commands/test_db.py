@@ -18,7 +18,7 @@ from images.models import Image
 from pages.models import CustomPage, FlatPage, ModelPage
 from pages.utils import save_custom_pages
 
-from stroyprombeton.models import Product, Category
+from stroyprombeton import models
 import stroyprombeton.tests
 
 CATEGORY_PATTERN = 'Category #{} of #{}'
@@ -80,24 +80,39 @@ def create_pages():
 
 class Command(BaseCommand):
 
+    def __init__(self):
+        super(BaseCommand, self).__init__()
+        self._product_id = 0
+        self.group_names = [
+            'Длина', 'Масса',
+        ]
+        self.tag_names = [
+            ['1 м', '2 м'],
+            ['2 кг', '3 кг'],
+            ['72 %', '146 %'],
+        ]
+
     @staticmethod
     def purge_tables():
-        """Remove everything from Category, Product and Page tables."""
+        """Remove everything from models.Category., Product and Page tables."""
         call_command('flush', '--noinput')
 
     def handle(self, *args, **options):
         # We need to be sure that this command will run only on 'test' DB.
         assert settings.DATABASES['default']['NAME'] == 'test_stb'
 
-        self._product_id = 0
-
         self.purge_tables()
         call_command('migrate')
-        create_pages()
+
         roots = self.create_root(count=2)
         second_level = self.create_children(count=2, parents=roots)
         third_level = self.create_children(count=2, parents=second_level)
-        self.create_products(parents=list(third_level))
+
+        groups = self.create_tag_groups()
+        tags = self.create_tags(groups)
+
+        create_pages()
+        self.create_products(parents=list(third_level), tags=tags)
         self.save_dump()
 
     @staticmethod
@@ -117,12 +132,33 @@ class Command(BaseCommand):
     def create_root(count):
         get_name = 'Category root #{}'.format
         return [
-            Category.objects.create(
+            models.Category.objects.create(
                 name=get_name(i),
                 page=ModelPage.objects.create(name=get_name(i)),
             )
             for i in range(count)
         ]
+
+    def create_tag_groups(self):
+        for i, name in enumerate(self.group_names, start=1):
+            yield models.TagGroup.objects.create(
+                name=name,
+                position=i,
+            )
+
+    def create_tags(self, groups):
+        def create_tag(group_, position, name):
+            return models.Tag.objects.create(
+                group=group_,
+                name=name,
+                position=position,
+            )
+
+        for group, names in zip(groups, self.tag_names):
+            yield [
+                create_tag(group, i, name)
+                for i, name in enumerate(names, start=1)
+            ]
 
     @property
     def product_id(self):
@@ -133,7 +169,7 @@ class Command(BaseCommand):
     def create_children(count, parents):
         def create_category(index, parent):
             name = CATEGORY_PATTERN.format(index, parent.id)
-            return Category.objects.create(
+            return models.Category.objects.create(
                 name=name, parent=parent, page=ModelPage.objects.create(name=name))
 
         return list(
@@ -141,21 +177,26 @@ class Command(BaseCommand):
             for index in range(count) for parent in parents
         )
 
-    def create_products(self, parents):
+    def create_products(self, parents, tags):
         """Create products for every non-root category."""
-        def create_products(count, categories):
+        def create_products(count, categories, tags_):
             for category in categories:
                 for i in range(1, count + 1):
                     name = 'Product #{} of {}'.format(i, category)
-                    Product.objects.create(
+                    product = models.Product.objects.create(
                         id=self.product_id,
                         name=name,
                         price=i * 100,
                         category=category,
                         page=ModelPage.objects.create(name=name)
                     )
+
+                    for tag in tags_:
+                        product.tags.add(tag)
+
+        zipped_tags = list(zip(*tags))
         # Create 25 products for
-        # tests_selenium.CategoryPage.test_load_more_hidden_in_fully_loaded_categories
-        create_products(count=25, categories=parents[4:])
-        # Create 50 products for tests_selenium.CategoryPage.test_load_more_products
-        create_products(count=50, categories=parents[:4])
+        # tests_selenium.models.Category.Page.test_load_more_hidden_in_fully_loaded_categories
+        create_products(count=25, categories=parents[4:], tags_=zipped_tags[0])
+        # Create 50 products for tests_selenium.models.Category.Page.test_load_more_products
+        create_products(count=50, categories=parents[:4], tags_=zipped_tags[1])
