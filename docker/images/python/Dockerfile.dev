@@ -7,6 +7,8 @@ FROM python:3.6-slim
 
 RUN apt-get update \
     && apt-get install --no-install-recommends --no-install-suggests -y \
+    # package dependencies: wkhtmltopdf -> xvfb -> xorg
+    # `xvfb` runs `wkhtmltopdf` using `xorg`
     xorg wkhtmltopdf xvfb gettext \
     && apt-get -y --purge autoremove \
     && rm -rf /var/lib/apt/lists/*

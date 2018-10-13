@@ -380,11 +380,11 @@ PARTNERS = [
     },
     {
         'url': (
-            'http://stkm-energo.ru/'
+            'http://stroysila.biz/'
             '?utm_source=STB_site&utm_medium=backlink'
             '&utm_campaign=backlink_traffic'
         ),
-        'logo': 'images/partner-modulenergo-logo.png',
+        'logo': 'images/partner-stroysila-logo.png',
         'text': 'Проектируют и возводят <br> энергообъекты',
         'alt': 'Проектируют и возводят <br> энергообъекты',
     },
