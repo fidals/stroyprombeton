@@ -14,6 +14,17 @@ class Order(ecOrder):
     comment = models.TextField(default='', blank=True, verbose_name='comment')
 
 
+# @todo #rf169 Fix model.Manager inheritance problem
+#  Category model ignores parent's manager.
+#  ```
+#  In [1]: from stroyprombeton.models import Category
+#
+#  In [2]: type(Category.objects)
+#  Out[2]: mptt.managers.TreeManager
+#  ```
+#  Should be `catalog.models.CategoryManager`
+#
+#  Then use model.Manager.active() filter everywhere in this project (rf#169).
 class Category(catalog_models.AbstractCategory, page_models.PageMixin):
     specification = models.TextField(
         default='',

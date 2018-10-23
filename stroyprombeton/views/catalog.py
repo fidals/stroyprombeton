@@ -27,7 +27,7 @@ def fetch_products(request):
     term = term.strip()
 
     category = models.Category.objects.get(id=category_id)
-    products = models.Product.actives.get_category_descendants(
+    products = models.Product.objects.active().get_category_descendants(
         category, ordering=settings.PRODUCTS_ORDERING
     )
 
@@ -200,7 +200,7 @@ class ProductPDF(PDFTemplateView, DetailView):
         context = super(ProductPDF, self).get_context_data(**kwargs)
         category = context[self.context_object_name]
 
-        products = models.Product.actives.get_category_descendants(
+        products = models.Product.objects.active().get_category_descendants(
             category, ordering=settings.PRODUCTS_ORDERING
         )
 

@@ -13,22 +13,21 @@ class Search(search_views.SearchView):
     search_entities = [
         search_engine.Search(
             name='category',
-            # @todo #85 Create active() shortcut filter
-            #  instead of using .filter(page__is_active=True)
-            qs=Category.objects.get_active(),
+            #
+            qs=Category.objects.filter(page__is_active=True),
             # ignore CPDBear
             fields=['name', 'specification'],
             min_similarity=settings.TRIGRAM_MIN_SIMILARITY,
         ),
         search_engine.Search(
             name='product',
-            qs=Product.objects.get_active(),
+            qs=Product.objects.filter(page__is_active=True),
             fields=['name', 'mark', 'specification', 'id'],
             min_similarity=settings.TRIGRAM_MIN_SIMILARITY,
         ),
         search_engine.Search(
             name='page',
-            qs=Page.objects.get_active(),
+            qs=Page.objects.filter(is_active=True),
             fields=['name'],
             min_similarity=settings.TRIGRAM_MIN_SIMILARITY,
         )
@@ -49,7 +48,7 @@ class Autocomplete(search_views.AutocompleteView):
     search_entities = [
         search_engine.Search(
             name='product',
-            qs=Product.objects.get_active(),
+            qs=Product.objects.filter(page__is_active=True),
             fields=['name', 'code', 'mark', 'specification'],
             template_fields=['name', 'mark', 'specification', 'url'],
             min_similarity=settings.TRIGRAM_MIN_SIMILARITY,
@@ -65,7 +64,7 @@ class AdminAutocomplete(search_views.AdminAutocompleteView):
     search_entities = [
         search_engine.Search(
             name='category',
-            qs=Category.objects.get_active(),
+            qs=Category.objects.filter(page__is_active=True),
             # ignore CPDBear
             fields=['name'],
             min_similarity=settings.TRIGRAM_MIN_SIMILARITY,
@@ -73,13 +72,13 @@ class AdminAutocomplete(search_views.AdminAutocompleteView):
         # ignore CPDBear
         search_engine.Search(
             name='product',
-            qs=Product.objects.get_active(),
+            qs=Product.objects.filter(page__is_active=True),
             fields=['name'],
             min_similarity=settings.TRIGRAM_MIN_SIMILARITY,
         ),
         search_engine.Search(
             name='pages',
-            qs=Page.objects.get_active(),
+            qs=Page.objects.filter(is_active=True),
             fields=['name'],
             min_similarity=settings.TRIGRAM_MIN_SIMILARITY,
         )
