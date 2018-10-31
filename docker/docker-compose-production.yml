@@ -32,9 +32,6 @@ services:
       - stb-frontend
     command: gunicorn stroyprombeton.wsgi:application -c /etc/gunicorn.py -b 0.0.0.0:8000
 
-  # @todo #232:60m Create separated DB for stage.
-  #  Stage should have it's own data independent of production.
-  #  We'll test content change scripts with PO there.
   app-stage:
     image: fidals/stb:prod
     container_name: stb-python-stage
@@ -44,14 +41,18 @@ services:
       - env_files/credentials
       - env_files/paths
       - env_files/ports
+    environment:
+      - POSTGRES_DB=stb_stage
     depends_on:
       - postgres
       - rabbitmq
     ports:
       - $VIRTUAL_HOST_STAGE_PORT:8001
     volumes:
+      - ../stroyprombeton/settings/local.py:$SRC_DIR/stroyprombeton/settings/local.py
       # contains refarm-site modules
       - $DEPS_DIR
+      - /opt/media/stb_stage/:$SRC_DIR/media/
     networks:
       - stb-backend
       - stb-frontend
