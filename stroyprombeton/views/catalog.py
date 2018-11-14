@@ -47,18 +47,28 @@ def fetch_products(request):
     limit = min(limit, products.count(), settings.PRODUCTS_ON_PAGE_PC)
     products = products.get_offset(offset, limit)
 
-    images = Image.objects.get_main_images_by_pages(
-        product.page for product in products
-    )
-    products_data = [
-        (product, images.get(product.page))
-        for product in products
-    ]
+    data_from_context = (
+        context.Category(
+            url_kwargs={},
+            request=request,
+            page=category.page,
+            products=models.Product.objects.all(),
+            product_pages=models.ProductPage.objects.filter(
+                stroyprombeton_product__in=products
+            ),
+        )
+        | context.TaggedCategory(tags=models.Tag.objects.all())
+        | stb_context.ProductImages()
+        | context.DBTemplate()  # requires TaggedCategory
+    ).get_context_data()
 
     return render(
         request,
         'catalog/category_products.html',
-        {'products_data': products_data}
+        {
+            'products': products,
+            'product_images': data_from_context['product_images'],
+        }
     )
 
 
@@ -131,16 +141,17 @@ class CategoryPage(catalog.CategoryPage):
         """Add sorting options and view_types in context."""
         context_ = (
             stb_context.Category(
-                self.kwargs, self.request,
-                page=self.get_object(),
+                url_kwargs=self.kwargs,
+                request=self.request,
+                page=self.object,
                 products=models.Product.objects.all(),
-                product_pages=models.ProductPage.objects.all(),
+                product_pages=models.ProductPage.objects.all(),  # Ignore CPDBear
             )
             | stb_context.TaggedCategory(tags=models.Tag.objects.all())
-            | stb_context.SortingCategory()  # requires TaggedCategory
-            | context.PaginationCategory()  # requires SortingCategory
+            | stb_context.ProductImages()
             | context.DBTemplate()  # requires TaggedCategory
         )
+
         return {
             **super().get_context_data(**kwargs),
             **context_.get_context_data(),

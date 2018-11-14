@@ -163,27 +163,27 @@ class CategoryTable(TestCase, TestPageMixin):
         self.response = self.client.get('/gbi/categories/{}/'.format(root_category.id))
 
     @property
-    def products_data(self):
-        return self.response.context['products_data'][0][0]
+    def response_product(self):
+        return self.response.context['products'][0]
 
     def test_products_quantity(self):
-        self.assertEqual(len(self.response.context['products_data']), 1)
+        self.assertEqual(len(self.response.context['products']), 1)
 
     def test_product_name(self):
         self.assertEqual(
-            self.products_data.name,
+            self.response_product.name,
             self.data['name']
         )
 
     def test_product_price(self):
         self.assertEqual(
-            float(self.products_data.price),
+            float(self.response_product.price),
             self.data['price']
         )
 
     def test_product_code(self):
         self.assertEqual(
-            self.products_data.code,
+            self.response_product.code,
             self.data['code']
         )
 
@@ -193,7 +193,7 @@ class CategoryTable(TestCase, TestPageMixin):
         test_product.save()
 
         response = self.client.get(reverse('category', args=(test_product.category_id,)))
-        self.assertNotIn(test_product, response.context['products_data'])
+        self.assertNotIn(test_product, response.context['products'])
 
 
 class Product_(TestCase, TestPageMixin):
@@ -408,7 +408,7 @@ class Search(TestCase):
         product = models.Product.objects.first()
         url = self.get_search_url(term=str(product.id))
         response = self.client.get(url, follow=True)
-        self.assertContains(response, product.page.display_h1)
+        self.assertContains(response, product.name)
 
 
 class TestSearch(TestCase):
@@ -539,7 +539,6 @@ class BaseCatalog(TestCase):
         ))
 
 
-# @todo #187:60m Resurrect CatalogTags tests
 class CatalogTags(BaseCatalog):
 
     def test_category_page_contains_all_tags(self):
@@ -605,7 +604,6 @@ class CatalogTags(BaseCatalog):
 
         self.assertContains(response, products_count)
 
-    @unittest.expectedFailure
     def test_tag_titles_content_disjunction(self):
         """
         Test CategoryTagsPage with canonical tags.
@@ -621,7 +619,6 @@ class CatalogTags(BaseCatalog):
         tag_titles = delimiter.join(t.name for t in tags)
         self.assertContains(response, tag_titles)
 
-    @unittest.expectedFailure
     def test_tag_titles_content_conjunction(self):
         """
         Test CategoryTagsPage with canonical tags.
@@ -638,7 +635,6 @@ class CatalogTags(BaseCatalog):
         tag_titles = delimiter.join(t.name for t in tags)
         self.assertContains(response, tag_titles)
 
-    @unittest.expectedFailure
     def test_tags_var(self):
         """
         Test CategoryTagsPage with canonical tags.
@@ -663,6 +659,7 @@ class CatalogTags(BaseCatalog):
         delimiter = settings.TAG_GROUPS_TITLE_DELIMITER
         self.assertNotContains(response, delimiter.join(2 * [tag_.name]))
 
+    # @todo #315:60m Render tags on product page
     @unittest.expectedFailure
     def test_product_tag_linking(self):
         """Product should contain links on CategoryTagPage for it's every tag."""

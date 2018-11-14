@@ -68,7 +68,7 @@
             </tr>
           </thead>
           <tbody class="js-photoswipe" id="products-wrapper">
-            {% include 'catalog/category_products.html' with products_data=products_data only %}
+            {% include 'catalog/category_products.html' with products=products product_images=product_images only %}
           </tbody>
         </table>
 

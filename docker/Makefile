@@ -13,10 +13,10 @@ migrate:
 	$(dc) run --rm app python manage.py migrate
 
 fixtures:
-$(dc) run --rm app bash -c "\
-	python manage.py loaddata stroyprombeton/fixtures/admin.json \
-	&& python manage.py loaddata stroyprombeton/fixtures/dump.json \
-"
+	$(dc) run --rm app bash -c "\
+		python manage.py loaddata stroyprombeton/fixtures/admin.json \
+		&& python manage.py loaddata stroyprombeton/fixtures/dump.json \
+	"
 
 prices:
 	$(dc) exec app python manage.py price

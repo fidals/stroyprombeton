@@ -143,3 +143,9 @@ def get_category_gent_name(category: Category, default=None) -> str:
     return settings.CATEGORY_GENT_NAMES.get(
         category.id, category.name if not default else default
     )
+
+
+# @todo #328:15m Move get_item filter to pages_extras. se2
+@register.filter
+def get_item(dictionary: dict, key: str):
+    return dictionary.get(key)

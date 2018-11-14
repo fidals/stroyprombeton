@@ -15,10 +15,10 @@ from django.core.management import call_command
 from django.core.management.base import BaseCommand
 
 from images.models import Image
-from pages.models import CustomPage, FlatPage, ModelPage
+from pages.models import CustomPage, FlatPage, ModelPage, PageTemplate
 from pages.utils import save_custom_pages
 
-from stroyprombeton import models
+from stroyprombeton import models as stb_models
 import stroyprombeton.tests
 
 CATEGORY_PATTERN = 'Category #{} of #{}'
@@ -99,6 +99,8 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
         # We need to be sure that this command will run only on 'test' DB.
+        # todo #315:30m Autoswitch db in test_db script. se2
+        #  Now script asks to manually switch db before executing.
         assert settings.DATABASES['default']['NAME'] == 'test_stb'
 
         self.purge_tables()
@@ -113,6 +115,7 @@ class Command(BaseCommand):
 
         create_pages()
         self.create_products(parents=list(third_level), tags=tags)
+        self.create_templates()
         self.save_dump()
 
     @staticmethod
@@ -132,7 +135,7 @@ class Command(BaseCommand):
     def create_root(count):
         get_name = 'Category root #{}'.format
         return [
-            models.Category.objects.create(
+            stb_models.Category.objects.create(
                 name=get_name(i),
                 page=ModelPage.objects.create(name=get_name(i)),
             )
@@ -141,14 +144,14 @@ class Command(BaseCommand):
 
     def create_tag_groups(self):
         for i, name in enumerate(self.group_names, start=1):
-            yield models.TagGroup.objects.create(
+            yield stb_models.TagGroup.objects.create(
                 name=name,
                 position=i,
             )
 
     def create_tags(self, groups):
         def create_tag(group_, position, name):
-            return models.Tag.objects.create(
+            return stb_models.Tag.objects.create(
                 group=group_,
                 name=name,
                 position=position,
@@ -160,6 +163,23 @@ class Command(BaseCommand):
                 for i, name in enumerate(names, start=1)
             ]
 
+    @staticmethod
+    def create_templates():
+        page_template = PageTemplate.objects.create(
+            name='{{ page.name }} name.',
+            h1='{{ page.name }}{{ tag_titles }} h1.',
+            keywords='{{ page.name }} keywords.',
+            description='{{ page.name }} description.',
+            title='{{ page.name }} title.',
+            seo_text=(
+                '{{ page.name }} seotext.'
+                '{% for tag in tags %}{{ tag.name }}, {% endfor %}'
+            )
+        )
+
+        stb_models.ProductPage.objects.update(template=page_template)
+        stb_models.CategoryPage.objects.update(template=page_template)
+
     @property
     def product_id(self):
         self._product_id += 1
@@ -169,7 +189,7 @@ class Command(BaseCommand):
     def create_children(count, parents):
         def create_category(index, parent):
             name = CATEGORY_PATTERN.format(index, parent.id)
-            return models.Category.objects.create(
+            return stb_models.Category.objects.create(
                 name=name, parent=parent, page=ModelPage.objects.create(name=name))
 
         return list(
@@ -183,7 +203,7 @@ class Command(BaseCommand):
             for category in categories:
                 for i in range(1, count + 1):
                     name = 'Product #{} of {}'.format(i, category)
-                    product = models.Product.objects.create(
+                    product = stb_models.Product.objects.create(
                         id=self.product_id,
                         name=name,
                         price=i * 100,

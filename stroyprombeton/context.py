@@ -60,6 +60,10 @@ class TaggedCategory(context.TaggedCategory):
 class ProductImages(context.AbstractProductsListContext):
 
     @property
+    def product_pages(self):
+        return stb_models.ProductPage.objects.all()
+
+    @property
     def images(self) -> typing.Dict[int, Image]:
         assert isinstance(self.products, ProductQuerySet)
 
@@ -76,6 +80,7 @@ class ProductImages(context.AbstractProductsListContext):
 
     def get_context_data(self):
         return {
+            'products': self.products,
             'product_images': self.images,
             **(
                 self.super.get_context_data()
