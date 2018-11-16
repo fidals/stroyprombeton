@@ -1,0 +1,26 @@
+<div class="tags-filter">
+  <div class="tags-filter-title">Характеристики</div>
+  {% for group, tags in group_tags_pairs %}
+    <div class="tags-filter-group-item custom-checkbox-radio">
+      <p class="tags-filter-group-label js-toggle-tag-group" data-tag-group="{{ group.id }}">
+        {{ group.name }} <i class="fa fa-chevron-down"></i>
+      </p>
+
+      <div class="tags-filter-inputs js-tags-inputs">
+        {% for tag in tags %}
+          <p class="checkbox">
+            <input type="checkbox" id="tag-{{ tag.slug }}" data-tag-id="{{ tag.id }}" data-tag-slug="{{ tag.slug }}" data-tag-group-id="{{ tag.group.id }}">
+            <label for="tag-{{ tag.slug }}">{{ tag.name }}</label>
+          </p>
+        {% endfor %}
+      </div>
+    </div>
+  {% endfor %}
+
+  {% if group_tags_pairs %}
+    <div class="tags-btns">
+      <button class="btn btn-blue btn-tags-filter js-apply-filter" disabled>Применить</button>
+      <button class="btn btn-red btn-tags-filter js-clear-tag-filter">Сбросить</button>
+    </div>
+  {% endif %}
+</div>

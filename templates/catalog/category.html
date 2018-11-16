@@ -45,13 +45,7 @@
          Now added only html tags and now markup.
         {% endcomment %}
 
-        {% include 'catalog/category_tags.html' with group_tags_pairs=group_tags_pairs only %}
-        {% if group_tags_pairs %}
-          <div class="tags-btns">
-            <button class="btn btn-blue js-apply-filter" disabled>Применить</button>
-            <button class="btn btn-pink js-clear-tag-filter">Сбросить</button>
-          </div>
-        {% endif %}
+        {% include 'catalog/category_tags_filter.html' with group_tags_pairs=group_tags_pairs only %}
       </div>
 
       <div class="col-md-9 product-list">
