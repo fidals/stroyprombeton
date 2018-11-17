@@ -1,3 +1,6 @@
+import time
+from urllib.parse import urlencode
+
 from django.core import mail
 from django.db.models import Count
 from django.template.defaultfilters import floatformat
@@ -5,12 +8,34 @@ from django.urls import reverse
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
-from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support import expected_conditions as EC, ui
 
 from pages.models import Page
 
-from stroyprombeton.models import Category, Product
+# @todo #320:15m - Import `models` module to it's own var.
+#  Do `from stroyprombeton import models as stb_models` for all file.
+#  Other `models` modules too.
+from stroyprombeton.models import Category, Product, TagQuerySet, Tag
 from stroyprombeton.tests.helpers import disable_celery, BaseSeleniumTestCase
+
+
+def reverse_catalog_url(
+    url: str,
+    route_kwargs: dict,
+    tags: TagQuerySet=None,  # Ignore CPDBear
+    sorting: int=None,
+    query_string: dict=None,
+) -> str:
+    query_string = f'?{urlencode(query_string)}' if query_string else ''
+    if tags:
+        # PyCharm's option:
+        # noinspection PyTypeChecker
+        tags_slug = tags.as_url()
+        route_kwargs['tags'] = tags_slug
+    if sorting is not None:
+        route_kwargs['sorting'] = sorting
+
+    return f'{reverse(url, kwargs=route_kwargs)}{query_string}'
 
 
 def hover(browser, element):
@@ -24,6 +49,14 @@ def header_product_count(self):
         (By.CLASS_NAME, 'js-header-product-count')
     ))
     return element.text
+
+
+def wait_page_loading(browser):
+    ui.WebDriverWait(browser, 60).until(
+        EC.visibility_of_element_located(
+            (By.CLASS_NAME, 'content')
+        )
+    )
 
 
 class SeleniumTestCase(BaseSeleniumTestCase):
@@ -283,6 +316,8 @@ class CategoryPage(CartTestCase):
 
     PRODUCTS_TO_LOAD = 30
     SELENIUM_TIMEOUT = 60
+    APPLY_BTN_CLASS = 'js-apply-filter'
+    FILTER_TAG_TEMPLATE = 'label[for="tag-{tag_slug}"]'
 
     @classmethod
     def setUpClass(cls):
@@ -299,18 +334,27 @@ class CategoryPage(CartTestCase):
         # CI always have problems with CategoryPage timeouts
         self.browser.set_page_load_timeout(self.SELENIUM_TIMEOUT)
         self.browser.set_script_timeout(self.SELENIUM_TIMEOUT)
-        root_category = Category.objects.filter(parent=None).first()
-        children_category = Category.objects.filter(parent=root_category).first()
-        category_with_product_less_then_load_limit = Category.objects.annotate(
-            prod_count=Count('products')).exclude(prod_count=0).filter(
-                prod_count__lt=self.PRODUCTS_TO_LOAD).first()
+        self.root_category = Category.objects.filter(parent=None).first()
+        self.middle_category = Category.objects.get(name='Category #0 of #1')
+        children_category = (
+            Category.objects.filter(parent=self.root_category).first()
+        )
+        category_with_product_less_then_load_limit = (
+            Category.objects
+            .annotate(prod_count=Count('products'))
+            .exclude(prod_count=0)
+            .filter(prod_count__lt=self.PRODUCTS_TO_LOAD)
+            .first()
+        )
 
-        self.root_category = testing_url(root_category.id)
+        self.root_category_url = testing_url(self.root_category.id)
         self.children_category = testing_url(children_category.id)
         self.deep_children_category = testing_url(
             category_with_product_less_then_load_limit.id
         )
-        self.browser.get(self.root_category)
+        # @todo #320:15m Move category page loading to test side.
+        #  Now `CategoryPage.setUp()` do it.
+        self.browser.get(self.root_category_url)
         self.wait.until(EC.visibility_of_element_located((By.TAG_NAME, 'h1')))
 
     def get_tables_rows_count(self, browser=None):
@@ -318,14 +362,18 @@ class CategoryPage(CartTestCase):
         return len(browser.find_elements_by_class_name('table-tr'))
 
     def click_load_more_button(self):
-        def wait_loading(browser):
-            return product_count < self.get_tables_rows_count(browser)
-        product_count = self.get_tables_rows_count()
-        self.click_and_wait((By.ID, self.load_more_id), wait_loading)
+        self.click_and_wait(
+            (By.ID, self.load_more_id),
+            lambda browser: self.is_load_more_disabled(browser)
+        )
 
-    def get_load_more_button_classes(self, browser=None):
+    def is_load_more_disabled(self, browser=None):
         browser = browser or self.browser
-        return browser.find_element_by_id(self.load_more_id).get_attribute('class')
+        return 'disabled' in (
+            browser
+            .find_element_by_id(self.load_more_id)
+            .get_attribute('class')
+        )
 
     def test_buy_product(self):
         self.buy_on_category_page()
@@ -355,10 +403,12 @@ class CategoryPage(CartTestCase):
 
         self.assertTrue(tooltip.is_displayed())
 
+    # @todo #320:15m Create non-selenium test for load_more.
     def test_load_more_products(self):
         """We able to load more products by clicking on `Load more` link."""
         before_load_products = self.get_tables_rows_count()
-        self.click_load_more_button()
+        self.click((By.ID, self.load_more_id))
+        time.sleep(0.75)
         after_load_products = self.get_tables_rows_count()
 
         self.assertTrue(before_load_products < after_load_products)
@@ -372,19 +422,12 @@ class CategoryPage(CartTestCase):
         """
         self.browser.get(self.deep_children_category)
 
-        self.assertIn('disabled', self.get_load_more_button_classes())
-
-    def test_load_more_button_disabled_state(self):
-        self.browser.get(self.children_category)
-        self.click_load_more_button()
-        self.click_load_more_button()
-
-        self.assertIn('disabled', self.get_load_more_button_classes())
+        self.assertTrue(self.is_load_more_disabled())
 
     def test_filter_products(self):
         """We are able to filter products by typing in filter field."""
         def wait_filter(browser):
-            return 'disabled' in self.get_load_more_button_classes(browser)
+            return self.is_load_more_disabled(browser)
 
         before_filter_products = self.get_tables_rows_count()
         self.send_keys_and_wait('#10', (By.ID, self.filter_id))
@@ -393,7 +436,7 @@ class CategoryPage(CartTestCase):
 
         self.assertGreater(before_filter_products, after_filter_products)
 
-    def test_filter_products_and_disabled_state(self):
+    def test_load_more_button_disabled_state(self):
         """
         Test the load more lint state.
 
@@ -401,11 +444,83 @@ class CategoryPage(CartTestCase):
         see that `Load more` link becomes disabled. That means that there are
         no more filtered products to load from server.
         """
+        def testing_url(category_id):
+            return server + reverse('category', args=(category_id,))
+
+        server = self.live_server_url
+        self.browser.get(testing_url(self.middle_category.id))
+        self.wait.until(EC.visibility_of_element_located((By.TAG_NAME, 'h1')))
+
         self.send_keys_and_wait('#1', (By.ID, self.filter_id))
         self.click_load_more_button()
         self.click_load_more_button()
 
-        self.assertIn('disabled', self.get_load_more_button_classes())
+        self.assertTrue(self.is_load_more_disabled())
+
+    def wait_page_loading(self):
+        wait_page_loading(self.browser)
+
+    def apply_tags(self):
+        """Push "apply" button with trailing page reloading."""
+        old_url = self.browser.current_url
+        self.browser.find_element_by_class_name(self.APPLY_BTN_CLASS).click()
+        self.wait.until(EC.url_changes(old_url))
+        self.wait_page_loading()
+
+    # @todo #320:60m Move get_category_path to top of the module. se2
+    #  STB tests_views and SE has the same get_category_url method.
+    #  We should reuse this method among all tests on project side.
+    #  Also move `reverse_catalog_url` to refarm side.
+    def get_category_path(
+        self,
+        category: Category=None,
+        tags: TagQuerySet=None,
+        sorting: int=None,
+        query_string: dict=None,
+    ):
+        category = category or self.root_category
+        return reverse_catalog_url(
+            'category', {'category_id': category.id}, tags, sorting, query_string,
+        )
+
+    def test_filter_by_tag_button(self):
+        """Filter button with the filled one of tag checkboxes should change url to tag."""
+        # set one product with no tags in test_db
+        # check if this prod is not in list after filtering
+        self.browser.get(self.root_category_url)
+        self.wait_page_loading()
+        tag_slug = '2-m'
+        tag_selector = self.FILTER_TAG_TEMPLATE.format(tag_slug=tag_slug)
+
+        self.browser.find_element_by_css_selector(tag_selector).click()
+        self.apply_tags()
+        tagged_category_path = self.get_category_path(
+            tags=Tag.objects.filter(slug=tag_slug)
+        )
+        self.assertIn(tagged_category_path, self.browser.current_url)
+        self.browser.find_element_by_class_name('js-clear-tag-filter').click()
+
+    def test_apply_filter_state(self):
+        """Apply filters btn should be disabled with no checked tags."""
+        tag_slug = '2-m'
+        tag_selector = self.FILTER_TAG_TEMPLATE.format(tag_slug=tag_slug)
+        self.browser.get(self.root_category_url)
+        self.wait_page_loading()
+
+        is_button_disabled = bool(
+            self.browser
+            .find_element_by_class_name(self.APPLY_BTN_CLASS)
+            .get_attribute('disabled')
+        )
+        self.assertTrue(is_button_disabled)
+
+        self.browser.find_element_by_css_selector(tag_selector).click()
+        is_button_disabled = bool(
+            self.browser
+            .find_element_by_class_name(self.APPLY_BTN_CLASS)
+            .get_attribute('disabled')
+        )
+        self.assertFalse(is_button_disabled)
 
 
 class Search(SeleniumTestCase):

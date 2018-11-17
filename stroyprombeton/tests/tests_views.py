@@ -144,14 +144,14 @@ class CategoryTable(TestCase, TestPageMixin):
             )
         }
 
-        root_category = models.Category.objects.create(**category_data)
+        self.category = models.Category.objects.create(**category_data)
 
         self.data = {
             'price': 1447.21,
             'code': 350,
             'name': 'Test product name',
             'date_price_updated': datetime.now(),
-            'category': root_category,
+            'category': self.category,
             'page': ModelPage.objects.create(
                 name='Козырьки',
                 content='Козырьки устанавливают над входами зданий.',
@@ -160,11 +160,23 @@ class CategoryTable(TestCase, TestPageMixin):
 
         models.Product.objects.create(**self.data)
 
-        self.response = self.client.get('/gbi/categories/{}/'.format(root_category.id))
+        self.response = self.client.get('/gbi/categories/{}/'.format(self.category.id))
 
     @property
     def response_product(self):
         return self.response.context['products'][0]
+
+    def get_category_page(  # Ignore CPDBear
+        self,
+        category: models.Category=None,
+        tags: models.TagQuerySet=None,
+        sorting: int=None,
+        query_string: dict=None,
+    ):
+        category = category or self.category
+        return self.client.get(reverse_catalog_url(
+            'category', {'category_id': category.id}, tags, sorting, query_string,
+        ))
 
     def test_products_quantity(self):
         self.assertEqual(len(self.response.context['products']), 1)
@@ -194,6 +206,26 @@ class CategoryTable(TestCase, TestPageMixin):
 
         response = self.client.get(reverse('category', args=(test_product.category_id,)))
         self.assertNotIn(test_product, response.context['products'])
+
+    # @todo #320:60m Take CatalogTags tests from SE.
+    #  `shopelectro.tests.tests_views.CatalogTags`
+    def test_filter_products_by_tags(self):
+        """Category page should not contain products, excluded by tags selection."""
+        root_category = models.Category.objects.filter(parent=None).first()
+        tag_slug = '2-m'
+        tag_qs = models.Tag.objects.filter(slug=tag_slug)
+        tag = tag_qs.first()
+        response = self.get_category_page(category=root_category, tags=tag_qs)
+
+        # find product: it has no tag and it's descendant of root_category
+        disappeared_products = (
+            models.Product.objects.active()
+            .get_category_descendants(root_category)
+            .exclude(tags=tag)
+        )
+        self.assertFalse(
+            any(p.name in response.content.decode() for p in disappeared_products)
+        )
 
 
 class Product_(TestCase, TestPageMixin):

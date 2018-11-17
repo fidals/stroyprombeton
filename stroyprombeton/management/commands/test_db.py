@@ -214,9 +214,12 @@ class Command(BaseCommand):
                     for tag in tags_:
                         product.tags.add(tag)
 
+        # [('1 м', '2 кг', '72 %'), ('2 м', '3 кг', '146 %')]
         zipped_tags = list(zip(*tags))
         # Create 25 products for
         # tests_selenium.models.Category.Page.test_load_more_hidden_in_fully_loaded_categories
-        create_products(count=25, categories=parents[4:], tags_=zipped_tags[0])
+        create_products(count=25, categories=parents[5:], tags_=zipped_tags[0])
+        # some products should not contain any tag
+        create_products(count=25, categories=parents[4:5], tags_=[])
         # Create 50 products for tests_selenium.models.Category.Page.test_load_more_products
         create_products(count=50, categories=parents[:4], tags_=zipped_tags[1])
