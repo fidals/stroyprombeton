@@ -24,14 +24,17 @@ def fetch_products(request):
     category_id, term, offset, limit, filtered = get_keys_from_post(
         request, 'categoryId', 'term', 'offset', 'limit', 'filtered',
     )
-    term = term.strip()
 
     category = models.Category.objects.get(id=category_id)
-    products = models.Product.objects.active().get_category_descendants(
-        category, ordering=settings.PRODUCTS_ORDERING
+    products = (
+        models.Product.objects
+        .active()
+        .get_category_descendants(category)
+        .order_by(*settings.PRODUCTS_ORDERING)
     )
 
     if filtered == 'true' and term:
+        term = term.strip()
         lookups = [
             'name__icontains',
             'code__icontains',
@@ -211,8 +214,11 @@ class ProductPDF(PDFTemplateView, DetailView):
         context = super(ProductPDF, self).get_context_data(**kwargs)
         category = context[self.context_object_name]
 
-        products = models.Product.objects.active().get_category_descendants(
-            category, ordering=settings.PRODUCTS_ORDERING
+        products = (
+            models.Product.objects
+            .active()
+            .get_category_descendants(category)
+            .order_by(*settings.PRODUCTS_ORDERING)
         )
 
         return {
