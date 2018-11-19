@@ -312,6 +312,7 @@ class OrderPage(CartTestCase):
         self.assertInHTML(f'<b>{expected_phone}</b>', sent_mail_body)
 
 
+# @todo #339:30m Test tags filter "flush" button
 class CategoryPage(CartTestCase):
 
     PRODUCTS_TO_LOAD = 30

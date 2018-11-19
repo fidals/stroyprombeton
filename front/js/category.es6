@@ -13,8 +13,6 @@
     tablaRow: '.table-tr',
     $cart: $('.js-cart'),
     $loadMoreBtn: $('#load-more-products'),
-    $filtersWrapper: $('.js-tags-inputs'),
-    $filtersApplyBtn: $('.js-apply-filter'),
     $showMoreLink: $('#load-more-products'),
     $productsTable: $('#products-wrapper'),
     $searchFilter: $('#search-filter'),
@@ -31,7 +29,6 @@
   const init = () => {
     setLoadMoreLinkState();
     setUpListeners();
-    setUpFilters();
     moveCategoryDescription();
   };
 
@@ -46,72 +43,10 @@
     $(DOM.$productsTable).on('click', buyProduct);
     DOM.$showMoreLink.click(loadProducts);
     DOM.$searchFilter.keyup(helpers.debounce(filterProducts, 400));
-    DOM.$filtersApplyBtn.click(loadFilteredProducts);
-    DOM.$filtersWrapper.on('click', 'input', toggleApplyBtnState);
   }
 
   const TAGS_TYPE_DELIMITER = '-or-';
   const TAGS_GROUP_DELIMITER = '-and-';
-
-  function serializeTags(tags) {
-    const tagsByGroups = tags.reduce((group, item) => {
-      const groupId = item.group;
-      group[groupId] = group[groupId] || [];  // Ignore ESLintBear (no-param-reassign)
-      group[groupId].push(item.slug);
-      return group;
-    }, {});
-
-    return Object.keys(tagsByGroups).reduce((previous, current) => {
-      const delim = previous ? TAGS_GROUP_DELIMITER : '';
-      return previous + delim + tagsByGroups[current].join(TAGS_TYPE_DELIMITER);
-    }, '');
-  }
-
-  function parseTags(string) {
-    return string
-      .split(TAGS_GROUP_DELIMITER)
-      .map(group => group.split(TAGS_TYPE_DELIMITER))
-      .reduce((acc, e) => acc.concat(e), []);
-  }
-
-  /**
-   * Set up filter checkboxes based on query `tags` parameter.
-   */
-  function setUpFilters() {
-    // /tags/от-сети-220-в-and-брелок/ => ['от-сети-220-в', 'брелок']
-    const activeFilterIds = parseTags(helpers.getUrlEndpointParam('tags'));
-
-    activeFilterIds.map(item => $(`#tag-${item}`).attr('checked', true));
-    toggleApplyBtnState();
-  }
-
-  /**
-   * Reloads current page with `tags` query parameter.
-   */
-  function loadFilteredProducts() {
-    const $tagsObject = DOM.$filtersWrapper
-      .find('input:checked')
-      .map((_, checkedItem) => (
-        {
-          slug: $(checkedItem).data('tag-slug'),
-          group: $(checkedItem).data('tag-group-id'),
-        }
-      ));
-    const tags = serializeTags(Array.from($tagsObject));
-
-    window.location.href = `${DOM.$loadMoreBtn.data('url')}tags/${tags}/`;
-  }
-
-  /**
-   * Toggle apply filter btn active\disabled state based on
-   * checked\unchecked checkboxes.
-   */
-  function toggleApplyBtnState() {
-    const checkboxesArr = Array.from(DOM.$filtersWrapper.find('input'));
-    const isSomeChecked = checkboxesArr.some(item => item.checked === true);
-
-    DOM.$filtersApplyBtn.attr('disabled', !isSomeChecked);
-  }
 
   function setLoadMoreLinkState() {
     if ($(DOM.tablaRow).size() < config.productsToFetch) {

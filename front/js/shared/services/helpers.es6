@@ -39,9 +39,15 @@ const helpers = (() => {  // Ignore ESLintBear (no-unused-vars)
     return results === null ? '' : decodeURIComponent(results[1]);
   }
 
+  function removeUrlEndpoint(name) {
+    const regex = new RegExp(`\/${name}\/(.+?)\/`);  // Ignore ESLintBear (no-useless-escape)
+    return window.location.href.replace(regex, '');
+  }
+
   return {
     debounce,
     getUrlEndpointParam,
+    removeUrlEndpoint,
     isPhoneValid,
     isEmailValid,
   };
