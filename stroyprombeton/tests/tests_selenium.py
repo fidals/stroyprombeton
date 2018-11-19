@@ -1,4 +1,3 @@
-import time
 from urllib.parse import urlencode
 
 from django.core import mail
@@ -319,13 +318,9 @@ class CategoryPage(CartTestCase):
     SELENIUM_TIMEOUT = 60
     APPLY_BTN_CLASS = 'js-apply-filter'
     FILTER_TAG_TEMPLATE = 'label[for="tag-{tag_slug}"]'
-
-    @classmethod
-    def setUpClass(cls):
-        super(CategoryPage, cls).setUpClass()
-        cls.quantity_class = 'js-count-input'
-        cls.load_more_id = 'load-more-products'
-        cls.filter_id = 'search-filter'
+    QUANTITY_CLASS = 'js-count-input'
+    LOAD_MORE_ID = 'load-more-products'
+    FILTER_ID = 'search-filter'
 
     def setUp(self):
         def testing_url(category_id):
@@ -363,16 +358,17 @@ class CategoryPage(CartTestCase):
         return len(browser.find_elements_by_class_name('table-tr'))
 
     def click_load_more_button(self):
+        count = self.get_tables_rows_count()
         self.click_and_wait(
-            (By.ID, self.load_more_id),
-            lambda browser: self.is_load_more_disabled(browser)
+            (By.ID, self.LOAD_MORE_ID),
+            lambda browser: self.get_tables_rows_count(browser) > count
         )
 
     def is_load_more_disabled(self, browser=None):
         browser = browser or self.browser
         return 'disabled' in (
             browser
-            .find_element_by_id(self.load_more_id)
+            .find_element_by_id(self.LOAD_MORE_ID)
             .get_attribute('class')
         )
 
@@ -391,7 +387,7 @@ class CategoryPage(CartTestCase):
         self.assertIn('2', header_product_count(self))
 
     def test_buy_product_with_quantity(self):
-        self.send_keys_and_wait(42, (By.CLASS_NAME, self.quantity_class))
+        self.send_keys_and_wait(42, (By.CLASS_NAME, self.QUANTITY_CLASS))
         self.buy_on_category_page()
 
         self.assertEqual(self.positions_count(), 1)
@@ -408,8 +404,7 @@ class CategoryPage(CartTestCase):
     def test_load_more_products(self):
         """We able to load more products by clicking on `Load more` link."""
         before_load_products = self.get_tables_rows_count()
-        self.click((By.ID, self.load_more_id))
-        time.sleep(0.75)
+        self.click_load_more_button()
         after_load_products = self.get_tables_rows_count()
 
         self.assertTrue(before_load_products < after_load_products)
@@ -431,7 +426,7 @@ class CategoryPage(CartTestCase):
             return self.is_load_more_disabled(browser)
 
         before_filter_products = self.get_tables_rows_count()
-        self.send_keys_and_wait('#10', (By.ID, self.filter_id))
+        self.send_keys_and_wait('#10', (By.ID, self.FILTER_ID))
         self.wait.until(wait_filter)
         after_filter_products = self.get_tables_rows_count()
 
@@ -452,8 +447,7 @@ class CategoryPage(CartTestCase):
         self.browser.get(testing_url(self.middle_category.id))
         self.wait.until(EC.visibility_of_element_located((By.TAG_NAME, 'h1')))
 
-        self.send_keys_and_wait('#1', (By.ID, self.filter_id))
-        self.click_load_more_button()
+        self.send_keys_and_wait('#1', (By.ID, self.FILTER_ID))
         self.click_load_more_button()
 
         self.assertTrue(self.is_load_more_disabled())
