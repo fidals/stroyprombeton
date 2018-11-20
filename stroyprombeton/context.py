@@ -80,7 +80,6 @@ class ProductImages(context.AbstractProductsListContext):
 
     def get_context_data(self):
         return {
-            'products': self.products,
             'product_images': self.images,
             **(
                 self.super.get_context_data()

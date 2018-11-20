@@ -152,6 +152,7 @@ class CategoryPage(catalog.CategoryPage):
             )
             | stb_context.TaggedCategory(tags=models.Tag.objects.all())
             | stb_context.ProductImages()
+            | context.PaginationCategory()
             | context.DBTemplate()  # requires TaggedCategory
         )
 

@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'django.contrib.sites',
     'django.contrib.staticfiles',
     'django.contrib.humanize',
+    'django_extensions',
     'django_user_agents',
     'debug_toolbar',
     'mptt',

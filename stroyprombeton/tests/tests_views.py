@@ -14,7 +14,6 @@ from itertools import chain
 from operator import attrgetter
 from urllib.parse import urlencode
 
-from django.db.models import Q
 from django.conf import settings
 from django.http import HttpResponse, QueryDict
 from django.test import TestCase
@@ -160,7 +159,19 @@ class CategoryTable(TestCase, TestPageMixin):
 
         models.Product.objects.create(**self.data)
 
-        self.response = self.client.get('/gbi/categories/{}/'.format(self.category.id))
+        self.response = self.client.get(self.get_category_url())
+
+    def get_category_url(
+        self,
+        category: models.Category = None,
+        tags: models.TagQuerySet = None,
+        sorting: int = None,
+        query_string: dict = None,
+    ):
+        category = category or self.category
+        return reverse_catalog_url(
+            'category', {'category_id': category.id}, tags, sorting, query_string,
+        )
 
     @property
     def response_product(self):
@@ -226,6 +237,20 @@ class CategoryTable(TestCase, TestPageMixin):
         self.assertFalse(
             any(p.name in response.content.decode() for p in disappeared_products)
         )
+
+    def test_products_are_from_category(self):
+        # leaf category
+        category = models.Category.objects.get(name='Category #0 of #6')
+        response = self.client.get(self.get_category_url(category))
+        self.assertTrue(
+            all(p.category == category for p in response.context['products'])
+        )
+
+    def test_products_are_paginated(self):
+        """Category page should contain limited products list."""
+        category = models.Category.objects.first()
+        response = self.client.get(self.get_category_url(category))
+        self.assertEqual(len(response.context['products']), settings.PRODUCTS_ON_PAGE_PC)
 
 
 class Product_(TestCase, TestPageMixin):
@@ -629,12 +654,12 @@ class CatalogTags(BaseCatalog):
         tags = self.tags
         response = self.get_category_page(tags=tags)
 
-        products_count = len(list(filter(
-            lambda x: x.category.is_descendant_of(self.category),
-            models.Product.objects.filter(Q(tags=tags[0]) | Q(tags=tags[1]))
-        )))
-
-        self.assertContains(response, products_count)
+        self.assertTrue(
+            all(
+                tags[0] in p.tags.all() or tags[1] in p.tags.all()
+                for p in response.context['products']
+            )
+        )
 
     def test_tag_titles_content_disjunction(self):
         """
