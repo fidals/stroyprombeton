@@ -2,7 +2,7 @@ from selenium import webdriver
 
 from django.core.urlresolvers import reverse
 from django.conf import settings
-from django.test import LiveServerTestCase
+from django.test import LiveServerTestCase, tag
 
 from stroyprombeton.models import Product
 from stroyprombeton.tests.helpers import wait
@@ -35,6 +35,7 @@ class SeleniumTestCase(LiveServerTestCase):
         super(SeleniumTestCase, cls).tearDownClass()
 
 
+@tag('slow')
 class Mobile(SeleniumTestCase):
 
     def setUp(self):

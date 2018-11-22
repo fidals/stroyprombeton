@@ -1,5 +1,5 @@
 from django.contrib.auth.models import User
-from django.test import TestCase
+from django.test import TestCase, tag
 from django.urls import reverse
 
 from pages.models import FlatPage
@@ -7,6 +7,7 @@ from pages.models import FlatPage
 from stroyprombeton.models import CategoryPage, ProductPage
 
 
+@tag('fast')
 class AdminPage(TestCase):
     """Tests for Admin page UI."""
 

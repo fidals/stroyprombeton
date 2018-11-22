@@ -3,7 +3,7 @@ import os
 from xml.etree import ElementTree
 
 from django.conf import settings
-from django.test import TestCase
+from django.test import TestCase, tag
 
 from pages.models import Page
 
@@ -13,6 +13,7 @@ from stroyprombeton.models import Category, Product
 from stroyprombeton.management.commands.seo_texts import populate_entities
 
 
+@tag('fast')
 class ImportTest(TestCase):
 
     PRICE_FILES = ['yandex.yml']
@@ -61,6 +62,7 @@ class ImportTest(TestCase):
         self.assertTrue(site_cpa, 0)
 
 
+@tag('fast')
 class SeoTexts(TestCase):
 
     setting = {
@@ -95,6 +97,7 @@ class SeoTexts(TestCase):
         self.assertNotEqual(second_page_content, test_second_page_content)
 
 
+@tag('fast')
 class RemoveDuplicates(TestCase):
 
     def test_remove_similar_products(self):

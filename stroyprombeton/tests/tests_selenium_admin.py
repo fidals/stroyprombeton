@@ -1,6 +1,6 @@
 import unittest
 
-from django.test import override_settings
+from django.test import override_settings, tag
 from django.urls import reverse
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.by import By
@@ -49,6 +49,7 @@ class AdminTestCase(BaseSeleniumTestCase):
         ))
 
 
+@tag('slow')
 class AdminPage(AdminTestCase, HelpersMixin):
     """Selenium-based tests for Admin page UI."""
 
@@ -293,6 +294,7 @@ class AdminPage(AdminTestCase, HelpersMixin):
 
 # @todo #187:120m Stabilize TableEditor selenium tests
 #  Write them on event based model instead of plain waits.
+@tag('slow')
 class TableEditor(AdminTestCase, HelpersMixin):
     """Selenium-based tests for Table Editor [TE]."""
 

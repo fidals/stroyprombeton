@@ -16,7 +16,7 @@ from urllib.parse import urlencode
 
 from django.conf import settings
 from django.http import HttpResponse, QueryDict
-from django.test import TestCase
+from django.test import TestCase, tag
 from django.urls import reverse
 from django.utils.translation import ugettext as _
 
@@ -60,6 +60,7 @@ class TestPageMixin:
         )
 
 
+@tag('fast')
 class CategoryTree(TestCase):
 
     fixtures = ['dump.json']
@@ -77,6 +78,7 @@ class CategoryTree(TestCase):
         self.assertTrue(quantity > 0)
 
 
+@tag('fast')
 class CategoryTile(TestCase, TestPageMixin):
     """
     Test for CategoryPage view.
@@ -124,6 +126,7 @@ class CategoryTile(TestCase, TestPageMixin):
         )
 
 
+@tag('fast')
 class CategoryTable(TestCase, TestPageMixin):
     """
     Test for CategoryPage view.
@@ -253,6 +256,7 @@ class CategoryTable(TestCase, TestPageMixin):
         self.assertEqual(len(response.context['products']), settings.PRODUCTS_ON_PAGE_PC)
 
 
+@tag('fast')
 class Product_(TestCase, TestPageMixin):
     """Test for ProductPage view."""
 
@@ -397,6 +401,7 @@ class AbstractFormViewTest:
         )
 
 
+@tag('fast')
 class OrderPrice(AbstractFormViewTest, TestCase):
     URL = '/order-price/'
     SUCCESS_URL = '/price-success/'
@@ -408,6 +413,7 @@ class OrderPrice(AbstractFormViewTest, TestCase):
         super(OrderPrice, self).setUp()
 
 
+@tag('fast')
 class IndexPage(TestCase):
 
     fixtures = ['dump.json']
@@ -427,6 +433,7 @@ class IndexPage(TestCase):
         self.assertContains(response, region.url)
 
 
+@tag('fast')
 class RobotsPage(TestCase):
 
     fixtures = ['dump.json']
@@ -438,6 +445,7 @@ class RobotsPage(TestCase):
         self.assertEqual(self.response.status_code, 200)
 
 
+@tag('fast')
 class Search(TestCase):
 
     fixtures = ['dump.json']
@@ -468,6 +476,7 @@ class Search(TestCase):
         self.assertContains(response, product.name)
 
 
+@tag('fast')
 class TestSearch(TestCase):
     """Test all search methods: search page and autocompletes."""
 
@@ -540,6 +549,7 @@ class TestSearch(TestCase):
         self.assertNotContains(response, term)
 
 
+@tag('fast')
 class ProductPrice(TestCase):
 
     fixtures = ['dump.json']
@@ -596,6 +606,7 @@ class BaseCatalog(TestCase):
         ))
 
 
+@tag('fast')
 class CatalogTags(BaseCatalog):
 
     def test_category_page_contains_all_tags(self):

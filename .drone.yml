@@ -21,7 +21,6 @@ pipeline:
 
   gulp-build:
     image: fidals/stb-nodejs:dev
-    group: deps
     commands:
       - cp -r /usr/app/src/node_modules .
       - gulp build
@@ -39,7 +38,7 @@ pipeline:
     when:
       event: [push, pull_request]
 
-  test:
+  fast-test:
     image: fidals/stb:dev
     environment:
       - TEST_ENV=true
@@ -57,8 +56,36 @@ pipeline:
       - SELENIUM_TIMEOUT_SECONDS=300
       - SELENIUM_WAIT_SECONDS=300
     commands:
+      # @todo #348:30m Create a test runner, that will check, that each test is tagged.
+      #  See commets for detail: https://github.com/fidals/stroyprombeton/pull/349
+
+      # dirty check, that all tests are tagged
+      - python manage.py test --exclude-tag fast --exclude-tag slow -k 2>&1 | grep "Ran 0" || exit 1
       - python manage.py collectstatic --noinput
-      - python manage.py test --liveserver=test:8021-8029 --parallel
+      - python manage.py test --parallel --tag fast -k
+    when:
+      event: [push, pull_request]
+
+  slow-test:
+    image: fidals/stb:dev
+    environment:
+      - TEST_ENV=true
+      - DJANGO_SETTINGS_MODULE=stroyprombeton.settings.dev
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=test
+      - POSTGRES_URL=postgres
+      - POSTGRES_DB=test
+      - RABBITMQ_DEFAULT_USER=rabbitmq
+      - RABBITMQ_DEFAULT_PASS=test
+      - RABBITMQ_URL=rabbitmq
+      - RABBITMQ_PORT=5672
+      - SELENIUM_URL=http://selenium:4444/wd/hub
+      # Hardcoded env values because of drone secret's bug. See stb#263
+      - SELENIUM_TIMEOUT_SECONDS=300
+      - SELENIUM_WAIT_SECONDS=300
+    commands:
+      # - python manage.py collectstatic --noinput
+      - python manage.py test --liveserver=slow-test:8021-8029 --parallel --tag slow -k
     when:
       event: [push, pull_request]
 

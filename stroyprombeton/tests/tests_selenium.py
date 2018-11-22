@@ -3,6 +3,7 @@ from urllib.parse import urlencode
 from django.core import mail
 from django.db.models import Count
 from django.template.defaultfilters import floatformat
+from django.test import tag
 from django.urls import reverse
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.keys import Keys
@@ -110,6 +111,7 @@ class CartTestCase(SeleniumTestCase):
         return len(self.positions())
 
 
+@tag('slow')
 class HeaderCart(CartTestCase):
 
     def setUp(self):
@@ -160,6 +162,7 @@ class HeaderCart(CartTestCase):
         self.assert_cart_is_empty()
 
 
+@tag('slow')
 class ProductPage(CartTestCase):
 
     def test_buy_product(self):
@@ -180,6 +183,7 @@ class ProductPage(CartTestCase):
         self.assertIn('42', header_product_count(self))
 
 
+@tag('slow')
 class OrderPage(CartTestCase):
 
     def setUp(self):
@@ -312,6 +316,7 @@ class OrderPage(CartTestCase):
 
 
 # @todo #339:30m Test tags filter "flush" button
+@tag('slow')
 class CategoryPage(CartTestCase):
 
     PRODUCTS_TO_LOAD = 30
@@ -518,6 +523,7 @@ class CategoryPage(CartTestCase):
         self.assertFalse(is_button_disabled)
 
 
+@tag('slow')
 class Search(SeleniumTestCase):
     """Selenium-based tests for Search."""
 
@@ -632,6 +638,7 @@ class Search(SeleniumTestCase):
         self.assertFalse(self.autocomplete.is_displayed())
 
 
+@tag('slow')
 class IndexPage(SeleniumTestCase):
 
     def setUp(self):

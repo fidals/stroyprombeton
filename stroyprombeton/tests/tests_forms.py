@@ -1,6 +1,6 @@
 from copy import copy
 
-from django.test import TestCase
+from django.test import TestCase, tag
 
 from stroyprombeton import forms
 
@@ -42,6 +42,7 @@ class AbstractFormTest:
             self.assertFalse(self.FORM(fields).is_valid())
 
 
+@tag('fast')
 class PriceFormTest(AbstractFormTest, TestCase):
     REQUIRED = ['phone', 'email', 'company', 'city']
     FIELDS = copy(PRICE_FORM_FIELDS)
