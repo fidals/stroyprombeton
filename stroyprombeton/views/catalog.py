@@ -61,6 +61,7 @@ def fetch_products(request):
             ),
         )
         | context.TaggedCategory(tags=models.Tag.objects.all())
+        | context.PaginationCategory()
         | stb_context.ProductImages()
         | context.DBTemplate()  # requires TaggedCategory
     ).get_context_data()

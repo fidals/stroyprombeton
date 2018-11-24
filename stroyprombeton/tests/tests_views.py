@@ -23,7 +23,7 @@ from django.utils.translation import ugettext as _
 from pages.models import CustomPage, FlatPage, ModelPage
 
 from stroyprombeton import models
-from stroyprombeton.tests.helpers import create_doubled_tag
+from stroyprombeton.tests.helpers import CategoryTestMixin, create_doubled_tag
 from stroyprombeton.tests.tests_forms import PriceFormTest
 
 
@@ -79,7 +79,7 @@ class CategoryTree(TestCase):
 
 
 @tag('fast')
-class CategoryTile(TestCase, TestPageMixin):
+class CategoryTile(TestCase, TestPageMixin, CategoryTestMixin):
     """
     Test for CategoryPage view.
 
@@ -146,6 +146,7 @@ class CategoryTable(TestCase, TestPageMixin):
             )
         }
 
+        self.root_category = models.Category.objects.filter(parent=None).first()
         self.category = models.Category.objects.create(**category_data)
 
         self.data = {
@@ -225,21 +226,42 @@ class CategoryTable(TestCase, TestPageMixin):
     #  `shopelectro.tests.tests_views.CatalogTags`
     def test_filter_products_by_tags(self):
         """Category page should not contain products, excluded by tags selection."""
-        root_category = models.Category.objects.filter(parent=None).first()
         tag_slug = '2-m'
         tag_qs = models.Tag.objects.filter(slug=tag_slug)
         tag = tag_qs.first()
-        response = self.get_category_page(category=root_category, tags=tag_qs)
+        response = self.get_category_page(category=self.root_category, tags=tag_qs)
 
         # find product: it has no tag and it's descendant of root_category
         disappeared_products = (
             models.Product.objects.active()
-            .get_category_descendants(root_category)
+            .get_category_descendants(self.root_category)
             .exclude(tags=tag)
         )
         self.assertFalse(
             any(p.name in response.content.decode() for p in disappeared_products)
         )
+
+    def test_load_more_context_data(self):
+        """App should response with products data on load_more request."""
+        db_products = models.Product.objects.active().get_category_descendants(
+            self.root_category
+        )
+
+        response = self.client.post(
+            reverse('fetch_products'),
+            data={
+                'categoryId': self.root_category.id,
+                'offset': 10,
+                'limit': 10,
+            }
+        )
+        response_products = response.context['products']
+
+        self.assertEqual(10, len(response_products))
+        # check bounds of returned products list
+        self.assertFalse(db_products[5] in response_products)
+        self.assertTrue(db_products[15] in response_products)
+        self.assertFalse(db_products[25] in response_products)
 
     def test_products_are_from_category(self):
         # leaf category
@@ -585,7 +607,8 @@ def reverse_catalog_url(
     return f'{reverse(url, kwargs=route_kwargs)}{query_string}'
 
 
-class BaseCatalog(TestCase):
+@tag('fast')
+class CatalogTags(TestCase, CategoryTestMixin):
 
     fixtures = ['dump.json']
 
@@ -605,13 +628,9 @@ class BaseCatalog(TestCase):
             'category', {'category_id': category.id}, tags, query_string,
         ))
 
-
-@tag('fast')
-class CatalogTags(BaseCatalog):
-
     def test_category_page_contains_all_tags(self):
         """Category contains all Product's tags."""
-        response = self.get_category_page()
+        response = self.client.get(self.get_category_path())
 
         tags = set(chain.from_iterable(map(
             lambda x: x.tags.all(), (
@@ -628,7 +647,7 @@ class CatalogTags(BaseCatalog):
 
     def test_has_canonical_meta_tag(self):
         """Test that CategoryPage should contain canonical meta tag."""
-        response = self.get_category_page()
+        response = self.client.get(self.get_category_path())
         self.assertEqual(response.status_code, 200)
         self.assertContains(
             response,
@@ -638,7 +657,7 @@ class CatalogTags(BaseCatalog):
     def test_tags_page_has_no_canonical_meta_tag(self):
         """Test that CategoryTagsPage should not contain canonical meta tag."""
         # ignore CPDBear
-        response = self.get_category_page(tags=self.tags)
+        response = self.client.get(self.get_category_path(tags=self.tags))
         self.assertEqual(response.status_code, 200)
         self.assertNotContains(
             response,
@@ -653,7 +672,7 @@ class CatalogTags(BaseCatalog):
         should not contain canonical meta tag.
         """
         # ignore CPDBear
-        response = self.get_category_page(tags=self.tags, sorting=1)
+        response = self.client.get(self.get_category_path(tags=self.tags))
         self.assertEqual(response.status_code, 200)
         self.assertNotContains(
             response,
@@ -663,8 +682,7 @@ class CatalogTags(BaseCatalog):
     def test_contains_product_with_certain_tags(self):
         """Category page contains Product's related by certain tags."""
         tags = self.tags
-        response = self.get_category_page(tags=tags)
-
+        response = self.client.get(self.get_category_path(tags=tags))
         self.assertTrue(
             all(
                 tags[0] in p.tags.all() or tags[1] in p.tags.all()
@@ -680,8 +698,8 @@ class CatalogTags(BaseCatalog):
         should contain tag_titles var content: "6В или 24В".
         """
         tag_group = models.TagGroup.objects.first()
-        tags = tag_group.tags.order_by(*settings.TAGS_ORDER).all()
-        response = self.get_category_page(tags=tags)
+        tags = tag_group.tags.order_by(*settings.TAGS_ORDER).all()  # Ignore CPDBear
+        response = self.client.get(self.get_category_path(tags=tags))
         self.assertEqual(response.status_code, 200)
         delimiter = settings.TAGS_TITLE_DELIMITER
         tag_titles = delimiter.join(t.name for t in tags)
@@ -697,7 +715,7 @@ class CatalogTags(BaseCatalog):
         tag_groups = models.TagGroup.objects.order_by('position', 'name').all()
         tag_ids = [g.tags.first().id for g in tag_groups]
         tags = models.Tag.objects.filter(id__in=tag_ids)
-        response = self.get_category_page(tags=tags)
+        response = self.client.get(self.get_category_path(tags=tags))
         self.assertEqual(response.status_code, 200)
         delimiter = settings.TAG_GROUPS_TITLE_DELIMITER
         tag_titles = delimiter.join(t.name for t in tags)
@@ -711,7 +729,7 @@ class CatalogTags(BaseCatalog):
         class instance.
         """
         tags = models.Tag.objects.order_by(*settings.TAGS_ORDER).all()
-        response = self.get_category_page(tags=tags)
+        response = self.client.get(self.get_category_path(tags=tags))
         self.assertEqual(response.status_code, 200)
         tag_names = ', '.join([t.name for t in tags])
         self.assertContains(response, tag_names)
@@ -719,8 +737,8 @@ class CatalogTags(BaseCatalog):
     def test_doubled_tag(self):
         """Category tags page filtered by the same tag from different tag groups."""
         tag_ = create_doubled_tag()
-        response = self.get_category_page(
-            tags=models.Tag.objects.filter(id=tag_.id)
+        response = self.client.get(
+            self.get_category_path(tags=models.Tag.objects.filter(id=tag_.id))
         )
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, tag_.name)
