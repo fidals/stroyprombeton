@@ -189,6 +189,8 @@ LOGGING = {
     },
 }
 
+TEST_RUNNER = 'stroyprombeton.tests.runner.CheckedTagsRunner'
+
 # Is required for Docker container
 WKHTMLTOPDF_CMD = 'xvfb-run wkhtmltopdf'
 
