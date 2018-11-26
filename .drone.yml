@@ -56,11 +56,6 @@ pipeline:
       - SELENIUM_TIMEOUT_SECONDS=300
       - SELENIUM_WAIT_SECONDS=300
     commands:
-      # @todo #348:30m Create a test runner, that will check, that each test is tagged.
-      #  See commets for detail: https://github.com/fidals/stroyprombeton/pull/349
-
-      # dirty check, that all tests are tagged
-      - python manage.py test --exclude-tag fast --exclude-tag slow -k 2>&1 | grep "Ran 0" || exit 1
       - python manage.py collectstatic --noinput
       - python manage.py test --parallel --tag fast -k
     when:
@@ -84,7 +79,6 @@ pipeline:
       - SELENIUM_TIMEOUT_SECONDS=300
       - SELENIUM_WAIT_SECONDS=300
     commands:
-      # - python manage.py collectstatic --noinput
       - python manage.py test --liveserver=slow-test:8021-8029 --parallel --tag slow -k
     when:
       event: [push, pull_request]
