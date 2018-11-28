@@ -9,8 +9,7 @@
   const init = () => {
     pluginsInit();
     setUpListeners();
-    const productId = DOM.$addToCart.attr('data-product-id');
-    if (productId) mediator.publish('onProductDetail', productId);
+    publishDetail();
   };
 
   function pluginsInit() {
@@ -56,17 +55,31 @@
     });
   }
 
-  function buyProduct() {
-    const { id, count } = {
-      id: DOM.$addToCart.attr('data-product-id'),
-      count: DOM.$counter.val(),
+  function getProductData() {
+    return {
+      id: parseInt(DOM.$addToCart.data('id'), 10),
+      name: DOM.$addToCart.data('name'),
+      category: DOM.$addToCart.data('category'),
+      quantity: parseInt(DOM.$counter.val(), 10),
     };
+  }
 
-    server.addToCart(id, count)
-      .then((data) => {
-        mediator.publish('onCartUpdate', data);
-        mediator.publish('onProductAdd', [id, count]);
+  function buyProduct() {
+    const data = getProductData();
+    const { id, quantity } = data;
+
+    server.addToCart(id, quantity)
+      .then((newData) => {
+        mediator.publish('onCartUpdate', newData);
+        mediator.publish('onProductAdd', [data]);
       });
+  }
+
+  function publishDetail() {
+    const { id, name, category } = getProductData();
+    if (id) {
+      mediator.publish('onProductDetail', [{ id, name, category }]);
+    }
   }
 
   init();

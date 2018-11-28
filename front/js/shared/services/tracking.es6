@@ -1,9 +1,10 @@
 (() => {
-  const DOM = {
-    $order: $('.js-order-contain'),
-    productCount: '.js-count-input',
-    remove: '.js-remove',
-  };
+  // @todo #303:60m Send `purchase` event to YA and GA after a success purchase.
+  //  This will allow us to send order's id. Currently we send the event after
+  //  submitting of the purchase button with the dummy order's id.
+  //  See the parent issue for a detail.
+
+  // @todo #303:60m Send info about product's brand to YA and GA.
 
   window.dataLayer = window.dataLayer || [];
   // Load ecommerce plugin for gaTracker
@@ -32,13 +33,13 @@
       yaTracker.remove(products);
     });
     // We receive an onProductAdd event from a category and a product pages
-    mediator.subscribe('onProductAdd', (_, id, quantity) => {
-      yaTracker.add([{ id, quantity }]);
+    mediator.subscribe('onProductAdd', (_, data) => {
+      yaTracker.add([data]);
     });
     mediator.subscribe('onProductRemove', (_, id, quantity) => {
       yaTracker.remove([{ id, quantity }]);
     });
-    mediator.subscribe('onProductDetail', (_, id) => yaTracker.detail([{ id }]));
+    mediator.subscribe('onProductDetail', (_, data) => yaTracker.detail([data]));
   }
 
   init();

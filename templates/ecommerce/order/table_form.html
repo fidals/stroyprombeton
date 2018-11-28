@@ -29,7 +29,7 @@
             </thead>
             <tbody>
               {% for id, product in cart %}
-                <tr class="js-product-row" data-product-id="{{ id }}">
+                <tr class="js-product-row" data-id="{{ id }}" data-price="{{ product.price }}">
                   <td class="order-table-name">
                     <a href="{{ product.url }}">
                       {{ product.name }} {% get_product_field id 'mark'%}

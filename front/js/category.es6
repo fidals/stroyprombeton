@@ -11,6 +11,7 @@
   const DOM = {
     addToCart: 'js-category-buy',
     tablaRow: '.table-tr',
+    h1: '.heading-h1',
     $cart: $('.js-cart'),
     $loadMoreBtn: $('#load-more-products'),
     $showMoreLink: $('#load-more-products'),
@@ -45,9 +46,6 @@
     DOM.$searchFilter.keyup(helpers.debounce(filterProducts, 400));
   }
 
-  const TAGS_TYPE_DELIMITER = '-or-';
-  const TAGS_GROUP_DELIMITER = '-and-';
-
   function setLoadMoreLinkState() {
     if ($(DOM.tablaRow).size() < config.productsToFetch) {
       DOM.$showMoreLink.addClass('disabled');
@@ -67,14 +65,16 @@
   /**
    * Get product quantity & id from DOM.
    */
-  const getProductInfo = (event) => {
+  const getProductData = (event) => {
     const $product = $(event.target);
     const productCount = $product.closest('td').prev().find('.js-count-input').val();
-    const productId = $product.closest('tr').attr('id');
+    const productRow = $product.closest('tr');
 
     return {
-      count: parseInt(productCount, 10),
-      id: parseInt(productId, 10),
+      id: parseInt(productRow.data('id'), 10),
+      quantity: parseInt(productCount, 10),
+      name: productRow.data('name'),
+      category: $(DOM.h1).data('name'),
     };
   };
 
@@ -83,12 +83,13 @@
    */
   function buyProduct(event) {
     if (!$(event.target).hasClass(DOM.addToCart)) return;
-    const { id, count } = getProductInfo(event);
+    const data = getProductData(event);
+    const { id, quantity } = data;
 
-    server.addToCart(id, count)
-      .then((data) => {
-        mediator.publish('onCartUpdate', { html: data, target: event.target });
-        mediator.publish('onProductAdd', [id, count]);
+    server.addToCart(id, quantity)
+      .then((newData) => {
+        mediator.publish('onCartUpdate', { html: newData, target: event.target });
+        mediator.publish('onProductAdd', [data]);
       });
   }
 
@@ -102,9 +103,9 @@
     setTimeout(() => $target.fadeOut(), 1000);
   }
 
-  const getLoadedProductsCount = () => parseInt(DOM.$showMoreLink.attr('data-load-count'), 10);
+  const getLoadedProductsCount = () => parseInt(DOM.$showMoreLink.data('load-count'), 10);
   const getFilterTerm = () => DOM.$searchFilter.val();
-  const getCategoryId = () => DOM.$searchFilter.attr('data-category');
+  const getCategoryId = () => DOM.$searchFilter.data('category');
 
   /**
    * Update products to load data attribute counter.

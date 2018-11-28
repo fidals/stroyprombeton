@@ -22,35 +22,41 @@
     $(DOM.submitBtn).on('click', DOM.submit, submitOrder);
   }
 
-  const getProductId = $target => $target.closest(DOM.productRow).data('product-id');
-  const getProductCount = $target => $target.closest(DOM.productRow).find(DOM.productCount).val();
-  const getProductName = $target => $.trim($target.find('a').text());
-
-  const getProductsData = () => $(DOM.productRow).map((_, el) => {
-    const $el = $(el);
+  const getProductData = ($el) => {
+    const $row = $el.closest(DOM.productRow);
     return {
-      id: getProductId($el),
-      name: getProductName($el),
-      quantity: getProductCount($el),
+      id: parseInt($row.data('id'), 10),
+      quantity: parseInt($row.find(DOM.productCount).val(), 10),
+      name: $.trim($row.find('a').text()),
     };
-  }).get();
+  };
+
+  const getProductsData = () => $(DOM.productRow)
+    .map((_, el) => {
+      const $el = $(el);
+      let data = getProductData($el);  // Ignore ESLintBear (prefer-const)
+      data.price = parseFloat($el.closest(DOM.productRow).data('price'));
+      return data;
+    })
+    .get();
 
   /**
    * Change Product's count in Cart with delay for better UX.
    */
   function changeProductCount(event) {
     const $target = $(event.target);
-    const productId = getProductId($target);
-    const newCount = getProductCount($target);
-    const countDiff = newCount - $target.attr('data-last-count');
+    let data = getProductData($target);  // Ignore ESLintBear (prefer-const)
+    const { id, quantity } = data;
+    const countDiff = quantity - $target.data('last-count');
 
-    server.changeInCart(productId, newCount)
-      .then((data) => {
-        mediator.publish('onCartUpdate', { html: data });
+    server.changeInCart(id, quantity)
+      .then((newData) => {
+        mediator.publish('onCartUpdate', { html: newData });
         if (countDiff > 0) {
-          mediator.publish('onProductAdd', [productId, countDiff]);
+          data.quantity = countDiff;
+          mediator.publish('onProductAdd', [data]);
         } else {
-          mediator.publish('onProductRemove', [productId, Math.abs(countDiff)]);
+          mediator.publish('onProductRemove', [id, Math.abs(countDiff)]);
         }
       });
   }
@@ -68,12 +74,11 @@
    */
   function removeProduct(event) {
     const $target = $(event.target);
-    const productId = getProductId($target);
-    const productCount = getProductCount($target);
-    server.removeFromCart(productId)
+    const { id, quantity } = getProductData($target);
+    server.removeFromCart(id)
       .then((data) => {
         mediator.publish('onCartUpdate', { html: data });
-        mediator.publish('onProductRemove', [productId, productCount]);
+        mediator.publish('onProductRemove', [id, quantity]);
       });
   }
 

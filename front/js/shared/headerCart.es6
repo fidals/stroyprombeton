@@ -24,8 +24,8 @@
    */
   function getRemovedProductData(removed) {
     return {
-      id: removed.getAttribute('data-product-id'),
-      quantity: removed.getAttribute('data-product-count'),
+      id: parseInt(removed.data('id'), 10),
+      quantity: parseInt(removed.data('quantity'), 10),
     };
   }
 
@@ -34,7 +34,7 @@
    * @param {object} event
    */
   function removeFromCart(event) {
-    const { id, quantity } = getRemovedProductData(event.target);
+    const { id, quantity } = getRemovedProductData($(event.target));
     server.removeFromCart(id)
       .then((data) => {
         mediator.publish('onCartUpdate', data);
@@ -47,7 +47,7 @@
    */
   function flushCart() {
     const productsData = $(DOM.removeFromCart)
-      .map((_, el) => getRemovedProductData(el))
+      .map((_, el) => getRemovedProductData($(el)))
       .get();
     server.flushCart()
       .then((data) => {

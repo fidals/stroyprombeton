@@ -20,3 +20,4 @@ fake_db.py
 package-lock.json
 report.xml
 database
+*.orig
