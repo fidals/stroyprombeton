@@ -57,6 +57,7 @@ INSTALLED_APPS = [
     'search',
     'catalog',
     'ecommerce',
+    'refarm_test_utils',
     'wkhtmltopdf',
     'stroyprombeton',
 ]
@@ -189,7 +190,7 @@ LOGGING = {
     },
 }
 
-TEST_RUNNER = 'stroyprombeton.tests.runner.CheckedTagsRunner'
+TEST_RUNNER = 'refarm_test_utils.runners.RefarmTestRunner'
 
 # Is required for Docker container
 WKHTMLTOPDF_CMD = 'xvfb-run wkhtmltopdf'
