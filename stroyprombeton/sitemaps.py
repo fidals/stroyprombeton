@@ -21,13 +21,13 @@ class IndexSitemap(Sitemap):
 class FlatPagesSitemap(AbstractSitemap):
 
     def items(self):
-        return FlatPage.objects.filter(is_active=True)
+        return FlatPage.objects.active()
 
 
 class CustomPagesSitemap(AbstractSitemap):
 
     def items(self):
-        return CustomPage.objects.filter(is_active=True).exclude(slug='')
+        return CustomPage.objects.active().exclude(slug='')
 
 
 class ProductPagesSitemap(AbstractSitemap):
@@ -36,7 +36,8 @@ class ProductPagesSitemap(AbstractSitemap):
         return (
             ModelPage.objects
             .select_related('stroyprombeton_product')
-            .filter(is_active=True, stroyprombeton_product__isnull=False)
+            .active()
+            .filter(stroyprombeton_product__isnull=False)
         )
 
 
@@ -46,5 +47,6 @@ class CategoryPagesSitemap(AbstractSitemap):
         return (
             ModelPage.objects
             .select_related('stroyprombeton_category')
-            .filter(is_active=True, stroyprombeton_category__isnull=False)
+            .active()
+            .filter(stroyprombeton_category__isnull=False)
         )

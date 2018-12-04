@@ -40,7 +40,8 @@ class IndexPage(pages.views.CustomPageView):
         pages_query = (
             FlatPage.objects
             .select_related('parent')
-            .filter(parent__slug__in=['news', 'client-feedbacks'], is_active=True)
+            .active()
+            .filter(parent__slug__in=['news', 'client-feedbacks'])
             .iterator()
         )
 

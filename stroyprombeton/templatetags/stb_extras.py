@@ -39,8 +39,10 @@ def format_price(price):
 
 @register.simple_tag
 def get_root_categories():
-    return (Category.objects.root_nodes().filter(page__is_active=True)
-            .order_by('page__position', 'name'))
+    return (
+        Category.objects.root_nodes().active()
+        .order_by('page__position', 'name')
+    )
 
 
 # Not good code, but duker at 06/10/2016 don't know how to fix it.

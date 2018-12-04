@@ -14,20 +14,20 @@ class Search(search_views.SearchView):
         search_engine.Search(
             name='category',
             #
-            qs=Category.objects.filter(page__is_active=True),
+            qs=Category.objects.active(),
             # ignore CPDBear
             fields=['name', 'specification'],
             min_similarity=settings.TRIGRAM_MIN_SIMILARITY,
         ),
         search_engine.Search(
             name='product',
-            qs=Product.objects.filter(page__is_active=True),
+            qs=Product.objects.active(),
             fields=['name', 'mark', 'specification', 'id'],
             min_similarity=settings.TRIGRAM_MIN_SIMILARITY,
         ),
         search_engine.Search(
             name='page',
-            qs=Page.objects.filter(is_active=True),
+            qs=Page.objects.active(),
             fields=['name'],
             min_similarity=settings.TRIGRAM_MIN_SIMILARITY,
         )
@@ -48,7 +48,7 @@ class Autocomplete(search_views.AutocompleteView):
     search_entities = [
         search_engine.Search(
             name='product',
-            qs=Product.objects.filter(page__is_active=True),
+            qs=Product.objects.active(),
             fields=['name', 'code', 'mark', 'specification'],
             template_fields=['name', 'mark', 'specification', 'url'],
             min_similarity=settings.TRIGRAM_MIN_SIMILARITY,
@@ -64,7 +64,7 @@ class AdminAutocomplete(search_views.AdminAutocompleteView):
     search_entities = [
         search_engine.Search(
             name='category',
-            qs=Category.objects.filter(page__is_active=True),
+            qs=Category.objects.active(),
             # ignore CPDBear
             fields=['name'],
             min_similarity=settings.TRIGRAM_MIN_SIMILARITY,
@@ -72,7 +72,7 @@ class AdminAutocomplete(search_views.AdminAutocompleteView):
         # ignore CPDBear
         search_engine.Search(
             name='product',
-            qs=Product.objects.filter(page__is_active=True),
+            qs=Product.objects.active(),
             fields=['name'],
             min_similarity=settings.TRIGRAM_MIN_SIMILARITY,
         ),

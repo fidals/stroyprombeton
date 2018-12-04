@@ -101,7 +101,7 @@ def categories_csv_export(request, filename='categories.csv', breadcrumbs_delimi
     writer = CSVWriter(buf, delimiter='|')
 
     categories = serialize_categories(
-        models.CategoryPage.objects.filter(is_active=True)
+        models.CategoryPage.objects.active()
     )
 
     response = StreamingHttpResponse(
@@ -120,7 +120,7 @@ class CategoryTree(ListView):
     context_object_name = 'categories'
 
     def get_queryset(self):
-        return models.Category.objects.filter(parent=None, page__is_active=True)
+        return models.Category.objects.active().filter(parent=None)
 
     def get_context_data(self, **kwargs):
         context = super(CategoryTree, self).get_context_data(**kwargs)
@@ -168,7 +168,7 @@ class CategoryPage(catalog.CategoryPage):
 class ProductPage(catalog.ProductPage):
     queryset = (
         models.Product.objects
-        .filter(page__is_active=True)
+        .active()
         .select_related('page')
         .prefetch_related('page__images')
     )
