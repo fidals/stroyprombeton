@@ -65,12 +65,6 @@ class AdminPage(AdminTestCase, HelpersMixin):
     is_active_img = 'field-is_active'
     autocomplete_text = 'Prod'
 
-    @classmethod
-    def setUpClass(cls):
-        super().setUpClass()
-        cls.change_products_url = cls.live_server_url + reverse(
-            'admin:stroyprombeton_productpage_changelist')
-
     def setUp(self):
         """Set up testing url and dispatch selenium webdriver."""
         self.root_category_id = str(Category.objects.filter(parent=None).first().id)
@@ -80,11 +74,18 @@ class AdminPage(AdminTestCase, HelpersMixin):
             parent_id=self.children_category_id).first().id)
         self.tree_product_id = str(Product.objects.filter(
             category_id=self.deep_children_category_id).first().id)
+        self.change_products_url = self.live_server_url + reverse(
+            'admin:stroyprombeton_productpage_changelist')
         self.sign_in()
+
+    def tearDown(self):
+        # Clear this to avoid checking of UI states.
+        # It reduces time of execution and mitigates error happenings.
+        self.browser.execute_script('localStorage.clear();')
 
     @property
     def first_h1(self):
-        return self.browser.find_elements_by_tag_name('h1')[1].text
+        return self.wait.until(EC.presence_of_all_elements_located((By.TAG_NAME, 'h1')))[1].text
 
     def get_table_with_products(self):
         return self.browser.find_element_by_class_name(self.product_table)
@@ -104,17 +105,8 @@ class AdminPage(AdminTestCase, HelpersMixin):
                 except exceptions.StaleElementReferenceException:
                     return False
 
-            # wait jstree lazy-loading
-            self.wait.until(EC.invisibility_of_element_located(
-                (By.CLASS_NAME, 'jstree-loading')
-            ))
-            # wait(...) is required here because tree node is slowly initialized
-            # and WebDriverWait does not help us
-            wait(0.5)
-
-            if not is_expand(self.browser):
-                self.browser.find_element_by_id(id).find_element_by_tag_name('i').click()
-                self.wait.until(is_expand)
+            self.browser.find_element_by_id(id).find_element_by_tag_name('i').click()
+            self.wait.until(is_expand)
 
         def open_nodes(*args):
             for id_ in args:
@@ -229,8 +221,6 @@ class AdminPage(AdminTestCase, HelpersMixin):
                          .find_elements_by_class_name('jstree-leaf'))
         self.assertGreater(len(node_children), 10)
 
-    # @todo #266:15m Resurrect test `test_tree_redirect_to_entity_edit_page`
-    @unittest.expectedFailure
     def test_tree_redirect_to_entity_edit_page(self):
         """Test redirect to edit entity page by click on jstree's item."""
         expected_h1 = ['Change category', 'Изменить категория']
@@ -239,10 +229,8 @@ class AdminPage(AdminTestCase, HelpersMixin):
         self.wait.until(EC.visibility_of_element_located(
             (By.ID, f'{self.root_category_id}_anchor')
         )).click()
-        wait()
-        test_h1 = self.first_h1
 
-        self.assertIn(test_h1, expected_h1)
+        self.assertIn(self.first_h1, expected_h1)
 
     def test_tree_redirect_to_table_editor_page(self):
         """Click on tree's context menu item should redirect us on table editor page."""
@@ -460,7 +448,7 @@ class TableEditor(AdminTestCase, HelpersMixin):
         """We could make live search in TE."""
         rows_before = len(self.browser.find_elements_by_class_name('jqgrow'))
         search_field = self.browser.find_element_by_id('search-field')
-        search_field.send_keys('384')
+        search_field.send_keys(Product.objects.first().id)
         wait(2)
         rows_after = len(self.browser.find_elements_by_class_name('jqgrow'))
 
