@@ -166,7 +166,7 @@ CONN_MAX_AGE = None
 DATABASES = {
    'default': {
        'ENGINE': 'django.db.backends.postgresql',
-       'NAME': os.environ['POSTGRES_DB'],
+       'NAME': 'test_stb',
        'USER': os.environ['POSTGRES_USER'],
        'PASSWORD': os.environ['POSTGRES_PASSWORD'],
        'HOST': os.environ['POSTGRES_URL'],
@@ -441,3 +441,6 @@ PRODUCT_SIBLINGS_COUNT = 10
 
 # we wait se#567 to remove it
 CATEGORY_SORTING_OPTIONS = {}
+
+# max tags in one tag group on category page
+MAX_UI_TAGS_COUNT = 20

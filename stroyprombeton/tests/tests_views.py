@@ -773,3 +773,33 @@ class CatalogTags(TestCase, CategoryTestMixin):
         })
         response = self.client.get(bad_tag_url)
         self.assertEqual(response.status_code, 404)
+
+    # @todo #362:60m Collapse too tags on category page.
+    #  See test below and parent task for details.
+    @unittest.expectedFailure
+    def test_too_many_tags_collapse(self):
+        """
+        Page should not contain too many tags.
+
+        If page contains more then `settings.MAX_UI_TAGS_COUNT` tags,
+        it should collapse them and show short label instead.
+        """
+        group = models.TagGroup.objects.first()
+        models.Tag.objects.filter(group=group).delete()
+        product = models.Product.objects.get(name='Product #10 of Category #0 of #3')
+        from_index, to_index = 1, settings.MAX_UI_TAGS_COUNT + 2
+
+        for i in range(from_index, to_index):
+            product.tags.add(
+                models.Tag.objects.get_or_create(
+                    group=group,
+                    name=f'{i} м',
+                    slug=f'{i}-m',
+                )[0]
+            )
+        product.save()
+
+        response = self.client.get(
+            self.get_category_path(category=product.category)
+        )
+        self.assertContains(response, f'от {from_index} до {to_index} м')
