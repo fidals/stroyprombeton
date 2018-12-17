@@ -474,6 +474,7 @@ class CategoryPage(BaseCartSeleniumTestCase, test_helpers.CategoryTestMixin):
         category_url = self.live_server_url + self.get_category_path(category)
         self.assertEqual(category_url, self.browser.current_url)
 
+    # @todo #374:30m Resurrect `test_apply_filter_state`
     def test_apply_filter_state(self):
         """Apply filters btn should be disabled with no checked tags."""
         self.load_category_page(self.middle_category)

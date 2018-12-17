@@ -8,6 +8,7 @@ All Selenium-tests should be located in tests_selenium.
 """
 import json
 import unittest
+from bs4 import BeautifulSoup
 from copy import copy
 from datetime import datetime
 from itertools import chain
@@ -628,6 +629,13 @@ class CatalogTags(TestCase, CategoryTestMixin):
             'category', {'category_id': category.id}, tags, query_string,
         ))
 
+    def get_category_soup(self, *args, **kwargs) -> BeautifulSoup:
+        category_page = self.get_category_page(*args, **kwargs)
+        return BeautifulSoup(
+            category_page.content.decode('utf-8'),
+            'html.parser'
+        )
+
     def test_category_page_contains_all_tags(self):
         """Category contains all Product's tags."""
         response = self.client.get(self.get_category_path())
@@ -774,20 +782,17 @@ class CatalogTags(TestCase, CategoryTestMixin):
         response = self.client.get(bad_tag_url)
         self.assertEqual(response.status_code, 404)
 
-    # @todo #362:60m Collapse too tags on category page.
-    #  See test below and parent task for details.
-    @unittest.expectedFailure
     def test_too_many_tags_collapse(self):
         """
         Page should not contain too many tags.
 
-        If page contains more then `settings.MAX_UI_TAGS_COUNT` tags,
+        If page contains more then `settings.TAGS_UI_LIMIT` tags,
         it should collapse them and show short label instead.
         """
         group = models.TagGroup.objects.first()
         models.Tag.objects.filter(group=group).delete()
         product = models.Product.objects.get(name='Product #10 of Category #0 of #3')
-        from_index, to_index = 1, settings.MAX_UI_TAGS_COUNT + 2
+        from_index, to_index = 1, settings.TAGS_UI_LIMIT + 2
 
         for i in range(from_index, to_index):
             product.tags.add(
@@ -799,7 +804,12 @@ class CatalogTags(TestCase, CategoryTestMixin):
             )
         product.save()
 
-        response = self.client.get(
-            self.get_category_path(category=product.category)
+        tags_text = (
+            self.get_category_soup(category=product.category)
+            .find(class_='tags-filter-inputs')
+            .text
         )
-        self.assertContains(response, f'от {from_index} до {to_index} м')
+
+        # @todo #374:30m Create test for from_index, to_index correctness.
+        #  Dangerous case: ['1 м', '2 м', '11 м'] -> 'от 1 м до 2 м'
+        self.assertIn(f'от {from_index} м до {to_index - 1} м', tags_text)

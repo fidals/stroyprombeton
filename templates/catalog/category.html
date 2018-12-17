@@ -40,12 +40,7 @@
           </div>
         {% endif %}
 
-        {% comment %}
-        @todo #187:30m Fix tags markup
-         Now added only html tags and now markup.
-        {% endcomment %}
-
-        {% include 'catalog/category_tags_filter.html' with group_tags_pairs=group_tags_pairs only %}
+        {% include 'catalog/category_tags_filter.html' with group_tags_pairs=group_tags_pairs tags_ui_limit=tags_ui_limit only %}
       </div>
 
       <div class="col-md-9 product-list">

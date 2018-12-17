@@ -254,6 +254,8 @@ EMAIL_SUBJECTS = {
 # Used mostly in breadcrumbs to generate URL for catalog's root.
 CATEGORY_TREE_URL = 'category_tree'
 
+# Shop dict contains information about shop:
+# emails, phones, API-integrations.
 SITE_INFO = {
     'email': 'info@stroyprombeton.ru',
     'phone': {
@@ -429,6 +431,9 @@ TAG_GROUPS_TITLE_DELIMITER = ' и '
 
 TAGS_ORDER = ['group__position', 'group__name', 'position', 'name']
 
+# max tags in one tag group on category page
+TAGS_UI_LIMIT = 20
+
 # Number of pagination neighbors shown for page.
 # If PAGINATION_NEIGHBORS = 4 and number of a page = 5,
 # then will be shown neighbors by number: 3, 4, 6, 7
@@ -441,6 +446,3 @@ PRODUCT_SIBLINGS_COUNT = 10
 
 # we wait se#567 to remove it
 CATEGORY_SORTING_OPTIONS = {}
-
-# max tags in one tag group on category page
-MAX_UI_TAGS_COUNT = 20

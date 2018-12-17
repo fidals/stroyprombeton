@@ -7,12 +7,16 @@
       </p>
 
       <div class="tags-filter-inputs js-tags-inputs">
-        {% for tag in tags %}
-          <p class="checkbox">
-            <input type="checkbox" id="tag-{{ tag.slug }}" data-tag-id="{{ tag.id }}" data-tag-slug="{{ tag.slug }}" data-tag-group-id="{{ tag.group.id }}">
-            <label for="tag-{{ tag.slug }}">{{ tag.name }}</label>
-          </p>
-        {% endfor %}
+        {% if tags|length < tags_ui_limit %}
+          {% for tag in tags %}
+            <p class="checkbox">
+              <input type="checkbox" id="tag-{{ tag.slug }}" data-tag-id="{{ tag.id }}" data-tag-slug="{{ tag.slug }}" data-tag-group-id="{{ tag.group.id }}">
+              <label for="tag-{{ tag.slug }}">{{ tag.name }}</label>
+            </p>
+          {% endfor %}
+        {% else %}
+        &nbsp от {{ tags|first }} до {{ tags|last }}
+        {% endif %}
       </div>
     </div>
   {% endfor %}
