@@ -53,20 +53,13 @@ def create_pages():
         # Start from 1 for `position` instead of 0.
         for i in range(1, FEEDBACKS_COUNT + 1):
             review = FlatPage.objects.create(
-                name='"Some company" respect #{}'.format(i),
+                name=f'"Some company" respect #{i}',
                 # from settings.CUSTOM_PAGES
                 parent=CustomPage.objects.get(slug='client-feedbacks'),
                 position=i,
             )
 
-            # @todo #289:60m Save fixture images to `media` folder. se2
-            #  Now `test_db` django command goes like this:
-            #  - take file from tests folder
-            #  - generate filename and path using timestamp
-            #  - save generated path into db
-            # `test_db` don't copy file to generated path.
-            # Make this file accessible by default.
-            # Create test for file autocreating mech.
+            # @todo #296:60m Test image uploading with admin panel.
             Image.objects.create(
                 model=review,
                 image=ImageFile(open(REVIEW_IMAGE, mode='rb')),
