@@ -594,18 +594,6 @@ class Search(SeleniumTestCase):
         self.assertTrue(self.browser.find_element_by_link_text('Category root #0'))
         self.assertTrue(self.browser.find_element_by_link_text('Category #0 of #1'))
 
-    # @todo #347:15m Run test_inactive_product_not_in_search_autocomplete without selenium.
-    #  The test only checks correctness of the backend's logic, but not of frontend.
-    def test_inactive_product_not_in_search_autocomplete(self):
-        test_product = stb_models.Product.objects.first()
-        test_product.page.is_active = False
-        test_product.page.save()
-        self.fill_input(query=test_product.name)
-
-        suggestions = self.autocomplete.find_elements_by_class_name('autocomplete-suggestion')
-        for suggestion in suggestions:
-            self.assertTrue(test_product.name not in suggestion.get_attribute('data-val'))
-
     def test_search_results_empty(self):
         """Search results for wrong term should contain empty result set."""
         self.search(query=self.wrong_query)

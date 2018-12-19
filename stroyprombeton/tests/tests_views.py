@@ -13,7 +13,6 @@ from copy import copy
 from datetime import datetime
 from itertools import chain
 from operator import attrgetter
-from urllib.parse import urlencode
 
 from django.conf import settings
 from django.http import HttpResponse, QueryDict
@@ -21,6 +20,7 @@ from django.test import TestCase, tag
 from django.urls import reverse
 from django.utils.translation import ugettext as _
 
+from catalog.helpers import reverse_catalog_url
 from pages.models import CustomPage, FlatPage, ModelPage
 
 from stroyprombeton import models
@@ -80,7 +80,7 @@ class CategoryTree(TestCase):
 
 
 @tag('fast')
-class CategoryTile(TestCase, TestPageMixin, CategoryTestMixin):
+class CategoryTile(TestCase, TestPageMixin):
     """
     Test for CategoryPage view.
 
@@ -112,7 +112,7 @@ class CategoryTile(TestCase, TestPageMixin, CategoryTestMixin):
 
         models.Category.objects.create(**self.child_data)
 
-        self.response = self.client.get('/gbi/categories/{}/'.format(self.root_category.id))
+        self.response = self.client.get(f'/gbi/categories/{self.root_category.id}/')
 
     def test_children_categories_quantity(self):
         self.assertEqual(
@@ -571,6 +571,20 @@ class TestSearch(TestCase):
         self.assertFalse(json_to_dict(response))
         self.assertNotContains(response, term)
 
+    def test_autocomplete_has_only_active(self):
+        """Autocomplete items should contain only active products."""
+        test_product = models.Product.objects.first()
+        test_product.page.is_active = False
+        test_product.page.save()
+
+        url = f'{reverse("autocomplete")}?term={test_product.name}'
+        response = self.client.get(url)
+        results = json_to_dict(response)
+
+        self.assertTrue(all(
+            test_product.name not in result['name'] for result in results
+        ))
+
 
 @tag('fast')
 class ProductPrice(TestCase):
@@ -584,28 +598,6 @@ class ProductPrice(TestCase):
         self.assertTrue(self.response['Content-Type'] == 'application/pdf')
         self.assertTrue(self.response.context['category'].name == CATEGORY_ROOT_NAME)
         self.assertTrue(len(self.response.context['products']) > 100)
-
-
-# @todo #187:30m Rm code doubled method in tests
-#  SE contains this method too.
-#  Move it to refarm side.
-def reverse_catalog_url(
-    url: str,
-    route_kwargs: dict,
-    tags: models.TagQuerySet=None,
-    sorting: int=None,
-    query_string: dict=None,
-) -> str:
-    query_string = f'?{urlencode(query_string)}' if query_string else ''
-    if tags:
-        # PyCharm's option:
-        # noinspection PyTypeChecker
-        tags_slug = tags.as_url()
-        route_kwargs['tags'] = tags_slug
-    if sorting is not None:
-        route_kwargs['sorting'] = sorting
-
-    return f'{reverse(url, kwargs=route_kwargs)}{query_string}'
 
 
 @tag('fast')

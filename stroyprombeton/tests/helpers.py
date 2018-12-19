@@ -7,7 +7,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from seleniumrequests import Remote
 
-from catalog.helpers import get_category_path
+from catalog.helpers import reverse_catalog_url
 from stroyprombeton import models as stb_models
 
 disable_celery = override_settings(USE_CELERY=False)
@@ -88,6 +88,7 @@ class CategoryTestMixin:
         query_string: dict=None,
     ):
         category = category or self.category
-        return get_category_path(
-            category, route_name, tags, sorting, query_string
+        route_kwargs = {'category_id': category.id}
+        return reverse_catalog_url(
+            route_name, route_kwargs, tags, sorting, query_string
         )

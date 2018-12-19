@@ -61,7 +61,7 @@ services:
     ports:
       - $VIRTUAL_HOST_STAGE_PORT:8000
     volumes:
-      - ../stroyprombeton/settings/local.py:$SRC_DIR/stroyprombeton/settings/local.py
+      - ../stroyprombeton/settings/stage.py:$SRC_DIR/stroyprombeton/settings/stage.py
       # contains refarm-site modules
       - $DEPS_DIR
       - /opt/media/stb_stage/:$SRC_DIR/media/
