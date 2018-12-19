@@ -419,10 +419,6 @@ ENV_TYPE = os.environ.get('ENV_TYPE', 'PROD')  # LOCAL | CI | PROD
 # About trigram similarity: https://goo.gl/uYFcxN
 TRIGRAM_MIN_SIMILARITY = 0.15
 
-
-# random string to append to doubled slugs
-SLUG_HASH_SIZE = 5
-
 TAGS_URL_DELIMITER = '-or-'
 TAG_GROUPS_URL_DELIMITER = '-and-'
 
