@@ -345,6 +345,13 @@ class CategoryPage(BaseCartSeleniumTestCase, test_helpers.CategoryTestMixin):
             lambda browser: self.get_tables_rows_count(browser) > count
         )
 
+    def get_loaded_products_count(self):
+        return (
+            self.browser
+            .find_element_by_id(self.LOAD_MORE_ID)
+            .get_attribute('data-total-products')
+        )
+
     def is_load_more_disabled(self, browser=None):
         browser = browser or self.browser
         return 'disabled' in (
@@ -445,7 +452,7 @@ class CategoryPage(BaseCartSeleniumTestCase, test_helpers.CategoryTestMixin):
 
         self.assertGreater(before_filter_products, after_filter_products)
 
-    def test_filter_by_tag_button(self):
+    def test_tag_button_change_url(self):
         """Filter button with the filled one of tag checkboxes should change url to tag."""
         # set one product with no tags in test_db
         # check if this prod is not in list after filtering
@@ -461,6 +468,24 @@ class CategoryPage(BaseCartSeleniumTestCase, test_helpers.CategoryTestMixin):
         )
         self.assertIn(tagged_category_path, self.browser.current_url)
         self.browser.find_element_by_class_name('js-clear-tag-filter').click()
+
+    def test_tag_button_filter_products(self):
+        # this category contains 25 tags. It's less then products on page limit.
+        category = stb_models.Category.objects.get(name='Category #1 of #2')
+        tag_slug = '1-m'
+        tag_selector = self.FILTER_TAG_TEMPLATE.format(tag_slug=tag_slug)
+        self.load_category_page(category)
+        before_products_count = self.get_loaded_products_count()
+
+        self.browser.find_element_by_css_selector(tag_selector).click()
+        self.apply_tags()
+
+        after_products_count = self.get_loaded_products_count()
+        self.assertGreater(int(before_products_count), int(after_products_count))
+
+        self.browser.find_element_by_class_name('js-clear-tag-filter').click()
+        after_products_count = self.get_loaded_products_count()
+        self.assertEqual(int(before_products_count), int(after_products_count))
 
     def test_flush_button(self):
         category = self.root_category

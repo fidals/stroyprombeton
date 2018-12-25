@@ -36,6 +36,40 @@ def json_to_dict(response: HttpResponse) -> dict():
     return json.loads(response.content)
 
 
+class BaseCatalogTestCase(TestCase):
+
+    fixtures = ['dump.json']
+
+    def setUp(self):
+        self.root_category = models.Category.objects.filter(parent=None).first()
+        self.category = models.Category.objects.root_nodes().select_related('page').first()
+        self.tags = models.Tag.objects.order_by(*settings.TAGS_ORDER).all()
+
+    def get_category_url(
+        self,
+        category: models.Category = None,
+        tags: models.TagQuerySet = None,
+        sorting: int = None,
+        query_string: dict = None,
+    ):
+        category = category or self.category
+        return reverse_catalog_url(
+            'category', {'category_id': category.id}, tags, sorting, query_string,
+        )
+
+    def get_category_page(self, *args, **kwargs):
+        return self.client.get(self.get_category_url(*args, **kwargs))
+
+    def get_category_soup(self, *args, **kwargs) -> BeautifulSoup:
+        category_page = self.get_category_page(*args, **kwargs)
+        return BeautifulSoup(
+            category_page.content.decode('utf-8'),
+            'html.parser'
+        )
+
+
+# @todo #340:60m Move TestPageMixin to some PageData class.
+#  And remove CategoryTable().response field.
 class TestPageMixin:
 
     @property
@@ -128,7 +162,7 @@ class CategoryTile(TestCase, TestPageMixin):
 
 
 @tag('fast')
-class CategoryTable(TestCase, TestPageMixin):
+class CategoryTable(BaseCatalogTestCase, TestPageMixin):
     """
     Test for CategoryPage view.
 
@@ -139,6 +173,8 @@ class CategoryTable(TestCase, TestPageMixin):
 
     def setUp(self):
         """Create category and product."""
+        super().setUp()
+
         category_data = {
             'name': 'Test root category',
             'page': ModelPage.objects.create(
@@ -146,8 +182,6 @@ class CategoryTable(TestCase, TestPageMixin):
                 content='Козырьки устанавливают над входами зданий.',
             )
         }
-
-        self.root_category = models.Category.objects.filter(parent=None).first()
         self.category = models.Category.objects.create(**category_data)
 
         self.data = {
@@ -161,38 +195,13 @@ class CategoryTable(TestCase, TestPageMixin):
                 content='Козырьки устанавливают над входами зданий.',
             )
         }
-
         models.Product.objects.create(**self.data)
 
         self.response = self.client.get(self.get_category_url())
 
-    def get_category_url(
-        self,
-        category: models.Category = None,
-        tags: models.TagQuerySet = None,
-        sorting: int = None,
-        query_string: dict = None,
-    ):
-        category = category or self.category
-        return reverse_catalog_url(
-            'category', {'category_id': category.id}, tags, sorting, query_string,
-        )
-
     @property
     def response_product(self):
         return self.response.context['products'][0]
-
-    def get_category_page(  # Ignore CPDBear
-        self,
-        category: models.Category=None,
-        tags: models.TagQuerySet=None,
-        sorting: int=None,
-        query_string: dict=None,
-    ):
-        category = category or self.category
-        return self.client.get(reverse_catalog_url(
-            'category', {'category_id': category.id}, tags, sorting, query_string,
-        ))
 
     def test_products_quantity(self):
         self.assertEqual(len(self.response.context['products']), 1)
@@ -222,25 +231,6 @@ class CategoryTable(TestCase, TestPageMixin):
 
         response = self.client.get(reverse('category', args=(test_product.category_id,)))
         self.assertNotIn(test_product, response.context['products'])
-
-    # @todo #320:60m Take CatalogTags tests from SE.
-    #  `shopelectro.tests.tests_views.CatalogTags`
-    def test_filter_products_by_tags(self):
-        """Category page should not contain products, excluded by tags selection."""
-        tag_slug = '2-m'
-        tag_qs = models.Tag.objects.filter(slug=tag_slug)
-        tag = tag_qs.first()
-        response = self.get_category_page(category=self.root_category, tags=tag_qs)
-
-        # find product: it has no tag and it's descendant of root_category
-        disappeared_products = (
-            models.Product.objects.active()
-            .get_category_descendants(self.root_category)
-            .exclude(tags=tag)
-        )
-        self.assertFalse(
-            any(p.name in response.content.decode() for p in disappeared_products)
-        )
 
     def test_load_more_context_data(self):
         """App should response with products data on load_more request."""
@@ -601,32 +591,9 @@ class ProductPrice(TestCase):
 
 
 @tag('fast')
-class CatalogTags(TestCase, CategoryTestMixin):
+class CatalogTags(BaseCatalogTestCase, CategoryTestMixin):
 
     fixtures = ['dump.json']
-
-    def setUp(self):
-        self.category = models.Category.objects.root_nodes().select_related('page').first()
-        self.tags = models.Tag.objects.order_by(*settings.TAGS_ORDER).all()
-
-    def get_category_page(
-        self,
-        category: models.Category=None,
-        tags: models.TagQuerySet=None,
-        sorting: int=None,
-        query_string: dict=None,
-    ):
-        category = category or self.category
-        return self.client.get(reverse_catalog_url(
-            'category', {'category_id': category.id}, tags, query_string,
-        ))
-
-    def get_category_soup(self, *args, **kwargs) -> BeautifulSoup:
-        category_page = self.get_category_page(*args, **kwargs)
-        return BeautifulSoup(
-            category_page.content.decode('utf-8'),
-            'html.parser'
-        )
 
     def test_category_page_contains_all_tags(self):
         """Category contains all Product's tags."""
@@ -721,12 +688,12 @@ class CatalogTags(TestCase, CategoryTestMixin):
         tag_titles = delimiter.join(t.name for t in tags)
         self.assertContains(response, tag_titles)
 
-    def test_tags_var(self):
+    def test_tags_var_in_db_template(self):
         """
         Test CategoryTagsPage with canonical tags.
 
-        CategoryTagsPage should contain "tags" template var tag=each(tags) is Tag
-        class instance.
+        "tags" db template at CategoryTagsPage
+        should render tag names. For example "1 м, 20 кг".
         """
         tags = models.Tag.objects.order_by(*settings.TAGS_ORDER).all()
         response = self.client.get(self.get_category_path(tags=tags))
@@ -805,3 +772,20 @@ class CatalogTags(TestCase, CategoryTestMixin):
         # @todo #374:30m Create test for from_index, to_index correctness.
         #  Dangerous case: ['1 м', '2 м', '11 м'] -> 'от 1 м до 2 м'
         self.assertIn(f'от {from_index} м до {to_index - 1} м', tags_text)
+
+    def test_filter_products_by_tags(self):
+        """Category page should not contain products, excluded by tags selection."""
+        tag_slug = '2-m'
+        tag_qs = models.Tag.objects.filter(slug=tag_slug)
+        tag = tag_qs.first()
+        response = self.get_category_page(category=self.root_category, tags=tag_qs)
+
+        # find product: it has no tag and it's descendant of root_category
+        disappeared_products = (
+            models.Product.objects.active()
+            .get_category_descendants(self.root_category)
+            .exclude(tags=tag)
+        )
+        self.assertFalse(
+            any(p.name in response.content.decode() for p in disappeared_products)
+        )
