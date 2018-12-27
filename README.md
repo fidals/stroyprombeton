@@ -97,3 +97,4 @@ N.B.: Некоторые данные (например, медиафайлы) �
 # Фичи
 - [Tracking aims](https://github.com/fidals/shopelectro/blob/master/doc/tracking_aims.md)
 - [Table Editor](https://github.com/fidals/stroyprombeton/blob/master/doc/table_editor.md)
+- [Product option](https://github.com/fidals/stroyprombeton/blob/master/doc/product_option.md)

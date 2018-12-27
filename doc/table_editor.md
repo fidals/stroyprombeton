@@ -4,7 +4,7 @@
 Заходим в админку и выбираем "Табличный редактор" из списка в левой части экрана. Справа появится поле для работы с таблицей.
 
 **Группа фильтров**
-![Группа фильтров](https://github.com/fidals/shopelectro/blob/master/doc/images/table_editor/filter_group.png)
+![Группа фильтров](https://github.com/fidals/stroyprombeton/blob/master/doc/images/table_editor/filter_group.png)
 * Здесь мы определяем столбцы таблицы. В Списке "Поля фильтра" выбираем нужные элементы.
 * В "Полях сортировки" можно перетаскивать и сортировать выбранные столбцы в нужном порядке.
 * Нажимаем кнопку "Обновить табличный редактор", внизу экрана появится таблица с полями, которые мы выбрали.
@@ -14,18 +14,18 @@
  
 
 **Поле поиска**
-![Поле поиска](https://github.com/fidals/shopelectro/blob/master/doc/images/table_editor/search_field.png) 
+![Поле поиска](https://github.com/fidals/stroyprombeton/blob/master/doc/images/table_editor/search_field.png) 
 Поле для поиска товара по названию, id, категории или цене. 
 
 **Кнопка "+ Добавить новый товар"**
 вызывает окно добавления нового продукта.
-![Кнопка "+ Добавить новый товар"](https://github.com/fidals/shopelectro/blob/master/doc/images/table_editor/add_product_button.png)
+![Кнопка "+ Добавить новый товар"](https://github.com/fidals/stroyprombeton/blob/master/doc/images/table_editor/add_product_button.png)
 * Заполняем поля.
 * Нажимаем кнопку "Обновить таблицу" для обновления данных.
 * Кнопка "Сохранить продукт" добавляет новый элемент в базу.
 
 **Таблица**
-![Таблица](https://github.com/fidals/shopelectro/blob/master/doc/images/table_editor/table.png)
+![Таблица](https://github.com/fidals/stroyprombeton/blob/master/doc/images/table_editor/table.png)
 * Поля таблицы можно редактировать по клику мыши.
 * В колонке (“Ссылки”) 2 варианта просмотра карточки продукта:
  * на сайте STB;
