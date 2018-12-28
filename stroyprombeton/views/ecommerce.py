@@ -7,7 +7,7 @@ from django.views.generic import FormView, TemplateView
 
 from ecommerce import views as ec_views
 from ecommerce.mailer import send_backcall
-from pages.models import Page
+from pages.models import CustomPage
 from pages.views import CustomPageView
 
 from stroyprombeton import mailer
@@ -56,7 +56,7 @@ class OrderPrice(FormView, CustomPageView):
     form_class = PriceForm
     template_name = 'ecommerce/order/price.html'
     success_url = reverse_lazy(
-        Page.CUSTOM_PAGES_URL_NAME,
+        CustomPage.ROUTE,
         current_app='stroyprombeton',
         args=('price-success',)
     )

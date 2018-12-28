@@ -11,7 +11,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC, ui
 
-from pages.models import Page
+from pages.models import CustomPage
 
 from stroyprombeton import models as stb_models
 from stroyprombeton.tests import helpers as test_helpers
@@ -182,7 +182,7 @@ class OrderPage(BaseCartSeleniumTestCase):
     def proceed_order_page(self):
         self.browser.get(
             self.live_server_url +
-            reverse(Page.CUSTOM_PAGES_URL_NAME, args=('order', ))
+            reverse(CustomPage.ROUTE, args=('order', ))
         )
         self.wait.until(EC.visibility_of_element_located(
             (By.TAG_NAME, 'h1')
