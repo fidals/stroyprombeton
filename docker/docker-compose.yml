@@ -15,7 +15,6 @@ services:
       - PYTHONUNBUFFERED=0
     ports:
       - $VIRTUAL_HOST_DEV_PORT:8000
-      - $VIRTUAL_HOST_LIVESERVER_PORT
     depends_on:
       - postgres
       - rabbitmq

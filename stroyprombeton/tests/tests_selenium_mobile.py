@@ -12,11 +12,12 @@ class SeleniumTestCase(LiveServerTestCase):
     """Common superclass for running selenium-based tests."""
 
     fixtures = ['dump.json']
+    host = settings.LIVESERVER_HOST
 
     @classmethod
     def setUpClass(cls):
         """Instantiate browser instance."""
-        super(SeleniumTestCase, cls).setUpClass()
+        super().setUpClass()
         capabilities = {
             'browserName': 'chrome',
             'mobileEmulation': {
@@ -32,7 +33,7 @@ class SeleniumTestCase(LiveServerTestCase):
     def tearDownClass(cls):
         """Close selenium session."""
         cls.browser.quit()
-        super(SeleniumTestCase, cls).tearDownClass()
+        super().tearDownClass()
 
 
 @tag('slow')

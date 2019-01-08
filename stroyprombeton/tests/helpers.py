@@ -34,6 +34,8 @@ def create_doubled_tag(tag_from: stb_models.Tag=None):
 class BaseSeleniumTestCase(LiveServerTestCase):
     """Common superclass for running selenium-based tests."""
 
+    host = settings.LIVESERVER_HOST
+
     @classmethod
     def setUpClass(cls):
         """Instantiate browser instance."""

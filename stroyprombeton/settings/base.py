@@ -11,7 +11,9 @@ https://docs.djangoproject.com/en/1.9/ref/settings/
 """
 
 import os
+import socket
 from datetime import datetime
+
 from django.utils.translation import ugettext_lazy as _
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -191,6 +193,9 @@ LOGGING = {
 }
 
 TEST_RUNNER = 'refarm_test_utils.runners.RefarmTestRunner'
+# address for selenium-based tests
+# host name doesn't resolve at CI, so we have to use host address
+LIVESERVER_HOST = socket.gethostbyname(socket.gethostname())
 
 # Is required for Docker container
 WKHTMLTOPDF_CMD = 'xvfb-run wkhtmltopdf'
