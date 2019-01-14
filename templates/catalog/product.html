@@ -58,7 +58,12 @@
                   {% show_field_if_exist product.length 'Длина (мм)' %}
                   {% show_field_if_exist product.width 'Ширина (мм)' %}
                   {% show_field_if_exist product.height 'Высота (мм)' %}
-                  {% show_field_if_exist product.diameter_out 'Внешний диаметр (мм)' %}
+                  {% comment %}
+                    @todo #SE432:120m Resurrect product.diameter_out field render
+                     Now tests are failed with segmentation fault because of the field.
+
+                    {% show_field_if_exist product.diameter_out 'Внешний диаметр (мм)' %}
+                  {% endcomment %}
                   {% show_field_if_exist product.diameter_in 'Внутренний диаметр (мм)' %}
                   {% show_field_if_exist product.weight|floatformat:'0' 'Масса (кг)' %}
                   {% show_field_if_exist product.volume 'Объем (м<sup>3</sup>)' %}

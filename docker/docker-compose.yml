@@ -24,11 +24,11 @@ services:
     volumes:
       - ./../:$SRC_DIR
       # Thus, you can work with apps related to the refarm-site
-      #- $REFARM_DIR/catalog:/root/.local/lib/python3.6/site-packages/catalog
-      #- $REFARM_DIR/ecommerce:/root/.local/lib/python3.6/site-packages/ecommerce
-      #- $REFARM_DIR/pages:/root/.local/lib/python3.6/site-packages/pages
-      #- $REFARM_DIR/search:/root/.local/lib/python3.6/site-packages/search
-      #- $REFARM_DIR/refarm_test_utils:/root/.local/lib/python3.6/site-packages/refarm_test_utils
+      #- $REFARM_DIR/catalog:/root/.local/lib/python3.7/site#-packages/catalog
+      #- $REFARM_DIR/ecommerce:/root/.local/lib/python3.7/site#-packages/ecommerce
+      #- $REFARM_DIR/pages:/root/.local/lib/python3.7/site#-packages/pages
+      #- $REFARM_DIR/search:/root/.local/lib/python3.7/site#-packages/search
+      #- $REFARM_DIR/refarm_test_utils:/root/.local/lib/python3.7/site-packages/refarm_test_utils
     #  Is full means '.env` contains all keynames from `.env.dist`
     command: python manage.py runserver 0.0.0.0:8000
 
@@ -63,7 +63,7 @@ services:
       - 15672
 
   selenium:
-    image: selenium/standalone-chrome-debug:3.10.0
+    image: selenium/standalone-chrome-debug:3.14.0
     restart: always
     ports:
       - 4444

@@ -306,7 +306,6 @@ class Product_(TestCase, TestPageMixin):
         }
 
         product = models.Product.objects.create(**self.data)
-
         self.response = self.client.get('/gbi/products/{}/'.format(product.id))
 
     @property

@@ -7,6 +7,7 @@ DEBUG = True
 
 # http://bit.ly/sorl-thumbnail-docs
 THUMBNAIL_DEBUG = True
+TEMPLATE_DEBUG = True
 
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '0.0.0.0']
 EMAIL_HOST_PASSWORD = 'so_secret_pass'
