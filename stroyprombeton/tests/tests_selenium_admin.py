@@ -2,16 +2,14 @@ import unittest
 
 from django.test import override_settings, tag
 from django.urls import reverse
+from selenium.common import exceptions
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.common.by import By
-from selenium.common import exceptions
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
 
 from stroyprombeton.models import Product, Category
 from stroyprombeton.tests.helpers import wait, BaseSeleniumTestCase
-
-# @todo #137:120m Remove the rest of wait(...) calls in favor of explicit the WebDriverWait.
 
 
 class HelpersMixin:
@@ -29,19 +27,19 @@ class AdminTestCase(BaseSeleniumTestCase):
     """Common superclass for running selenium-based tests."""
 
     fixtures = ['dump.json', 'admin.json']
-    admin_urlconf = 'admin:index'
-    login = 'admin'
-    password = 'asdfjkl;'
+    ROUTE = 'admin:index'
+    LOGIN = 'admin'
+    PASSWORD = 'asdfjkl;'
 
     def sign_in(self):
-        self.browser.get(self.live_server_url + reverse(self.admin_urlconf))
+        self.browser.get(self.live_server_url + reverse(self.ROUTE))
 
         login_field = self.browser.find_element_by_id('id_username')
         login_field.clear()
-        login_field.send_keys(self.login)
+        login_field.send_keys(self.LOGIN)
         password_field = self.browser.find_element_by_id('id_password')
         password_field.clear()
-        password_field.send_keys(self.password)
+        password_field.send_keys(self.PASSWORD)
         login_form = self.browser.find_element_by_id('login-form')
         login_form.submit()
         self.wait.until(EC.visibility_of_element_located(
@@ -55,13 +53,6 @@ class AdminPage(AdminTestCase, HelpersMixin):
 
     title_text = 'Админка Stroyprombeton'
     product_table = 'paginator'
-    active_products = '//*[@id="changelist-filter"]/ul[1]/li[2]/a'
-    inactive_products = '//*[@id="changelist-filter"]/ul[1]/li[3]/a'
-    price_filter = '//*[@id="changelist-filter"]/ul[2]/li[3]/a'
-    filter_by_has_content = '//*[@id="changelist-filter"]/ul[3]/li[2]/a'
-    filter_by_has_not_content = '//*[@id="changelist-filter"]/ul[3]/li[3]/a'
-    filter_by_has_image = '//*[@id="changelist-filter"]/ul[4]/li[2]/a'
-    filter_by_has_not_image = '//*[@id="changelist-filter"]/ul[4]/li[3]/a'
     is_active_img = 'field-is_active'
     autocomplete_text = 'Prod'
 
@@ -135,77 +126,84 @@ class AdminPage(AdminTestCase, HelpersMixin):
         """
         # separated var for debugging
         self.browser.get(self.change_products_url)
-        self.browser.find_element_by_xpath(self.price_filter).click()
-        wait()
-        product = self.browser.find_element_by_xpath('//*[@id="result_list"]/tbody/tr[1]/td[4]')
-        product_price = int(float(product.text.replace(',', '.')))
+        self.wait.until(EC.url_contains('productpage'))
 
+        price_filter = '//*[@id="changelist-filter"]/ul[2]/li[3]/a'
+        self.browser.find_element_by_xpath(price_filter).click()
+        self.wait.until(EC.url_contains('price=1'))
+        cell_path = '//*[@id="result_list"]/tbody/tr[1]/td[4]'
+        product_price = int(float(
+            self.browser.find_element_by_xpath(cell_path)
+            .text.replace(',', '.')
+        ))
         self.assertTrue(product_price >= 1000)
 
     def test_image_filter(self):
         """Image filter is able to filter pages by the presence of the image."""
         self.browser.get(self.change_products_url)
-        self.browser.find_element_by_xpath(self.filter_by_has_image).click()
-        wait()
+        self.wait.until(EC.url_contains('productpage'))
 
+        filter_by_has_image = '//*[@id="changelist-filter"]/ul[4]/li[2]/a'
+        self.browser.find_element_by_xpath(filter_by_has_image).click()
+        self.wait.until(EC.url_contains('has_images=yes'))
         table = self.get_table_with_products().text
-
         self.assertTrue('0' in table)
 
-        self.browser.find_element_by_xpath(self.filter_by_has_not_image).click()
-        wait()
-
+        filter_by_has_not_image = '//*[@id="changelist-filter"]/ul[4]/li[3]/a'
+        self.browser.find_element_by_xpath(filter_by_has_not_image).click()
+        self.wait.until(EC.url_contains('has_images=no'))
         table = self.get_table_with_products().text
-
         self.assertTrue('300' in table)
 
     def test_content_filter(self):
         """Content filter is able to filter pages by the presence of the content."""
         self.browser.get(self.change_products_url)
-        self.browser.find_element_by_xpath(self.filter_by_has_content).click()
-        wait()
+        self.wait.until(EC.url_contains('productpage'))
 
+        filter_by_has_content = '//*[@id="changelist-filter"]/ul[3]/li[2]/a'
+        self.browser.find_element_by_xpath(filter_by_has_content).click()
+        self.wait.until(EC.url_contains('has_content=yes'))
         table = self.browser.find_element_by_class_name(self.product_table).text
-
         self.assertTrue('0' in table)
 
-        self.browser.find_element_by_xpath(self.filter_by_has_not_content).click()
-        wait()
-
+        filter_by_has_not_content = '//*[@id="changelist-filter"]/ul[3]/li[3]/a'
+        self.browser.find_element_by_xpath(filter_by_has_not_content).click()
+        self.wait.until(EC.url_contains('has_content=no'))
         table = self.get_table_with_products().text
-
         self.assertTrue('300' in table)
 
     def test_is_active_filter(self):
         """Activity filter returns only active or non active items."""
         self.browser.get(self.change_products_url)
-        wait()
-        self.browser.find_element_by_xpath(self.active_products).click()
-        wait()
+        self.wait.until(EC.url_contains('productpage'))
 
+        active_products = '//*[@id="changelist-filter"]/ul[1]/li[2]/a'
+        self.browser.find_element_by_xpath(active_products).click()
+        self.wait.until(EC.url_contains('is_active__exact=1'))
         first_product = self.browser.find_element_by_class_name(
             self.is_active_img).find_element_by_tag_name('img')
         first_product_state = first_product.get_attribute('alt')
-
         self.assertTrue(first_product_state == 'true')
 
-        self.browser.find_element_by_xpath(self.inactive_products).click()
-        wait()
+        inactive_products = '//*[@id="changelist-filter"]/ul[1]/li[3]/a'
+        self.browser.find_element_by_xpath(inactive_products).click()
+        self.wait.until(EC.url_contains('is_active__exact=0'))
         results = self.browser.find_element_by_class_name('paginator')
-
         self.assertTrue('0' in results.text)
 
     def test_search_autocomplete(self):
         """Search should autocomplete queries."""
         self.browser.get(self.change_products_url)
-        self.browser.find_element_by_id('searchbar').send_keys(self.autocomplete_text)
-        wait()
+        self.wait.until(EC.url_contains('productpage'))
 
+        self.browser.find_element_by_id('searchbar').send_keys(self.autocomplete_text)
+        self.wait.until(EC.visibility_of_element_located(
+            (By.CLASS_NAME, 'autocomplete-suggestions')
+        ))
         first_suggested_item = self.browser.find_element_by_class_name(
             'autocomplete-suggestion')
         first_suggested_item_text = first_suggested_item.get_attribute(
             'data-val')
-
         self.assertTrue(self.autocomplete_text in first_suggested_item_text)
 
     def test_sidebar_not_on_dashboard(self):
@@ -235,11 +233,14 @@ class AdminPage(AdminTestCase, HelpersMixin):
     def test_tree_redirect_to_table_editor_page(self):
         """Click on tree's context menu item should redirect us on table editor page."""
         self.open_js_tree_nodes()
-        tree_item = self.browser.find_element_by_id(
-            self.tree_product_id).find_element_by_tag_name('a')
+        tree_item = (
+            self.browser
+            .find_element_by_id(self.tree_product_id)
+            .find_element_by_tag_name('a')
+        )
         self.context_click(tree_item)
-        self.browser.find_elements_by_class_name('vakata-contextmenu-sep')[0].click()
-        wait()
+        self.browser.find_element_by_css_selector('.jstree-contextmenu a').click()
+        self.wait.until(EC.url_contains('editor'))
 
         test_h1 = self.first_h1
         self.assertEqual(test_h1, 'Табличный редактор')
@@ -250,38 +251,44 @@ class AdminPage(AdminTestCase, HelpersMixin):
     # @todo #137 Fix test_tree_redirect_to_entity_site_page test.
     #  This test shouldn't work because of new tab opening.
 
-    # def test_tree_redirect_to_entity_site_page(self):
-    #     """Click at tree's context menu item should redirect us to entity's site page."""
-        # self.open_js_tree_nodes()
-        # tree_item = (self.browser.find_element_by_id(self.root_category_id)
-        #              .find_element_by_tag_name('a'))
-        # category_h1 = Category.objects.get(id=self.root_category_id).page.display_h1
-        #
-        # # open context menu and click at redirect to site's page
-        # self.context_click(tree_item)
-        # self.browser.find_elements_by_class_name('vakata-contextmenu-sep')[1].click()
-        # wait()
-        # test_h1 = self.browser.find_element_by_tag_name('h1').text
-        #
-        # self.assertEqual(test_h1, category_h1)
+    @unittest.skip
+    def test_tree_redirect_to_entity_site_page(self):
+        """Click at tree's context menu item should redirect us to entity's site page."""
+        self.open_js_tree_nodes()
+        tree_item = (self.browser.find_element_by_id(self.root_category_id)
+                     .find_element_by_tag_name('a'))
+        category_h1 = Category.objects.get(id=self.root_category_id).page.display_h1
+
+        # open context menu and click at redirect to site's page
+        self.context_click(tree_item)
+        self.browser.find_elements_by_class_name('vakata-contextmenu-sep')[1].click()
+        wait()
+        test_h1 = self.browser.find_element_by_tag_name('h1').text
+
+        self.assertEqual(test_h1, category_h1)
+
+    def is_left_panel_collapsed(self):
+        self.wait.until(
+            EC.presence_of_element_located(
+                (By.CLASS_NAME, 'collapsed')
+            )
+        )
+        body_classes = (
+            self.browser
+            .find_element_by_tag_name('body')
+            .get_attribute('class')
+        )
+        return 'collapsed' in body_classes
 
     def test_sidebar_toggle(self):
         """Sidebar should store collapsed state."""
         self.browser.find_element_by_class_name('js-toggle-sidebar').click()
-        wait()
-        body_classes = self.browser.find_element_by_tag_name('body').get_attribute('class')
-
-        self.assertTrue('collapsed' in body_classes)
+        self.assertTrue(self.is_left_panel_collapsed())
 
         self.browser.refresh()
-        wait()
-        body_classes = self.browser.find_element_by_tag_name('body').get_attribute('class')
-
-        self.assertTrue('collapsed' in body_classes)
+        self.assertTrue(self.is_left_panel_collapsed())
 
 
-# @todo #187:120m Stabilize TableEditor selenium tests
-#  Write them on event based model instead of plain waits.
 @tag('slow')
 class TableEditor(AdminTestCase, HelpersMixin):
     """Selenium-based tests for Table Editor [TE]."""
@@ -292,19 +299,17 @@ class TableEditor(AdminTestCase, HelpersMixin):
     def setUp(self):
         """Set up testing url and dispatch selenium webdriver."""
         self.sign_in()
-        self.browser.find_element_by_id('admin-editor-link').click()
-        wait()
+        self.open_table_editor_page()
 
-    def refresh_table_editor_page(self):
+    def open_table_editor_page(self):
         self.browser.find_element_by_id('admin-editor-link').click()
-        wait()
+        self.wait.until(EC.url_contains('editor'))
 
     def update_input_value(self, index, new_data):
         """Clear input, pass new data and emulate Return keypress."""
         editable_input = self.browser.find_elements_by_class_name('inline-edit-cell')[index]
         editable_input.clear()
         editable_input.send_keys(str(new_data) + Keys.ENTER)
-        wait()
 
     def get_cell(self, index=0, name=None):
         """Return WebElement for subsequent manipulations by index."""
@@ -330,7 +335,7 @@ class TableEditor(AdminTestCase, HelpersMixin):
         old_active_state = checkbox.is_selected()
         checkbox.click()
         checkbox.send_keys(Keys.ENTER)
-        self.refresh_table_editor_page()
+        self.open_table_editor_page()
 
         self.get_cell().click()
         new_active_state = self.browser.find_element_by_name(checkbox_name).is_selected()
@@ -339,11 +344,13 @@ class TableEditor(AdminTestCase, HelpersMixin):
 
     def open_filters(self):
         """Open TE filters cause they are collapsed by default."""
-        filters_wrapper = self.browser.find_element_by_class_name('js-filter-wrapper')
+        filter_wrapper = self.browser.find_element_by_class_name('js-filter-wrapper')
 
-        if not filters_wrapper.is_displayed():
+        if not filter_wrapper.is_displayed():
             self.browser.find_element_by_class_name('js-hide-filter').click()
-            wait()
+            self.wait.until(EC.visibility_of_element_located(
+                (By.CLASS_NAME, 'js-filter-wrapper')
+            ))
 
     def check_filters_and_table_headers_equality(self):
         """TE filters and table headers text should be equal."""
@@ -370,7 +377,11 @@ class TableEditor(AdminTestCase, HelpersMixin):
 
     def save_filters(self):
         self.browser.find_element_by_class_name('js-save-filters').click()
-        wait(2)
+        self.wait.until(EC.presence_of_element_located((By.TAG_NAME, 'body')))
+
+    def drop_filters(self):
+        self.browser.find_element_by_class_name('js-drop-filters').click()
+        self.wait.until(EC.presence_of_element_located((By.TAG_NAME, 'body')))
 
     def test_products_loaded(self):
         """TE should have all products."""
@@ -382,7 +393,7 @@ class TableEditor(AdminTestCase, HelpersMixin):
         """We could change Product name from TE."""
         self.get_cell(1).click()
         self.update_input_value(0, self.new_product_name)
-        self.refresh_table_editor_page()
+        self.open_table_editor_page()
         updated_name = self.get_cell(1).text
 
         self.assertEqual(updated_name, self.new_product_name)
@@ -393,9 +404,11 @@ class TableEditor(AdminTestCase, HelpersMixin):
         price_cell_input = 2
         new_price = self.get_current_price(price_cell_index) + 100
         self.get_cell(price_cell_index).click()
-        wait()
+        self.wait.until(EC.presence_of_element_located(
+            (By.CSS_SELECTOR, f'input.inline-edit-cell[name="price"]')
+        ))
         self.update_input_value(price_cell_input, new_price)
-        self.refresh_table_editor_page()
+        self.open_table_editor_page()
         updated_price = self.get_current_price(price_cell_index)
 
         self.assertEqual(updated_price, new_price)
@@ -420,9 +433,13 @@ class TableEditor(AdminTestCase, HelpersMixin):
         """We could remove Product from TE."""
         old_first_row_id = self.get_cell().text
         self.browser.find_element_by_class_name('js-confirm-delete-modal').click()
-        wait()
+        self.wait.until(
+            EC.visibility_of_element_located((By.CLASS_NAME, 'modal-box'))
+        )
         self.browser.find_element_by_class_name('js-modal-delete').click()
-        wait()
+        self.wait.until(
+            EC.invisibility_of_element_located((By.CLASS_NAME, 'modal-box'))
+        )
         new_first_row_id = self.get_cell().text
 
         self.assertNotEqual(old_first_row_id, new_first_row_id)
@@ -446,10 +463,13 @@ class TableEditor(AdminTestCase, HelpersMixin):
 
     def test_filter_table(self):
         """We could make live search in TE."""
+        id_ = Product.objects.first().id
         rows_before = len(self.browser.find_elements_by_class_name('jqgrow'))
         search_field = self.browser.find_element_by_id('search-field')
-        search_field.send_keys(Product.objects.first().id)
-        wait(2)
+        search_field.send_keys(id_)
+        self.wait.until(EC.presence_of_element_located(
+            (By.CLASS_NAME, 'jqgrow')
+        ))
         rows_after = len(self.browser.find_elements_by_class_name('jqgrow'))
 
         self.assertNotEqual(rows_before, rows_after)
@@ -485,10 +505,8 @@ class TableEditor(AdminTestCase, HelpersMixin):
 
         self.browser.refresh()
         self.open_filters()
-        wait(2)
 
-        self.browser.find_element_by_class_name('js-drop-filters').click()
-        wait(2)
+        self.drop_filters()
         self.check_filters_and_table_headers_equality()
 
     def test_non_existing_category_change(self):
@@ -564,7 +582,7 @@ class TableEditor(AdminTestCase, HelpersMixin):
     @unittest.skip('Require filled value for marks.')
     def test_mark_search_on_table_editor(self):
         """Search mark on table editor."""
-        self.refresh_table_editor_page()
+        self.open_table_editor_page()
 
         mark_in_first_row_table = self.get_field_from_jqgrid('mark', 0).strip()
 
