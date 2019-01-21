@@ -125,6 +125,19 @@ class Product(catalog_models.AdminTreeDisplayMixin, page_models.PageMixin):
     def get_admin_tree_title(self):
         return f'[{self.id}] {self.name} {self.mark}]'
 
+    def get_root_category(self):
+        return self.category.get_root()
+
+    def get_siblings(self, offset):
+        return (
+            self.__class__.objects
+            .active()
+            .filter(category=self.category)
+            .exclude(id=self.id)
+            .prefetch_related('category')
+            .select_related('page')[:offset]
+        )
+
     # we'll remove this fields from Product model
     # after adapting all system components Options model.
     is_new_price = models.NullBooleanField(
