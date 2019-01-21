@@ -201,7 +201,8 @@ class Command(BaseCommand):
                         name=name,
                         price=i * 100,
                         category=category,
-                        page=ModelPage.objects.create(name=name)
+                        page=ModelPage.objects.create(name=name),
+                        mark=f'mark #{i}'
                     )
 
                     for tag in tags_:

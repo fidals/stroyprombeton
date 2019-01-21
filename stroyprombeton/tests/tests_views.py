@@ -8,25 +8,23 @@ All Selenium-tests should be located in tests_selenium.
 """
 import json
 import unittest
-from bs4 import BeautifulSoup
 from copy import copy
 from datetime import datetime
 from itertools import chain
 from operator import attrgetter
 
+from bs4 import BeautifulSoup
 from django.conf import settings
 from django.http import HttpResponse, QueryDict
-from django.test import TestCase, tag
+from django.test import override_settings, TestCase, tag
 from django.urls import reverse
 from django.utils.translation import ugettext as _
 
 from catalog.helpers import reverse_catalog_url
 from pages.models import CustomPage, FlatPage, ModelPage
-
 from stroyprombeton import models
 from stroyprombeton.tests.helpers import CategoryTestMixin, create_doubled_tag
 from stroyprombeton.tests.tests_forms import PriceFormTest
-
 
 CANONICAL_HTML_TAG = '<link rel="canonical" href="{path}">'
 CATEGORY_ROOT_NAME = 'Category root #0'
@@ -740,17 +738,11 @@ class CatalogTags(BaseCatalogTestCase, CategoryTestMixin):
         response = self.client.get(bad_tag_url)
         self.assertEqual(response.status_code, 404)
 
-    def test_too_many_tags_collapse(self):
-        """
-        Page should not contain too many tags.
-
-        If page contains more then `settings.TAGS_UI_LIMIT` tags,
-        it should collapse them and show short label instead.
-        """
+    @staticmethod
+    def set_too_many_tags(category: models.Category, from_index: int, to_index: int):
         group = models.TagGroup.objects.first()
         models.Tag.objects.filter(group=group).delete()
-        product = models.Product.objects.get(name='Product #10 of Category #0 of #3')
-        from_index, to_index = 1, settings.TAGS_UI_LIMIT + 2
+        product = category.products.first()
 
         for i in range(from_index, to_index):
             product.tags.add(
@@ -762,15 +754,33 @@ class CatalogTags(BaseCatalogTestCase, CategoryTestMixin):
             )
         product.save()
 
+    # set tags limit to value "10" to check if
+    # tags from-to label contains max numeric, but not alphabetical value.
+    # For example we should see "от 1 м до 11 м", but not "от 1 м до 9 м".
+    @override_settings(TAGS_UI_LIMIT=10)
+    def test_too_many_tags_collapse(self):
+        """
+        Page should not contain too many tags.
+
+        If page contains more then `settings.TAGS_UI_LIMIT` tags,
+        it should collapse them and show short label instead.
+        """
+        from_index, to_index = 1, settings.TAGS_UI_LIMIT + 2
+        product = (
+            models.Product.objects
+            .prefetch_related('category')
+            .get(name='Product #10 of Category #0 of #3')
+        )
+
+        self.set_too_many_tags(product.category, from_index, to_index)
+
         tags_text = (
             self.get_category_soup(category=product.category)
             .find(class_='tags-filter-inputs')
             .text
         )
-
-        # @todo #374:30m Create test for from_index, to_index correctness.
-        #  Dangerous case: ['1 м', '2 м', '11 м'] -> 'от 1 м до 2 м'
         self.assertIn(f'от {from_index} м до {to_index - 1} м', tags_text)
+        self.assertGreater(product.tags.count(), settings.TAGS_UI_LIMIT)
 
     def test_filter_products_by_tags(self):
         """Category page should not contain products, excluded by tags selection."""

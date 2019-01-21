@@ -1,5 +1,3 @@
-import unittest
-
 from django.conf import settings
 from django.core import mail
 from django.db.models import Count
@@ -7,12 +5,10 @@ from django.template.defaultfilters import floatformat
 from django.test import tag
 from django.urls import reverse
 from selenium.webdriver.common.action_chains import ActionChains
-from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC, ui
 
 from pages.models import CustomPage
-
 from stroyprombeton import models as stb_models
 from stroyprombeton.tests import helpers as test_helpers
 
@@ -499,7 +495,6 @@ class CategoryPage(BaseCartSeleniumTestCase, test_helpers.CategoryTestMixin):
         category_url = self.live_server_url + self.get_category_path(category)
         self.assertEqual(category_url, self.browser.current_url)
 
-    # @todo #374:30m Resurrect `test_apply_filter_state`
     def test_apply_filter_state(self):
         """Apply filters btn should be disabled with no checked tags."""
         self.load_category_page(self.middle_category)
@@ -541,14 +536,14 @@ class Search(SeleniumTestCase):
             (By.CLASS_NAME, 'autocomplete-suggestions')
         ))
 
+    @property
+    def input(self):
+        return self.wait.until(EC.visibility_of_element_located(
+            self.INPUT_LOCATOR
+        ))
+
     def search_loaded_condition(self):
         return EC.url_contains(self.search_url)
-
-    def clear_input(self, number):
-        self.wait.until(EC.visibility_of_element_located(
-            self.INPUT_LOCATOR
-        )).send_keys(Keys.BACKSPACE * number)
-        self.wait.until_not(EC.visibility_of(self.autocomplete))
 
     def fill_input(self, query=''):
         """Enter correct search term."""
@@ -565,9 +560,6 @@ class Search(SeleniumTestCase):
             self.search_loaded_condition(),
         )
 
-    # @todo #352:Resurrect autocomplete selenium test.
-    #  Now it fails in some cases, but not in all.
-    @unittest.skip
     def test_autocomplete_can_expand_and_collapse(self):
         """
         Test the autocomplete behavior.
@@ -580,14 +572,14 @@ class Search(SeleniumTestCase):
         self.assertTrue(self.autocomplete.is_displayed())
 
         # remove search term ...
-        self.clear_input(len(self.query))
-        self.wait.until(EC.text_to_be_present_in_element(self.INPUT_LOCATOR, ''))
+        import time
+        time.sleep(1)
+        self.input.clear()
+        self.wait.until_not(EC.visibility_of(self.autocomplete))
 
         # ... and autocomplete should collapse
         self.assertFalse(self.autocomplete.is_displayed())
 
-    # @todo #RF220:30m Resurrect `test_autocomplete_item_link`
-    @unittest.skip
     def test_autocomplete_item_link(self):
         """Every autocomplete item should contain link on page."""
         self.fill_input_and_wait()
@@ -596,8 +588,6 @@ class Search(SeleniumTestCase):
         self.wait.until(EC.url_contains('/gbi/products/'))
         self.assertTrue('/gbi/products/' in self.browser.current_url)
 
-    # @todo #RF220:30m Resurrect `test_autocomplete_see_all_item`
-    @unittest.skip
     def test_autocomplete_see_all_item(self):
         """
         Autocomplete should contain "see all" item.

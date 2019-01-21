@@ -354,19 +354,29 @@ class TableEditor(AdminTestCase, HelpersMixin):
 
     def check_filters_and_table_headers_equality(self):
         """TE filters and table headers text should be equal."""
-        filters = self.browser.find_elements_by_class_name('js-sortable-item')
+        def get_label(element):
+            return element.text.strip().lower().replace(':', '')
 
-        for index, item in enumerate(filters):
-            filter_text = item.text.lower().replace(':', '')
+        # @todo #317:60m Fix missing "Tags" field selenium admin tests.
+        #  It not appears as table column when selected in the list with fields.
+        def exclude_tag(label: str):
+            return label not in ['tags']
+
+        fields = self.browser.find_elements_by_class_name('js-sortable-item')
+        filter_field_labels = filter(exclude_tag, (get_label(f) for f in fields))
+
+        for index, filter_label in enumerate(filter_field_labels):
             # STB call category "раздел", but refarm call it "категория"
-            if 'раздел' in filter_text.lower() or 'вес' in filter_text.lower():
+            if 'раздел' in filter_label or 'вес' in filter_label:
                 continue
+            # do "index + 1" to skip the "ID" field.
+            # It's not presented in table sorting fields list,
+            # but always is the first column at the table.
             table_header = self.browser.find_elements_by_class_name('ui-th-div')[index + 1]
-            table_header_text = table_header.text.lower().replace(':', '')
-
-            self.assertIn(table_header_text, filter_text)
+            self.assertIn(get_label(table_header), filter_label)
 
     def add_col_to_grid(self, col_name):
+        self.open_filters()
         filter_fields = self.browser.find_elements_by_class_name('filter-fields-label')
 
         def is_correct_col(col):
@@ -382,6 +392,18 @@ class TableEditor(AdminTestCase, HelpersMixin):
     def drop_filters(self):
         self.browser.find_element_by_class_name('js-drop-filters').click()
         self.wait.until(EC.presence_of_element_located((By.TAG_NAME, 'body')))
+
+    def fill_search_input(self, text):
+        search_field = self.browser.find_element_by_id('search-field')
+        search_field.send_keys(text)
+        self.wait.until(
+            lambda driver: text in search_field.get_attribute('value')
+        )
+        self.wait.until(EC.presence_of_element_located(
+            (By.CLASS_NAME, 'jqgrow')
+        ))
+        # @todo #255:30m Find a way to wait search input in selenium tests
+        wait(1)
 
     def test_products_loaded(self):
         """TE should have all products."""
@@ -415,7 +437,6 @@ class TableEditor(AdminTestCase, HelpersMixin):
 
     def test_edit_product_activity(self):
         """We could change Product is_active state from TE."""
-        self.open_filters()
         self.add_col_to_grid('is_active')
         old_active_state, new_active_state = self.perform_checkbox_toggle('page_is_active')
 
@@ -423,7 +444,6 @@ class TableEditor(AdminTestCase, HelpersMixin):
 
     def test_edit_product_popularity(self):
         """We could change Product price is_popular state from TE."""
-        self.open_filters()
         self.add_col_to_grid('is_popular')
         old_popular_state, new_popular_state = self.perform_checkbox_toggle('is_popular')
 
@@ -463,13 +483,9 @@ class TableEditor(AdminTestCase, HelpersMixin):
 
     def test_filter_table(self):
         """We could make live search in TE."""
-        id_ = Product.objects.first().id
+        id_ = str(Product.objects.first().id)
         rows_before = len(self.browser.find_elements_by_class_name('jqgrow'))
-        search_field = self.browser.find_element_by_id('search-field')
-        search_field.send_keys(id_)
-        self.wait.until(EC.presence_of_element_located(
-            (By.CLASS_NAME, 'jqgrow')
-        ))
+        self.fill_search_input(id_)
         rows_after = len(self.browser.find_elements_by_class_name('jqgrow'))
 
         self.assertNotEqual(rows_before, rows_after)
@@ -483,8 +499,6 @@ class TableEditor(AdminTestCase, HelpersMixin):
         self.open_filters()
         self.check_filters_and_table_headers_equality()
 
-    # @todo #187:30m Resurrect selenium test `test_save_and_drop_custom_filters`
-    @unittest.skip
     def test_save_and_drop_custom_filters(self):
         """
         Test headers.
@@ -499,6 +513,7 @@ class TableEditor(AdminTestCase, HelpersMixin):
 
         for index, item in enumerate(checkboxes):
             self.browser.find_elements_by_class_name('filter-fields-item')[index].click()
+            wait(0.5)
 
         self.save_filters()
         self.check_filters_and_table_headers_equality()
@@ -567,6 +582,9 @@ class TableEditor(AdminTestCase, HelpersMixin):
         self.test_edit_product_name()
 
     def get_field_from_jqgrid(self, fieldname, row):
+        self.wait.until(EC.presence_of_element_located(
+            (By.CLASS_NAME, 'jqgrow')
+        ))
         tr = (
             self.browser
             .find_elements_by_class_name('jqgrow')[row]
@@ -577,28 +595,24 @@ class TableEditor(AdminTestCase, HelpersMixin):
             if td.get_attribute('aria-describedby') == f'jqGrid_{fieldname}'
         )
 
-    # @todo #238:15m Resurrect test `test_mark_search_on_table_editor`
-    #  Fill two Product's mark fields for fixtures and fix a related test.
-    @unittest.skip('Require filled value for marks.')
     def test_mark_search_on_table_editor(self):
         """Search mark on table editor."""
         self.open_table_editor_page()
 
+        self.add_col_to_grid('mark')
         mark_in_first_row_table = self.get_field_from_jqgrid('mark', 0).strip()
 
         mark_from_db = Product.objects.exclude(mark='').first().mark.strip()
         second_mark_from_db = (
             Product.objects
-            .exclude(mark="")
+            .exclude(mark='')
             .exclude(mark=mark_from_db)
             .first().mark.strip()
         )
         if mark_in_first_row_table == mark_from_db:
             mark_from_db = second_mark_from_db
 
-        search_field = self.browser.find_element_by_id('search-field')
-        search_field.send_keys(mark_from_db)
-        wait(2)
+        self.fill_search_input(mark_from_db)
         mark_found = self.get_field_from_jqgrid('mark', 0).strip()
 
         self.assertNotEqual(mark_in_first_row_table, mark_found)
