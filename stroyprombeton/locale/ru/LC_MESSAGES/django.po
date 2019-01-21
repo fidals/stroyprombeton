@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-05-31 13:11+0000\n"
+"POT-Creation-Date: 2019-01-21 06:57+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20,395 +20,36 @@ msgstr ""
 "%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n"
 "%100>=11 && n%100<=14)? 2 : 3);\n"
 
-#: src/refarm-site/catalog/apps.py:7
-msgid "catalog"
-msgstr "каталог"
-
-#: src/refarm-site/catalog/models.py:80
-#: src/refarm-site/generic_admin/templates/admin/table_editor.html:115
-msgid "Category"
-msgstr "Раздел"
-
-#: src/refarm-site/catalog/models.py:81
-msgid "Categories"
-msgstr "Разделы"
-
-#: src/refarm-site/catalog/models.py:84 src/refarm-site/catalog/models.py:146
-#: src/refarm-site/pages/models.py:57
-msgid "name"
-msgstr "название"
-
-#: src/refarm-site/catalog/models.py:91 src/refarm-site/pages/models.py:68
-#: stroyprombeton/admin.py:18
+#: stroyprombeton/admin.py:20
 msgid "parent"
 msgstr "родитель"
 
-#: src/refarm-site/catalog/models.py:142
-msgid "Product"
-msgstr "Изделие"
-
-#: src/refarm-site/catalog/models.py:143
-msgid "Products"
-msgstr "Изделия"
-
-#: src/refarm-site/catalog/models.py:151
-#: src/refarm-site/generic_admin/filters.py:9
-msgid "price"
-msgstr "цена"
-
-#: src/refarm-site/catalog/models.py:156
-msgid "in stock"
-msgstr "наличие"
-
-#: src/refarm-site/catalog/models.py:161
-msgid "is popular"
-msgstr "популярность"
-
-#: src/refarm-site/generic_admin/filters.py:14
-msgid "rub"
-msgstr "руб"
-
-#: src/refarm-site/generic_admin/filters.py:48
-msgid "has images"
-msgstr "По картинкам"
-
-#: src/refarm-site/generic_admin/filters.py:53
-msgid "Has images"
-msgstr "С картинками"
-
-#: src/refarm-site/generic_admin/filters.py:54
-msgid "Has no images"
-msgstr "Без картинок"
-
-#: src/refarm-site/generic_admin/filters.py:70
-msgid "has content"
-msgstr "По контенту"
-
-#: src/refarm-site/generic_admin/filters.py:75
-msgid "Has content"
-msgstr "С контентом"
-
-#: src/refarm-site/generic_admin/filters.py:76
-msgid "Has no content"
-msgstr "Без контента"
-
-#: src/refarm-site/generic_admin/inlines.py:25
-msgid "Category ID"
-msgstr "ID категории"
-
-#: src/refarm-site/generic_admin/inlines.py:44
-#: src/refarm-site/generic_admin/mixins.py:114
-msgid "Parent ID"
-msgstr "ID родителя"
-
-#: src/refarm-site/generic_admin/inlines.py:51
-msgid "Image"
-msgstr "картинка"
-
-#: src/refarm-site/generic_admin/inlines.py:70
-msgid "current image"
-msgstr "текущая картинка"
-
-#: src/refarm-site/generic_admin/mixins.py:32
-msgid "item was"
-msgstr "сущность была"
-
-#: src/refarm-site/generic_admin/mixins.py:34
-msgid "items were"
-msgstr "сущностей было"
-
-#: src/refarm-site/generic_admin/mixins.py:41
-msgid "marked as active"
-msgstr "сделать активным"
-
-#: src/refarm-site/generic_admin/mixins.py:47
-msgid "marked as non-active"
-msgstr "сделать не активным"
-
-#: src/refarm-site/generic_admin/mixins.py:49
-msgid "Make active"
-msgstr "Сделать активными"
-
-#: src/refarm-site/generic_admin/mixins.py:50
-msgid "Make inactive"
-msgstr "Сделать неактивными"
-
-#: src/refarm-site/generic_admin/mixins.py:101
-#: src/refarm-site/generic_admin/models.py:116
-msgid "Parent"
-msgstr "Родитель"
-
-#: src/refarm-site/generic_admin/models.py:103
-#: src/refarm-site/generic_admin/templates/admin/table_editor.html:122
-msgid "Price"
-msgstr "Цена"
-
-#: src/refarm-site/generic_admin/models.py:122
-#: src/refarm-site/generic_admin/models.py:146
-msgid "Id"
-msgstr ""
-
-#: src/refarm-site/generic_admin/models.py:132
-msgid "Link"
-msgstr "Ссылка"
-
-#: src/refarm-site/generic_admin/templates/admin/base.html:45
-msgid "Welcome,"
-msgstr "Добро пожаловать,"
-
-#: src/refarm-site/generic_admin/templates/admin/base.html:50
-msgid "View site"
-msgstr "Перейти на сайт"
-
-#: src/refarm-site/generic_admin/templates/admin/base.html:55
-msgid "Documentation"
-msgstr "Документация"
-
-#: src/refarm-site/generic_admin/templates/admin/base.html:59
-msgid "Change password"
-msgstr "Сменить пароль"
-
-#: src/refarm-site/generic_admin/templates/admin/base.html:61
-msgid "Log out"
-msgstr "Выйти"
-
-#: src/refarm-site/generic_admin/templates/admin/base.html:72
-#: src/refarm-site/generic_admin/templates/admin/change_form.html:24
-msgid "Home"
-msgstr "Домашняя страница"
-
-#: src/refarm-site/generic_admin/templates/admin/change_form.html:30
-msgid "Add"
-msgstr "Добавить"
-
-#: src/refarm-site/generic_admin/templates/admin/change_form.html:43
-msgid "History"
-msgstr "История"
-
-#: src/refarm-site/generic_admin/templates/admin/change_form.html:46
-msgid "View on site"
-msgstr "Смотреть на сайте"
-
-#: src/refarm-site/generic_admin/templates/admin/change_form.html:62
-#: src/refarm-site/generic_admin/templates/admin/login.html:24
-msgid "Please correct the error below."
-msgstr "Пожалуйста, исправьте ошибку ниже."
-
-#: src/refarm-site/generic_admin/templates/admin/change_form.html:63
-#: src/refarm-site/generic_admin/templates/admin/login.html:25
-msgid "Please correct the errors below."
-msgstr "Пожалуйста, исправьте ошибки ниже."
-
-#: src/refarm-site/generic_admin/templates/admin/includes/sidebar.html:13
-#: src/refarm-site/generic_admin/views.py:305
-msgid "Table editor"
-msgstr "Табличный редактор"
-
-#: src/refarm-site/generic_admin/templates/admin/login.html:41
-#, python-format
-msgid ""
-"You are authenticated as %(username)s, but are not authorized to access this "
-"page. Would you like to login to a different account?"
-msgstr ""
-
-#: src/refarm-site/generic_admin/templates/admin/login.html:61
-msgid "Forgotten your password or username?"
-msgstr "Забыли пароль или имя пользователя?"
-
-#: src/refarm-site/generic_admin/templates/admin/login.html:65
-msgid "Log in"
-msgstr "Войти"
-
-#: src/refarm-site/generic_admin/templates/admin/table_editor.html:14
-msgid "Show filters"
-msgstr "Показать фильтры"
-
-#: src/refarm-site/generic_admin/templates/admin/table_editor.html:20
-msgid "Filter fields"
-msgstr "Поля фильтра"
-
-#: src/refarm-site/generic_admin/templates/admin/table_editor.html:35
-msgid "Sorting fields"
-msgstr "Поля сортировки"
-
-#: src/refarm-site/generic_admin/templates/admin/table_editor.html:41
-msgid "Update table editor"
-msgstr "Обновить табличный редактор"
-
-#: src/refarm-site/generic_admin/templates/admin/table_editor.html:44
-msgid "Drop filters"
-msgstr "Сбросить фильтры"
-
-#: src/refarm-site/generic_admin/templates/admin/table_editor.html:51
-msgid "Search"
-msgstr "Поиск"
-
-#: src/refarm-site/generic_admin/templates/admin/table_editor.html:53
-msgid "Enter product name, product ID, category name or price..."
-msgstr "Введите название продукта, id продукта, название категории или цену"
-
-#: src/refarm-site/generic_admin/templates/admin/table_editor.html:62
-#: src/refarm-site/generic_admin/templates/admin/table_editor.html:98
-msgid "Add new product"
-msgstr "Добавить новый товар"
-
-#: src/refarm-site/generic_admin/templates/admin/table_editor.html:75
-msgid "Are you sure, that you want to delete"
-msgstr "Вы уверены, что хотите удалить"
-
-#: src/refarm-site/generic_admin/templates/admin/table_editor.html:79
-msgid "Accept"
-msgstr "Подтвердить"
-
-#: src/refarm-site/generic_admin/templates/admin/table_editor.html:82
-#: src/refarm-site/generic_admin/templates/admin/table_editor.html:132
-msgid "Cancel"
-msgstr "Отменить"
-
-#: src/refarm-site/generic_admin/templates/admin/table_editor.html:101
-msgid "New product was successfully added"
-msgstr "Новый продукт был успешно сохранён"
-
-#: src/refarm-site/generic_admin/templates/admin/table_editor.html:108
-msgid "Name"
-msgstr "Имя"
-
-#: src/refarm-site/generic_admin/templates/admin/table_editor.html:135
-msgid "Refresh table editor"
-msgstr "Обновить табличный редактор"
-
-#: src/refarm-site/generic_admin/templates/admin/table_editor.html:138
-msgid "Save product"
-msgstr "Сохранить товар"
-
-#: src/refarm-site/images/models.py:49 src/refarm-site/images/models.py:64
-msgid "image"
-msgstr "картинка"
-
-#: src/refarm-site/images/models.py:50
-msgid "images"
-msgstr "картинки"
-
-#: src/refarm-site/images/models.py:60 src/refarm-site/pages/models.py:21
-#: src/refarm-site/pages/models.py:97
-msgid "title"
-msgstr "заголовок"
-
-#: src/refarm-site/images/models.py:61 src/refarm-site/pages/models.py:71
-msgid "slug"
-msgstr ""
-
-#: src/refarm-site/images/models.py:62 src/refarm-site/pages/models.py:20
-#: src/refarm-site/pages/models.py:95
-msgid "description"
-msgstr "описание"
-
-#: src/refarm-site/images/models.py:63
-msgid "created"
-msgstr "дата создания"
-
-#: src/refarm-site/images/models.py:65
-msgid "is main"
-msgstr "главная"
-
-#: src/refarm-site/pages/apps.py:7
-msgid "pages"
-msgstr "страницы"
-
-#: src/refarm-site/pages/models.py:19 src/refarm-site/pages/models.py:94
-msgid "keywords"
-msgstr "ключевые слова"
-
-#: src/refarm-site/pages/models.py:22 src/refarm-site/pages/models.py:96
-msgid "seo text"
-msgstr "seo текст"
-
-#: src/refarm-site/pages/models.py:25
-msgid "Page Template"
-msgstr "Шаблон"
-
-#: src/refarm-site/pages/models.py:26
-msgid "Page Templates"
-msgstr "Шаблоны"
-
-#: src/refarm-site/pages/models.py:54
-msgid "Page"
-msgstr "Страница"
-
-#: src/refarm-site/pages/models.py:55
-msgid "Pages"
-msgstr "Страницы"
-
-#: src/refarm-site/pages/models.py:76
-msgid "is active"
-msgstr "активность"
-
-#: src/refarm-site/pages/models.py:78
-msgid "position"
-msgstr "позиция"
-
-#: src/refarm-site/pages/models.py:79
-msgid "content"
-msgstr "контент"
-
-#: src/refarm-site/pages/models.py:84
-msgid "date published"
-msgstr "дата публикации"
-
-#: src/refarm-site/pages/models.py:89
-msgid "This field will be shown in the breadcrumbs, menu items and etc."
-msgstr "Это поле будет отображаться в хлебных крошках, меню и т.д."
-
-#: src/refarm-site/pages/models.py:90
-msgid "menu title"
-msgstr "заголовок в меню"
-
-#: src/refarm-site/pages/models.py:102
-msgid "page template"
-msgstr "шаблон"
-
-#: src/refarm-site/pages/models.py:232
-msgid "Custom Page"
-msgstr "Служебная страница"
-
-#: src/refarm-site/pages/models.py:233
-msgid "Custom Pages"
-msgstr "Служебные страницы"
-
-#: src/refarm-site/pages/models.py:245
-msgid "Flat Page"
-msgstr "Простая страница"
-
-#: src/refarm-site/pages/models.py:246
-msgid "Flat Pages"
-msgstr "Простые страницы"
-
-#: stroyprombeton/admin.py:23
+#: stroyprombeton/admin.py:25
 msgid "news"
 msgstr "новости"
 
-#: stroyprombeton/admin.py:24
+#: stroyprombeton/admin.py:26
 msgid "regions"
 msgstr "регионы"
 
-#: stroyprombeton/admin.py:25
+#: stroyprombeton/admin.py:27
 msgid "client feedbacks"
 msgstr "отзывы клиентов"
 
-#: stroyprombeton/admin.py:36
+#: stroyprombeton/admin.py:38
 msgid "characteristics equality"
 msgstr "По совпадению характеристик"
 
-#: stroyprombeton/admin.py:41
+#: stroyprombeton/admin.py:43
 msgid "Only same h1"
 msgstr "Только по h1"
 
-#: stroyprombeton/admin.py:42
+#: stroyprombeton/admin.py:44
 msgid "Same h1, characteristics, price"
 msgstr "По h1, характеристикам, цене"
 
-#: stroyprombeton/admin.py:86 stroyprombeton/models.py:21
-#: stroyprombeton/models.py:48
+#: stroyprombeton/admin.py:86 stroyprombeton/models.py:32
+#: stroyprombeton/models.py:56 stroyprombeton/models.py:162
 msgid "specification"
 msgstr "документация"
 
@@ -432,83 +73,341 @@ msgstr "Админка Stroyprombeton"
 msgid "Stroyprombeton"
 msgstr "Стройпромбетон"
 
-#: stroyprombeton/models.py:38 stroyprombeton/models.py:69
-msgid "category"
-msgstr "категория"
+#: stroyprombeton/models.py:51 stroyprombeton/models.py:140
+msgid "tags"
+msgstr ""
 
-#: stroyprombeton/models.py:43
-msgid "is new price"
-msgstr "новая цена"
-
-#: stroyprombeton/models.py:45
+#: stroyprombeton/models.py:53 stroyprombeton/models.py:159
 msgid "date price updated"
 msgstr "дата обновления цены"
 
-#: stroyprombeton/models.py:46
+#: stroyprombeton/models.py:54 stroyprombeton/models.py:160
 msgid "code"
 msgstr "код"
 
-#: stroyprombeton/models.py:47
+#: stroyprombeton/models.py:55 stroyprombeton/models.py:161
 msgid "mark"
 msgstr "марка"
 
-#: stroyprombeton/models.py:49
+#: stroyprombeton/models.py:57 stroyprombeton/models.py:163
 msgid "length"
 msgstr "длина"
 
-#: stroyprombeton/models.py:50
+#: stroyprombeton/models.py:58 stroyprombeton/models.py:164
 msgid "width"
 msgstr "ширина"
 
-#: stroyprombeton/models.py:51
+#: stroyprombeton/models.py:59 stroyprombeton/models.py:165
 msgid "height"
 msgstr "высота"
 
-#: stroyprombeton/models.py:52
+#: stroyprombeton/models.py:60 stroyprombeton/models.py:166
 msgid "weight"
 msgstr "вес"
 
-#: stroyprombeton/models.py:53
+#: stroyprombeton/models.py:61 stroyprombeton/models.py:167
 msgid "volume"
 msgstr "объём"
 
-#: stroyprombeton/models.py:54
+#: stroyprombeton/models.py:62 stroyprombeton/models.py:168
 msgid "diameter out"
 msgstr "диаметр внешний"
 
-#: stroyprombeton/models.py:55
+#: stroyprombeton/models.py:63 stroyprombeton/models.py:169
 msgid "diameter in"
 msgstr "диаметр внутренний"
 
-#: stroyprombeton/models.py:70
+#: stroyprombeton/models.py:68 stroyprombeton/models.py:133
+msgid "is new price"
+msgstr "новая цена"
+
+#: stroyprombeton/models.py:74 stroyprombeton/models.py:146
+msgid "price"
+msgstr "цена"
+
+#: stroyprombeton/models.py:79 stroyprombeton/models.py:151
+msgid "in stock"
+msgstr "наличие"
+
+#: stroyprombeton/models.py:84 stroyprombeton/models.py:156
+msgid "is popular"
+msgstr "популярность"
+
+#: stroyprombeton/models.py:96
+msgid "name"
+msgstr "название"
+
+#: stroyprombeton/models.py:101 stroyprombeton/models.py:177
+msgid "category"
+msgstr "категория"
+
+#: stroyprombeton/models.py:108
+#, fuzzy
+#| msgid "position"
+msgid "option"
+msgstr "вариант"
+
+#: stroyprombeton/models.py:178
 msgid "categories"
 msgstr "категории"
 
-#: stroyprombeton/models.py:80
+#: stroyprombeton/models.py:188
 msgid "product"
 msgstr "товар"
 
-#: stroyprombeton/models.py:81
+#: stroyprombeton/models.py:189
 msgid "products"
 msgstr "товары"
 
-#: stroyprombeton/models.py:101 stroyprombeton/models.py:102
+#: stroyprombeton/models.py:213 stroyprombeton/models.py:214
 msgid "News"
 msgstr "Новости"
 
-#: stroyprombeton/models.py:110 stroyprombeton/models.py:111
+#: stroyprombeton/models.py:222 stroyprombeton/models.py:223
 msgid "Regions"
 msgstr "Регионы"
 
-#: stroyprombeton/models.py:119 stroyprombeton/models.py:120
+#: stroyprombeton/models.py:231 stroyprombeton/models.py:232
 msgid "Client feedbacks"
 msgstr "Отзывы клиентов"
 
-#: stroyprombeton/settings/base.py:125
+#: stroyprombeton/settings/base.py:135
 msgid "Russian"
 msgstr ""
+
+#: stroyprombeton/tests/tests_views.py:507
+msgid "Product"
+msgstr "Изделие"
 
 #: stroyprombeton/views/admin.py:10
 #, python-format
 msgid "Category with name ( %s ) does not exist."
 msgstr "Категория с именем ( %s ) не существует."
+
+#~ msgid "catalog"
+#~ msgstr "каталог"
+
+#~ msgid "Category"
+#~ msgstr "Раздел"
+
+#~ msgid "Categories"
+#~ msgstr "Разделы"
+
+#~ msgid "Products"
+#~ msgstr "Изделия"
+
+#~ msgid "rub"
+#~ msgstr "руб"
+
+#~ msgid "has images"
+#~ msgstr "По картинкам"
+
+#~ msgid "Has images"
+#~ msgstr "С картинками"
+
+#~ msgid "Has no images"
+#~ msgstr "Без картинок"
+
+#~ msgid "has content"
+#~ msgstr "По контенту"
+
+#~ msgid "Has content"
+#~ msgstr "С контентом"
+
+#~ msgid "Has no content"
+#~ msgstr "Без контента"
+
+#~ msgid "Category ID"
+#~ msgstr "ID категории"
+
+#~ msgid "Parent ID"
+#~ msgstr "ID родителя"
+
+#~ msgid "Image"
+#~ msgstr "картинка"
+
+#~ msgid "current image"
+#~ msgstr "текущая картинка"
+
+#~ msgid "item was"
+#~ msgstr "сущность была"
+
+#~ msgid "items were"
+#~ msgstr "сущностей было"
+
+#~ msgid "marked as active"
+#~ msgstr "сделать активным"
+
+#~ msgid "marked as non-active"
+#~ msgstr "сделать не активным"
+
+#~ msgid "Make active"
+#~ msgstr "Сделать активными"
+
+#~ msgid "Make inactive"
+#~ msgstr "Сделать неактивными"
+
+#~ msgid "Parent"
+#~ msgstr "Родитель"
+
+#~ msgid "Price"
+#~ msgstr "Цена"
+
+#~ msgid "Link"
+#~ msgstr "Ссылка"
+
+#~ msgid "Welcome,"
+#~ msgstr "Добро пожаловать,"
+
+#~ msgid "View site"
+#~ msgstr "Перейти на сайт"
+
+#~ msgid "Documentation"
+#~ msgstr "Документация"
+
+#~ msgid "Change password"
+#~ msgstr "Сменить пароль"
+
+#~ msgid "Log out"
+#~ msgstr "Выйти"
+
+#~ msgid "Home"
+#~ msgstr "Домашняя страница"
+
+#~ msgid "Add"
+#~ msgstr "Добавить"
+
+#~ msgid "History"
+#~ msgstr "История"
+
+#~ msgid "View on site"
+#~ msgstr "Смотреть на сайте"
+
+#~ msgid "Please correct the error below."
+#~ msgstr "Пожалуйста, исправьте ошибку ниже."
+
+#~ msgid "Please correct the errors below."
+#~ msgstr "Пожалуйста, исправьте ошибки ниже."
+
+#~ msgid "Table editor"
+#~ msgstr "Табличный редактор"
+
+#~ msgid "Forgotten your password or username?"
+#~ msgstr "Забыли пароль или имя пользователя?"
+
+#~ msgid "Log in"
+#~ msgstr "Войти"
+
+#~ msgid "Show filters"
+#~ msgstr "Показать фильтры"
+
+#~ msgid "Filter fields"
+#~ msgstr "Поля фильтра"
+
+#~ msgid "Sorting fields"
+#~ msgstr "Поля сортировки"
+
+#~ msgid "Update table editor"
+#~ msgstr "Обновить табличный редактор"
+
+#~ msgid "Drop filters"
+#~ msgstr "Сбросить фильтры"
+
+#~ msgid "Search"
+#~ msgstr "Поиск"
+
+#~ msgid "Enter product name, product ID, category name or price..."
+#~ msgstr "Введите название продукта, id продукта, название категории или цену"
+
+#~ msgid "Add new product"
+#~ msgstr "Добавить новый товар"
+
+#~ msgid "Are you sure, that you want to delete"
+#~ msgstr "Вы уверены, что хотите удалить"
+
+#~ msgid "Accept"
+#~ msgstr "Подтвердить"
+
+#~ msgid "Cancel"
+#~ msgstr "Отменить"
+
+#~ msgid "New product was successfully added"
+#~ msgstr "Новый продукт был успешно сохранён"
+
+#~ msgid "Name"
+#~ msgstr "Имя"
+
+#~ msgid "Refresh table editor"
+#~ msgstr "Обновить табличный редактор"
+
+#~ msgid "Save product"
+#~ msgstr "Сохранить товар"
+
+#~ msgid "image"
+#~ msgstr "картинка"
+
+#~ msgid "images"
+#~ msgstr "картинки"
+
+#~ msgid "title"
+#~ msgstr "заголовок"
+
+#~ msgid "description"
+#~ msgstr "описание"
+
+#~ msgid "created"
+#~ msgstr "дата создания"
+
+#~ msgid "is main"
+#~ msgstr "главная"
+
+#~ msgid "pages"
+#~ msgstr "страницы"
+
+#~ msgid "keywords"
+#~ msgstr "ключевые слова"
+
+#~ msgid "seo text"
+#~ msgstr "seo текст"
+
+#~ msgid "Page Template"
+#~ msgstr "Шаблон"
+
+#~ msgid "Page Templates"
+#~ msgstr "Шаблоны"
+
+#~ msgid "Page"
+#~ msgstr "Страница"
+
+#~ msgid "Pages"
+#~ msgstr "Страницы"
+
+#~ msgid "is active"
+#~ msgstr "активность"
+
+#~ msgid "content"
+#~ msgstr "контент"
+
+#~ msgid "date published"
+#~ msgstr "дата публикации"
+
+#~ msgid "This field will be shown in the breadcrumbs, menu items and etc."
+#~ msgstr "Это поле будет отображаться в хлебных крошках, меню и т.д."
+
+#~ msgid "menu title"
+#~ msgstr "заголовок в меню"
+
+#~ msgid "page template"
+#~ msgstr "шаблон"
+
+#~ msgid "Custom Page"
+#~ msgstr "Служебная страница"
+
+#~ msgid "Custom Pages"
+#~ msgstr "Служебные страницы"
+
+#~ msgid "Flat Page"
+#~ msgstr "Простая страница"
+
+#~ msgid "Flat Pages"
+#~ msgstr "Простые страницы"
