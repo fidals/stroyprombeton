@@ -9,9 +9,8 @@ from django.utils.translation import ugettext_lazy as _
 from django_select2.forms import ModelSelect2Widget
 
 from ecommerce.models import Position
-from pages import models as pages_models
 from generic_admin import models as admin_models, inlines, mixins, sites, filters
-
+from pages import models as pages_models
 from stroyprombeton import models as stb_models
 from stroyprombeton.views import TableEditor
 
@@ -176,6 +175,7 @@ class StbFlatPageAdmin(admin_models.FlatPageAdmin):
     ]
 
 
+# @todo #396:120m Adapt admin panel to Options
 class StbProductInline(inlines.ProductInline):
     model = stb_models.Product
     form = CustomWidgetsForm

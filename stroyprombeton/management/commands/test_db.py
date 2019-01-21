@@ -14,12 +14,11 @@ from django.core.files.images import ImageFile
 from django.core.management import call_command
 from django.core.management.base import BaseCommand
 
+import stroyprombeton.tests
 from images.models import Image
 from pages.models import CustomPage, FlatPage, ModelPage, PageTemplate
 from pages.utils import save_custom_pages
-
 from stroyprombeton import models as stb_models
-import stroyprombeton.tests
 
 CATEGORY_PATTERN = 'Category #{} of #{}'
 FEEDBACKS_COUNT = 9
@@ -190,6 +189,8 @@ class Command(BaseCommand):
             for index in range(count) for parent in parents
         )
 
+    # @todo #396:60m Adapt test_db command to Options.
+    #  Then remove `null=True, blank=True` from Product.options field.
     def create_products(self, parents, tags):
         """Create products for every non-root category."""
         def create_products(count, categories, tags_):

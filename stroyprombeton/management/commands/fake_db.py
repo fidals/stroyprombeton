@@ -1,8 +1,9 @@
 # DO NOT RUN THIS COMMAND ON PROD
+# @todo #396:15m Explore fake_db command and write comment about it.
+
 import json
 import os
 from datetime import datetime
-from unidecode import unidecode
 
 import pymysql
 from django.conf import settings
@@ -10,16 +11,17 @@ from django.core.files.images import ImageFile
 from django.core.management.base import BaseCommand
 from django.db import transaction
 from django.utils.text import slugify
+from unidecode import unidecode
 
 from images.models import Image
 from pages.models import CustomPage, FlatPage, Page
 from pages.utils import save_custom_pages
-
 from stroyprombeton.models import Category, Product, CategoryPage, ProductPage
 
 IMAGES_ROOT_FOLDER_NAME = os.path.join(settings.MEDIA_ROOT, 'products')
 
 
+# @todo #396:30m Adapt fake_db to Options
 def fill_images_data():
     def iter_decimal_dirs(path: str):
         return (
