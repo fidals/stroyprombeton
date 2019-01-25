@@ -1,3 +1,5 @@
+import unittest
+
 from django.conf import settings
 from django.core import mail
 from django.db.models import Count
@@ -324,8 +326,6 @@ class CategoryPage(BaseCartSeleniumTestCase, test_helpers.CategoryTestMixin):
         )
         self.browser.get(category_url)
         self.wait_page_loading()
-        # TODO - maybe remove it
-        # self.wait.until(EC.visibility_of_element_located((By.TAG_NAME, 'h1')))
 
     def wait_page_loading(self):
         wait_page_loading(self.browser)
@@ -560,6 +560,8 @@ class Search(SeleniumTestCase):
             self.search_loaded_condition(),
         )
 
+    # fix it with #359
+    @unittest.skip
     def test_autocomplete_can_expand_and_collapse(self):
         """
         Test the autocomplete behavior.
