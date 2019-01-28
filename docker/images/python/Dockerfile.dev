@@ -1,5 +1,6 @@
 FROM python:3.7-slim
 
+ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get update \
     && apt-get install --no-install-recommends --no-install-suggests -y \
     # package dependencies: wkhtmltopdf -> xvfb -> xorg
