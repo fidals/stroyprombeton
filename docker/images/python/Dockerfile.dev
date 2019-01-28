@@ -4,7 +4,7 @@ RUN apt-get update \
     && apt-get install --no-install-recommends --no-install-suggests -y \
     # package dependencies: wkhtmltopdf -> xvfb -> xorg
     # `xvfb` runs `wkhtmltopdf` using `xorg`
-    xorg wkhtmltopdf xvfb gettext \
+    xorg wkhtmltopdf xvfb gettext git \
     && apt-get -y --purge autoremove \
     && rm -rf /var/lib/apt/lists/*
 
