@@ -1,0 +1,3 @@
+# make backups every every day at 23:00
+# minute hour mday month wday  who         command
+  *      23   *    *     *     root        sh /usr/bin/entrypoint.sh 2>&1 | logger

@@ -129,21 +129,26 @@ services:
     ports:
       - 6379
 
-  # Контейнер делает бэкапы по крону.
-  # Бэкап - это несколько архивов: database.tar.gz, media.tar.gz, static.tar.gz
-  # в директории /opt/backup/stroyprombeton
-  backup-data:
+  # Incremental backups over cron.
+  # Backup host server keeps backups.
+  backup:
     build:
       context: ..
       dockerfile: docker/images/cron/Dockerfile
+    env_file:
+      - env_files/credentials
     container_name: stb-backup-data
     volumes_from:
       - app
     volumes:
       - ../etc/backup/backup-entrypoint.sh:/usr/bin/entrypoint.sh
       - ../etc/backup/crontab:/etc/cron.d/crontab
-      - /opt/backup/stroyprombeton:/opt/backup
-      - /opt/database/stroyprombeton:/usr/app/src/database
+      - /opt/media/stroyprombeton/:/opt/media/
+      # @todo #205:60m Process private key for backups
+      #  Create a script for backups to ask private key and host if they are missed.
+      - /etc/backup/private.key:/home/docker/.ssh/id_rsa
+      # Will be fixed at backup db subtask
+      # - /opt/database/stroyprombeton:/usr/app/src/database
 
 networks:
   stb-backend:
