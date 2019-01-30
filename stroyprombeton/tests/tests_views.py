@@ -234,7 +234,7 @@ class CategoryTable(BaseCatalogTestCase, TestPageMixin):
         """App should response with products data on load_more request."""
         db_products = models.Product.objects.active().get_category_descendants(
             self.root_category
-        )
+        ).order_by(*settings.PRODUCTS_ORDERING)
 
         response = self.client.post(
             reverse('fetch_products'),
@@ -739,10 +739,9 @@ class CatalogTags(BaseCatalogTestCase, CategoryTestMixin):
         self.assertEqual(response.status_code, 404)
 
     @staticmethod
-    def set_too_many_tags(category: models.Category, from_index: int, to_index: int):
+    def set_too_many_tags(product: models.Product, from_index: int, to_index: int):
         group = models.TagGroup.objects.first()
         models.Tag.objects.filter(group=group).delete()
-        product = category.products.first()
 
         for i in range(from_index, to_index):
             product.tags.add(
@@ -772,7 +771,7 @@ class CatalogTags(BaseCatalogTestCase, CategoryTestMixin):
             .get(name='Product #10 of Category #0 of #3')
         )
 
-        self.set_too_many_tags(product.category, from_index, to_index)
+        self.set_too_many_tags(product, from_index, to_index)
 
         tags_text = (
             self.get_category_soup(category=product.category)

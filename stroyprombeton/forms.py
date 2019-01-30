@@ -157,6 +157,7 @@ class OrderForm(forms.ModelForm):
         }
 
 
+# @todo #396:30m Adapt forms to Options
 class AddProductForm(forms.ModelForm):
     """Form for adding new Product in Table Editor."""
 

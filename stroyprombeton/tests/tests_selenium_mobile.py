@@ -1,8 +1,7 @@
-from selenium import webdriver
-
-from django.core.urlresolvers import reverse
 from django.conf import settings
+from django.core.urlresolvers import reverse
 from django.test import LiveServerTestCase, tag
+from selenium import webdriver
 
 from stroyprombeton.models import Product
 from stroyprombeton.tests.helpers import wait
@@ -46,7 +45,8 @@ class Mobile(SeleniumTestCase):
 
     def test_cart(self):
         """Cart should updated after Product buy."""
-        product_id = Product.objects.first().id
+        price = 100
+        product_id = Product.objects.filter(price=price).first().id
         product_page = self.live_server_url + reverse('product', args=(product_id,))
         self.browser.get(product_page)
 
@@ -55,7 +55,7 @@ class Mobile(SeleniumTestCase):
         self.browser.find_element_by_id('buy-product').click()
         wait(2)
         size = self.browser.find_element_by_class_name('js-cart-size').text
-        price = self.browser.find_element_by_class_name('js-mobile-cart-price').text
+        cart_price = self.browser.find_element_by_class_name('js-mobile-cart-price').text
 
         self.assertEqual(int(size), 1)
-        self.assertEqual(int(price), 1000)
+        self.assertEqual(int(cart_price), price)

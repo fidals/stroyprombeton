@@ -1,11 +1,10 @@
 from csv import writer as CSVWriter
 
 from django.conf import settings
-from django.shortcuts import render
 from django.http import StreamingHttpResponse
-from django.views.generic.list import ListView
+from django.shortcuts import render
 from django.views.generic.detail import DetailView
-
+from django.views.generic.list import ListView
 from wkhtmltopdf.views import PDFTemplateView
 
 from catalog import context
@@ -14,11 +13,11 @@ from images.models import Image
 from pages.models import CustomPage, ModelPage
 from pages.templatetags.pages_extras import breadcrumbs as get_page_breadcrumbs
 from search.search import search as filter_
-
 from stroyprombeton import context as stb_context, models
 from stroyprombeton.views.helpers import set_csrf_cookie, get_keys_from_post
 
 
+# @todo #396:120m Adapt views to Options
 def fetch_products(request):
     """Filter product table on Category page by Name, code, specification."""
     category_id, term, offset, limit, filtered = get_keys_from_post(

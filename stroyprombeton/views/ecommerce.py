@@ -9,12 +9,12 @@ from ecommerce import views as ec_views
 from ecommerce.mailer import send_backcall
 from pages.models import CustomPage
 from pages.views import CustomPageView
-
 from stroyprombeton import mailer
 from stroyprombeton.forms import OrderForm, PriceForm
 from stroyprombeton.models import Product, Order
 
 
+# @todo #396:120m Adapt ecommerce to Options.
 class OrderPage(ec_views.OrderPage):
     order_form = OrderForm
     email_extra_context = {

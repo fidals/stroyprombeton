@@ -14,6 +14,8 @@ from django.urls import reverse
 from stroyprombeton.models import Product, Category
 
 
+# @todo #396:60m Adapt static gen to Options.
+#  Upgrade this modules: price, remove_product_duplicates, sitemaps
 class Command(BaseCommand):
     """Generate yml file for a given vendor (YM or price.ru)."""
 
