@@ -1,13 +1,11 @@
+import mptt
 from django.db import models
 from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
-# @todo #396:30m Import the whole module
-#  `catalog_models, page_models, mptt_models -> catalog.models, page.models, mptt.models`
-from mptt import models as mptt_models
 
-from catalog import models as catalog_models
+import catalog
+import pages
 from ecommerce.models import Order as ecOrder
-from pages import models as page_models
 
 
 class Order(ecOrder):
@@ -27,7 +25,7 @@ class Order(ecOrder):
 #  Should be `catalog.models.CategoryManager`
 #
 #  Then use model.Manager.active() filter everywhere in this project (rf#169).
-class Category(catalog_models.AbstractCategory, page_models.PageMixin):
+class Category(catalog.models.AbstractCategory, pages.models.PageMixin):
     specification = models.TextField(
         default='',
         blank=True,
@@ -36,7 +34,7 @@ class Category(catalog_models.AbstractCategory, page_models.PageMixin):
 
     @classmethod
     def get_default_parent(cls):
-        return page_models.CustomPage.objects.filter(slug='gbi').first()
+        return pages.models.CustomPage.objects.filter(slug='gbi').first()
 
     def get_absolute_url(self):
         """Return url for model."""
@@ -77,11 +75,11 @@ class Option(models.Model):
     )
 
     def __str__(self):
-        return ' '.join(self.product.name, self.mark)  # Ignore CPDBear
+        return self.mark  # Ignore CPDBear
 
     # this fields will be moved to tags after Tags feature will be finished.
     # See https://github.com/fidals/stroyprombeton/labels/Tags
-    code = models.BigIntegerField(null=True, blank=True, verbose_name=_('code'))
+    code = models.BigIntegerField(null=True, blank=True, verbose_name=_('code'))  # Ignore CPDBear
     mark = models.CharField(default='', max_length=500, blank=True, verbose_name=_('mark'))
     specification = models.TextField(default='', blank=True, verbose_name=_('specification'),)
     length = models.IntegerField(null=True, blank=True, verbose_name=_('length'))
@@ -93,10 +91,13 @@ class Option(models.Model):
     diameter_in = models.IntegerField(null=True, blank=True, verbose_name=_('diameter in'))
 
 
-# not inherited from `catalog_models.AbstractProduct`, because
+# not inherited from `catalog.models.AbstractProduct`, because
 # AbstractProduct's set of fields is shared between Product and Option models.
-class Product(catalog_models.AdminTreeDisplayMixin, page_models.PageMixin):
-    objects = catalog_models.ProductManager()
+class Product(catalog.models.AbstractProduct, pages.models.PageMixin):
+    objects = catalog.models.ProductManager()
+
+    name = models.CharField(max_length=255, db_index=True, verbose_name=_('name'))
+    objects = catalog.models.ProductManager()
 
     name = models.CharField(max_length=255, db_index=True, verbose_name=_('name'))
     category = models.ForeignKey(
@@ -189,30 +190,30 @@ class Product(catalog_models.AdminTreeDisplayMixin, page_models.PageMixin):
     diameter_in = models.IntegerField(null=True, blank=True, verbose_name=_('diameter in'))
 
 
-class CategoryPage(page_models.ModelPage):
+class CategoryPage(pages.models.ModelPage):
     """Proxy model for Admin."""
 
-    class Meta(page_models.ModelPage.Meta):
+    class Meta(pages.models.ModelPage.Meta):
         proxy = True
         verbose_name = _('category')
         verbose_name_plural = _('categories')
 
-    objects = page_models.ModelPage.create_model_page_managers(Category)
+    objects = pages.models.ModelPage.create_model_page_managers(Category)
 
 
-class ProductPage(page_models.ModelPage):
+class ProductPage(pages.models.ModelPage):
     """Proxy model for Admin."""
 
-    class Meta(page_models.ModelPage.Meta):
+    class Meta(pages.models.ModelPage.Meta):
         proxy = True
         verbose_name = _('product')
         verbose_name_plural = _('products')
 
-    objects = page_models.ModelPage.create_model_page_managers(Product)
+    objects = pages.models.ModelPage.create_model_page_managers(Product)
 
 
 def get_manager(parent_slug):
-    class FlatPageTypeManager(mptt_models.TreeManager):
+    class FlatPageTypeManager(mptt.models.TreeManager):
         def get_queryset(self):
             return (
                 super(FlatPageTypeManager, self)
@@ -227,7 +228,7 @@ def get_manager(parent_slug):
 #  At stb#172 PO had problems with creating news.
 #  Then dev should do 1h research to reinvent
 #  manually adding "news" parent-page rule.
-class NewsForAdmin(page_models.Page):
+class NewsForAdmin(pages.models.Page):
     class Meta:
         proxy = True
         verbose_name = _('News')
@@ -236,7 +237,7 @@ class NewsForAdmin(page_models.Page):
     objects = get_manager('news')
 
 
-class RegionsForAdmin(page_models.Page):
+class RegionsForAdmin(pages.models.Page):
     class Meta:
         proxy = True
         verbose_name = _('Regions')
@@ -245,7 +246,7 @@ class RegionsForAdmin(page_models.Page):
     objects = get_manager('regions')
 
 
-class ClientFeedbacksForAdmin(page_models.Page):
+class ClientFeedbacksForAdmin(pages.models.Page):
     class Meta:
         proxy = True
         verbose_name = _('Client feedbacks')
@@ -254,15 +255,15 @@ class ClientFeedbacksForAdmin(page_models.Page):
     objects = get_manager('client-feedbacks')
 
 
-class TagGroup(catalog_models.TagGroup):
+class TagGroup(catalog.models.TagGroup):
     pass
 
 
-class TagQuerySet(catalog_models.TagQuerySet):
+class TagQuerySet(catalog.models.TagQuerySet):
     pass
 
 
-class Tag(catalog_models.Tag):
+class Tag(catalog.models.Tag):
     group = models.ForeignKey(
         TagGroup, on_delete=models.CASCADE, null=True, related_name='tags',
     )

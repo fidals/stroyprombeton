@@ -73,7 +73,7 @@ def create_pages():
 class Command(BaseCommand):
 
     def __init__(self):
-        super(BaseCommand, self).__init__()
+        super().__init__()
         self._product_id = 0
         self.group_names = [
             'Длина', 'Масса',
@@ -196,16 +196,17 @@ class Command(BaseCommand):
         def create_products(count, categories, tags_):
             for category in categories:
                 for i in range(1, count + 1):
-                    name = 'Product #{} of {}'.format(i, category)
+                    name = f'Product #{i} of {category}'
                     product = stb_models.Product.objects.create(
                         id=self.product_id,
                         name=name,
-                        price=i * 100,
                         category=category,
                         page=ModelPage.objects.create(name=name),
-                        mark=f'mark #{i}'
+                        options=stb_models.Option.objects.create(
+                            price=i * 100,
+                            mark=f'mark #{i}'
+                        )
                     )
-
                     for tag in tags_:
                         product.tags.add(tag)
 
