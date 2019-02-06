@@ -51,6 +51,14 @@ class Option(models.Model):
         null=True,
         verbose_name=_('tags'),
     )
+    product = models.ForeignKey(
+        'Product',
+        on_delete=models.CASCADE,
+        blank=True,
+        null=True,
+        related_name='options',
+        verbose_name=_('product'),
+    )
     date_price_updated = models.DateField(auto_now_add=True, verbose_name=_('date price updated'))
     is_new_price = models.NullBooleanField(
         blank=True,
@@ -97,21 +105,11 @@ class Product(catalog.models.AbstractProduct, pages.models.PageMixin):
     objects = catalog.models.ProductManager()
 
     name = models.CharField(max_length=255, db_index=True, verbose_name=_('name'))
-    objects = catalog.models.ProductManager()
-
-    name = models.CharField(max_length=255, db_index=True, verbose_name=_('name'))
     category = models.ForeignKey(
         Category,
         on_delete=models.CASCADE,
         related_name='products',
         verbose_name=_('category'),
-    )
-    options = models.ForeignKey(
-        Option,
-        on_delete=models.CASCADE,
-        null=True, blank=True,
-        related_name='product',
-        verbose_name=_('option'),
     )
 
     def __str__(self):

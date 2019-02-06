@@ -3,19 +3,20 @@ yml_price command.
 
 Generate two price files: priceru.xml and yandex.yml.
 """
-
 import os
+import typing
+from urllib.parse import urljoin, urlencode
 
 from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.template.loader import render_to_string
-from django.urls import reverse
 
-from stroyprombeton.models import Product, Category
-
+from stroyprombeton.models import Category, Option
 
 # @todo #396:60m Adapt static gen to Options.
-#  Upgrade this modules: price, remove_product_duplicates, sitemaps
+#  Upgrade this modules: remove_product_duplicates, sitemaps
+
+
 class Command(BaseCommand):
     """Generate yml file for a given vendor (YM or price.ru)."""
 
@@ -27,63 +28,49 @@ class Command(BaseCommand):
     # price files will be stored in this dir
     BASE_DIR = settings.ASSETS_DIR
 
-    def create_prices(self):
+    def handle(self, *args, **options):
         for utm, file_name in self.TARGETS.items():
             result_file = os.path.join(self.BASE_DIR, file_name)
             self.write_yml(result_file, self.get_context_for_yml(utm))
 
-    def handle(self, *args, **options):
-        self.create_prices()
-
     @staticmethod
     def get_context_for_yml(utm):
         """Create context dictionary for rendering files."""
-        def put_utm(product):
-            """Put UTM attribute to product."""
-            utm_marks = [
-                ('utm_source', utm),
-                ('utm_medium', 'cpc'),
-                ('utm_content', product.get_root_category().page.slug),
-                ('utm_term', product.id),
-            ]
-            url = reverse('product', args=(product.id,))
-            utm_mark = '&'.join('{}={}'.format(k, v) for k, v in utm_marks)
-            product.utm_url = '{}{}?{}'.format(settings.BASE_URL, url, utm_mark)
+        def utm_urls(options) -> typing.Dict[Option, str]:
+            """Create mapping from option to UTM url."""
+            def url(option):
+                utm_params = [
+                    ('utm_source', utm),
+                    ('utm_medium', 'cpc'),
+                    ('utm_content', option.product.get_root_category().page.slug),
+                    ('utm_term', option.product.id),
+                ]
+                url = urljoin(settings.BASE_URL, option.product.url)
+                query_string = urlencode(utm_params)
+                return f'{url}?{query_string}'
 
-            return product
-
-        def put_crumbs(product):
-            """
-            Put crumbs for google merchant.
-
-            https://goo.gl/b0UJQp
-            """
-            product.crumbs = ' > '.join(
-                product.page.get_ancestors_fields('h1', include_self=False)[1:]
-            )
-            return product
-
-        def prepare_products(categories_):
-            """Filter product list and patch it for rendering."""
-            products_except_others = (
-                Product.objects
-                .select_related('page')
-                .prefetch_related('category', 'category__page')
-                .filter(category__in=categories_, price__gt=0)
-            )
-            result_products = (
-                put_crumbs(put_utm(product))
-                for product in products_except_others
-            )
-
-            return result_products
+            return {
+                option: url(option) for option in options
+            }
 
         categories = Category.objects.all()
+        options = (
+            Option
+            .objects
+            .select_related(
+                'product',
+                'product__page',
+                'product__category',
+                'product__category__page',
+            )
+            .filter(product__category__in=categories, price__gt=0)
+        )
 
         return {
             'base_url': settings.BASE_URL,
             'categories': categories,
-            'products': prepare_products(categories),
+            'options': options,
+            'utm_urls': utm_urls(options),
             'shop': settings.SHOP,
             'utm': utm,
         }

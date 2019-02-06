@@ -189,8 +189,6 @@ class Command(BaseCommand):
             for index in range(count) for parent in parents
         )
 
-    # @todo #396:60m Adapt test_db command to Options.
-    #  Then remove `null=True, blank=True` from Product.options field.
     def create_products(self, parents, tags):
         """Create products for every non-root category."""
         def create_products(count, categories, tags_):
@@ -202,10 +200,14 @@ class Command(BaseCommand):
                         name=name,
                         category=category,
                         page=ModelPage.objects.create(name=name),
-                        options=stb_models.Option.objects.create(
-                            price=i * 100,
-                            mark=f'mark #{i}'
-                        )
+                        # remove this in favor Option
+                        price=i * 100,
+                        mark=f'mark #{i}',
+                    )
+                    stb_models.Option.objects.create(
+                        price=i * 100,
+                        mark=f'mark #{i}',
+                        product=product,
                     )
                     for tag in tags_:
                         product.tags.add(tag)

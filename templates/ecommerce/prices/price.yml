@@ -1,4 +1,5 @@
 {% load stb_extras %}
+{% load pages_extras %}
 
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE yml_catalog SYSTEM "shops.dtd">
@@ -22,29 +23,29 @@
     </categories>
     <cpa>0</cpa>
     <offers>
-      {% for product in products %}
-        <offer id="{{ product.id }}" available="{{ product.in_stock|yesno:'true,false' }}">
-          <name>{{ product.mark }} - {{ product.name }} {{ product.specification }}</name>
+      {% for option in options %}
+        <offer id="{{ option.product.id }}" available="{{ option.in_stock|yesno:'true,false' }}">
+          <name>{{ option.mark }} - {{ option.product.name }} {{ option.specification }}</name>
           <description>
-            Купить {{ product.name }} {{ product.specification }}. Доставка по Москве, МО, Санкт-Петербург и другим
+            Купить {{ option.product.name }} {{ option.specification }}. Доставка по Москве, МО, Санкт-Петербург и другим
             регионам России. Гарантия качества от завода жби «СТК-Промбетон».
           </description>
-          {% if product.length %}<param name="Длина" unit="мм">{{ product.length }}</param>{% endif %}
-          {% if product.width %}<param name="Ширина" unit="мм">{{ product.width }}</param>{% endif %}
-          {% if product.height %}<param name="Высота" unit="мм">{{ product.height }}</param>{% endif %}
-          {% if product.weight %}<param name="Вес" unit="кг">{{ product.weight }}</param>{% endif %}
-          {% if product.volume %}<param name="Объём" unit="м3">{{ product.volume }}</param>{% endif %}
-          {% if product.diameter_in %}
-            <param name="Диаметр внешний" unit="мм">{{ product.diameter_in }}</param>
+          {% if option.length %}<param name="Длина" unit="мм">{{ option.length }}</param>{% endif %}
+          {% if option.width %}<param name="Ширина" unit="мм">{{ option.width }}</param>{% endif %}
+          {% if option.height %}<param name="Высота" unit="мм">{{ option.height }}</param>{% endif %}
+          {% if option.weight %}<param name="Вес" unit="кг">{{ option.weight }}</param>{% endif %}
+          {% if option.volume %}<param name="Объём" unit="м3">{{ option.volume }}</param>{% endif %}
+          {% if option.diameter_in %}
+            <param name="Диаметр внешний" unit="мм">{{ option.diameter_in }}</param>
           {% endif %}
-          {% if product.diamenter_out %}
-            <param name="Диаметр внутренний" unit="мм">{{ product.diamenter_out }}</param>
+          {% if option.diamenter_out %}
+            <param name="Диаметр внутренний" unit="мм">{{ option.diamenter_out }}</param>
           {% endif %}
-          <url>{{ product.utm_url }}</url>
-          <price>{{ product.price|floatformat:-1 }}</price>
+          <url>{{ utm_urls|get_item:option }}</url>
+          <price>{{ option.product.price|floatformat:-1 }}</price>
           <currencyId>RUR</currencyId>
           {% include 'ecommerce/prices/pictures.yml' with product=product base_url=base_url only %}
-          <categoryId>{{ product.category.id }}</categoryId>
+          <categoryId>{{ option.product.category.id }}</categoryId>
           <store>false</store>
           <pickup>true</pickup>
           <delivery>true</delivery>
