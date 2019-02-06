@@ -26,9 +26,9 @@ def fetch_products(request):
 
     category = models.Category.objects.get(id=category_id)
     products = (
-        models.Product.objects
-        .active()
-        .get_category_descendants(category)
+        models.Product.objects.active()
+        .bind_fields()
+        .filter_descendants(category)
         .order_by(*settings.PRODUCTS_ORDERING)
     )
 
@@ -219,7 +219,7 @@ class ProductPDF(PDFTemplateView, DetailView):
         products = (
             models.Product.objects
             .active()
-            .get_category_descendants(category)
+            .filter_descendants(category)
             .order_by(*settings.PRODUCTS_ORDERING)
         )
 

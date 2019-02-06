@@ -232,9 +232,11 @@ class CategoryTable(BaseCatalogTestCase, TestPageMixin):
 
     def test_load_more_context_data(self):
         """App should response with products data on load_more request."""
-        db_products = models.Product.objects.active().get_category_descendants(
-            self.root_category
-        ).order_by(*settings.PRODUCTS_ORDERING)
+        db_products = (
+            models.Product.objects.active()
+            .filter_descendants(self.root_category)
+            .order_by(*settings.PRODUCTS_ORDERING)
+        )
 
         response = self.client.post(
             reverse('fetch_products'),
@@ -599,7 +601,7 @@ class CatalogTags(BaseCatalogTestCase, CategoryTestMixin):
         tags = set(chain.from_iterable(map(
             lambda x: x.tags.all(), (
                 models.Product.objects
-                .get_by_category(self.category)
+                .filter_descendants(self.category)
                 .prefetch_related('tags')
             )
         )))
@@ -791,7 +793,8 @@ class CatalogTags(BaseCatalogTestCase, CategoryTestMixin):
         # find product: it has no tag and it's descendant of root_category
         disappeared_products = (
             models.Product.objects.active()
-            .get_category_descendants(self.root_category)
+            .prefetch_related('tags')
+            .filter_descendants(self.root_category)
             .exclude(tags=tag)
         )
         self.assertFalse(
