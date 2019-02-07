@@ -23,7 +23,7 @@ def sync_page_name(entity, value):
 
 class GenericTableEditor:
     model = models.Product
-    relation_field_names = ['category', 'page']
+    relation_field_names = ['category', 'page', 'options']
     add_entity_form = forms.AddProductForm
     page_creation = True
 
@@ -31,18 +31,23 @@ class GenericTableEditor:
         'page': [
             'children', 'content', 'date_published', 'id', 'images', 'level', 'lft',
             'name', 'parent', 'related_model_name', 'rght', 'stroyprombeton_category',
-            'stroyprombeton_product', 'slug', 'template', 'tree_id', 'type'
+            'stroyprombeton_product', 'slug', 'template', 'tree_id', 'type',
         ],
     }
 
     included_related_model_fields = {
         'category': [
-            'name'
+            'name',
+        ],
+        'options': [
+            'mark',
         ],
     }
 
     excluded_model_fields = [
-        'category', 'page', 'property', 'property_id', 'page_id', 'category_id', 'id'
+        'category', 'page', 'options', 'property', 'tags',
+        'category_id', 'page_id', 'options_id', 'property_id', 'tags_id',
+        'id',
     ]
 
     field_controller = admin_views.TableEditorFieldsControlMixin(
@@ -50,17 +55,17 @@ class GenericTableEditor:
         relation_field_names=relation_field_names,
         excluded_model_fields=excluded_model_fields,
         included_related_model_fields=included_related_model_fields,
-        excluded_related_model_fields=excluded_related_model_fields
+        excluded_related_model_fields=excluded_related_model_fields,
     )
 
 
 class TableEditorAPI(GenericTableEditor, admin_views.TableEditorAPI):
     pattern_to_update_model = {
-        'name': sync_page_name
+        'name': sync_page_name,
     }
     pattern_to_update_related_model = {
         'category': {
-            'name': category_name_strategy
+            'name': category_name_strategy,
         }
     }
 

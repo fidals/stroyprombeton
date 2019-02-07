@@ -175,7 +175,9 @@ class StbFlatPageAdmin(admin_models.FlatPageAdmin):
     ]
 
 
-# @todo #396:120m Adapt admin panel to Options
+# @todo #424:120m Integrate new Option model to django's admin.
+
+
 class StbProductInline(inlines.ProductInline):
     model = stb_models.Product
     form = CustomWidgetsForm
