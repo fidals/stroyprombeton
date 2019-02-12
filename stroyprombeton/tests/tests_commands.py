@@ -9,7 +9,7 @@ from pages.models import Page
 
 from django.core.management import call_command
 
-from stroyprombeton.models import Category, Product
+from stroyprombeton.models import Option, Product
 from stroyprombeton.management.commands.seo_texts import populate_entities
 
 
@@ -100,37 +100,42 @@ class SeoTexts(TestCase):
 @tag('fast')
 class RemoveDuplicates(TestCase):
 
-    def test_remove_similar_products(self):
-        """Test that management command 'remove_product_duplicates' actually works."""
-        category = Category.objects.create(name='category #1')
-        products = [
-            Product.objects.create(
-                name='product #1',
-                category=category,
-                code='123',
-            ),
-            Product.objects.create(
-                name='product #2',
-                category=category,
-                code='321',
-            ),
-            Product.objects.create(
-                name='product #3',
-                category=category,
-                code='321',
-            ),
-        ]
-        self.assertEqual(Product.objects.count(), 3)
-        # remove all products with same 'code' and 'category' column values
+    fixtures = ['dump.json']
+
+    def test_keep_unsimilar_options(self):
+        product = Product.objects.first()
+        options = list(product.options.all())
         call_command(
-            'remove_product_duplicates',
-            'code', 'category',
+            'remove_option_duplicates',
+            'code', 'product',
             noinput='true',
         )
-        # we're assuming that products which created later
-        # have high priority, so second product (#2) should be removed
-        self.assertEqual(Product.objects.count(), 2)
-        self.assertEqual(
-            list(Product.objects.all()),
-            [products[0], products[-1]]
+        self.assertEqual(len(options), product.options.count())
+        self.assertEqual(options, list(product.options.all()))
+
+    def test_remove_similar_options(self):
+        product = Product.objects.first()
+
+        count = 3
+        group_count = 2
+        total = count * group_count + len(product.options.all())
+        codes = ['123' * i for i in range(1, group_count + 1)]
+
+        for code in codes:
+            Option.objects.bulk_create([
+                Option(mark=f'mark #{i}', code=code, product=product)
+                for i in range(count)
+            ])
+        self.assertEqual(product.options.count(), total)
+
+        # remove one option from each group of similar options by code and product
+        call_command(
+            'remove_option_duplicates',
+            'code', 'product',
+            noinput='true',
         )
+        for code in codes:
+            self.assertEqual(
+                product.options.filter(code=code).count(),
+                count - 1,
+            )

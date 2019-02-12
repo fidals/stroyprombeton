@@ -2,6 +2,8 @@ from django.contrib.sitemaps import Sitemap
 
 from pages.models import CustomPage, FlatPage, ModelPage
 
+# @todo #396:60m Adapt sitemaps for Option model.
+
 
 class AbstractSitemap(Sitemap):
     protocol = 'http'

@@ -2,12 +2,12 @@ from django.db import transaction
 from django.db.models import Count
 from django.core.management.base import BaseCommand
 
-from stroyprombeton.models import Product
+from stroyprombeton.models import Option
 
 
 class Command(BaseCommand):
     """
-    Remove products with similar values in given columns.
+    Remove only one option from each group of similar options by given columns.
 
     E.g. with similar serial number or other technical id.
     """
@@ -20,7 +20,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         columns = options.get('columns')
         duplicates = (
-            Product
+            Option
             .objects
             .values(*columns)
             .annotate(Count('id'))
@@ -29,18 +29,17 @@ class Command(BaseCommand):
         )
         # I think it's OK to ask user permission before doing such actions
         # (until we'll have everyday backups or something similar)
-        question = f'We\'re going to modify ~{duplicates.count()} products'
+        question = f'Delete ~{duplicates.count()} options? (yes/no):'
+        answer = 'y'
         if not options.get('noinput'):
-            answer = input(f'{question}. Is it OK (yes/no):').lower()
-        else:
-            answer = 'yes'
+            answer = input(question).lower().strip()
         if answer in {'yes', 'y'}:
             for duplicate in duplicates:
                 # remove column that doesn't really exist
                 # they added by result of aggregation query
-                del duplicate['id__count']
+                duplicate.pop('id__count')
                 (
-                    Product
+                    Option
                     .objects
                     .filter(**duplicate)
                     .first()
