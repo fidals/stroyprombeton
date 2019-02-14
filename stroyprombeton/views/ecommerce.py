@@ -11,7 +11,7 @@ from pages.models import CustomPage
 from pages.views import CustomPageView
 from stroyprombeton import mailer
 from stroyprombeton.forms import OrderForm, PriceForm
-from stroyprombeton.models import Product, Order
+from stroyprombeton.models import Option, Order
 
 
 # @todo #396:120m Adapt ecommerce to Options.
@@ -29,22 +29,22 @@ class OrderSuccess(ec_views.OrderSuccess):
 
 class AddToCart(ec_views.AddToCart):
     order_form = OrderForm
-    product_model = Product
+    position_model = Option
 
 
 class RemoveFromCart(ec_views.RemoveFromCart):
     order_form = OrderForm
-    product_model = Product
+    position_model = Option
 
 
 class FlushCart(ec_views.FlushCart):
     order_form = OrderForm
-    product_model = Product
+    position_model = Option
 
 
 class ChangeCount(ec_views.ChangeCount):
     order_form = OrderForm
-    product_model = Product
+    position_model = Option
 
 
 # -------- STB-specific views -------- #

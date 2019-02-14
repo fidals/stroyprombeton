@@ -69,7 +69,7 @@ class BaseContactForm(forms.Form):
 
 
 class PriceForm(BaseContactForm):
-    """Form for Price List ordering."""
+    """Form for Price List requesting from customer companies."""
 
     company = forms.CharField(
         label='Полное название организации',

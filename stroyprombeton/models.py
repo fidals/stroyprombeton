@@ -44,6 +44,21 @@ class Category(catalog.models.AbstractCategory, pages.models.PageMixin):
 class Option(models.Model):
     """This doc page describes what is option: https://goo.gl/S4U9PG."""
 
+    @property
+    def name(self):
+        return self.product.name
+
+    @property
+    def page(self):
+        return self.product.page
+
+    def get_absolute_url(self):
+        return self.product.url
+
+    @property
+    def url(self):
+        return self.product.url
+
     tags = models.ManyToManyField(
         'Tag',
         related_name='options',
