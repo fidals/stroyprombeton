@@ -71,10 +71,20 @@ services:
     container_name: stb-celery-beat
     command: celery -A stroyprombeton beat -l info
 
-  celery-default-worker:
+  celery-default:
     <<: *celery-worker
     container_name: stb-celery-default-worker
     command: celery -A stroyprombeton worker -E -n worker.default@%%h -l info -Q default
+
+  celery-command:
+    <<: *celery-worker
+    container_name: stb-celery-command-worker
+    command: celery -A stroyprombeton worker -E -n worker.command@%%h -l info -Q command
+
+  celery-mail:
+    <<: *celery-worker
+    container_name: stb-celery-mail-worker
+    command: celery -A stroyprombeton worker -E -n worker.mail@%%h -l info -Q mail
 
   nginx:
     image: fidals/stb-nginx:prod
