@@ -10,10 +10,6 @@ x-python-app: &python-app
     - env_files/credentials
     - env_files/paths
     - env_files/ports
-  depends_on:
-    - postgres
-    - rabbitmq
-    - redis
   networks:
     - stb-backend
     - stb-frontend
@@ -27,7 +23,7 @@ x-celery-worker: &celery-worker
     - env_files/credentials
     - env_files/paths
   depends_on:
-    - app
+    - rabbitmq
   volumes:
     - ../stroyprombeton/settings/local.py:$SRC_DIR/stroyprombeton/settings/local.py
   networks:
@@ -41,6 +37,13 @@ services:
       - PYTHONUNBUFFERED=0
     ports:
       - 8000
+    depends_on:
+      - postgres
+      - rabbitmq
+      - redis
+      - celery-mail
+      - celery-default
+      - celery-command
     volumes:
       - ../stroyprombeton/settings/local.py:$SRC_DIR/stroyprombeton/settings/local.py
       # contains refarm-site modules
@@ -71,10 +74,23 @@ services:
     container_name: stb-celery-beat
     command: celery -A stroyprombeton beat -l info
 
-  celery-default-worker:
+  celery-command:
+    <<: *celery-worker
+    container_name: stb-celery-command-worker
+    depends_on:
+      - celery-beat
+      - rabbitmq
+    command: celery -A stroyprombeton worker -E -n worker.command@%%h -l info -Q command
+
+  celery-default:
     <<: *celery-worker
     container_name: stb-celery-default-worker
     command: celery -A stroyprombeton worker -E -n worker.default@%%h -l info -Q default
+
+  celery-mail:
+    <<: *celery-worker
+    container_name: stb-celery-mail-worker
+    command: celery -A stroyprombeton worker -E -n worker.mail@%%h -l info -Q mail
 
   nginx:
     image: fidals/stb-nginx:prod
