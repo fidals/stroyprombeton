@@ -132,6 +132,9 @@ pipeline:
       - cp drone_env/* env_files/
       - cp drone_env/.env .
       - docker-compose rm -fs
+    when:
+      status: [ success, failure ]
+      event: [push, pull_request]
 
 services:
   postgres:
