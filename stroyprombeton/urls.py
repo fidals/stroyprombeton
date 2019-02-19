@@ -35,7 +35,8 @@ catalog_urls = [
 ]
 
 custom_pages = [
-    custom_page_url(r'^(?P<page>)$', views.IndexPage.as_view()),
+    # can't use just `r'^(?P<page>)$'` with no args to views, because reverse don't work
+    custom_page_url(r'^$', views.IndexPage.as_view(), {'page': ''}, name='index'),
     custom_page_url(r'^(?P<page>robots\.txt)$', RobotsView.as_view()),
     custom_page_url(r'^(?P<page>client-feedbacks)/$', views.ClientFeedbacksPageView.as_view()),
     custom_page_url(r'^(?P<page>gbi)/$', views.CategoryTree.as_view()),

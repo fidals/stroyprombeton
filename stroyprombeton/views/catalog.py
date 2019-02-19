@@ -13,11 +13,15 @@ from images.models import Image
 from pages.models import CustomPage, ModelPage
 from pages.templatetags.pages_extras import breadcrumbs as get_page_breadcrumbs
 from search.search import search as filter_
-from stroyprombeton import context as stb_context, models
+from stroyprombeton import context as stb_context, models, request_data
 from stroyprombeton.views.helpers import set_csrf_cookie, get_keys_from_post
 
 
 # @todo #396:120m Adapt views to Options
+
+# @todo #431:120m  Move fetch_products to new context.
+#  Rm `settings.PRODUCTS_ON_PAGE_*` after moving.
+#  And rm old context code.
 def fetch_products(request):
     """Filter product table on Category page by Name, code, specification."""
     category_id, term, offset, limit, filtered = get_keys_from_post(
@@ -46,7 +50,7 @@ def fetch_products(request):
 
     offset = int(offset)
     limit = int(limit or settings.PRODUCTS_ON_PAGE_PC)
-    limit = min(limit, products.count(), settings.PRODUCTS_ON_PAGE_PC)
+    limit = min(limit, products.count(), request_data.Category.PRODUCTS_ON_PAGE_PC)
     products = products.get_offset(offset, limit)
 
     data_from_context = (
@@ -142,24 +146,13 @@ class CategoryPage(catalog.CategoryPage):
 
     def get_context_data(self, **kwargs):
         """Add sorting options and view_types in context."""
-        context_ = (
-            stb_context.Category(
-                url_kwargs=self.kwargs,
-                request=self.request,
-                page=self.object,
-                products=models.Product.objects.all(),
-                product_pages=models.ProductPage.objects.all(),  # Ignore CPDBear
-            )
-            | stb_context.TaggedCategory(tags=models.Tag.objects.all())
-            | context.PaginationCategory()
-            | stb_context.ProductImages()
-            | context.PaginationCategory()
-            | context.DBTemplate()  # requires TaggedCategory
+        context_ = stb_context.Catalog(
+            request_data.Category(self.request, url_kwargs=self.kwargs),
         )
 
         return {
             **super().get_context_data(**kwargs),
-            **context_.get_context_data(),
+            **context_.context(),
         }
 
 

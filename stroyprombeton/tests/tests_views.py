@@ -22,7 +22,7 @@ from django.utils.translation import ugettext as _
 
 from catalog.helpers import reverse_catalog_url
 from pages.models import CustomPage, FlatPage, ModelPage
-from stroyprombeton import models
+from stroyprombeton import models, request_data
 from stroyprombeton.tests.helpers import CategoryTestMixin, create_doubled_tag
 from stroyprombeton.tests.tests_forms import PriceFormTest
 
@@ -93,7 +93,7 @@ class TestPageMixin:
         )
 
 
-@tag('fast')
+@tag('fast', 'catalog')
 class CategoryTree(TestCase):
 
     fixtures = ['dump.json']
@@ -111,7 +111,7 @@ class CategoryTree(TestCase):
         self.assertTrue(quantity > 0)
 
 
-@tag('fast')
+@tag('fast', 'catalog')
 class CategoryTile(TestCase, TestPageMixin):
     """
     Test for CategoryPage view.
@@ -159,7 +159,7 @@ class CategoryTile(TestCase, TestPageMixin):
         )
 
 
-@tag('fast')
+@tag('fast', 'catalog')
 class CategoryTable(BaseCatalogTestCase, TestPageMixin):
     """
     Test for CategoryPage view.
@@ -266,7 +266,10 @@ class CategoryTable(BaseCatalogTestCase, TestPageMixin):
         """Category page should contain limited products list."""
         category = models.Category.objects.first()
         response = self.client.get(self.get_category_url(category))
-        self.assertEqual(len(response.context['products']), settings.PRODUCTS_ON_PAGE_PC)
+        self.assertEqual(
+            len(response.context['products']),
+            request_data.Category.PRODUCTS_ON_PAGE_PC
+        )
 
 
 @tag('fast')
@@ -589,7 +592,7 @@ class ProductPrice(TestCase):
         self.assertTrue(len(self.response.context['products']) > 100)
 
 
-@tag('fast')
+@tag('fast', 'catalog')
 class CatalogTags(BaseCatalogTestCase, CategoryTestMixin):
 
     fixtures = ['dump.json']

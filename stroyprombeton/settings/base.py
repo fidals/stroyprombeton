@@ -433,6 +433,11 @@ TAG_GROUPS_URL_DELIMITER = '-and-'
 TAGS_TITLE_DELIMITER = ' или '
 TAG_GROUPS_TITLE_DELIMITER = ' и '
 
+BRAND_TAG_GROUP_NAME = 'Производитель'
+
+PRODUCTS_ON_PAGE_PC = 48
+PRODUCTS_ON_PAGE_MOB = 12
+
 TAGS_ORDER = ['group__position', 'group__name', 'position', 'name']
 
 # max tags in one tag group on category page
@@ -442,8 +447,6 @@ TAGS_UI_LIMIT = 20
 # If PAGINATION_NEIGHBORS = 4 and number of a page = 5,
 # then will be shown neighbors by number: 3, 4, 6, 7
 PAGINATION_NEIGHBORS = 10
-PRODUCTS_ON_PAGE_PC = 48
-PRODUCTS_ON_PAGE_MOB = 12
 CATEGORY_STEP_MULTIPLIERS = [12, 15, 24, 25, 48, 50, 60, 100]
 PRODUCTS_ORDERING = ['code', 'name', 'mark']
 PRODUCT_SIBLINGS_COUNT = 10
