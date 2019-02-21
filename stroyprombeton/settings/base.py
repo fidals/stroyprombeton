@@ -16,8 +16,8 @@ from datetime import datetime
 
 import sentry_sdk
 from django.utils.translation import ugettext_lazy as _
-from sentry_sdk.integrations.django import DjangoIntegration
 from sentry_sdk.integrations.celery import CeleryIntegration
+from sentry_sdk.integrations.django import DjangoIntegration
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -394,16 +394,6 @@ PARTNERS = [
     },
     {
         'url': (
-            'http://stroysila.biz/'
-            '?utm_source=STB_site&utm_medium=backlink'
-            '&utm_campaign=backlink_traffic'
-        ),
-        'logo': 'images/partner-stroysila-logo.png',
-        'text': 'Проектируют и возводят <br> энергообъекты',
-        'alt': 'Проектируют и возводят <br> энергообъекты',
-    },
-    {
-        'url': (
             'http://www.stk-metal.ru/'
             '?utm_source=STB_site&utm_medium=backlink'
             '&utm_campaign=backlink_traffic'
@@ -434,9 +424,6 @@ TAGS_TITLE_DELIMITER = ' или '
 TAG_GROUPS_TITLE_DELIMITER = ' и '
 
 BRAND_TAG_GROUP_NAME = 'Производитель'
-
-PRODUCTS_ON_PAGE_PC = 48
-PRODUCTS_ON_PAGE_MOB = 12
 
 TAGS_ORDER = ['group__position', 'group__name', 'position', 'name']
 

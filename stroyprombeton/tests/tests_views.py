@@ -246,13 +246,14 @@ class CategoryTable(BaseCatalogTestCase, TestPageMixin):
                 'limit': 10,
             }
         )
+        self.assertEqual(200, response.status_code)
         response_products = response.context['products']
 
         self.assertEqual(10, len(response_products))
         # check bounds of returned products list
-        self.assertFalse(db_products[5] in response_products)
+        self.assertTrue(db_products[5] not in response_products)
         self.assertTrue(db_products[15] in response_products)
-        self.assertFalse(db_products[25] in response_products)
+        self.assertTrue(db_products[25] not in response_products)
 
     def test_products_are_from_category(self):
         # leaf category

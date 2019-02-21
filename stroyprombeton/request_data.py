@@ -37,6 +37,8 @@ class Category(Request):
     def tags(self) -> str:
         return self.url_kwargs.get('tags', '')
 
+    # FetchProducts inherits unused pagination stuff.
+    # se#731 will fix this ussue.
     @property
     def pagination_page_number(self):
         return int(self.request.GET.get('page', 1))
@@ -44,3 +46,30 @@ class Category(Request):
     @property
     def pagination_per_page(self):
         return int(self.request.GET.get('step', self.length))
+
+
+class FetchProducts(Category):
+
+    @property
+    def id(self):
+        # @todo #443:15m Check FetchProducts post params.
+        #  Raise Http400 if categoryId not exists.
+        #  See `Http400` error on SE for example.
+        return self.request.POST.get('categoryId')
+
+    @property
+    def filtered(self) -> bool:
+        value = self.request.POST.get('filtered', '')
+        return value == 'true'
+
+    @property
+    def term(self) -> str:
+        return self.request.POST.get('term', '').strip()
+
+    @property
+    def offset(self):
+        return int(self.request.POST.get('offset', 0))
+
+    @property
+    def length(self):
+        return int(self.request.POST.get('limit', self.PRODUCTS_ON_PAGE_PC))

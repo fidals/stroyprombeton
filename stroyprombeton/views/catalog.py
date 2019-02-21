@@ -7,75 +7,23 @@ from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 from wkhtmltopdf.views import PDFTemplateView
 
-from catalog import context
 from catalog.views import catalog
 from images.models import Image
 from pages.models import CustomPage, ModelPage
 from pages.templatetags.pages_extras import breadcrumbs as get_page_breadcrumbs
-from search.search import search as filter_
 from stroyprombeton import context as stb_context, models, request_data
-from stroyprombeton.views.helpers import set_csrf_cookie, get_keys_from_post
+from stroyprombeton.views.helpers import set_csrf_cookie
 
 
-# @todo #396:120m Adapt views to Options
-
-# @todo #431:120m  Move fetch_products to new context.
-#  Rm `settings.PRODUCTS_ON_PAGE_*` after moving.
-#  And rm old context code.
 def fetch_products(request):
     """Filter product table on Category page by Name, code, specification."""
-    category_id, term, offset, limit, filtered = get_keys_from_post(
-        request, 'categoryId', 'term', 'offset', 'limit', 'filtered',
+    context_ = stb_context.FetchProducts(
+        request_data.FetchProducts(request, url_kwargs={}),
     )
-
-    category = models.Category.objects.get(id=category_id)
-    products = (
-        models.Product.objects.active()
-        .bind_fields()
-        .filter_descendants(category)
-        .order_by(*settings.PRODUCTS_ORDERING)
-    )
-
-    if filtered == 'true' and term:
-        term = term.strip()
-        lookups = [
-            'name__icontains',
-            'code__icontains',
-            'mark__icontains',
-            'specification__icontains',
-        ]
-        products = filter_(
-            term, products, lookups, ordering=settings.PRODUCTS_ORDERING
-        )
-
-    offset = int(offset)
-    limit = int(limit or settings.PRODUCTS_ON_PAGE_PC)
-    limit = min(limit, products.count(), request_data.Category.PRODUCTS_ON_PAGE_PC)
-    products = products.get_offset(offset, limit)
-
-    data_from_context = (
-        context.Category(
-            url_kwargs={},
-            request=request,
-            page=category.page,
-            products=models.Product.objects.all(),
-            product_pages=models.ProductPage.objects.filter(
-                stroyprombeton_product__in=products
-            ),
-        )
-        | context.TaggedCategory(tags=models.Tag.objects.all())
-        | context.PaginationCategory()
-        | stb_context.ProductImages()
-        | context.DBTemplate()  # requires TaggedCategory
-    ).get_context_data()
-
     return render(
         request,
         'catalog/category_products.html',
-        {
-            'products': products,
-            'product_images': data_from_context['product_images'],
-        }
+        context_.context()
     )
 
 

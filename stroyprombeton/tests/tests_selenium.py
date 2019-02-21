@@ -1,6 +1,5 @@
 import unittest
 
-from django.conf import settings
 from django.core import mail
 from django.db.models import Count
 from django.template.defaultfilters import floatformat
@@ -11,7 +10,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC, ui
 
 from pages.models import CustomPage
-from stroyprombeton import models as stb_models
+from stroyprombeton import models as stb_models, request_data
 from stroyprombeton.tests import helpers as test_helpers
 
 
@@ -428,7 +427,7 @@ class CategoryPage(BaseCartSeleniumTestCase, test_helpers.CategoryTestMixin):
             stb_models.Category.objects
             .annotate(prod_count=Count('products'))
             .exclude(prod_count=0)
-            .filter(prod_count__lt=settings.PRODUCTS_ON_PAGE_PC)
+            .filter(prod_count__lt=request_data.Category.PRODUCTS_ON_PAGE_PC)
             .first()
         )
         self.load_category_page(category=small_category)

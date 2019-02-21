@@ -6,86 +6,17 @@ It's not good style. We should use objects composition instead.
 This using will becom possible after se#567 released.
 """
 
-import typing
-from functools import lru_cache, partial
+from functools import partial
 
 from django.conf import settings
 from django.shortcuts import get_object_or_404
 
-from catalog import context, newcontext
+from catalog import newcontext
 from catalog.models import ProductQuerySet
 from images.models import Image
-from pages import newcontext as pages_newcontext, models as pages_models
+from pages import newcontext as pages_newcontext
+from search.search import search as filter_
 from stroyprombeton import models, request_data
-
-
-class Category(context.Category):
-    pk_url_kwarg = 'category_id'
-
-    @property
-    @lru_cache(maxsize=1)
-    def page(self):
-        model_name = models.Category().related_model_name
-        lookup = f'{model_name}__id'
-        category_pk = self.url_kwargs.get('category_id')
-        return (
-            pages_models.ModelPage.objects
-            .prefetch_related(model_name)
-            .filter(**{lookup: category_pk})
-            .get()
-        )
-
-
-class SortingCategory(context.SortingCategory):
-
-    @property
-    @lru_cache(maxsize=1)
-    def page(self):
-        return self.super.page
-
-    def get_sorting_options(self) -> typing.List[str]:
-        return settings.PRODUCTS_ORDERING
-
-
-class TaggedCategory(context.TaggedCategory):
-    @property
-    @lru_cache(maxsize=1)
-    def page(self):
-        return self.super.page
-
-    def get_undirected_sorting_options(self) -> typing.List[str]:
-        return settings.PRODUCTS_ORDERING
-
-
-class ProductImages(context.AbstractProductsListContext):
-
-    @property
-    def product_pages(self):
-        return models.ProductPage.objects.all()
-
-    @property
-    def images(self) -> typing.Dict[int, Image]:
-        assert isinstance(self.products, ProductQuerySet)
-
-        images = {}
-        if self.product_pages:
-            images = Image.objects.get_main_images_by_pages(
-                self.product_pages.filter(stroyprombeton_product__in=self.products)
-            )
-
-        return {
-            product.id: images.get(product.page)
-            for product in self.products
-        }
-
-    def get_context_data(self):
-        return {
-            'product_images': self.images,
-            **(
-                self.super.get_context_data()
-                if self.super else {}
-            ),
-        }
 
 
 # @todo #431:30m  Share base page to refarm side. se2
@@ -113,9 +44,12 @@ class Page(newcontext.Context):
         }
 
 
+# @todo #443:60m  Improve context classes arch.
+#  Move `Catalog.select_tags` and `Catalog.filter_products` to some common area.
+#  Reuse the methods at pretty separated `Catalog` and `FetchProducts` classes.
+#  Move `sliced_products` inside of `context` method for both classes.
+#  Move `FetchProducts.filter_` and `FetchProducts.LOOKUPS` to some search entity.
 class Catalog(newcontext.Context):
-    PRODUCTS_ON_PAGE_PC = 48
-    PRODUCTS_ON_PAGE_MOB = 12
 
     def __init__(self, request_data_: request_data.Category):
         self.request_data = request_data_
@@ -131,9 +65,12 @@ class Catalog(newcontext.Context):
             id=self.request_data.id
         )
 
-    # @todo #431:15m  Create type hints for context on refarm side. se2
-    def context(self) -> dict:
-        all_tags = newcontext.Tags(models.Tag.objects.all())
+    @property
+    def tags(self) -> newcontext.Tags:
+        return newcontext.Tags(models.Tag.objects.all())
+
+    def select_tags(self) -> newcontext.Tags:
+        all_tags = self.tags
 
         selected_tags = newcontext.tags.ParsedTags(
             tags=all_tags,
@@ -141,33 +78,41 @@ class Catalog(newcontext.Context):
         )
         if self.request_data.tags:
             selected_tags = newcontext.tags.Checked404Tags(selected_tags)
+        return selected_tags
 
-        products = (
+    def filter_products(self) -> ProductQuerySet:
+        return (
             models.Product.objects.active()
             .bind_fields()
             .filter_descendants(self.category)
-            .tagged_or_all(selected_tags.qs())
+            .tagged_or_all(self.select_tags().qs())
             .order_by(*settings.PRODUCTS_ORDERING)
         )
 
+    def slice_products(self) -> newcontext.products.PaginatedProducts:
         """
-        We have to use separated variable for pagination.
+        We have to use separated variable/method for pagination.
 
         Because paginated QuerySet can not used as QuerySet.
         It's not the most strong place of Django ORM, of course.
         :return: ProductsContext with paginated QuerySet inside
         """
-        paginated = newcontext.products.PaginatedProducts(
-            products=products,
+        return newcontext.products.PaginatedProducts(
+            products=self.filter_products(),
             url=self.request_data.request.path,
             page_number=self.request_data.pagination_page_number,
             per_page=self.request_data.pagination_per_page,
         )
 
-        images = newcontext.products.ProductImages(paginated.products, Image.objects.all())
-        brands = newcontext.products.ProductBrands(paginated.products, all_tags)
+    # @todo #443:15m  Create ContextDict type on refarm side. se2
+    def context(self) -> dict:
+        selected_tags = self.select_tags()
+        products = self.filter_products()
+        sliced_products = self.slice_products()
+
+        images = newcontext.products.ProductImages(sliced_products.products, Image.objects.all())
         grouped_tags = newcontext.tags.GroupedTags(
-            tags=newcontext.tags.TagsByProducts(all_tags, products)
+            tags=newcontext.tags.TagsByProducts(self.tags, products)
         )
         page = Page(self.page, selected_tags)
         category = newcontext.category.Context(self.category)
@@ -182,7 +127,39 @@ class Catalog(newcontext.Context):
             #  And move the relevant `test_tag_button_filter_products` test to the fast tests side.
             'total_products': products.count(),
             **pages_newcontext.Contexts([
-                page, category, paginated,
-                images, brands, grouped_tags
+                page, category, sliced_products,
+                images, grouped_tags
             ]).context()
         }
+
+
+class FetchProducts(Catalog):
+
+    LOOKUPS = [
+        'name__icontains',
+        'code__icontains',
+        'mark__icontains',
+        'specification__icontains',
+    ]
+
+    # redefined just to type hint
+    def __init__(self, request_data_: request_data.FetchProducts):
+        super().__init__(request_data_)
+
+    def filter_products(self) -> ProductQuerySet:
+        products = super().filter_products()
+
+        if self.request_data.filtered and self.request_data.term:
+            return filter_(
+                self.request_data.term,
+                products,
+                self.LOOKUPS,
+            )
+        else:
+            return products
+
+    def slice_products(self):
+        offset, limit = self.request_data.offset, self.request_data.length
+        return newcontext.Products(
+            self.filter_products()[offset:offset + limit]
+        )
