@@ -1,11 +1,12 @@
 from django.conf import settings
 
-from search import views as search_views, search as search_engine
-from pages.models import Page
 from ecommerce.forms import OrderBackcallForm
-
+from pages.models import Page
+from search import views as search_views, search as search_engine
 from stroyprombeton.models import Product, Category
 
+
+# @todo #419:30m  Move search module to Options.
 
 class Search(search_views.SearchView):
 

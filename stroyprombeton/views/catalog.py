@@ -17,7 +17,7 @@ from stroyprombeton.views.helpers import set_csrf_cookie
 
 def fetch_products(request):
     """Filter product table on Category page by Name, code, specification."""
-    context_ = stb_context.FetchProducts(
+    context_ = stb_context.FetchPositions(
         request_data.FetchProducts(request, url_kwargs={}),
     )
     return render(

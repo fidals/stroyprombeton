@@ -433,6 +433,7 @@ class CategoryPage(BaseCartSeleniumTestCase, test_helpers.CategoryTestMixin):
         self.load_category_page(category=small_category)
         self.assertTrue(self.is_load_more_disabled())
 
+    # @todo #419:30m  Create fast search tests.
     def test_filter_products(self):
         """We are able to filter products by typing in filter field."""
         def wait_filter(browser):

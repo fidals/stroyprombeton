@@ -204,12 +204,13 @@ class Command(BaseCommand):
                         price=i * 100,
                         mark=f'mark #{i}',
                     )
-                    stb_models.Option.objects.create(
+                    option = stb_models.Option.objects.create(
                         price=i * 100,
                         mark=f'mark #{i}',
                         product=product,
                     )
                     for tag in tags_:
+                        option.tags.add(tag)
                         product.tags.add(tag)
 
         # [('1 м', '2 кг', '72 %'), ('2 м', '3 кг', '146 %')]

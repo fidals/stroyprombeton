@@ -193,13 +193,21 @@ class CategoryTable(BaseCatalogTestCase, TestPageMixin):
                 content='Козырьки устанавливают над входами зданий.',
             )
         }
-        models.Product.objects.create(**self.data)
+        # @todo #419:30m  Rm models creation in favour of fixtures.
+        #  At the tests.
+        product = models.Product.objects.create(**self.data)
+        models.Option.objects.create(
+            price=100,
+            mark=f'Some mark',
+            product=product,
+        )
 
         self.response = self.client.get(self.get_category_url())
 
     @property
     def response_product(self):
-        return self.response.context['products'][0]
+        option = self.response.context['products'][0]
+        return option.product
 
     def test_products_quantity(self):
         self.assertEqual(len(self.response.context['products']), 1)
@@ -237,6 +245,9 @@ class CategoryTable(BaseCatalogTestCase, TestPageMixin):
             .filter_descendants(self.root_category)
             .order_by(*settings.PRODUCTS_ORDERING)
         )
+        db_options = (
+            models.Option.objects.filter(product__in=db_products)
+        )
 
         response = self.client.post(
             reverse('fetch_products'),
@@ -251,16 +262,16 @@ class CategoryTable(BaseCatalogTestCase, TestPageMixin):
 
         self.assertEqual(10, len(response_products))
         # check bounds of returned products list
-        self.assertTrue(db_products[5] not in response_products)
-        self.assertTrue(db_products[15] in response_products)
-        self.assertTrue(db_products[25] not in response_products)
+        self.assertTrue(db_options[5] not in response_products)
+        self.assertTrue(db_options[15] in response_products)
+        self.assertTrue(db_options[25] not in response_products)
 
     def test_products_are_from_category(self):
         # leaf category
         category = models.Category.objects.get(name='Category #0 of #6')
         response = self.client.get(self.get_category_url(category))
         self.assertTrue(
-            all(p.category == category for p in response.context['products'])
+            all(option.product.category == category for option in response.context['products'])
         )
 
     def test_products_are_paginated(self):
@@ -602,10 +613,11 @@ class CatalogTags(BaseCatalogTestCase, CategoryTestMixin):
         """Category contains all Product's tags."""
         response = self.client.get(self.get_category_path())
 
+        products = models.Product.objects.filter_descendants(self.category)
         tags = set(chain.from_iterable(map(
             lambda x: x.tags.all(), (
-                models.Product.objects
-                .filter_descendants(self.category)
+                models.Option.objects
+                .filter(product__in=products)
                 .prefetch_related('tags')
             )
         )))
@@ -651,12 +663,19 @@ class CatalogTags(BaseCatalogTestCase, CategoryTestMixin):
 
     def test_contains_product_with_certain_tags(self):
         """Category page contains Product's related by certain tags."""
-        tags = self.tags
-        response = self.client.get(self.get_category_path(tags=tags))
+        category = models.Category.objects.get(name='Category #0 of #3')
+        options = [p.options.first() for p in category.products.all()]
+        tags = (
+            models.Tag.objects
+            .filter(options__in=options)
+            .order_by(*settings.TAGS_ORDER)
+            .distinct(*settings.TAGS_ORDER, 'id')
+        )
+        response = self.client.get(self.get_category_path(category=category, tags=tags))
         self.assertTrue(
             all(
-                tags[0] in p.tags.all() or tags[1] in p.tags.all()
-                for p in response.context['products']
+                tags[0] in option.tags.all() or tags[1] in option.tags.all()
+                for option in response.context['products']
             )
         )
 
@@ -748,16 +767,17 @@ class CatalogTags(BaseCatalogTestCase, CategoryTestMixin):
     def set_too_many_tags(product: models.Product, from_index: int, to_index: int):
         group = models.TagGroup.objects.first()
         models.Tag.objects.filter(group=group).delete()
+        option = product.options.first()
 
         for i in range(from_index, to_index):
-            product.tags.add(
+            option.tags.add(
                 models.Tag.objects.get_or_create(
                     group=group,
                     name=f'{i} м',
                     slug=f'{i}-m',
                 )[0]
             )
-        product.save()
+        option.save()
 
     # set tags limit to value "10" to check if
     # tags from-to label contains max numeric, but not alphabetical value.
@@ -785,7 +805,7 @@ class CatalogTags(BaseCatalogTestCase, CategoryTestMixin):
             .text
         )
         self.assertIn(f'от {from_index} м до {to_index - 1} м', tags_text)
-        self.assertGreater(product.tags.count(), settings.TAGS_UI_LIMIT)
+        self.assertGreater(product.options.first().tags.count(), settings.TAGS_UI_LIMIT)
 
     def test_filter_products_by_tags(self):
         """Category page should not contain products, excluded by tags selection."""

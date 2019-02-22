@@ -41,8 +41,42 @@ class Category(catalog.models.AbstractCategory, pages.models.PageMixin):
         return reverse('category', args=(self.id,))
 
 
+class OptionQuerySet(models.QuerySet):
+
+    def bind_fields(self):
+        """Prefetch or select typical related fields to reduce sql queries count."""
+        return (
+            self.select_related('product')
+            .prefetch_related('tags')
+        )
+
+    def tagged(self, tags: 'TagQuerySet'):
+        # Distinct because a relation of tags and products is M2M.
+        # We do not specify the args for `distinct` to avoid dependencies
+        # between `order_by` and `distinct` methods.
+
+        # Postgres has `SELECT DISTINCT ON`, that depends on `ORDER BY`.
+        # See docs for details:
+        # https://www.postgresql.org/docs/10/static/sql-select.html#SQL-DISTINCT
+        # https://docs.djangoproject.com/en/2.1/ref/models/querysets/#django.db.models.query.QuerySet.distinct
+        return self.filter(tags__in=tags).distinct()
+
+    def tagged_or_all(self, tags: 'TagQuerySet'):
+        return (
+            self.tagged(tags)
+            if tags.exists()
+            else self
+        )
+
+
+class OptionManager(models.Manager.from_queryset(OptionQuerySet)):
+    """Get all products of given category by Category's id or instance."""
+
+
 class Option(models.Model):
     """This doc page describes what is option: https://goo.gl/S4U9PG."""
+
+    objects = OptionManager()
 
     @property
     def name(self):
@@ -156,6 +190,8 @@ class Product(catalog.models.AbstractProduct, pages.models.PageMixin):
             .prefetch_related('category')
             .select_related('page')[:offset]
         )
+
+    # @todo #419:120m  Cleanup product model after Options integration.
 
     # we'll remove this fields from Product model
     # after adapting all system components Options model.
