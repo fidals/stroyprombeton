@@ -18,19 +18,6 @@ def wait(seconds=1):
     time.sleep(seconds)
 
 
-def create_doubled_tag(tag_from: stb_models.Tag=None):
-    tag_from = tag_from or stb_models.Tag.objects.first()
-    group_to = (
-        stb_models.TagGroup.objects.exclude(id=tag_from.group.id).first()
-    )
-    tag_to = stb_models.Tag.objects.create(
-        group=group_to, name=tag_from.name, position=tag_from.position
-    )
-    tag_to.products.set(tag_from.products.all())
-    tag_to.save()
-    return tag_to
-
-
 class BaseSeleniumTestCase(LiveServerTestCase):
     """Common superclass for running selenium-based tests."""
 
