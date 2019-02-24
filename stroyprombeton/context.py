@@ -57,8 +57,8 @@ class TagsByOptions(newcontext.Tags):
         return (
             self._tags.qs()
             .filter(options__in=self.options)
-            .order_by(*settings.TAGS_ORDER)
-            .distinct(*settings.TAGS_ORDER, 'id')
+            .order_by_alphanumeric()
+            .distinct()
         )
 
 

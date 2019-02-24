@@ -1,10 +1,14 @@
 FROM python:3.6-slim
 
+# ARG sets variables that only live during the build process.
+# It stops interactive prompts
+ARG DEBIAN_FRONTEND=noninteractive
+
 RUN apt-get update \
     && apt-get install --no-install-recommends --no-install-suggests -y \
     # package dependencies: wkhtmltopdf -> xvfb -> xorg
     # `xvfb` runs `wkhtmltopdf` using `xorg`
-    xorg wkhtmltopdf xvfb gettext \
+    xorg wkhtmltopdf xvfb gettext git \
     && apt-get -y --purge autoremove \
     && rm -rf /var/lib/apt/lists/*
 

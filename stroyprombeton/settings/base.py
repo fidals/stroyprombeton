@@ -425,8 +425,6 @@ TAG_GROUPS_TITLE_DELIMITER = ' и '
 
 BRAND_TAG_GROUP_NAME = 'Производитель'
 
-TAGS_ORDER = ['group__position', 'group__name', 'position', 'name']
-
 # max tags in one tag group on category page
 TAGS_UI_LIMIT = 20
 
