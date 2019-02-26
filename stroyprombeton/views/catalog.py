@@ -110,6 +110,7 @@ class ProductPage(catalog.ProductPage):
         models.Product.objects
         .active()
         .select_related('page')
+        .prefetch_related('options')
         .prefetch_related('page__images')
     )
 

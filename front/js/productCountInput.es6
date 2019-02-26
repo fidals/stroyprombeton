@@ -3,8 +3,8 @@
     countInput: '.js-count-input',
     countUp: '.js-count-input-up',
     countDown: '.js-count-input-down',
-    $productPrice: $('.js-product-price'),
-    $productPriceSum: $('.js-product-sum'),
+    $productPrice: $('.js-option-price'),
+    $productPriceSum: $('.js-option-sum'),
   };
 
   const productPrice = parseInt(DOM.$productPrice.text(), 10);

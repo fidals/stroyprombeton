@@ -61,12 +61,11 @@ a {
   &-h1 {
     font-size: $f-size-base + 5;
     line-height: 1.2;
-    margin-bottom: 20px;
+    margin-bottom: 15px;
     text-align: center;
 
     @include media($md) {
       font-size: $f-size-base + 18;
-      margin-bottom: 40px;
     }
   }
 
@@ -125,12 +124,11 @@ a {
 .public-offer {
   color: $c-text-muted;
   font-size: $f-size-base - 2;
-  margin: 0 0 15px;
+  margin: 15px 0 0;
   text-align: center;
   width: 100%;
 
   @include media($sm) {
-    margin: 0 0 30px;
     text-align: right;
   }
 }

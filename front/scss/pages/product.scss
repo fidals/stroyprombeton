@@ -5,7 +5,6 @@
   padding-bottom: 20px;
 
   @include media($md) {
-    padding-bottom: 50px;
     text-align: center;
   }
 
@@ -31,12 +30,12 @@
 
     @include media($md) {
       margin: 0;
-      padding: 0 0 85px;
+      padding: 0 0 50px;
     };
   }
 }
 
-.product {
+.option {
   &-info {
     padding: 0 0 30px;
 
@@ -45,45 +44,25 @@
     }
   }
 
+  &-order {
+    padding: 0 0 50px 0;
+    margin-left: -62px;
+  }
+
   &-td {
     border-bottom: 1px solid $c-table-border;
     font-size: $f-size-base - 2;
-    min-width: 130px;
+    min-width: 110px;
     padding: 8px 10px 8px 0;
 
     @include media($sm) {
       font-size: $f-size-base;
-      min-width: 204px;
       padding: 11px 20px 11px 0;
     }
-  }
-}
 
-.product-characteristics {
-  &-title {
-    font-size: $f-size-base;
-    font-weight: 700;
-    margin-bottom: 20px;
-  }
-
-  &-table {
-    margin: 0 0 40px;
-    table-layout: fixed;
-
-    &-col {
-      &-key {
-        width: 80%;
-      }
-
-      &-val {
-        width: 20%;
-      }
-
+    &-price {
+      font-weight: 600;
     }
-  }
-
-  &-val {
-    font-weight: 700;
   }
 }
 
@@ -91,57 +70,8 @@
   color: $c-path;
 }
 
-.product-order {
-  padding-bottom: 20px;
-
-  @include media($sm) {
-    padding-bottom: 40px;
-  }
-
-  &-submit {
-    text-align: center;
-
-    @include media($md) {
-      text-align: right;
-    }
-  }
-
-  &-table {
-    border-bottom: 1px solid $c-table-border;
-    margin-bottom: 25px;
-
-    &-th {
-      text-align: left;
-      border-bottom: 1px solid $c-table-border;
-      line-height: 1.25;
-      padding-bottom: 14px;
-    }
-
-    &-col-price,
-    &-col-total {
-      font-size: $f-size-base;
-      font-weight: 600;
-      height: 60px;
-      vertical-align: middle;
-      width: 162px;
-
-      @include media($sm) {
-        font-size: $f-size-base + 4;
-      }
-    }
-
-    &-col-count {
-      width: 130px;
-    }
-  }
-
-  &-public-offer {
-    text-align: left;
-  }
-}
-
 .buy-product {
-  margin: 0 0 25px;
+  padding: 5px 15px;
 }
 
 .category-price {

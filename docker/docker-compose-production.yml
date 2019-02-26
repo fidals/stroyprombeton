@@ -56,8 +56,14 @@ services:
   app-stage:
     <<: *python-app
     container_name: stb-python-stage
+    env_file:
+      - env_files/app
+      - env_files/credentials
+      - env_files/paths
+      - env_files/ports
     environment:
       - POSTGRES_DB=stb_stage
+      - DJANGO_SETTINGS_MODULE=stroyprombeton.settings.stage
     depends_on:
       - postgres
       - rabbitmq
