@@ -212,6 +212,7 @@ class Command(BaseCommand):
                     for tag in tags_:
                         option.tags.add(tag)
                         product.tags.add(tag)
+                        option.save()
 
         # [('1 м', '2 кг', '72 %'), ('2 м', '3 кг', '146 %')]
         zipped_tags = list(zip(*tags))

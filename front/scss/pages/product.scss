@@ -53,11 +53,12 @@
     border-bottom: 1px solid $c-table-border;
     font-size: $f-size-base - 2;
     min-width: 110px;
-    padding: 8px 10px 8px 0;
+    padding: 8px 5px;
+    text-align: center;
 
     @include media($sm) {
       font-size: $f-size-base;
-      padding: 11px 20px 11px 0;
+      padding: 11px 10px;
     }
 
     &-price {

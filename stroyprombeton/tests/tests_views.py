@@ -284,6 +284,9 @@ class CategoryTable(BaseCatalogTestCase, TestPageMixin):
         )
 
 
+# @todo  #465:30m  Improve tests_views.Product
+#  Use only fixtures, create shared response helper
+#  like `shopelectro.tests.tests_views.BaseCatalogTestCase#get_category_page` does.
 @tag('fast')
 class Product_(TestCase, TestPageMixin):
     """Test for ProductPage view."""
@@ -327,51 +330,6 @@ class Product_(TestCase, TestPageMixin):
     def product(self):
         return self.response.context['product']
 
-    def test_product_name(self):
-        self.assertEqual(self.product.name, self.data['name'])
-
-    def test_product_price(self):
-        self.assertEqual(float(self.product.price), self.data['price'])
-
-    def test_product_code(self):
-        self.assertEqual(self.product.code, self.data['code'])
-
-    def test_product_mark(self):
-        self.assertEqual(int(self.product.mark), self.data['mark'])
-
-    def test_product_length(self):
-        self.assertEqual(self.product.length, self.data['length'])
-
-    def test_product_width(self):
-        self.assertEqual(self.product.width, self.data['width'])
-
-    def test_product_height(self):
-        self.assertEqual(self.product.height, self.data['height'])
-
-    def test_product_diameter_in(self):
-        self.assertEqual(
-            self.product.diameter_in,
-            self.data['diameter_in']
-        )
-
-    def test_product_diameter_out(self):
-        self.assertEqual(
-            self.product.diameter_out,
-            self.data['diameter_out']
-        )
-
-    def test_product_weight(self):
-        self.assertEqual(self.product.weight, self.data['weight'])
-
-    def test_product_volume(self):
-        self.assertEqual(self.product.volume, self.data['volume'])
-
-    def test_product_specification(self):
-        self.assertEqual(
-            self.product.specification,
-            self.data['specification']
-        )
-
     def test_inactive_product_unavailable(self):
         product_id = self.product.id
 
@@ -380,6 +338,24 @@ class Product_(TestCase, TestPageMixin):
 
         self.assertEqual(response.status_code, 404)
         ModelPage.objects.filter(stroyprombeton_product=product_id).update(is_active=True)
+
+    def test_tags_table(self):
+        """Options table should contain right tags set."""
+        product = models.Product.objects.filter(tags__isnull=False).first()
+        response = self.client.get(product.url)
+        option = product.options.first()
+        tags = list(option.tags.all().order_by_alphanumeric())
+        table = BeautifulSoup(
+            response.content.decode('utf-8'),
+            'html.parser'
+        ).find(class_='options-table')
+        groups = table.find_all('th')
+        for tag_, group in zip(tags, groups):
+            self.assertIn(tag_.group.name, group)
+
+        parsed_tags = table.find_all('tr')[1].find_all(class_='option-td')
+        for tag_, parsed in zip(tags, parsed_tags):
+            self.assertEqual(tag_.name, parsed.string.strip())
 
 
 class AbstractFormViewTest:

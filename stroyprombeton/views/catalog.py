@@ -135,11 +135,19 @@ class ProductPage(catalog.ProductPage):
             {'name': name, 'url': url()}
             for (name, url) in product_ancestors[offset:offset + limit]
         ]
+        tag_groups = (
+            models.Tag.objects
+            # @todo #465:30m  Implement `Tags.filter_by_options` method.
+            #  Instead of refarm's `filter_by_products`
+            .filter_by_products([product])
+            .get_group_tags_pairs()
+        ).keys()
 
         return {
             **context,
             'sibling_with_images': siblings_with_images,
             'product_categories': product_categories,
+            'tag_groups': tag_groups,
         }
 
 

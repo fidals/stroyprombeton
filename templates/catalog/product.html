@@ -55,26 +55,26 @@
         <div class="option-order row">
           <table class="options-table table">
             <tr>
-              <th>Длина (мм)</th>
-              <th>Ширина (мм)</th>
-              <th>Высота (мм)</th>
-              <th>Внутренний диаметр (мм)</th>
-              <th>Масса (кг)</th>
-              <th>Объем (м<sup>3</sup>)</th>
+              {% for group in tag_groups %}
+                <th>{{ group.name }}</th>
+              {% endfor %}
 
               <th>Цена</th>
               <th>Кол-во</th>
               <th>Итог</th>
-              <th></th>
+              <th>{# Column for order button #}</th>
             </tr>
             {% for option in product.options.all %}
               <tr>
-                <td class="option-td">{{ option.length }}</td>
-                <td class="option-td">{{ option.width }}</td>
-                <td class="option-td">{{ option.height }}</td>
-                <td class="option-td">{{ option.diameter_in }}</td>
-                <td class="option-td">{{ option.weight|floatformat:'0' }}</td>
-                <td class="option-td">{{ option.volume }}</td>
+                {% for group in tag_groups %}
+                  <td class="option-td">
+                    {% for tag in option.tags.all %}
+                      {% if tag in group.tags.all %}
+                        {{ tag.name }}
+                      {% endif %}
+                    {% endfor %}
+                  </td>
+                {% endfor %}
 
                 <td class="option-td option-td-price js-option-price">
                   <div itemprop="offers" itemscope itemtype="http://schema.org/Offer">
@@ -103,14 +103,6 @@
                 </td>
               </tr>
             {% endfor %}
-
-            {% comment %}
-              TODO - try to launch it
-              @todo #SE432:120m Resurrect product.diameter_out field rendering
-               Now tests are failed with segmentation fault because of the field.
-
-              {% show_field_if_exist product.diameter_out 'Внешний диаметр (мм)' %}
-            {% endcomment %}
           </table>
           <div class="public-offer">Не является публичной офертой</div>
         </div>
