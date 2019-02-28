@@ -6,7 +6,7 @@ from django.test import LiveServerTestCase, tag
 from selenium import webdriver
 
 from stroyprombeton.models import Product
-from stroyprombeton.tests.helpers import wait
+from stroyprombeton.tests.helpers import CAPABILITIES, wait
 
 
 class SeleniumTestCase(LiveServerTestCase):
@@ -19,16 +19,17 @@ class SeleniumTestCase(LiveServerTestCase):
     def setUpClass(cls):
         """Instantiate browser instance."""
         super().setUpClass()
-        capabilities = {
-            'browserName': 'chrome',
-            'mobileEmulation': {
-                'deviceName': 'Apple iPhone 5'
+
+        cls.browser = webdriver.Remote(
+            command_executor=settings.SELENIUM_URL,
+            desired_capabilities={
+                **CAPABILITIES,
+                'mobileEmulation': {
+                    'deviceName': 'Apple iPhone 5'
+                },
             },
-        }
-        cls.browser = webdriver.Remote(command_executor=settings.SELENIUM_URL,
-                                       desired_capabilities=capabilities)
+        )
         cls.browser.implicitly_wait(5)
-        cls.browser.set_window_size(640, 320)
 
     @classmethod
     def tearDownClass(cls):

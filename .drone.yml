@@ -78,7 +78,8 @@ pipeline:
   slow-test:
     <<: *test
     commands:
-      - python manage.py test --parallel --tag slow -k
+      - python manage.py collectstatic --noinput
+      - python manage.py test --parallel --tag slow -k --verbosity 3
 
   lint-coala:
     <<: *lint
@@ -154,11 +155,6 @@ services:
 
   selenium:
     <<: *service
-    image: selenium/standalone-chrome-debug:3.14.0
-    environment: # https://github.com/SeleniumHQ/docker-selenium/issues/392
-      - DBUS_SESSION_BUS_ADDRESS=/dev/null
-      - SCREEN_WIDTH=1920
-      - SCREEN_HEIGHT=1080
-    shm_size: 4G
+    image: selenium/standalone-chrome:3.141.59-iron
     volumes: # https://github.com/SeleniumHQ/docker-selenium#running-the-images
       - /dev/shm:/dev/shm

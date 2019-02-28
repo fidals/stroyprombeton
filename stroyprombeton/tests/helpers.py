@@ -18,6 +18,21 @@ def wait(seconds=1):
     time.sleep(seconds)
 
 
+CAPABILITIES = {
+    'browserName': 'chrome',
+    'chromeOptions': {
+        # the rationale for these options: https://bit.ly/2Vo6klZ
+        'args': [
+            'start-maximized',
+            'enable-automation',
+            '--disable-infobars',
+            '--no-sandbox',
+            '--disable-browser-side-navigation',
+        ]
+    }
+}
+
+
 class BaseSeleniumTestCase(LiveServerTestCase):
     """Common superclass for running selenium-based tests."""
 
@@ -27,19 +42,15 @@ class BaseSeleniumTestCase(LiveServerTestCase):
     def setUpClass(cls):
         """Instantiate browser instance."""
         super().setUpClass()
+
         cls.browser = Remote(
             command_executor=settings.SELENIUM_URL,
-            desired_capabilities=DesiredCapabilities.CHROME
+            desired_capabilities=CAPABILITIES,
         )
         cls.wait = WebDriverWait(cls.browser, settings.SELENIUM_WAIT_SECONDS)
         cls.browser.implicitly_wait(settings.SELENIUM_WAIT_SECONDS)
         cls.browser.set_page_load_timeout(settings.SELENIUM_TIMEOUT_SECONDS)
-        # Fresh created browser failures on maximizing window.
-        # This bug is won't fixed by selenium guys https://goo.gl/6Ttguf
-        # Ohh, so selenium is so selenium ...
-        # UPD 19.05.18: Seems it works, so we enable it to reduce number of errors
         time.sleep(1.0)
-        cls.browser.maximize_window()
 
     @classmethod
     def tearDownClass(cls):
