@@ -3,7 +3,6 @@ version: '2'
 # Anchors
 # x-, Docker will treat as an extension and ignore
 x-python-app: &python-app
-  image: fidals/stb:prod
   restart: always
   env_file:
     - env_files/app
@@ -32,6 +31,7 @@ x-celery-worker: &celery-worker
 services:
   app:
     <<: *python-app
+    image: fidals/stb:prod
     container_name: stb-python
     environment:
       - PYTHONUNBUFFERED=0
@@ -55,12 +55,8 @@ services:
 
   app-stage:
     <<: *python-app
+    image: fidals/stb:stage
     container_name: stb-python-stage
-    env_file:
-      - env_files/app
-      - env_files/credentials
-      - env_files/paths
-      - env_files/ports
     environment:
       - POSTGRES_DB=stb_stage
       - DJANGO_SETTINGS_MODULE=stroyprombeton.settings.stage

@@ -1,4 +1,6 @@
-FROM fidals/stb:dev
+ARG base_image=dev
+
+FROM fidals/stb:$base_image
 
 RUN pip install gunicorn
 

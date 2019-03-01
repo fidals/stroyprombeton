@@ -10,10 +10,10 @@ generate-production-static-data deploy
 
 # ---------------------- Dev section ----------------------
 migrate:
-	$(dc) run --rm app python manage.py migrate
+	$(dc) exec app python manage.py migrate
 
 fixtures:
-	$(dc) run --rm app bash -c "\
+	$(dc) exec app bash -c "\
 		python manage.py loaddata stroyprombeton/fixtures/admin.json \
 		&& python manage.py loaddata stroyprombeton/fixtures/dump.json \
 	"
@@ -78,6 +78,28 @@ deploy-dev:
 	$(MAKE) collectstatic
 	# to make fresh collected static visible immediately
 	$(dc) stop app && $(dc) up -d app
+
+
+# stage helps to expose given branch different from master.
+# `prod` image contains master branch.
+# `stage` contains a given one.
+prepare-stage-deploy:
+	# preserve the dev image from repository
+	$(dcp) rm -fs app-stage
+	$(MAKE) build-static
+	$(dcb) build --no-cache python-dev-stage python-stage
+
+
+# to expose required branch on stage
+# just checkout it on a stage server and run this rule.
+deploy-stage:
+	$(MAKE) prepare-stage-deploy
+	$(dcp) up -d app-stage
+	$(dcp) exec app-stage python manage.py migrate
+	$(dcp) exec app-stage python manage.py loaddata stroyprombeton/fixtures/admin.json
+	$(dcp) exec app-stage python manage.py loaddata stroyprombeton/fixtures/dump.json
+	$(dcp) exec app-stage python manage.py collectstatic --noinput
+	$(dcp) stop app-stage && $(dcp) up -d app-stage
 
 
 # ---------------------- Production deploy section ----------------------

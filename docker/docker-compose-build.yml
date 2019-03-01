@@ -14,6 +14,21 @@ services:
       context: ../
       dockerfile: docker/images/python/Dockerfile.prod
 
+  # stage image relies on dev one, so we need to build them both
+  python-dev-stage:
+    image: fidals/stb:dev_stage
+    build:
+      context: ../
+      dockerfile: docker/images/python/Dockerfile.prod
+
+  python-stage:
+    image: fidals/stb:stage
+    build:
+      args:
+        base_image: dev_stage
+      context: ../
+      dockerfile: docker/images/python/Dockerfile.prod
+
   nodejs:
     image: fidals/stb-nodejs:dev
     build:

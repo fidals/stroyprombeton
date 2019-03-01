@@ -10,6 +10,7 @@ front_build/
 static/
 media/
 stroyprombeton/settings/local.py
+stroyprombeton/settings/stage.py
 stb.json
 docker/.env
 docker/env_files/*
