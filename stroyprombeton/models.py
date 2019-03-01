@@ -1,14 +1,16 @@
+import typing
+
 import mptt
 from django.db import models
 from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 
 import catalog
+import ecommerce
 import pages
-from ecommerce.models import Order as ecOrder
 
 
-class Order(ecOrder):
+class Order(ecommerce.models.Order):
     company = models.CharField(max_length=255, verbose_name='company')
     address = models.TextField(default='', blank=True, verbose_name='address')
     comment = models.TextField(default='', blank=True, verbose_name='comment')
@@ -309,10 +311,28 @@ class TagGroup(catalog.models.TagGroup):
 
 
 class TagQuerySet(catalog.models.TagQuerySet):
+    def filter_by_options(self, options: typing.Iterable[Option]):
+        return (
+            self
+            .filter(options__in=options)
+            .distinct()
+        )
+
+    def exclude_by_options(self, options: typing.Iterable[Option]):
+        return (
+            self
+            .exclude(options__in=options)
+            .distinct()
+        )
+
+
+class TagManager(models.Manager.from_queryset(TagQuerySet)):
     pass
 
 
 class Tag(catalog.models.Tag):
+    objects = TagManager()
+
     group = models.ForeignKey(
         TagGroup, on_delete=models.CASCADE, null=True, related_name='tags',
     )

@@ -137,9 +137,7 @@ class ProductPage(catalog.ProductPage):
         ]
         tag_groups = (
             models.Tag.objects
-            # @todo #465:30m  Implement `Tags.filter_by_options` method.
-            #  Instead of refarm's `filter_by_products`
-            .filter_by_products([product])
+            .filter_by_options(product.options.all())
             .get_group_tags_pairs()
         ).keys()
 

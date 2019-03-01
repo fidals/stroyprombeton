@@ -259,6 +259,7 @@ class CategoryTable(BaseCatalogTestCase, TestPageMixin):
         )
         self.assertEqual(200, response.status_code)
         response_products = response.context['products']
+        self.assertIsInstance(response_products[0], models.Option)
 
         self.assertEqual(10, len(response_products))
         # check bounds of returned products list
