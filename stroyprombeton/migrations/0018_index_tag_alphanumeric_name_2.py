@@ -10,7 +10,7 @@ from catalog.models_operations import IndexTagAlphanumeric
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('stroyprombeton', '0016_reverse_option_relation'),
+        ('stroyprombeton', '0017_index_tag_alphanumeric_name'),
     ]
 
-    operations = IndexTagAlphanumeric().v1()
+    operations = IndexTagAlphanumeric().v2()

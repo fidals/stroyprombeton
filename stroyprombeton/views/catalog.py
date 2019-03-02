@@ -138,7 +138,7 @@ class ProductPage(catalog.ProductPage):
         tag_groups = (
             models.Tag.objects
             .filter_by_options(product.options.all())
-            .get_group_tags_pairs()
+            .group_tags()
         ).keys()
 
         return {
