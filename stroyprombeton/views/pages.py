@@ -1,6 +1,5 @@
 from itertools import groupby
 
-from django.conf import settings
 from django_user_agents.utils import get_user_agent
 from mptt.utils import get_cached_trees
 
@@ -55,7 +54,6 @@ class IndexPage(pages.views.CustomPageView):
             **context,
             **pages,
             'backcall_form': OrderBackcallForm(),
-            'partners': settings.PARTNERS if not mobile_view else '',
             'regions': get_cached_regions(),
         }
 

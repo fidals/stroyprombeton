@@ -386,24 +386,6 @@ REGIONS = {
     'smolensk-region': 1000,
 }
 
-PARTNERS = [
-    {
-        'logo': 'images/stk-prombeton.png',
-        'text': 'Производят железобетонные изделия',
-        'alt': 'Производят железобетонные изделия',
-    },
-    {
-        'url': (
-            'http://www.stk-metal.ru/'
-            '?utm_source=STB_site&utm_medium=backlink'
-            '&utm_campaign=backlink_traffic'
-        ),
-        'logo': 'images/partner-stkmetall-logo.png',
-        'text': 'Проектируют и производят металлоконструкции',
-        'alt': 'Проектируют и производят металлоконструкции',
-    },
-]
-
 CATEGORY_GENT_NAMES = {  # gent - родительный падеж
     457: 'дорожного строительства',
     459: 'строительства энергетических объектов',
@@ -440,7 +422,7 @@ PRODUCT_SIBLINGS_COUNT = 10
 CATEGORY_SORTING_OPTIONS = {}
 
 SENTRY_DSN = os.environ.get('SENTRY_DSN')
-if SENTRY_DSN:
+if SENTRY_DSN and not DEBUG:
     sentry_sdk.init(
         dsn=SENTRY_DSN,
         integrations=[

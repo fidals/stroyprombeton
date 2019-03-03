@@ -328,35 +328,6 @@
     fill: $c-region-fill-hover;
   }
 }
-// ================================================================
-// PARTNERS
-// ================================================================
-.partners {
-  display: none;
-
-  @include media($md) {
-    display: block;
-  };
-
-  &-title {
-    margin-bottom: 40px;
-  }
-
-  &-item {
-    margin-bottom: 45px;
-
-    &-title {
-      color: $c-text;
-      font-size: $f-size-base - 3;
-      margin-top: 10px;
-      width: 90%;
-    }
-  }
-
-  &-image {
-    max-width: 200px;
-  }
-}
 
 // ================================================================
 // NEWS

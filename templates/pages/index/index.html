@@ -208,12 +208,6 @@
   <section class="news">
     <div class="container container-fluid">
       <div class="row">
-        {% if request|is_pc %}
-          <div class="col-md-offset-1 col-md-3">
-            {% include 'pages/index/partners.html' %}
-          </div>
-        {% endif %}
-
         <div class="col-xs-12 col-md-7">
           {% include 'pages/index/news.html' with news=news request=request only %}
         </div>
