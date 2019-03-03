@@ -15,7 +15,7 @@ def migrate_forward(apps, schema_editor):
         h1='{{ page.name }}',
         keywords='{{ page.name }}',
         title='{{ page.name }} - низкие цены от производителя. Купить с доставкой по Москве, Санкт-Петербург и всей России',
-        description=flag_symbol + ' Купить {{ page.name }} на заводе железобетонных изделий «СТК-Промбетон»',
+        description=flag_symbol + ' Купить {{ page.name }} на заводе железобетонных изделий «СТК Модуль»',
     )
 
     product_template = PageTemplate.objects.create(

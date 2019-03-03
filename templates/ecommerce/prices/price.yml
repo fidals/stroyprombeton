@@ -28,7 +28,7 @@
           <name>{{ option.mark }} - {{ option.product.name }} {{ option.specification }}</name>
           <description>
             Купить {{ option.product.name }} {{ option.specification }}. Доставка по Москве, МО, Санкт-Петербург и другим
-            регионам России. Гарантия качества от завода жби «СТК-Промбетон».
+            регионам России. Гарантия качества от завода жби «СТК Модуль».
           </description>
           {% if option.length %}<param name="Длина" unit="мм">{{ option.length }}</param>{% endif %}
           {% if option.width %}<param name="Ширина" unit="мм">{{ option.width }}</param>{% endif %}
