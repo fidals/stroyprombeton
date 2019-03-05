@@ -512,6 +512,19 @@ class TestSearch(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertNotContains(response, '<div class="search-result-item">')
 
+
+# @todo #460:30m Integrate Option model to autocomplete
+#  It doesn't search by Option fields
+
+
+@tag('fast')
+@unittest.skip('Wait for Option integration')
+class Autocomplete(TestCase):
+
+    fixtures = ['dump.json']
+    TERM = 'Prod'
+    WRONG_TERM = 'Bugaga'  # it's short for trigram search testing
+
     def test_autocomplete_has_results(self):
         """Autocomplete should contain at least one result for right term."""
         term = self.TERM

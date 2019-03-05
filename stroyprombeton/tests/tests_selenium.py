@@ -590,6 +590,7 @@ class Search(SeleniumTestCase):
         self.wait.until(EC.url_contains('/gbi/products/'))
         self.assertTrue('/gbi/products/' in self.browser.current_url)
 
+    @unittest.skip
     def test_autocomplete_see_all_item(self):
         """
         Autocomplete should contain "see all" item.
@@ -618,6 +619,7 @@ class Search(SeleniumTestCase):
         h1 = self.browser.find_element_by_tag_name('h1')
         self.assertTrue(h1.text == 'По вашему запросу ничего не найдено')
 
+    @unittest.skip
     def test_autocomplete_results_empty(self):
         """Autocomplete does not display for wrong query."""
         self.fill_input(query=self.wrong_query)

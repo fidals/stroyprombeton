@@ -1,12 +1,10 @@
 from django.conf import settings
 
 from ecommerce.forms import OrderBackcallForm
-from pages.models import Page
+from pages.models import CustomPage, FlatPage, Page
 from search import views as search_views, search as search_engine
-from stroyprombeton.models import Product, Category
+from stroyprombeton import models as stb_models
 
-
-# @todo #419:30m  Move search module to Options.
 
 class Search(search_views.SearchView):
 
@@ -14,24 +12,35 @@ class Search(search_views.SearchView):
     search_entities = [
         search_engine.Search(
             name='category',
-            #
-            qs=Category.objects.active(),
+            qs=stb_models.Category.objects.active(),
             # ignore CPDBear
             fields=['name', 'specification'],
             min_similarity=settings.TRIGRAM_MIN_SIMILARITY,
         ),
         search_engine.Search(
             name='product',
-            qs=Product.objects.active(),
-            fields=['name', 'mark', 'specification', 'id'],
+            qs=stb_models.Product.objects.active(),
+            fields=['name', 'id'],
+            min_similarity=settings.TRIGRAM_MIN_SIMILARITY,
+        ),
+        search_engine.Search(
+            name='product',
+            qs=stb_models.Option.objects.active(),
+            fields=['mark', 'specification'],
             min_similarity=settings.TRIGRAM_MIN_SIMILARITY,
         ),
         search_engine.Search(
             name='page',
-            qs=Page.objects.active(),
+            qs=CustomPage.objects.active(),
             fields=['name'],
             min_similarity=settings.TRIGRAM_MIN_SIMILARITY,
-        )
+        ),
+        search_engine.Search(
+            name='page',
+            qs=FlatPage.objects.active(),
+            fields=['name'],
+            min_similarity=settings.TRIGRAM_MIN_SIMILARITY,
+        ),
     ]
 
     def get_context_data(self, **kwargs):
@@ -49,9 +58,16 @@ class Autocomplete(search_views.AutocompleteView):
     search_entities = [
         search_engine.Search(
             name='product',
-            qs=Product.objects.active(),
-            fields=['name', 'code', 'mark', 'specification'],
-            template_fields=['name', 'mark', 'specification', 'url'],
+            qs=stb_models.Option.objects.active(),
+            fields=['code', 'mark', 'specification'],
+            template_fields=['mark', 'specification', 'url'],
+            min_similarity=settings.TRIGRAM_MIN_SIMILARITY,
+        ),
+        search_engine.Search(
+            name='product',
+            qs=stb_models.Product.objects.active(),
+            fields=['name'],
+            template_fields=['name'],
             min_similarity=settings.TRIGRAM_MIN_SIMILARITY,
         ),
     ]
@@ -65,7 +81,7 @@ class AdminAutocomplete(search_views.AdminAutocompleteView):
     search_entities = [
         search_engine.Search(
             name='category',
-            qs=Category.objects.active(),
+            qs=stb_models.Category.objects.active(),
             # ignore CPDBear
             fields=['name'],
             min_similarity=settings.TRIGRAM_MIN_SIMILARITY,
@@ -73,13 +89,13 @@ class AdminAutocomplete(search_views.AdminAutocompleteView):
         # ignore CPDBear
         search_engine.Search(
             name='product',
-            qs=Product.objects.active(),
+            qs=stb_models.Product.objects.active(),
             fields=['name'],
             min_similarity=settings.TRIGRAM_MIN_SIMILARITY,
         ),
         search_engine.Search(
             name='pages',
-            qs=Page.objects.filter(is_active=True),
+            qs=Page.objects.active(),
             fields=['name'],
             min_similarity=settings.TRIGRAM_MIN_SIMILARITY,
         )

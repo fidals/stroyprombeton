@@ -45,6 +45,9 @@ class Category(catalog.models.AbstractCategory, pages.models.PageMixin):
 
 class OptionQuerySet(models.QuerySet):
 
+    def active(self):
+        return self.filter(product__isnull=False, product__page__is_active=True)
+
     def bind_fields(self):
         """Prefetch or select typical related fields to reduce sql queries count."""
         return (
