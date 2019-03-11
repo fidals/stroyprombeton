@@ -201,8 +201,6 @@ class Command(BaseCommand):
                         category=category,
                         page=ModelPage.objects.create(name=name),
                         # remove this in favor Option
-                        price=i * 100,
-                        mark=f'mark #{i}',
                     )
                     option = stb_models.Option.objects.create(
                         price=i * 100,

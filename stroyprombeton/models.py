@@ -28,6 +28,8 @@ class Order(ecommerce.models.Order):
 #
 #  Then use model.Manager.active() filter everywhere in this project (rf#169).
 class Category(catalog.models.AbstractCategory, pages.models.PageMixin):
+    # @todo #483:30m  Explore `Category.specification` field purpose.
+    #  Then document or rename it.
     specification = models.TextField(
         default='',
         blank=True,
@@ -98,6 +100,8 @@ class Option(models.Model):
     def url(self):
         return self.product.url
 
+    code = models.BigIntegerField(null=True, blank=True, verbose_name=_('code'))  # Ignore CPDBear
+    mark = models.CharField(default='', max_length=500, blank=True, verbose_name=_('mark'))
     tags = models.ManyToManyField(
         'Tag',
         related_name='options',
@@ -108,6 +112,8 @@ class Option(models.Model):
     product = models.ForeignKey(
         'Product',
         on_delete=models.CASCADE,
+        # @todo #455:30m  Rm null and blanks from relation fields.
+        #  Only `stb.models` module from every place where it's redundant .
         blank=True,
         null=True,
         related_name='options',
@@ -139,19 +145,6 @@ class Option(models.Model):
     def __str__(self):
         return self.mark  # Ignore CPDBear
 
-    # this fields will be moved to tags after Tags feature will be finished.
-    # See https://github.com/fidals/stroyprombeton/labels/Tags
-    code = models.BigIntegerField(null=True, blank=True, verbose_name=_('code'))  # Ignore CPDBear
-    mark = models.CharField(default='', max_length=500, blank=True, verbose_name=_('mark'))
-    specification = models.TextField(default='', blank=True, verbose_name=_('specification'),)
-    length = models.IntegerField(null=True, blank=True, verbose_name=_('length'))
-    width = models.IntegerField(null=True, blank=True, verbose_name=_('width'))
-    height = models.IntegerField(null=True, blank=True, verbose_name=_('height'))
-    weight = models.FloatField(null=True, blank=True, verbose_name=_('weight'))
-    volume = models.FloatField(null=True, blank=True, verbose_name=_('volume'))
-    diameter_out = models.IntegerField(null=True, blank=True, verbose_name=_('diameter out'))
-    diameter_in = models.IntegerField(null=True, blank=True, verbose_name=_('diameter in'))
-
 
 # not inherited from `catalog.models.AbstractProduct`, because
 # AbstractProduct's set of fields is shared between Product and Option models.
@@ -181,7 +174,7 @@ class Product(catalog.models.AbstractProduct, pages.models.PageMixin):
         return reverse('product', args=(self.id,))
 
     def get_admin_tree_title(self):
-        return f'[{self.id}] {self.name} {self.mark}]'
+        return f'[{self.id}] {self.name}]'
 
     def get_root_category(self):
         return self.category.get_root()
@@ -198,15 +191,12 @@ class Product(catalog.models.AbstractProduct, pages.models.PageMixin):
 
     # @todo #419:120m  Cleanup product model after Options integration.
 
+    # @todo #483:30m  Remove product tags
+
     # we'll remove this fields from Product model
     # after adapting all system components Options model.
     # This set of github issues should be finished for removing the fields:
     # https://github.com/fidals/stroyprombeton/labels/Product%20options
-    is_new_price = models.NullBooleanField(
-        blank=True,
-        null=True,
-        verbose_name=_('is new price'),
-    )
     tags = models.ManyToManyField(
         'Tag',
         related_name='products',
@@ -214,34 +204,12 @@ class Product(catalog.models.AbstractProduct, pages.models.PageMixin):
         null=True,
         verbose_name=_('tags'),
     )
-    price = models.FloatField(
-        blank=True,
-        default=0,
-        db_index=True,
-        verbose_name=_('price'),
-    )
-    in_stock = models.PositiveIntegerField(
-        default=0,
-        db_index=True,
-        verbose_name=_('in stock'),
-    )
+    # @todo #483:30m  Drop `Product.is_popular` field.
     is_popular = models.BooleanField(
         default=False,
         db_index=True,
         verbose_name=_('is popular'),
     )
-
-    date_price_updated = models.DateField(auto_now_add=True, verbose_name=_('date price updated'))
-    code = models.BigIntegerField(null=True, blank=True, verbose_name=_('code'))
-    mark = models.CharField(default='', max_length=500, blank=True, verbose_name=_('mark'))
-    specification = models.TextField(default='', blank=True, verbose_name=_('specification'),)
-    length = models.IntegerField(null=True, blank=True, verbose_name=_('length'))
-    width = models.IntegerField(null=True, blank=True, verbose_name=_('width'))
-    height = models.IntegerField(null=True, blank=True, verbose_name=_('height'))
-    weight = models.FloatField(null=True, blank=True, verbose_name=_('weight'))
-    volume = models.FloatField(null=True, blank=True, verbose_name=_('volume'))
-    diameter_out = models.IntegerField(null=True, blank=True, verbose_name=_('diameter out'))
-    diameter_in = models.IntegerField(null=True, blank=True, verbose_name=_('diameter in'))
 
 
 class CategoryPage(pages.models.ModelPage):

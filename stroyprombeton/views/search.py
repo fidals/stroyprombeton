@@ -26,7 +26,10 @@ class Search(search_views.SearchView):
         search_engine.Search(
             name='product',
             qs=stb_models.Option.objects.active(),
-            fields=['mark', 'specification'],
+            # @todo #483:60m  Implement search by option.
+            #  Return back searching by `option.specification` field.
+            #  And test it of course.
+            fields=['mark'],
             min_similarity=settings.TRIGRAM_MIN_SIMILARITY,
         ),
         search_engine.Search(
@@ -59,8 +62,8 @@ class Autocomplete(search_views.AutocompleteView):
         search_engine.Search(
             name='product',
             qs=stb_models.Option.objects.active(),
-            fields=['code', 'mark', 'specification'],
-            template_fields=['mark', 'specification', 'url'],
+            fields=['code', 'mark'],
+            template_fields=['mark', 'url'],
             min_similarity=settings.TRIGRAM_MIN_SIMILARITY,
         ),
         search_engine.Search(

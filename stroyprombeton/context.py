@@ -189,7 +189,6 @@ class FetchPositions(Catalog):
         'product__name__icontains',
         'code__icontains',
         'mark__icontains',
-        'specification__icontains',
     ]
 
     # redefined just to type hint

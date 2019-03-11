@@ -28,18 +28,18 @@
               </tr>
             </thead>
             <tbody>
-              {% for id, product in cart %}
-                <tr class="js-product-row" data-id="{{ id }}" data-price="{{ product.price }}">
+              {% for id, position in cart %}
+                <tr class="js-product-row" data-id="{{ id }}" data-price="{{ position.price }}">
                   <td class="order-table-name">
-                    <a href="{{ product.url }}">
-                      {{ product.name }} {% get_product_field id 'mark'%}
+                    <a href="{{ position.url }}">
+                      {{ position.name }}
                     </a>
                   </td>
                   <td class="order-table-count">
                     {% include 'catalog/count_input.html' %}
                   </td>
                   <td class="order-table-price">
-                    {{ product.price|format_price }}
+                    {{ position.price|format_price }}
                     <i class="fa fa-times order-icon-remove icon-remove js-remove"
                        aria-hidden="true" title="Удалить товар"></i>
                   </td>
