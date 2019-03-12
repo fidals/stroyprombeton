@@ -68,11 +68,7 @@
               <tr>
                 {% for group in tag_groups %}
                   <td class="option-td">
-                    {% for tag in option.tags.all %}
-                      {% if tag in group.tags.all %}
-                        {{ tag.name }}
-                      {% endif %}
-                    {% endfor %}
+                    {% get_tag_name group option %}
                   </td>
                 {% endfor %}
 

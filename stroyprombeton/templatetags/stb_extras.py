@@ -6,8 +6,7 @@ from django.template.defaultfilters import floatformat
 
 from images.models import ImageMixin
 from pages.models import Page
-
-from stroyprombeton.models import Category, Product
+from stroyprombeton.models import Category, Product, Tag
 
 register = template.Library()
 
@@ -67,6 +66,16 @@ def get_product_field(product_id, parameter):
     product = Product.objects.get(id=product_id)
 
     return getattr(product, parameter)
+
+
+# @todo #500:60m  Improve tags table performance clearly.
+#  Drop `get_tag_name` template tag. It spawns O(n) queries to DB.
+#  Prepare tags structure at the view side instead.
+#  This approach requires just few queries.
+@register.simple_tag
+def get_tag_name(group, option) -> str:
+    tag = Tag.objects.filter(group=group, options__in=[option]).first()
+    return tag.name if tag else ''
 
 
 @register.filter
