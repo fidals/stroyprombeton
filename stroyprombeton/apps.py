@@ -13,10 +13,15 @@ class StroyprombetonAppConfig(AppConfig):
 
 @register()
 def rabbitmq_availability(app_configs, **kwargs):
+    """
+    Health check the celery queue workers during Django system check.
+
+    Prohibit the app execution until workers are shutdown.
+    """
     if not settings.USE_CELERY:
         return []
 
-    active_queues = celery_app.control.inspect().active_queues()
+    active_queues = celery_app.control.inspect().active_queues() or {}
     declared_queues = celery_app.conf.task_queues
     # match declared_queues and active_queues to prevent
     # issues with shutdowned celery workers
