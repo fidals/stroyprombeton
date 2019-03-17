@@ -208,8 +208,8 @@ class CategoryTable(BaseCatalogTestCase, TestPageMixin):
         response = self.client.get(reverse('category', args=(test_product.category_id,)))
         self.assertNotIn(test_product, response.context['products'])
 
-    def test_load_more_context_data(self):
-        """App should response with products data on load_more request."""
+    def test_fetch_products_context_data(self):
+        """App should response with products data on fetch_products request."""
         db_products = (
             models.Product.objects.active()
             .filter_descendants(self.root_category)
@@ -236,6 +236,10 @@ class CategoryTable(BaseCatalogTestCase, TestPageMixin):
         self.assertTrue(db_options[5] not in response_products)
         self.assertTrue(db_options[15] in response_products)
         self.assertTrue(db_options[25] not in response_products)
+
+    def test_fetch_products_bad_request_processing(self):
+        response = self.client.post(reverse('fetch_products'), data={})
+        self.assertEqual(400, response.status_code)
 
     def test_products_are_from_category(self):
         # leaf category

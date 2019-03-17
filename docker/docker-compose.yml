@@ -24,13 +24,13 @@ services:
     volumes:
       - ./../:$SRC_DIR
       # Thus, you can work with apps related to the refarm-site
-      - $REFARM_DIR/catalog:/root/.local/lib/python3.6/site-packages/catalog
-      - $REFARM_DIR/ecommerce:/root/.local/lib/python3.6/site-packages/ecommerce
-      - $REFARM_DIR/images:/root/.local/lib/python3.6/site-packages/images
-      - $REFARM_DIR/pages:/root/.local/lib/python3.6/site-packages/pages
-      - $REFARM_DIR/search:/root/.local/lib/python3.6/site-packages/search
-      - $REFARM_DIR/refarm_test_utils:/root/.local/lib/python3.6/site-packages/refarm_test_utils
-      - $REFARM_DIR/generic_admin:/root/.local/lib/python3.6/site-packages/generic_admin
+      #- $REFARM_DIR/catalog:/root/.local/lib/python3.6/site#-packages/catalog
+      #- $REFARM_DIR/ecommerce:/root/.local/lib/python3.6/site#-packages/ecommerce
+      #- $REFARM_DIR/images:/root/.local/lib/python3.6/site#-packages/images
+      #- $REFARM_DIR/pages:/root/.local/lib/python3.6/site#-packages/pages
+      #- $REFARM_DIR/search:/root/.local/lib/python3.6/site#-packages/search
+      #- $REFARM_DIR/refarm_test_utils:/root/.local/lib/python3.6/site#-packages/refarm_test_utils
+      #- $REFARM_DIR/generic_admin:/root/.local/lib/python3.6/site-packages/generic_admin
     #  Is full means '.env` contains all keynames from `.env.dist`
     command: python manage.py runserver 0.0.0.0:8000
 

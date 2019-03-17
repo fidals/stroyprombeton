@@ -3,17 +3,8 @@ import typing
 from django import http
 from django_user_agents.utils import get_user_agent
 
-
-# @todo #431:15m  Move Request class to refarm side. se2
-class Request:
-    """Comprehensive request entity: django's request + url arguments."""
-
-    def __init__(
-        self, request: http.HttpRequest, url_kwargs: typing.Dict[str, str]
-    ):
-        """:param request: came here throw django urls and django views."""
-        self.request = request
-        self.url_kwargs = url_kwargs
+from pages.request_data import Request
+from stroyprombeton.exception import Http400
 
 
 class Category(Request):
@@ -50,12 +41,17 @@ class Category(Request):
 
 class FetchProducts(Category):
 
+    def __init__(
+        self, request: http.HttpRequest, url_kwargs: typing.Dict[str, str]
+    ):
+        super().__init__(request, url_kwargs)
+        self._id = self.request.POST.get('categoryId')
+        if not self._id:
+            raise Http400('POST param categoryId is missed')
+
     @property
     def id(self):
-        # @todo #443:15m Check FetchProducts post params.
-        #  Raise Http400 if categoryId not exists.
-        #  See `Http400` error on SE for example.
-        return self.request.POST.get('categoryId')
+        return self._id
 
     @property
     def filtered(self) -> bool:

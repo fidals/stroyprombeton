@@ -6,7 +6,6 @@ It's not good style. We should use objects composition instead.
 This using will becom possible after se#567 released.
 """
 
-import typing
 from functools import partial, reduce
 from operator import or_
 
@@ -14,9 +13,9 @@ from django.conf import settings
 from django.db import models
 from django.shortcuts import get_object_or_404, _get_queryset
 
-from catalog import newcontext
+from catalog import context, typing
 from images.models import Image
-from pages import newcontext as pages_newcontext
+from pages import context as pages_context
 from search.search import QuerySetType
 from stroyprombeton import models as stb_models, request_data
 
@@ -47,9 +46,9 @@ def search(term: str, model_type: typing.Union[models.Model, models.Manager, Que
     )
 
 
-class TagsByOptions(newcontext.Tags):
+class TagsByOptions(context.Tags):
 
-    def __init__(self, tags: newcontext.Tags, options: stb_models.OptionQuerySet):
+    def __init__(self, tags: context.Tags, options: stb_models.OptionQuerySet):
         self._tags = tags
         self.options = options
 
@@ -63,13 +62,13 @@ class TagsByOptions(newcontext.Tags):
 
 
 # @todo #431:30m  Share base page to refarm side. se2
-class Page(newcontext.Context):
+class Page(context.Context):
 
-    def __init__(self, page, tags: newcontext.Tags):
+    def __init__(self, page, tags: context.Tags):
         self._page = page
         self._tags = tags
 
-    def context(self):
+    def context(self) -> typing.ContextDict:
         def template_context(page, tag_titles, tags):
             return {
                 'page': page,
@@ -92,7 +91,7 @@ class Page(newcontext.Context):
 #  Reuse the methods at pretty separated `Catalog` and `FetchProducts` classes.
 #  Move `sliced_products` inside of `context` method for both classes.
 #  Move `FetchProducts.filter_` and `FetchProducts.LOOKUPS` to some search entity.
-class Catalog(newcontext.Context):
+class Catalog(context.Context):
 
     def __init__(self, request_data_: request_data.Category):
         self.request_data = request_data_
@@ -109,18 +108,18 @@ class Catalog(newcontext.Context):
         )
 
     @property
-    def tags(self) -> newcontext.Tags:
-        return newcontext.Tags(stb_models.Tag.objects.all())
+    def tags(self) -> context.Tags:
+        return context.Tags(stb_models.Tag.objects.all())
 
-    def select_tags(self) -> newcontext.Tags:
+    def select_tags(self) -> context.Tags:
         all_tags = self.tags
 
-        selected_tags = newcontext.tags.ParsedTags(
+        selected_tags = context.tags.ParsedTags(
             tags=all_tags,
             raw_tags=self.request_data.tags,
         )
         if self.request_data.tags:
-            selected_tags = newcontext.tags.Checked404Tags(selected_tags)
+            selected_tags = context.tags.Checked404Tags(selected_tags)
         return selected_tags
 
     def filter_positions(self) -> stb_models.OptionQuerySet:
@@ -138,7 +137,7 @@ class Catalog(newcontext.Context):
             .filter(product__in=products)
         )
 
-    def slice_products(self) -> newcontext.products.PaginatedProducts:
+    def slice_products(self) -> context.products.PaginatedProducts:
         """
         We have to use separated variable/method for pagination.
 
@@ -146,7 +145,7 @@ class Catalog(newcontext.Context):
         It's not the most strong place of Django ORM, of course.
         :return: ProductsContext with paginated QuerySet inside
         """
-        return newcontext.products.PaginatedProducts(
+        return context.products.PaginatedProducts(
             products=self.filter_positions(),
             url=self.request_data.request.path,
             page_number=self.request_data.pagination_page_number,
@@ -154,17 +153,17 @@ class Catalog(newcontext.Context):
         )
 
     # @todo #443:15m  Create ContextDict type on refarm side. se2
-    def context(self) -> dict:
+    def context(self) -> typing.ContextDict:
         selected_tags = self.select_tags()
         products = self.filter_positions()
         sliced_products = self.slice_products()
 
-        images = newcontext.products.ProductImages(sliced_products.products, Image.objects.all())
-        grouped_tags = newcontext.tags.GroupedTags(
+        images = context.products.ProductImages(sliced_products.products, Image.objects.all())
+        grouped_tags = context.tags.GroupedTags(
             tags=TagsByOptions(self.tags, products)
         )
         page = Page(self.page, selected_tags)
-        category = newcontext.category.Context(self.category)
+        category = context.category.Context(self.category)
         params = {
             'limits': settings.CATEGORY_STEP_MULTIPLIERS,
         }
@@ -176,7 +175,7 @@ class Catalog(newcontext.Context):
             #  At SE side "paginated" context var somehow contains "total_products" field.
             #  And move the relevant `test_tag_button_filter_products` test to the fast tests side.
             'total_products': products.count(),
-            **pages_newcontext.Contexts([
+            **pages_context.Contexts([
                 page, category, sliced_products,
                 images, grouped_tags
             ]).context()
@@ -210,6 +209,6 @@ class FetchPositions(Catalog):
 
     def slice_products(self):
         offset, limit = self.request_data.offset, self.request_data.length
-        return newcontext.Products(
+        return context.Products(
             self.filter_positions()[offset:offset + limit]
         )

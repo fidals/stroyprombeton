@@ -1,7 +1,7 @@
 from csv import writer as CSVWriter
 
 from django.conf import settings
-from django.http import StreamingHttpResponse
+from django.http import HttpResponseBadRequest, StreamingHttpResponse
 from django.shortcuts import render
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
@@ -11,15 +11,21 @@ from catalog.views import catalog
 from images.models import Image
 from pages.models import CustomPage, ModelPage
 from pages.templatetags.pages_extras import breadcrumbs as get_page_breadcrumbs
-from stroyprombeton import context as stb_context, models, request_data
+from stroyprombeton import context as stb_context, models, exception, request_data
 from stroyprombeton.views.helpers import set_csrf_cookie
 
 
 def fetch_products(request):
     """Filter product table on Category page by Name, code, specification."""
-    context_ = stb_context.FetchPositions(
-        request_data.FetchProducts(request, url_kwargs={}),
-    )
+    try:
+        context_ = stb_context.FetchPositions(
+            request_data.FetchProducts(request, url_kwargs={}),
+        )
+    # @todo #451:60m  Create middleware to for http errors. se2
+    #  Middleware should transform http exceptions to http errors errors.
+    except exception.Http400 as e:
+        return HttpResponseBadRequest(str(e))
+
     return render(
         request,
         'catalog/category_products.html',

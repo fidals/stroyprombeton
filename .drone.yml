@@ -140,7 +140,7 @@ pipeline:
 services:
   postgres:
     <<: *service
-    image: postgres
+    image: postgres:9.5
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=test
