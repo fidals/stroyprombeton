@@ -4,7 +4,7 @@ from django.conf import settings
 from django.test import override_settings, LiveServerTestCase, TestCase
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
+from selenium.webdriver.remote.webelement import WebDriverException
 from seleniumrequests import Remote
 
 from catalog.helpers import reverse_catalog_url
@@ -51,6 +51,10 @@ class BaseSeleniumTestCase(LiveServerTestCase):
         cls.browser.implicitly_wait(settings.SELENIUM_WAIT_SECONDS)
         cls.browser.set_page_load_timeout(settings.SELENIUM_TIMEOUT_SECONDS)
         time.sleep(1.0)
+        try:
+            cls.browser.maximize_window()
+        except WebDriverException:
+            print('Failed to maximize window')  # Ignore CPDBear
 
     @classmethod
     def tearDownClass(cls):

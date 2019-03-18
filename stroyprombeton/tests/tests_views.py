@@ -210,13 +210,10 @@ class CategoryTable(BaseCatalogTestCase, TestPageMixin):
 
     def test_fetch_products_context_data(self):
         """App should response with products data on fetch_products request."""
-        db_products = (
-            models.Product.objects.active()
-            .filter_descendants(self.root_category)
-            .order_by(*settings.PRODUCTS_ORDERING)
-        )
         db_options = (
-            models.Option.objects.filter(product__in=db_products)
+            models.Option.objects.active()
+            .filter_descendants(self.root_category)
+            .order_by(*settings.OPTIONS_ORDERING)
         )
 
         response = self.client.post(

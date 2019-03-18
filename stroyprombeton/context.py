@@ -86,14 +86,9 @@ class Page(context.Context):
         }
 
 
-# @todo #443:60m  Improve context classes arch.
-#  Move `Catalog.select_tags` and `Catalog.filter_products` to some common area.
-#  Reuse the methods at pretty separated `Catalog` and `FetchProducts` classes.
-#  Move `sliced_products` inside of `context` method for both classes.
-#  Move `FetchProducts.filter_` and `FetchProducts.LOOKUPS` to some search entity.
 class Catalog(context.Context):
 
-    def __init__(self, request_data_: request_data.Category):
+    def __init__(self, request_data_: request_data.FetchProducts):
         self.request_data = request_data_
 
     @property
@@ -111,33 +106,9 @@ class Catalog(context.Context):
     def tags(self) -> context.Tags:
         return context.Tags(stb_models.Tag.objects.all())
 
-    def select_tags(self) -> context.Tags:
-        all_tags = self.tags
-
-        selected_tags = context.tags.ParsedTags(
-            tags=all_tags,
-            raw_tags=self.request_data.tags,
-        )
-        if self.request_data.tags:
-            selected_tags = context.tags.Checked404Tags(selected_tags)
-        return selected_tags
-
-    def filter_positions(self) -> stb_models.OptionQuerySet:
-        products = (
-            stb_models.Product.objects.active()
-            .bind_fields()
-            .filter_descendants(self.category)
-            .tagged_or_all(self.select_tags().qs())
-            .order_by(*settings.PRODUCTS_ORDERING)
-        )
-        # @todo #419:30m  Fetch options and products with one query.
-        return (
-            stb_models.Option.objects
-            .bind_fields()
-            .filter(product__in=products)
-        )
-
-    def slice_products(self) -> context.products.PaginatedProducts:
+    def slice_products(
+        self, options: stb_models.OptionQuerySet
+    ) -> context.products.PaginatedProducts:
         """
         We have to use separated variable/method for pagination.
 
@@ -146,23 +117,27 @@ class Catalog(context.Context):
         :return: ProductsContext with paginated QuerySet inside
         """
         return context.products.PaginatedProducts(
-            products=self.filter_positions(),
+            products=options,
             url=self.request_data.request.path,
             page_number=self.request_data.pagination_page_number,
             per_page=self.request_data.pagination_per_page,
         )
 
-    # @todo #443:15m  Create ContextDict type on refarm side. se2
-    def context(self) -> typing.ContextDict:
-        selected_tags = self.select_tags()
-        products = self.filter_positions()
-        sliced_products = self.slice_products()
+    def filter_options(self, tags):
+        return FilteredOptions(self.category, tags.qs(), self.request_data).qs()
 
-        images = context.products.ProductImages(sliced_products.products, Image.objects.all())
-        grouped_tags = context.tags.GroupedTags(
-            tags=TagsByOptions(self.tags, products)
+    def context(self) -> typing.ContextDict:
+        tags = FilteredTags(stb_models.Tag.objects.all(), self.request_data)
+        options_qs = self.filter_options(tags)
+        sliced_options = self.slice_products(options_qs)
+
+        images = context.products.ProductImages(
+            sliced_options.products, Image.objects.all()
         )
-        page = Page(self.page, selected_tags)
+        grouped_tags = context.tags.GroupedTags(
+            tags=TagsByOptions(self.tags, options_qs)
+        )
+        page = Page(self.page, tags)
         category = context.category.Context(self.category)
         params = {
             'limits': settings.CATEGORY_STEP_MULTIPLIERS,
@@ -174,14 +149,65 @@ class Catalog(context.Context):
             # @todo #431:60m  Move total_products to a relevant context class.
             #  At SE side "paginated" context var somehow contains "total_products" field.
             #  And move the relevant `test_tag_button_filter_products` test to the fast tests side.
-            'total_products': products.count(),
+            'total_products': options_qs.count(),
             **pages_context.Contexts([
-                page, category, sliced_products,
+                page, category, sliced_options,
                 images, grouped_tags
             ]).context()
         }
 
 
+class FilteredTags(context.Tags):
+
+    def __init__(
+        self,
+        tags: stb_models.TagQuerySet,
+        request_data_: request_data.FetchProducts
+    ):
+        super().__init__(qs=tags)
+        self.request_data = request_data_
+
+    def qs(self) -> stb_models.TagQuerySet:
+        selected_tags = context.tags.ParsedTags(
+            tags=context.Tags(self._qs),
+            raw_tags=self.request_data.tags,
+        )
+        if self.request_data.tags:
+            selected_tags = context.tags.Checked404Tags(selected_tags)
+        return selected_tags.qs()
+
+
+class FilteredOptions(context.Context):
+    def __init__(
+        self,
+        category: stb_models.Category,
+        tags: stb_models.TagQuerySet,
+        request_data_: request_data.FetchProducts
+    ):
+        self.category = category
+        self.tags = tags
+        self.request_data = request_data_
+
+    def qs(self) -> stb_models.OptionQuerySet:
+        return (
+            stb_models.Option.objects.active()
+            .bind_fields()
+            .active()
+            .filter_descendants(self.category)
+            .tagged_or_all(self.tags)
+            .order_by(*settings.OPTIONS_ORDERING)
+        )
+
+    def context(self) -> typing.ContextDict:
+        return {
+            'positions': self.qs()
+        }
+
+
+# @todo #449:60m  Remove FetchPositions class.
+#  Create a new context class to search and filter positions.
+#  Move filter_options and slice_products methods to a created class.
+#  FilteredOptions created from `Catalog.filter_positions` is the example.
 class FetchPositions(Catalog):
 
     LOOKUPS = [
@@ -194,21 +220,21 @@ class FetchPositions(Catalog):
     def __init__(self, request_data_: request_data.FetchProducts):
         super().__init__(request_data_)
 
-    def filter_positions(self) -> stb_models.OptionQuerySet:
-        products = super().filter_positions()
+    def filter_options(self, tags) -> stb_models.OptionQuerySet:
+        options = FilteredOptions(self.category, tags.qs(), self.request_data)
 
         if self.request_data.filtered and self.request_data.term:
             return search(
                 self.request_data.term,
-                products,
+                options.qs(),
                 self.LOOKUPS,
                 ordering=('product__name', )
             )
         else:
-            return products
+            return options.qs()
 
-    def slice_products(self):
+    def slice_products(self, options: stb_models.OptionQuerySet):
         offset, limit = self.request_data.offset, self.request_data.length
         return context.Products(
-            self.filter_positions()[offset:offset + limit]
+            options[offset:offset + limit]
         )

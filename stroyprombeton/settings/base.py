@@ -415,7 +415,7 @@ TAGS_UI_LIMIT = 20
 # then will be shown neighbors by number: 3, 4, 6, 7
 PAGINATION_NEIGHBORS = 10
 CATEGORY_STEP_MULTIPLIERS = [12, 15, 24, 25, 48, 50, 60, 100]
-PRODUCTS_ORDERING = ['code', 'name', 'mark']
+OPTIONS_ORDERING = ['code', 'product__name', 'mark']
 PRODUCT_SIBLINGS_COUNT = 10
 
 # we wait se#567 to remove it

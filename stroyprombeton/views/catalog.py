@@ -174,7 +174,8 @@ class ProductPDF(PDFTemplateView, DetailView):
             models.Product.objects
             .active()
             .filter_descendants(category)
-            .order_by(*settings.PRODUCTS_ORDERING)
+            # use `OPTIONS_ORDERING` instead
+            # .order_by(*settings.PRODUCTS_ORDERING)
         )
 
         return {

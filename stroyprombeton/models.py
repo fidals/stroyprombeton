@@ -57,6 +57,9 @@ class OptionQuerySet(models.QuerySet):
             .prefetch_related('tags')
         )
 
+    def filter_descendants(self, category: models.Model) -> models.QuerySet:
+        return self.filter(product__category__in=category.get_descendants(True))
+
     def tagged(self, tags: 'TagQuerySet'):
         # Distinct because a relation of tags and products is M2M.
         # We do not specify the args for `distinct` to avoid dependencies
