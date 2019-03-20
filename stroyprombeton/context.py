@@ -88,7 +88,7 @@ class Page(context.Context):
 
 class Catalog(context.Context):
 
-    def __init__(self, request_data_: request_data.FetchProducts):
+    def __init__(self, request_data_: request_data.Category):
         self.request_data = request_data_
 
     @property
@@ -106,39 +106,28 @@ class Catalog(context.Context):
     def tags(self) -> context.Tags:
         return context.Tags(stb_models.Tag.objects.all())
 
-    def slice_products(
-        self, options: stb_models.OptionQuerySet
-    ) -> context.products.PaginatedProducts:
-        """
-        We have to use separated variable/method for pagination.
+    def context(self) -> typing.ContextDict:
+        tags = FilteredTags(stb_models.Tag.objects.all(), self.request_data)
+        options = FilteredOptions(self.category, tags.qs(), self.request_data)
 
-        Because paginated QuerySet can not used as QuerySet.
-        It's not the most strong place of Django ORM, of course.
-        :return: ProductsContext with paginated QuerySet inside
-        """
-        return context.products.PaginatedProducts(
-            products=options,
+        # @todo #514:60m  Create PaginatedOptions class.
+        #  Without code doubling between the new class
+        #  and `context.products.PaginatedProducts` one.
+        sliced_options = context.products.PaginatedProducts(
+            products=options.qs(),
             url=self.request_data.request.path,
             page_number=self.request_data.pagination_page_number,
             per_page=self.request_data.pagination_per_page,
         )
 
-    def filter_options(self, tags):
-        return FilteredOptions(self.category, tags.qs(), self.request_data).qs()
-
-    def context(self) -> typing.ContextDict:
-        tags = FilteredTags(stb_models.Tag.objects.all(), self.request_data)
-        options_qs = self.filter_options(tags)
-        sliced_options = self.slice_products(options_qs)
-
         images = context.products.ProductImages(
             sliced_options.products, Image.objects.all()
         )
         grouped_tags = context.tags.GroupedTags(
-            tags=TagsByOptions(self.tags, options_qs)
+            tags=TagsByOptions(self.tags, options.qs())
         )
         page = Page(self.page, tags)
-        category = context.category.Context(self.category)
+        category = CategoryContext(self.request_data)
         params = {
             'limits': settings.CATEGORY_STEP_MULTIPLIERS,
         }
@@ -146,10 +135,6 @@ class Catalog(context.Context):
         # @todo #419:30m  Rename 'products' template var to 'positions'
         return {
             **params,
-            # @todo #431:60m  Move total_products to a relevant context class.
-            #  At SE side "paginated" context var somehow contains "total_products" field.
-            #  And move the relevant `test_tag_button_filter_products` test to the fast tests side.
-            'total_products': options_qs.count(),
             **pages_context.Contexts([
                 page, category, sliced_options,
                 images, grouped_tags
@@ -157,12 +142,27 @@ class Catalog(context.Context):
         }
 
 
+class CategoryContext(context.Context):
+
+    def __init__(self, request_data_: request_data.Category):
+        self.request_data = request_data_
+
+    def object(self) -> stb_models.Category:
+        return get_object_or_404(
+            stb_models.Category.objects.active().prefetch_related('page'),
+            id=self.request_data.id
+        )
+
+    def context(self):
+        return {'category': self.object()}
+
+
 class FilteredTags(context.Tags):
 
     def __init__(
         self,
         tags: stb_models.TagQuerySet,
-        request_data_: request_data.FetchProducts
+        request_data_: request_data.Category
     ):
         super().__init__(qs=tags)
         self.request_data = request_data_
@@ -177,12 +177,15 @@ class FilteredTags(context.Tags):
         return selected_tags.qs()
 
 
+# @todo #514:30m  Improve Options contexts structure.
+#  Move all Options context classes to separated module.
+#  And create base class for them to remove code doubling.
 class FilteredOptions(context.Context):
     def __init__(
         self,
         category: stb_models.Category,
         tags: stb_models.TagQuerySet,
-        request_data_: request_data.FetchProducts
+        request_data_: request_data.Category
     ):
         self.category = category
         self.tags = tags
@@ -204,11 +207,7 @@ class FilteredOptions(context.Context):
         }
 
 
-# @todo #449:60m  Remove FetchPositions class.
-#  Create a new context class to search and filter positions.
-#  Move filter_options and slice_products methods to a created class.
-#  FilteredOptions created from `Catalog.filter_positions` is the example.
-class FetchPositions(Catalog):
+class SearchedOptions(context.Context):
 
     LOOKUPS = [
         'product__name__icontains',
@@ -216,25 +215,77 @@ class FetchPositions(Catalog):
         'mark__icontains',
     ]
 
-    # redefined just to type hint
-    def __init__(self, request_data_: request_data.FetchProducts):
-        super().__init__(request_data_)
+    def __init__(  # Ignore CPDBear
+        self,
+        options: stb_models.OptionQuerySet,
+        request_data_: request_data.FetchProducts
+    ):
+        self.options = options
+        self.request_data = request_data_
 
-    def filter_options(self, tags) -> stb_models.OptionQuerySet:
-        options = FilteredOptions(self.category, tags.qs(), self.request_data)
-
+    def qs(self) -> stb_models.OptionQuerySet:
         if self.request_data.filtered and self.request_data.term:
             return search(
                 self.request_data.term,
-                options.qs(),
+                self.options,
                 self.LOOKUPS,
                 ordering=('product__name', )
             )
         else:
-            return options.qs()
+            return self.options
 
-    def slice_products(self, options: stb_models.OptionQuerySet):
+    def context(self) -> typing.ContextDict:
+        return {
+            'positions': self.qs()
+        }
+
+
+class SlicedOptions(context.Context):
+    def __init__(
+        self,
+        options: stb_models.OptionQuerySet,
+        request_data_: request_data.FetchProducts
+    ):
+        self.options = options
+        self.request_data = request_data_
+
+    def qs(self) -> stb_models.OptionQuerySet:
         offset, limit = self.request_data.offset, self.request_data.length
-        return context.Products(
-            options[offset:offset + limit]
+        return self.options[offset:offset + limit]
+
+    def context(self) -> typing.ContextDict:
+        return {
+            'products': self.qs()
+        }
+
+
+class FetchPositions(context.Context):
+
+    # redefined just to type hint
+    def __init__(self, request_data_: request_data.FetchProducts):
+        self.request_data = request_data_
+
+    def context(self) -> typing.ContextDict:
+        category = CategoryContext(self.request_data)
+        tags = FilteredTags(stb_models.Tag.objects.all(), self.request_data)
+        # @todo #514:30m  Pass Context objects inside every context class.
+        #  Every class in the current module.
+        #  should receive `Context` object as `options` arg,
+        #  Now they receive `OptionsQuerySet` objects.
+        options = SlicedOptions(
+            request_data_=self.request_data,
+            options=SearchedOptions(
+                request_data_=self.request_data,
+                options=FilteredOptions(
+                    category.object(), tags.qs(), self.request_data
+                ).qs()
+            ).qs()
         )
+        images = context.products.ProductImages(
+            options.qs(), Image.objects.all()
+        )
+
+        return {
+            'total_products': options.qs().count(),
+            **pages_context.Contexts([options, images]).context()
+        }

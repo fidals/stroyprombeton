@@ -21,7 +21,7 @@ from django.utils.translation import ugettext as _
 
 from catalog.helpers import reverse_catalog_url
 from pages.models import CustomPage, FlatPage, ModelPage
-from stroyprombeton import models, request_data
+from stroyprombeton import context, models, request_data
 from stroyprombeton.tests.helpers import CategoryTestMixin
 from stroyprombeton.tests.tests_forms import PriceFormTest
 
@@ -158,6 +158,9 @@ class CategoryTile(TestCase, TestPageMixin):
         )
 
 
+# @todo #446:60m  Create catalog pagination tests.
+#  Take `shopelectro.tests.tests_views.CatalogPagination` as the example.
+#  Resurrect seo pagination functions if their are broken. See `templates/catalog/seo_links.html`
 @tag('fast', 'catalog')
 class CategoryTable(BaseCatalogTestCase, TestPageMixin):
     """
@@ -208,6 +211,8 @@ class CategoryTable(BaseCatalogTestCase, TestPageMixin):
         response = self.client.get(reverse('category', args=(test_product.category_id,)))
         self.assertNotIn(test_product, response.context['products'])
 
+    # @todo #514:30m  Regroup `test_fetch_products_*` tests.
+    #  Create a separated class for them.
     def test_fetch_products_context_data(self):
         """App should response with products data on fetch_products request."""
         db_options = (
@@ -238,6 +243,28 @@ class CategoryTable(BaseCatalogTestCase, TestPageMixin):
         response = self.client.post(reverse('fetch_products'), data={})
         self.assertEqual(400, response.status_code)
 
+    def test_fetch_positions_searching(self):
+        term = '#1'
+        category = models.Category.objects.get(name='Category #0 of #1')
+        options = models.Option.objects.filter_descendants(category)
+        searched = context.search(
+            term, options, context.SearchedOptions.LOOKUPS,
+            ordering=('product__name', )
+        )
+
+        response = self.client.post(
+            reverse('fetch_products'),
+            data={
+                'categoryId': category.id,
+                'filtered': 'true',
+                'term': term,
+                'offset': 0,
+                'limit': 10**6,
+            }
+        )
+        self.assertEqual(searched.count(), len(response.context['products']))
+        self.assertEqual(list(searched), list(response.context['products']))
+
     def test_products_are_from_category(self):
         # leaf category
         category = models.Category.objects.get(name='Category #0 of #6')
@@ -254,6 +281,31 @@ class CategoryTable(BaseCatalogTestCase, TestPageMixin):
             len(response.context['products']),
             request_data.Category.PRODUCTS_ON_PAGE_PC
         )
+
+    def test_total_products(self):
+        category = models.Category.objects.first()
+        options = models.Option.objects.filter_descendants(category)
+        response = self.client.get(self.get_category_url(category))
+        self.assertEqual(
+            options.count(),
+            int(response.context['paginated']['total_products'])
+        )
+        self.assertContains(response, options.count())
+
+    def test_total_products_filtered(self):
+        """Fast analog of `test_tag_button_filter_products` slow test."""
+        # this category contains 25 tags. It's less then products on page limit.
+        category = models.Category.objects.get(name='Category #1 of #2')
+        tags = models.Tag.objects.filter(slug='1-m')
+        options = (
+            models.Option.objects
+            .bind_fields()
+            .filter_descendants(category)
+            .tagged_or_all(tags)
+        )
+        soup = self.get_category_soup(category, tags=tags)
+        total = int(soup.find(id='load-more-products')['data-total-products'])
+        self.assertEqual(total, options.count())
 
 
 # @todo  #465:30m  Improve tests_views.Product
@@ -544,9 +596,6 @@ class ProductPrice(TestCase):
 
     fixtures = ['dump.json']
 
-    # @todo #455:30m  Resurrect pdf view.
-    #  And it's test.
-    @unittest.expectedFailure
     def test_price_list(self):
         """Context for pdf generation should include Category and Products."""
         self.response = self.client.get('/gbi/categories/1/pdf/')

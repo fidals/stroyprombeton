@@ -1,6 +1,6 @@
 <ul class="pagination hidden js-seo-links">
   <li class="pagination-item">
-    {% if page_obj.has_previous %}
+    {% if pagination.page_obj.has_previous %}
       <a class="btn" href="?{{ pagination_param }}={{ page_obj.previous_page_number }}">&laquo;</a>
     {% else %}
       <span class="btn btn-disabled">&laquo;</span>
@@ -9,7 +9,7 @@
 
   {% for page_index in paginator_links %}
     <li class="pagination-item">
-      {% if page_obj.number == page_index %}
+      {% if pagination.page_obj.number == page_index %}
         <span class="btn btn-disabled">{{ page_index }} <span class="sr-only">(current)</span></span>
       {% else %}
         <a class="btn" href="?{{ pagination_param }}={{ page_index }}">{{ page_index }}</a>

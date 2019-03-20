@@ -408,7 +408,6 @@ class CategoryPage(BaseCartSeleniumTestCase, test_helpers.CategoryTestMixin):
 
         self.assertTrue(before_load_products < after_load_products)
 
-    # @todo #449:30m  Create fast test for search in with "fetch_products" view.
     def test_load_more_button_disabled_state(self):
         """
         Test the load more lint state.
