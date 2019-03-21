@@ -87,14 +87,10 @@
                   <span class="js-option-sum">{{ option.price|format_price }}</span>
                 </td>
                 <td class="option-td">
-                  {% comment %}
-                    @todo #335:30m  Adapt order button to Options.
-                     Now this button puts product to cart, but should put option.
-                  {% endcomment %}
                   <button class="btn buy-product" id="buy-product"
-                   data-name="{{ product.name }}"
-                   data-category="{{ product.category.name }}"
-                   data-id="{{ product.id }}"
+                   data-name="{{ option.name }}"
+                   data-category="{{ option.product.category.name }}"
+                   data-id="{{ option.id }}"
                    type="submit">Заказать</button>
                 </td>
               </tr>

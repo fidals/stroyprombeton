@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.contrib.sitemaps import Sitemap
 
 from pages.models import CustomPage, FlatPage, ModelPage
@@ -6,13 +7,13 @@ from pages.models import CustomPage, FlatPage, ModelPage
 
 
 class AbstractSitemap(Sitemap):
-    protocol = 'http'
+    protocol = settings.PROTOCOL
     changefreq = 'weekly'
     priority = 0.9
 
 
 class IndexSitemap(Sitemap):
-    protocol = 'http'
+    protocol = settings.PROTOCOL
     changefreq = 'monthly'
     priority = 1
 

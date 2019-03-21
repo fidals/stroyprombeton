@@ -88,7 +88,7 @@ class BaseCartSeleniumTestCase(SeleniumTestCase):
         return len(self.positions())
 
 
-@tag('slow')
+@tag('slow', 'cart')
 class HeaderCart(BaseCartSeleniumTestCase):
 
     def setUp(self):
@@ -139,7 +139,7 @@ class HeaderCart(BaseCartSeleniumTestCase):
         self.assert_cart_is_empty()
 
 
-@tag('slow')
+@tag('slow', 'cart')
 class ProductPage(BaseCartSeleniumTestCase):
 
     def test_buy_product(self):
@@ -160,7 +160,7 @@ class ProductPage(BaseCartSeleniumTestCase):
         self.assertIn('42', header_product_count(self))
 
 
-@tag('slow')
+@tag('slow', 'cart')
 class OrderPage(BaseCartSeleniumTestCase):
 
     def setUp(self):
@@ -298,7 +298,7 @@ class OrderPage(BaseCartSeleniumTestCase):
         self.assertInHTML(f'<b>{expected_phone}</b>', sent_mail_body)
 
 
-@tag('slow')
+@tag('slow', 'cart')
 class CategoryPage(BaseCartSeleniumTestCase, test_helpers.CategoryTestMixin):
 
     PRODUCTS_TO_LOAD = 30

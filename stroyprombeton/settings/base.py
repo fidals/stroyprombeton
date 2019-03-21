@@ -207,7 +207,8 @@ WKHTMLTOPDF_CMD = 'xvfb-run wkhtmltopdf'
 CACHED_TIME = 60 * (24 * 60 * 60)
 
 # -------- SITE DATA -------- #
-BASE_URL = 'http://www.stroyprombeton.ru'
+PROTOCOL = 'https' if os.environ.get('HTTPS', '') else 'http'
+BASE_URL = f'{PROTOCOL}://www.stroyprombeton.ru'
 
 SHOP = {
     'id': '69886',
@@ -250,9 +251,6 @@ EMAIL_RECIPIENTS = os.environ.get(
     'EMAIL_RECIPIENTS',
     'info@stroyprombeton.ru,info2@stroyprombeton.ru'
 ).split(',')
-
-# Uncomment for http->https change
-# os.environ['HTTPS'] = 'on'
 
 EMAIL_SUBJECTS = {
     'order': 'Stroyprombeton | Новый заказ',

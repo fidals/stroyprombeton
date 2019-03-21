@@ -30,21 +30,27 @@ class OrderSuccess(ec_views.OrderSuccess):
 class AddToCart(ec_views.AddToCart):
     order_form = OrderForm
     position_model = Option
+    # @todo #468  Rename position_key to 'option' at js files.
+    #  All `position_key` values at this file will become 'option'.
+    position_key = 'product'
 
 
 class RemoveFromCart(ec_views.RemoveFromCart):
     order_form = OrderForm
     position_model = Option
+    position_key = 'product'
 
 
 class FlushCart(ec_views.FlushCart):
     order_form = OrderForm
     position_model = Option
+    position_key = 'product'
 
 
 class ChangeCount(ec_views.ChangeCount):
     order_form = OrderForm
     position_model = Option
+    position_key = 'product'
 
 
 # -------- STB-specific views -------- #
