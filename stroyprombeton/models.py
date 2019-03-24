@@ -109,25 +109,15 @@ class Option(models.Model):
         'Tag',
         related_name='options',
         blank=True,
-        null=True,
         verbose_name=_('tags'),
     )
     product = models.ForeignKey(
         'Product',
         on_delete=models.CASCADE,
-        # @todo #455:30m  Rm null and blanks from relation fields.
-        #  Only `stb.models` module from every place where it's redundant .
-        blank=True,
-        null=True,
         related_name='options',
         verbose_name=_('product'),
     )
     date_price_updated = models.DateField(auto_now_add=True, verbose_name=_('date price updated'))
-    is_new_price = models.NullBooleanField(
-        blank=True,
-        null=True,
-        verbose_name=_('is new price'),  # Ignore CPDBear
-    )
     price = models.FloatField(
         blank=True,
         default=0,
@@ -191,28 +181,6 @@ class Product(catalog.models.AbstractProduct, pages.models.PageMixin):
             .prefetch_related('category')
             .select_related('page')[:offset]
         )
-
-    # @todo #419:120m  Cleanup product model after Options integration.
-
-    # @todo #483:30m  Remove product tags
-
-    # we'll remove this fields from Product model
-    # after adapting all system components Options model.
-    # This set of github issues should be finished for removing the fields:
-    # https://github.com/fidals/stroyprombeton/labels/Product%20options
-    tags = models.ManyToManyField(
-        'Tag',
-        related_name='products',
-        blank=True,
-        null=True,
-        verbose_name=_('tags'),
-    )
-    # @todo #483:30m  Drop `Product.is_popular` field.
-    is_popular = models.BooleanField(
-        default=False,
-        db_index=True,
-        verbose_name=_('is popular'),
-    )
 
 
 class CategoryPage(pages.models.ModelPage):

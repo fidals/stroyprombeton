@@ -305,7 +305,7 @@ class CategoryPage(BaseCartSeleniumTestCase, test_helpers.CategoryTestMixin):
     SELENIUM_TIMEOUT = 60
     CATEGORY_ROUTE_NAME = 'category'
     APPLY_BTN_CLASS = 'js-apply-filter'
-    FILTER_TAG_TEMPLATE = 'label[for="tag-{tag_slug}"]'
+    TAG_ID_TEMPLATE = 'tag-{tag_slug}'
     QUANTITY_CLASS = 'js-count-input'
     LOAD_MORE_ID = 'load-more-products'
     FILTER_ID = 'search-filter'
@@ -458,15 +458,15 @@ class CategoryPage(BaseCartSeleniumTestCase, test_helpers.CategoryTestMixin):
         """Filter button with the filled one of tag checkboxes should change url to tag."""
         # set one product with no tags in test_db
         # check if this prod is not in list after filtering
-        self.load_category_page(self.middle_category)
-        tag_slug = '2-m'
-        tag_selector = self.FILTER_TAG_TEMPLATE.format(tag_slug=tag_slug)
+        self.load_category_page(self.middle_category)  # Ignore CPDBear
+        tag = stb_models.Tag.objects.get(name='2 м')
+        tag_selector = self.TAG_ID_TEMPLATE.format(tag_slug=tag.slug)
 
-        self.browser.find_element_by_css_selector(tag_selector).click()
+        self.browser.find_element_by_id(tag_selector).click()
         self.apply_tags()
         tagged_category_path = self.get_category_path(
             category=self.middle_category,
-            tags=stb_models.Tag.objects.filter(slug=tag_slug)
+            tags=stb_models.Tag.objects.filter(slug=tag.slug)
         )
         self.assertIn(tagged_category_path, self.browser.current_url)
         self.browser.find_element_by_class_name('js-clear-tag-filter').click()
@@ -474,12 +474,12 @@ class CategoryPage(BaseCartSeleniumTestCase, test_helpers.CategoryTestMixin):
     def test_tag_button_filter_products(self):
         # this category contains 25 tags. It's less then products on page limit.
         category = stb_models.Category.objects.get(name='Category #1 of #2')
-        tag_slug = '1-m'
-        tag_selector = self.FILTER_TAG_TEMPLATE.format(tag_slug=tag_slug)
+        tag = stb_models.Tag.objects.get(name='1 м')
+        tag_selector = self.TAG_ID_TEMPLATE.format(tag_slug=tag.slug)
         self.load_category_page(category)
         before_products_count = self.get_loaded_products_count()
 
-        self.browser.find_element_by_css_selector(tag_selector).click()
+        self.browser.find_element_by_id(tag_selector).click()
         self.apply_tags()
 
         after_products_count = self.get_loaded_products_count()
@@ -504,8 +504,12 @@ class CategoryPage(BaseCartSeleniumTestCase, test_helpers.CategoryTestMixin):
     def test_apply_filter_state(self):
         """Apply filters btn should be disabled with no checked tags."""
         self.load_category_page(self.middle_category)
-        tag_slug = '2-m'
-        tag_selector = self.FILTER_TAG_TEMPLATE.format(tag_slug=tag_slug)
+        # @todo #495:30m  Stabilize tests group.
+        #  Get tag from DB with it's category
+        #  instead of using hardcoded name to filter.
+        #  Reuse a new code everywhere TAG_ID_TEMPLATE is used.
+        tag = stb_models.Tag.objects.get(name='2 м')
+        tag_selector = self.TAG_ID_TEMPLATE.format(tag_slug=tag.slug)
 
         is_button_disabled = bool(
             self.browser
@@ -514,7 +518,7 @@ class CategoryPage(BaseCartSeleniumTestCase, test_helpers.CategoryTestMixin):
         )
         self.assertTrue(is_button_disabled)
 
-        self.browser.find_element_by_css_selector(tag_selector).click()
+        self.browser.find_element_by_id(tag_selector).click()
         is_button_disabled = bool(
             self.browser
             .find_element_by_class_name(self.APPLY_BTN_CLASS)
