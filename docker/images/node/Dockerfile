@@ -1,4 +1,4 @@
-FROM node:slim
+FROM node:11-stretch-slim
 
 ENV DEPS_DIR=/usr/app/deps
 RUN echo "DEPS_DIR=$DEPS_DIR" > /etc/environment
