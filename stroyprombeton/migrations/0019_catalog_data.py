@@ -36,6 +36,12 @@ TAG_FIELDS = FIELD_TO_TAG_GROUP.keys()
 OPTION_FIELDS = [
     'date_price_updated', 'code', 'mark', 'is_new_price', 'price', 'in_stock',
 ]
+PRODUCTION_PRODUCTS_MARGIN = 2000
+
+
+def is_production(apps) -> bool:
+    model = apps.get_model(APP_LABEL, 'Product')
+    return model.objects.count() > PRODUCTION_PRODUCTS_MARGIN
 
 
 def randomize_slug(slug: str, hash_size: int) -> str:
@@ -96,6 +102,9 @@ def group_products(model) -> dict:
 
 
 def create_options(apps, schema_editor):
+    if not is_production(apps):
+        return
+
     product_model = apps.get_model(APP_LABEL, 'Product')
     option_model = apps.get_model(APP_LABEL, 'Option')
 
@@ -113,6 +122,9 @@ def create_options(apps, schema_editor):
 
 def clean_products(apps, schema_editor):
     """Safely remove product duplicates."""
+    if not is_production(apps):
+        return
+
     product_model = apps.get_model(APP_LABEL, 'Product')
 
     for (name, _), products in group_products(product_model).items():
@@ -123,6 +135,9 @@ def clean_products(apps, schema_editor):
 
 def create_tags(apps, schema_editor):
     """Move data from option columns to tag records."""
+    if not is_production(apps):
+        return
+
     group_model = apps.get_model(APP_LABEL, 'TagGroup')
     tag_model = apps.get_model(APP_LABEL, 'Tag')
     option_model = apps.get_model(APP_LABEL, 'Option')

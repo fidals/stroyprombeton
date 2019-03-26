@@ -694,9 +694,6 @@ class CatalogTags(BaseCatalogTestCase, CategoryTestMixin):
         tag_titles = delimiter.join(t.name for t in tags)
         self.assertContains(response, tag_titles)
 
-    # @todo #455:60m  Resurrect `test_tag_titles_content_conjunction`.
-    #  To fix it define where tag groups with no related tags came from.
-    @unittest.expectedFailure
     def test_tag_titles_content_conjunction(self):
         """
         Test CategoryTagsPage with canonical tags.
