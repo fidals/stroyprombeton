@@ -6,16 +6,13 @@
 
   // @todo #303:60m Send info about product's brand to YA and GA.
 
+  // @todo #759:60m Create tests for eCommerce tracking.
+  //  Test all events, that perform tracking operations.
+
   window.dataLayer = window.dataLayer || [];
-  // Load ecommerce plugin for gaTracker
-  try {
-    ga('require', 'ecommerce');  // Ignore ESLintBear (no-use-before-define)
-  } catch (e) {
-    var ga = console.error;  // Ignore ESLintBear (no-unused-vars)
-    console.error(`GaTracker failed to load. Traceback: ${e}`);
-  }
+  const loadedGa = loadGaTransport('gtm_loaded');  // Ignore ESLintBear (no-undef)
   const yaTracker = new YATracker(window.dataLayer, 'RUB');  // Ignore ESLintBear (no-undef)
-  const gaTracker = new GATracker(ga, 'ecommerce');  // Ignore ESLintBear (no-undef)
+  const gaTracker = new GATracker(loadedGa, 'ecommerce');  // Ignore ESLintBear (no-undef)
 
   const init = () => {
     setUpListeners();
