@@ -637,6 +637,18 @@ class Search(SeleniumTestCase):
 
         self.assertFalse(self.autocomplete.is_displayed())
 
+    def test_autocomplete_for_product(self):
+        """Autocomplete suggests products."""
+        self.fill_input(query='product')
+        suggestion = self.wait.until(EC.visibility_of_element_located(
+            (By.CLASS_NAME, 'autocomplete-suggestion'),
+        ))
+
+        self.assertTrue(
+            suggestion.text.startswith('Product'),
+            suggestion.text,
+        )
+
 
 @tag('slow')
 class IndexPage(SeleniumTestCase):

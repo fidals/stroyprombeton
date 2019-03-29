@@ -62,19 +62,11 @@ class Autocomplete(search_views.AutocompleteView):
         search_engine.Search(
             name='product',
             qs=stb_models.Option.objects.active(),
-            fields=['code', 'mark'],
-            template_fields=['mark', 'url'],
-            min_similarity=settings.TRIGRAM_MIN_SIMILARITY,
-        ),
-        search_engine.Search(
-            name='product',
-            qs=stb_models.Product.objects.active(),
-            fields=['name'],
-            template_fields=['name'],
+            fields=['product__name', 'code', 'mark'],
+            template_fields=['name', 'mark', 'url'],
             min_similarity=settings.TRIGRAM_MIN_SIMILARITY,
         ),
     ]
-
     see_all_label = settings.SEARCH_SEE_ALL_LABEL
 
 
