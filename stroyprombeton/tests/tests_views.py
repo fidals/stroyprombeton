@@ -64,6 +64,9 @@ class BaseCatalogTestCase(TestCase):
             'html.parser'
         )
 
+    def get_page_number(self, response):
+        return response.context['paginated']['page'].number
+
 
 # @todo #340:60m Move TestPageMixin to some PageData class.
 #  And remove CategoryTable().response field.
@@ -158,9 +161,6 @@ class CategoryTile(TestCase, TestPageMixin):
         )
 
 
-# @todo #446:60m  Create catalog pagination tests.
-#  Take `shopelectro.tests.tests_views.CatalogPagination` as the example.
-#  Resurrect seo pagination functions if their are broken. See `templates/catalog/seo_links.html`
 @tag('fast', 'catalog')
 class CategoryTable(BaseCatalogTestCase, TestPageMixin):
     """
@@ -306,6 +306,82 @@ class CategoryTable(BaseCatalogTestCase, TestPageMixin):
         soup = self.get_category_soup(category, tags=tags)
         total = int(soup.find(id='load-more-products')['data-total-products'])
         self.assertEqual(total, options.count())
+
+
+@tag('fast', 'catalog')
+class CatalogPagination(BaseCatalogTestCase):
+
+    def assert_pagination_link(self, link, page_number):
+        """Page numbers from link href and from link anchor should be equal."""
+        self.assertEqual(
+            self.get_page_number(self.client.get(link['href'])),
+            page_number,
+        )
+
+    def get_category_soup(self, page_number: int) -> BeautifulSoup:
+        return super().get_category_soup(query_string={'page': page_number})
+
+    def test_pagination_numbering(self):
+        page_number = 1
+        response = self.get_category_page(query_string={'page': page_number})
+        self.assertEqual(self.get_page_number(response), page_number)
+
+    def test_pagination_step(self):
+        """Category page contains `pagination_step` count of products in list."""
+        pagination_step = 25
+        response = self.get_category_page(query_string={'step': pagination_step})
+        self.assertEqual(len(response.context['paginated']['page'].object_list), pagination_step)
+
+    def test_pagination_404(self):
+        """Category page returns 404 for a nonexistent page number."""
+        self.assertEqual(
+            self.get_category_page(query_string={'page': 1000}).status_code,
+            404,
+        )
+
+    # @todo #522:60m Fix catalog pagination
+    #  Page navigation isn't implemented.
+    #  There should be links to next and previos pages.
+    #  See these issues for details:
+    #  https://github.com/fidals/shopelectro/issues?utf8=%E2%9C%93&q=is%3Aissue+is%3Aclosed+pagination
+
+    @unittest.expectedFailure
+    def test_numbered_pagination_links(self):
+        """Forward to numbered pagination pages."""
+        page_number = 3
+        _, *numbered, _ = self.get_category_soup(page_number).find(
+            class_='js-seo-links').find_all('a')
+
+        for slice, link in zip([-2, -1, 1, 2], numbered):
+            self.assert_pagination_link(link, page_number + slice)
+
+    @unittest.expectedFailure
+    def test_arrow_pagination_links(self):
+        """Each button forward to a previous and a next pagination pages."""
+        page_number = 3
+        prev, *_, next_ = self.get_category_soup(page_number).find(
+            class_='js-seo-links').find_all('a')
+
+        self.assert_pagination_link(next_, page_number + 1)
+        self.assert_pagination_link(prev, page_number - 1)
+
+    # @todo #522:30m Add canonical pagination links
+    #  They are missed. See SE implementation as a reference
+
+    @unittest.expectedFailure
+    def test_pagination_canonical(self):
+        """Canonical links forward to a previous and a next pagination pages."""
+        page_number = 3
+        soup = self.get_category_soup(page_number)
+
+        self.assert_pagination_link(
+            soup.find('link', attrs={'rel': 'next'}),
+            page_number + 1
+        )
+        self.assert_pagination_link(
+            soup.find('link', attrs={'rel': 'prev'}),
+            page_number - 1
+        )
 
 
 # @todo  #465:30m  Improve tests_views.Product
