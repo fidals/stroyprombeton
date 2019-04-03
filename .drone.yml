@@ -155,6 +155,6 @@ services:
 
   selenium:
     <<: *service
-    image: selenium/standalone-chrome:3.141.59-iron
+    image: selenium/standalone-chrome:3.141.59
     volumes: # https://github.com/SeleniumHQ/docker-selenium#running-the-images
       - /dev/shm:/dev/shm

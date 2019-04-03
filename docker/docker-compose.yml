@@ -65,7 +65,7 @@ services:
       - 15672
 
   selenium:
-    image: selenium/standalone-chrome-debug:3.14.0
+    image: selenium/standalone-chrome-debug:3.141.59
     restart: always
     ports:
       - 4444

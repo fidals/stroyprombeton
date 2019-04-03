@@ -870,22 +870,24 @@ class CatalogTags(BaseCatalogTestCase, CategoryTestMixin):
         self.assertIn(f'от {from_index} м до {to_index - 1} м', tags_text)
         self.assertGreater(product.options.first().tags.count(), settings.TAGS_UI_LIMIT)
 
-    # @todo #495:30m  Resurrect `test_filter_options_by_tags`.
-    #  Seems response parsing is needed here.
-    @unittest.expectedFailure
     def test_filter_options_by_tags(self):
         """Category page should not contain options, excluded by tags selection."""
-        tag_slug = '2-m'
-        tag_qs = models.Tag.objects.filter(slug=tag_slug)
-        tag = tag_qs.first()
-        response = self.get_category_page(category=self.root_category, tags=tag_qs)
+        tag = models.Tag.objects.filter_by_options(
+            options=models.Option.objects.filter_descendants(self.root_category)
+        ).first()
+        tag_qs = models.Tag.objects.filter(slug=tag.slug)
+        soup = self.get_category_soup(category=self.root_category, tags=tag_qs[1:])
+        options = soup.find(class_='product-list').find_all(class_='table-link')
+        returned = {o.text for o in options}
 
-        disappeared = (
+        disappeared_qs = (
             models.Option.objects
             .bind_fields().active()
             .filter_descendants(self.root_category)
             .exclude(tags=tag)
         )
-        self.assertFalse(
-            any(str(o.id) in response.content.decode() for o in disappeared)
-        )
+        # @todo #498:15m  Create Product.catalog_name property.
+        #  It'll consist of `f'{product.name} {product.mark}'` string.
+        #  Use it at the templates and in this test.
+        disappeared = {f'{d.name} {d.mark}' for d in disappeared_qs}
+        self.assertFalse(returned.intersection(disappeared))

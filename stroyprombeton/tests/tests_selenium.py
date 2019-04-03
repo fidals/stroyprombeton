@@ -1,4 +1,5 @@
 import unittest
+from urllib.parse import urljoin
 
 from django.core import mail
 from django.db.models import Count
@@ -45,8 +46,11 @@ class SeleniumTestCase(test_helpers.BaseSeleniumTestCase):
 class BaseCartSeleniumTestCase(SeleniumTestCase):
     """Contains only cart actions set, but no tests."""
 
-    def buy_on_product_page(self, *, product_id=1, quantity=None, waiting_time=1):
-        product_page = (self.live_server_url + reverse('product', args=(product_id,)))
+    def buy_on_product_page(
+        self, *, option: stb_models.Option=None, quantity=None, waiting_time=1
+    ):
+        option = option or stb_models.Option.objects.first()
+        product_page = urljoin(self.live_server_url, option.url)
         self.browser.get(product_page)
 
         if quantity:
@@ -117,7 +121,7 @@ class HeaderCart(BaseCartSeleniumTestCase):
 
     def test_delete_from_header_cart(self):
         self.buy_on_product_page()
-        self.buy_on_product_page(product_id=2)
+        self.buy_on_product_page(option=stb_models.Option.objects.all()[2])
         self.show_cart()
 
         def wait_reducing(browser):
@@ -131,7 +135,7 @@ class HeaderCart(BaseCartSeleniumTestCase):
 
     def test_flush_cart(self):
         self.buy_on_product_page()
-        self.buy_on_product_page(product_id=2)
+        self.buy_on_product_page(option=stb_models.Option.objects.all()[2])
         self.show_cart()
         self.click_and_wait(
             (By.CLASS_NAME, 'js-flush-cart'),
@@ -150,7 +154,7 @@ class ProductPage(BaseCartSeleniumTestCase):
 
     def test_buy_two_products(self):
         self.buy_on_product_page()
-        self.buy_on_product_page(product_id=2)
+        self.buy_on_product_page(option=stb_models.Option.objects.all()[2])
 
         self.assertEqual(self.positions_count(), 2)
 
@@ -192,7 +196,7 @@ class OrderPage(BaseCartSeleniumTestCase):
 
     def test_order_page_actual_count_of_rows(self):
         self.buy_on_product_page()
-        self.buy_on_product_page(product_id=2)
+        self.buy_on_product_page(option=stb_models.Option.objects.all()[2])
         self.proceed_order_page()
 
         products_in_table = self.browser.find_elements_by_class_name(self.product_row)
@@ -200,7 +204,7 @@ class OrderPage(BaseCartSeleniumTestCase):
 
     def test_order_page_remove_row(self):
         self.buy_on_product_page()
-        self.buy_on_product_page(product_id=2)
+        self.buy_on_product_page(option=stb_models.Option.objects.all()[2])
         self.proceed_order_page()
 
         self.remove_product()
@@ -217,12 +221,9 @@ class OrderPage(BaseCartSeleniumTestCase):
 
         self.assertIn('Нет выбранных позиций', order_wrapper_text)
 
-    # @todo #483:30m  Resurrect `test_change_count_in_cart`.
-    #  Depends on #468
-    @unittest.skip
     def test_change_count_in_cart(self):
-        product = stb_models.Product.objects.get(id=1)
-        self.buy_on_product_page(product_id=product.id)
+        option = stb_models.Option.objects.first()
+        self.buy_on_product_page(option=option)
         self.proceed_order_page()
 
         change_count_to = 42
@@ -235,19 +236,15 @@ class OrderPage(BaseCartSeleniumTestCase):
         self.wait.until(wait_total_changes)
 
         self.assertEqual(
-            f'{floatformat(str(product.price * change_count_to), 0)} руб',
+            f'{floatformat(str(option.price * change_count_to), 0)} руб',
             self.get_total(),
         )
 
-    # @todo #483:30m  Resurrect `test_order_email`.
-    #  Depends on #468
-    @unittest.skip
     @test_helpers.disable_celery
     def test_order_email(self):
-        self.buy_on_product_page()
+        option = stb_models.Option.objects.first()
+        self.buy_on_product_page(option=option)
         self.proceed_order_page()
-
-        code = stb_models.Product.objects.get(id=1).code
 
         # @todo #137 Setting a number of items flush all other fields on order page.
         #  Steps to reproduce the bug:
@@ -280,7 +277,7 @@ class OrderPage(BaseCartSeleniumTestCase):
 
         self.assertInHTML(
             '<td style="border-color:#E4E4E4;padding:10px">{0}</td>'
-            .format(str(code)),
+            .format(str(option.code or '')),
             sent_mail_body
         )
         self.assertIn(
@@ -368,6 +365,12 @@ class CategoryPage(BaseCartSeleniumTestCase, test_helpers.CategoryTestMixin):
         self.browser.find_element_by_class_name(self.APPLY_BTN_CLASS).click()
         self.wait.until(EC.url_changes(old_url))
         self.wait_page_loading()
+
+    @staticmethod
+    def get_first_tag(category: stb_models.Category):
+        return stb_models.Tag.objects.filter_by_options(
+            options=stb_models.Option.objects.filter_descendants(category)
+        ).first()
 
     def test_buy_product(self):
         self.load_category_page()
@@ -460,7 +463,7 @@ class CategoryPage(BaseCartSeleniumTestCase, test_helpers.CategoryTestMixin):
         # set one product with no tags in test_db
         # check if this prod is not in list after filtering
         self.load_category_page(self.middle_category)  # Ignore CPDBear
-        tag = stb_models.Tag.objects.get(name='2 м')
+        tag = self.get_first_tag(self.middle_category)
         tag_selector = self.TAG_ID_TEMPLATE.format(tag_slug=tag.slug)
 
         self.browser.find_element_by_id(tag_selector).click()
@@ -475,7 +478,7 @@ class CategoryPage(BaseCartSeleniumTestCase, test_helpers.CategoryTestMixin):
     def test_tag_button_filter_products(self):
         # this category contains 25 tags. It's less then products on page limit.
         category = stb_models.Category.objects.get(name='Category #1 of #2')
-        tag = stb_models.Tag.objects.get(name='1 м')
+        tag = self.get_first_tag(category)
         tag_selector = self.TAG_ID_TEMPLATE.format(tag_slug=tag.slug)
         self.load_category_page(category)
         before_products_count = self.get_loaded_products_count()
@@ -505,11 +508,7 @@ class CategoryPage(BaseCartSeleniumTestCase, test_helpers.CategoryTestMixin):
     def test_apply_filter_state(self):
         """Apply filters btn should be disabled with no checked tags."""
         self.load_category_page(self.middle_category)
-        # @todo #495:30m  Stabilize tests group.
-        #  Get tag from DB with it's category
-        #  instead of using hardcoded name to filter.
-        #  Reuse a new code everywhere TAG_ID_TEMPLATE is used.
-        tag = stb_models.Tag.objects.get(name='2 м')
+        tag = self.get_first_tag(self.middle_category)
         tag_selector = self.TAG_ID_TEMPLATE.format(tag_slug=tag.slug)
 
         is_button_disabled = bool(

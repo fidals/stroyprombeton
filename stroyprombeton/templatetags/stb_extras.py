@@ -6,7 +6,7 @@ from django.template.defaultfilters import floatformat
 
 from images.models import ImageMixin
 from pages.models import Page
-from stroyprombeton.models import Category, Product, Tag
+from stroyprombeton.models import Category, Tag
 
 register = template.Library()
 
@@ -59,13 +59,6 @@ def get_img_alt(entity: ImageMixin):
     entity_name = next(
         filter(None, (getattr(entity, attr, None) for attr in name_attrs)))
     return product_alt.format(entity_name)
-
-
-@register.simple_tag
-def get_product_field(product_id, parameter):
-    product = Product.objects.get(id=product_id)
-
-    return getattr(product, parameter)
 
 
 # @todo #500:60m  Improve tags table performance clearly.

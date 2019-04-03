@@ -26,12 +26,12 @@
           style="background:#FAFAFA"
         {% endif %}>
         <td style="border-color:#E4E4E4;padding:10px"><!--
-        -->{% get_product_field position.product_id 'code' %}
+        -->{{ position.code }}
         </td>
         <td style="border-color:#E4E4E4;padding:10px;text-align:left">
           <a href="{% full_url 'product' position.product_id %}"
              style="text-decoration: none"><!--
-             -->{{ position.name }} {% get_product_field position.product_id 'mark' %}
+             -->{{ position.name }} {{ position.mark }}
           </a>
         </td>
         <td style="border-color:#E4E4E4;padding:10px"><!--
