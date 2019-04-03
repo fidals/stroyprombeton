@@ -326,6 +326,27 @@ class CatalogPagination(BaseCatalogTestCase):
         response = self.get_category_page(query_string={'page': page_number})
         self.assertEqual(self.get_page_number(response), page_number)
 
+    def test_nearest_links(self):
+        """A page in the middle of pagination has previous and next pages."""
+        page_number = 2
+        response = self.get_category_page(query_string={'page': page_number})
+
+        self.assertTrue(response.context['paginated']['page'].has_previous())
+        self.assertTrue(response.context['paginated']['page'].has_next())
+
+    def test_nearest_numbers(self):
+        page_number = 2
+        response = self.get_category_page(query_string={'page': page_number})
+
+        self.assertEqual(
+            response.context['paginated']['page'].previous_page_number(),
+            page_number - 1,
+        )
+        self.assertEqual(
+            response.context['paginated']['page'].next_page_number(),
+            page_number + 1,
+        )
+
     def test_pagination_step(self):
         """Category page contains `pagination_step` count of products in list."""
         pagination_step = 25
@@ -339,13 +360,6 @@ class CatalogPagination(BaseCatalogTestCase):
             404,
         )
 
-    # @todo #522:60m Fix catalog pagination
-    #  Page navigation isn't implemented.
-    #  There should be links to next and previos pages.
-    #  See these issues for details:
-    #  https://github.com/fidals/shopelectro/issues?utf8=%E2%9C%93&q=is%3Aissue+is%3Aclosed+pagination
-
-    @unittest.expectedFailure
     def test_numbered_pagination_links(self):
         """Forward to numbered pagination pages."""
         page_number = 3
@@ -355,23 +369,18 @@ class CatalogPagination(BaseCatalogTestCase):
         for slice, link in zip([-2, -1, 1, 2], numbered):
             self.assert_pagination_link(link, page_number + slice)
 
-    @unittest.expectedFailure
     def test_arrow_pagination_links(self):
         """Each button forward to a previous and a next pagination pages."""
-        page_number = 3
+        page_number = 2
         prev, *_, next_ = self.get_category_soup(page_number).find(
             class_='js-seo-links').find_all('a')
 
         self.assert_pagination_link(next_, page_number + 1)
         self.assert_pagination_link(prev, page_number - 1)
 
-    # @todo #522:30m Add canonical pagination links
-    #  They are missed. See SE implementation as a reference
-
-    @unittest.expectedFailure
     def test_pagination_canonical(self):
         """Canonical links forward to a previous and a next pagination pages."""
-        page_number = 3
+        page_number = 2
         soup = self.get_category_soup(page_number)
 
         self.assert_pagination_link(

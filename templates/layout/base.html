@@ -4,7 +4,7 @@
 <html lang="ru">
 <head>
   {% include 'layout/google_tag_manager.html' with DEBUG=DEBUG is_head_tag=True %}
-  {% include 'components/metadata.html' with page=page only %}
+  {% include 'components/metadata.html' with page=page paginated=paginated only %}
 
   <link rel="icon" type="image/x-icon" href="{% static 'images/favicon.ico' %}">
 

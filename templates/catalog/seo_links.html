@@ -1,27 +1,36 @@
-<ul class="pagination hidden js-seo-links">
-  <li class="pagination-item">
-    {% if pagination.page_obj.has_previous %}
-      <a class="btn" href="?{{ pagination_param }}={{ page_obj.previous_page_number }}">&laquo;</a>
-    {% else %}
-      <span class="btn btn-disabled">&laquo;</span>
-    {% endif %}
-  </li>
+{% comment %}
+@todo #532:30m Hide pagination links with JS instead of CSS
+ We have already done this for SE. You may find it here:
+ https://github.com/fidals/shopelectro/issues/402
+{% endcomment%}
 
-  {% for page_index in paginator_links %}
-    <li class="pagination-item">
-      {% if pagination.page_obj.number == page_index %}
-        <span class="btn btn-disabled">{{ page_index }} <span class="sr-only">(current)</span></span>
-      {% else %}
-        <a class="btn" href="?{{ pagination_param }}={{ page_index }}">{{ page_index }}</a>
+<div class="pagination hidden js-seo-links">
+  <span>
+    {% with prev_pairs=paginated.prev_pairs next_pairs=paginated.next_pairs %}
+      {% if prev_pairs %}
+        {% with pair=prev_pairs|last %}
+          <a href="{{ pair.1 }}">
+            <<
+          </a>
+        {% endwith %}
       {% endif %}
-    </li>
-  {% endfor %}
+      {% for number, url in prev_pairs %}
+        <a href="{{ url }}">{{ number }}</a>
+      {% endfor %}
 
-  <li class="pagination-item">
-    {% if page_obj.has_next %}
-      <a class="btn" href="?{{ pagination_param }}={{ page_obj.next_page_number }}">&raquo;</a>
-    {% else %}
-      <span class="btn btn-disabled">&raquo;</span>
-    {% endif %}
-  </li>
-</ul>
+      {{ paginated.page.number }}
+
+      {% for number, url in next_pairs %}
+        <a href="{{ url }}">{{ number }}</a>
+      {% endfor %}
+
+      {% if next_pairs %}
+        {% with pair=next_pairs|first %}
+          <a href="{{ pair.1 }}">
+            >>
+          </a>
+        {% endwith %}
+      {% endif %}
+    {% endwith %}
+  </span>
+</div>

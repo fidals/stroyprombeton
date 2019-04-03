@@ -62,12 +62,7 @@
         </table>
 
         {% include 'components/show_more_products.html' with paginated=paginated only %}
-        {% include 'catalog/seo_links.html' with
-          page_obj=page_obj
-          paginator_links=paginator_links
-          pagination_param=pagination_param
-          only
-        %}
+        {% include 'catalog/seo_links.html' with paginated=paginated only %}
       </div>
     </div>
   </div>
