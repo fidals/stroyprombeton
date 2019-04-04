@@ -20,6 +20,8 @@ from pages.models import CustomPage, FlatPage, ModelPage, PageTemplate
 from pages.utils import save_custom_pages
 from stroyprombeton import models as stb_models
 
+TEST_DB = 'test_stb'
+
 CATEGORY_PATTERN = 'Category #{} of #{}'
 FEEDBACKS_COUNT = 9
 REVIEW_IMAGE = os.path.join(
@@ -90,13 +92,7 @@ class Command(BaseCommand):
         call_command('flush', '--noinput')
 
     def handle(self, *args, **options):
-        # We need to be sure that this command will run only on 'test' DB.
-        # todo #315:30m Autoswitch db in test_db script. se2
-        #  Now script asks to manually switch db before executing.
-        assert settings.DATABASES['default']['NAME'] == 'test_stb'
-
-        self.purge_tables()
-        call_command('migrate')
+        self.prepare_db()
 
         roots = self.create_root(count=2)
         second_level = self.create_children(count=2, parents=roots)
@@ -109,6 +105,13 @@ class Command(BaseCommand):
         self.create_products(parents=list(third_level), tags=tags)
         self.create_templates()
         self.save_dump()
+
+    def prepare_db(self):
+        is_test_db = settings.DATABASES['default']['NAME'] == TEST_DB
+        assert is_test_db, \
+            f'To create fixtures you have to create a database named "{TEST_DB}".'
+        call_command('migrate')
+        self.purge_tables()
 
     @staticmethod
     def save_dump():

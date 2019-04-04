@@ -2,6 +2,8 @@ dc=docker-compose
 d=docker
 dcb=$(dc) -f docker-compose-build.yml
 dcp=$(dc) -f docker-compose-production.yml
+# the same const value is used at `test_db` django command
+TEST_DB=test_stb
 
 .PHONY: migrate create-env build-static watch-static \
 build test backup restore \
@@ -16,6 +18,15 @@ fixtures:
 	$(dc) exec app bash -c "\
 		python manage.py loaddata stroyprombeton/fixtures/admin.json \
 		&& python manage.py loaddata stroyprombeton/fixtures/dump.json \
+	"
+
+gen-fixtures:
+	$(dc) exec postgres bash -c "\
+		psql -Upostgres <<< 'CREATE DATABASE $(TEST_DB);' \
+	"
+	$(dc) run --rm -e POSTGRES_DB=$(TEST_DB) app python manage.py test_db
+	$(dc) exec postgres bash -c "\
+		psql -Upostgres <<< 'DROP DATABASE $(TEST_DB);' \
 	"
 
 prices:
