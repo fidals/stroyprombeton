@@ -1,10 +1,4 @@
-{% comment %}
-@todo #532:30m Hide pagination links with JS instead of CSS
- We have already done this for SE. You may find it here:
- https://github.com/fidals/shopelectro/issues/402
-{% endcomment%}
-
-<div class="pagination hidden js-seo-links">
+<div class="pagination js-seo-links">
   <span>
     {% with prev_pairs=paginated.prev_pairs next_pairs=paginated.next_pairs %}
       {% if prev_pairs %}

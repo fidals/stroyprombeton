@@ -13,12 +13,12 @@
     tablaRow: '.table-tr',
     h1: '.heading-h1',
     $cart: $('.js-cart'),
-    $loadMoreBtn: $('#load-more-products'),
     $showMoreLink: $('#load-more-products'),
     $productsTable: $('#products-wrapper'),
     $searchFilter: $('#search-filter'),
     $seoCategoryDescription: $('#js-category-description'),
     $seoCategoryDescriptionDestination: $('#js-category-description-destination'),
+    $pagination: $('.js-seo-links'),
   };
 
   const config = {
@@ -31,6 +31,7 @@
     setLoadMoreLinkState();
     setUpListeners();
     moveCategoryDescription();
+    hidePaginationButtons();
   };
 
   /**
@@ -222,6 +223,14 @@
       limit: data.limit,
       filtered: data.filtered,
     });
+  }
+
+  /**
+   * Hide catalog's pagination buttons.
+   * Buttons should be visible only for web search engines.
+   */
+  function hidePaginationButtons() {
+    DOM.$pagination.hide();
   }
 
   init();

@@ -526,6 +526,11 @@ class CategoryPage(BaseCartSeleniumTestCase, test_helpers.CategoryTestMixin):
         )
         self.assertFalse(is_button_disabled)
 
+    def test_hidden_pagination(self):
+        self.load_category_page()
+        pagination = self.browser.find_element_by_class_name('js-seo-links')
+        self.assertFalse(pagination.is_displayed())
+
 
 @tag('slow')
 class Search(SeleniumTestCase):
