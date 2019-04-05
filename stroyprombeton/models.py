@@ -45,6 +45,37 @@ class Category(catalog.models.AbstractCategory, pages.models.PageMixin):
         return reverse('category', args=(self.id,))
 
 
+# @todo #510:60m  Create Series navigation.
+#  See the parent's task body for details about navigation.
+#  This task depends on Series page creation.
+class Series(pages.models.PageMixin):
+    """
+    Series is another way to organize products.
+
+    It's like Category, but has no hierarchy.
+    """
+
+    class Meta:
+        # @todo #510:15m  Translate "Series" term.
+        #  And "series" too. It's used in the relation with Product.
+        verbose_name = _('Series')
+        verbose_name_plural = _('Series')
+
+    name = models.CharField(
+        max_length=1000, db_index=True, unique=True, verbose_name=_('name')
+    )
+
+    @property
+    def url(self):
+        return self.get_absolute_url()
+
+    # @todo #510:60m  Create Series page.
+    #  And create "All Series page" after that.
+    def get_absolute_url(self):
+        """Url path to the related page."""
+        return reverse('series', args=(self.id,))
+
+
 class OptionQuerySet(models.QuerySet):
 
     def active(self):
@@ -150,6 +181,14 @@ class Product(catalog.models.AbstractProduct, pages.models.PageMixin):
         on_delete=models.CASCADE,
         related_name='products',
         verbose_name=_('category'),
+    )
+
+    series = models.ForeignKey(
+        Series,
+        on_delete=models.CASCADE,
+        related_name='options',
+        verbose_name=_('series'),
+        null=True,
     )
 
     def __str__(self):
