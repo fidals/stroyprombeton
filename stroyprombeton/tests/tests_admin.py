@@ -23,7 +23,7 @@ class AdminPage(TestCase):
 
         cls.list_display = {
             'page': ['ID', 'Name', 'Parent', 'Is active', ],
-            'product': ['Id', 'Name', 'Category', 'Price', 'Link', 'Is active', ],
+            'product': ['Id', 'Name', 'Category', 'Link', 'Is active', ],
             'category': ['Id', 'Name', 'Parent', 'Is active', ],
         }
 

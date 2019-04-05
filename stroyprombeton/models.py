@@ -83,7 +83,7 @@ class OptionManager(models.Manager.from_queryset(OptionQuerySet)):
     """Get all products of given category by Category's id or instance."""
 
 
-class Option(models.Model):
+class Option(catalog.models.AbstractOption):
     """This doc page describes what is option: https://goo.gl/S4U9PG."""
 
     objects = OptionManager()
@@ -181,6 +181,15 @@ class Product(catalog.models.AbstractProduct, pages.models.PageMixin):
             .prefetch_related('category')
             .select_related('page')[:offset]
         )
+
+    # we'll remove this field
+    # after integration admin to Options feature at #433
+    price = models.FloatField(
+        blank=True,
+        default=0,
+        db_index=True,
+        verbose_name=_('price'),
+    )
 
 
 class CategoryPage(pages.models.ModelPage):
