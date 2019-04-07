@@ -267,7 +267,7 @@ class CategoryTable(BaseCatalogTestCase, TestPageMixin):
 
     def test_products_are_from_category(self):
         # leaf category
-        category = models.Category.objects.get(name='Category #0 of #6')
+        category = models.Category.objects.get(name='Category #0 of #44')
         response = self.client.get(self.get_category_url(category))
         self.assertTrue(
             all(option.product.category == category for option in response.context['products'])
@@ -748,7 +748,7 @@ class CatalogTags(BaseCatalogTestCase, CategoryTestMixin):
 
     def test_contains_product_with_certain_tags(self):
         """Category page contains Product's related by certain tags."""
-        category = models.Category.objects.get(name='Category #0 of #3')
+        category = models.Category.objects.get(name='Category #0 of #41')
         options = [p.options.first() for p in category.products.all()]
         tags = (
             models.Tag.objects
@@ -866,7 +866,7 @@ class CatalogTags(BaseCatalogTestCase, CategoryTestMixin):
         product = (
             models.Product.objects
             .prefetch_related('category')
-            .get(name='Product #10 of Category #0 of #3')
+            .get(name='Product #10 of Category #0 of #41')
         )
 
         self.set_too_many_tags(product, from_index, to_index)

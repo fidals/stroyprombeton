@@ -70,8 +70,12 @@ def categories_csv_export(request, filename='categories.csv', breadcrumbs_delimi
     return response
 
 
+# @todo #556:120m  Show root categories as matrix.
+#  We have no mockup for it. Propose your own solution.
+#  Currently we have problem with many categories.
+#  Screen: http://prntscr.com/n802pt
 class CategoryTree(ListView):
-    """Show list of root categories."""
+    """The list of root categories."""
 
     template_name = 'catalog/catalog.html'
     context_object_name = 'categories'

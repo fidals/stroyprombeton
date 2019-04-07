@@ -22,6 +22,12 @@ from stroyprombeton import models as stb_models
 
 TEST_DB = 'test_stb'
 
+# use empty roots to feel how UI looks like.
+REAL_ROOTS_COUNT = 2
+EMPTY_ROOTS_COUNT = 38
+ROOT_PATTERN = 'Category root #{}'
+EMPTY_ROOT_PATTERN = 'Category root empty #{}'
+
 CATEGORY_PATTERN = 'Category #{} of #{}'
 FEEDBACKS_COUNT = 9
 REVIEW_IMAGE = os.path.join(
@@ -94,7 +100,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         self.prepare_db()
 
-        roots = self.create_root(count=2)
+        roots = self.create_root()
         second_level = self.create_children(count=2, parents=roots)
         third_level = self.create_children(count=2, parents=second_level)
 
@@ -127,15 +133,21 @@ class Command(BaseCommand):
         )
 
     @staticmethod
-    def create_root(count):
-        get_name = 'Category root #{}'.format
-        return [
-            stb_models.Category.objects.create(
-                name=get_name(i),
-                page=ModelPage.objects.create(name=get_name(i)),
+    def create_root():
+        def create_category(id: int, pattern: str):
+            return stb_models.Category.objects.create(
+                name=pattern.format(id),
+                page=ModelPage.objects.create(name=pattern.format(id)),
             )
-            for i in range(count)
+
+        real_roots = [
+            create_category(id=i, pattern=ROOT_PATTERN)
+            for i in range(REAL_ROOTS_COUNT)
         ]
+        for i in range(EMPTY_ROOTS_COUNT):
+            create_category(id=i, pattern=EMPTY_ROOT_PATTERN)
+        # return only real roots, because only they should have children
+        return real_roots
 
     def create_tag_groups(self):
         for i, name in enumerate(self.group_names, start=1):
