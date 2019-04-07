@@ -115,6 +115,12 @@ class OptionManager(models.Manager.from_queryset(OptionQuerySet)):
 class Option(catalog.models.AbstractOption):
     """This doc page describes what is option: https://goo.gl/S4U9PG."""
 
+    class Meta:
+        # Product and Option has the same verbose names
+        # in case of "ЖБИ" domain area.
+        verbose_name = _('Product')
+        verbose_name_plural = _('Products')
+
     objects = OptionManager()
 
     @property

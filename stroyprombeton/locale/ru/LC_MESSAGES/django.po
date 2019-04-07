@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-01-29 13:36+0000\n"
+"POT-Creation-Date: 2019-04-04 12:34+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -48,8 +48,7 @@ msgstr "Только по h1"
 msgid "Same h1, characteristics, price"
 msgstr "По h1, характеристикам, цене"
 
-#: stroyprombeton/admin.py:85 stroyprombeton/models.py:34
-#: stroyprombeton/models.py:85 stroyprombeton/models.py:181
+#: stroyprombeton/admin.py:85 stroyprombeton/models.py:36
 msgid "specification"
 msgstr "документация"
 
@@ -69,135 +68,128 @@ msgstr "Нет документации"
 msgid "Stroyprombeton administration"
 msgstr "Админка Stroyprombeton"
 
-#: stroyprombeton/apps.py:7
+#: stroyprombeton/apps.py:11
 msgid "Stroyprombeton"
 msgstr "Стройпромбетон"
 
-#: stroyprombeton/models.py:53 stroyprombeton/models.py:159
-msgid "tags"
-msgstr ""
+#: stroyprombeton/models.py:92 stroyprombeton/tests/tests_views.py:594
+msgid "Product"
+msgstr "Изделие"
 
-#: stroyprombeton/models.py:55 stroyprombeton/models.py:178
-msgid "date price updated"
-msgstr "дата обновления цены"
+#: stroyprombeton/models.py:93
+msgid "Products"
+msgstr "Изделия"
 
-#: stroyprombeton/models.py:59 stroyprombeton/models.py:152
-msgid "is new price"
-msgstr "новая цена"
-
-#: stroyprombeton/models.py:65 stroyprombeton/models.py:165
-msgid "price"
-msgstr "цена"
-
-#: stroyprombeton/models.py:70 stroyprombeton/models.py:170
-msgid "in stock"
-msgstr "наличие"
-
-#: stroyprombeton/models.py:75 stroyprombeton/models.py:175
-msgid "is popular"
-msgstr "популярность"
-
-#: stroyprombeton/models.py:83 stroyprombeton/models.py:179
+#: stroyprombeton/models.py:112
 msgid "code"
 msgstr "код"
 
-#: stroyprombeton/models.py:84 stroyprombeton/models.py:180
+#: stroyprombeton/models.py:113
 msgid "mark"
 msgstr "марка"
 
-#: stroyprombeton/models.py:86 stroyprombeton/models.py:182
-msgid "length"
-msgstr "длина"
+#: stroyprombeton/models.py:118
+msgid "tags"
+msgstr ""
 
-#: stroyprombeton/models.py:87 stroyprombeton/models.py:183
-msgid "width"
-msgstr "ширина"
-
-#: stroyprombeton/models.py:88 stroyprombeton/models.py:184
-msgid "height"
-msgstr "высота"
-
-#: stroyprombeton/models.py:89 stroyprombeton/models.py:185
-msgid "weight"
-msgstr "вес"
-
-#: stroyprombeton/models.py:90 stroyprombeton/models.py:186
-msgid "volume"
-msgstr "объём"
-
-#: stroyprombeton/models.py:91 stroyprombeton/models.py:187
-msgid "diameter out"
-msgstr "диаметр внешний"
-
-#: stroyprombeton/models.py:92 stroyprombeton/models.py:188
-msgid "diameter in"
-msgstr "диаметр внутренний"
-
-#: stroyprombeton/models.py:100
-msgid "name"
-msgstr "название"
-
-#: stroyprombeton/models.py:105 stroyprombeton/models.py:196
-msgid "category"
-msgstr "категория"
-
-#: stroyprombeton/models.py:112
-#, fuzzy
-#| msgid "position"
-msgid "option"
-msgstr "вариант"
-
-#: stroyprombeton/models.py:197
-msgid "categories"
-msgstr "категории"
-
-#: stroyprombeton/models.py:207
+#: stroyprombeton/models.py:124 stroyprombeton/models.py:208
 msgid "product"
 msgstr "товар"
 
-#: stroyprombeton/models.py:208
+#: stroyprombeton/models.py:126
+msgid "date price updated"
+msgstr "дата обновления цены"
+
+#: stroyprombeton/models.py:131
+msgid "price"
+msgstr "цена"
+
+#: stroyprombeton/models.py:136
+msgid "in stock"
+msgstr "наличие"
+
+#: stroyprombeton/models.py:141
+msgid "is popular"
+msgstr "популярность"
+
+#: stroyprombeton/models.py:153
+msgid "name"
+msgstr "название"
+
+#: stroyprombeton/models.py:158 stroyprombeton/models.py:197
+msgid "category"
+msgstr "категория"
+
+#: stroyprombeton/models.py:198
+msgid "categories"
+msgstr "категории"
+
+#: stroyprombeton/models.py:209
 msgid "products"
 msgstr "товары"
 
-#: stroyprombeton/models.py:232 stroyprombeton/models.py:233
+#: stroyprombeton/models.py:233 stroyprombeton/models.py:234
 msgid "News"
 msgstr "Новости"
 
-#: stroyprombeton/models.py:241 stroyprombeton/models.py:242
+#: stroyprombeton/models.py:242 stroyprombeton/models.py:243
 msgid "Regions"
 msgstr "Регионы"
 
-#: stroyprombeton/models.py:250 stroyprombeton/models.py:251
+#: stroyprombeton/models.py:251 stroyprombeton/models.py:252
 msgid "Client feedbacks"
 msgstr "Отзывы клиентов"
 
-#: stroyprombeton/settings/base.py:135
+#: stroyprombeton/settings/base.py:138
 msgid "Russian"
 msgstr ""
-
-#: stroyprombeton/tests/tests_views.py:505
-msgid "Product"
-msgstr "Изделие"
 
 #: stroyprombeton/views/admin.py:10
 #, python-format
 msgid "Category with name ( %s ) does not exist."
 msgstr "Категория с именем ( %s ) не существует."
 
-#~ msgid "catalog"
-#~ msgstr "каталог"
+#~ msgid "is new price"
+#~ msgstr "новая цена"
 
-#~ msgid "Category"
-#~ msgstr "Раздел"
+#~ msgid "length"
+#~ msgstr "длина"
 
-#~ msgid "Categories"
-#~ msgstr "Разделы"
+#~ msgid "width"
+#~ msgstr "ширина"
 
-#~ msgid "Products"
-#~ msgstr "Изделия"
+#~ msgid "height"
+#~ msgstr "высота"
 
-#~ msgid "rub"
-#~ msgstr "руб"
+#~ msgid "weight"
+#~ msgstr "вес"
+
+#~ msgid "volume"
+#~ msgstr "объём"
+
+#~ msgid "diameter out"
+#~ msgstr "диаметр внешний"
+
+#~ msgid "diameter in"
+#~ msgstr "диаметр внутренний"
+
+msgid "catalog"
+msgstr "каталог"
+
+msgid "Series"
+msgstr "Серия"
+
+msgid "series"
+msgstr "серия"
+
+msgid "Category"
+msgstr "Раздел"
+
+msgid "Categories"
+msgstr "Разделы"
+
+msgid "rub"
+msgstr "руб"
 
 #~ msgid "has images"
 #~ msgstr "По картинкам"

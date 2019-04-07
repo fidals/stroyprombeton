@@ -193,7 +193,7 @@ class FilteredOptions(context.Context):
 
     def qs(self) -> stb_models.OptionQuerySet:
         return (
-            stb_models.Option.objects.active()
+            stb_models.Option.objects
             .bind_fields()
             .active()
             .filter_descendants(self.category)

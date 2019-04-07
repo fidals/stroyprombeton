@@ -307,6 +307,24 @@ class CategoryTable(BaseCatalogTestCase, TestPageMixin):
         total = int(soup.find(id='load-more-products')['data-total-products'])
         self.assertEqual(total, options.count())
 
+    def test_active_options(self):
+        """Category page should contain only options with active related products."""
+        options_qs = (
+            models.Option.objects
+            .bind_fields()
+            .filter_descendants(self.root_category)
+            .order_by(*settings.OPTIONS_ORDERING)
+        )
+        # make inactive the first option in a category page list
+        inactive = options_qs.first()
+        inactive.product.page.is_active = False
+        inactive.product.page.save()
+        active = options_qs.active().first()
+
+        response = self.client.get(self.get_category_url(self.root_category))
+        self.assertIn(active, response.context['products'])
+        self.assertNotIn(inactive, response.context['products'])
+
 
 @tag('fast', 'catalog')
 class CatalogPagination(BaseCatalogTestCase):
