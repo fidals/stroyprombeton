@@ -1,0 +1,13 @@
+{% load images %}
+{% load thumbnail %}
+
+<div class="container container-fluid">
+  <section class="category-about">
+    <div class="category-about-text">
+      {% autoescape off %}
+        {{ page.content }}
+      {% endautoescape %}
+      <section id="js-category-description-destination"></section>
+    </div>
+  </section>
+</div>

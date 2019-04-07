@@ -1,0 +1,49 @@
+{% extends 'layout/inner_page.html' %}
+
+{% block content %}
+  {% include 'components/page_h1.html' with page=page only %}
+
+  <section class="category-search">
+    <div class="container container-fluid">
+      <div class="row center-xs">
+        <div class="col-xs-12 col-md-8">
+          <div class="search">
+            <input class="search-field" id="search-filter" type="text"
+                   data-category="{{ series.id }}"
+                   placeholder="Поиск (по названию, артикулу)">
+          </div>
+        </div>
+      </div>
+
+      <div class="row text-right">
+        <div class="col-xs-12 col-lg-11 public-offer">Не является публичной офертой.</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="container container-fluid">
+    <div class="row">
+      <div class="col-md-9 product-list">
+        <table class="table">
+          <thead>
+            <tr>
+              <th class="table-th table-th-photo">Фото</th>
+              <th class="table-th table-th-code">Код</th>
+              <th class="table-th table-th-name">Наименование / Марка</th>
+              <th class="table-th table-th-price">Цена</th>
+              <th class="table-th table-th-count">Кол-во</th>
+              <th class="table-th table-th-remove"></th>
+            </tr>
+          </thead>
+          <tbody class="js-photoswipe" id="products-wrapper">
+            {% comment %}
+              @todo #560:15m  Rename `category_products.html` to `positions.html`
+               Or maybe `options`. Make this decision for both #457 task and this one.
+            {% endcomment %}
+            {% include 'catalog/category_products.html' with products=products product_images=product_images only %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+{% endblock %}

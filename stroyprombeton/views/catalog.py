@@ -2,7 +2,7 @@ from csv import writer as CSVWriter
 
 from django.conf import settings
 from django.http import HttpResponseBadRequest, StreamingHttpResponse
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, render
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 from wkhtmltopdf.views import PDFTemplateView
@@ -187,3 +187,20 @@ class ProductPDF(PDFTemplateView, DetailView):
             'category': category,
             'products': products,
         }
+
+
+# @todo #560:60m  Use series slug instead of id for series url.
+
+# @todo #560:60m  Test series page.
+#  Take some tests from category page.
+def series(request, series_id):
+    series = get_object_or_404(models.Series.objects, id=series_id)
+
+    return render(
+        request,
+        'catalog/series.html',
+        {
+            'products': series.options.all(),
+            'page': series.page,
+        }
+    )

@@ -1,11 +1,13 @@
 {% load stb_extras %}
 
 <div class="container container-fluid">
-  <h1 class="heading-h1" data-name="{{ page.name }}">{{ page.display_h1 }} {{ product.mark }}</h1>
-  {% if category %}
-  <p id="js-category-description">
-    <br>
-    {{ page.display_seo_text }}
-  </p>
+  <h1 class="heading-h1" data-name="{{ page.name }}">
+    {{ page.display_h1 }}{% if product %} {{ product.mark }}{% endif %}
+  </h1>
+  {% if page.display_seo_text %}
+    <p id="js-category-description">
+      <br>
+      {{ page.display_seo_text }}
+    </p>
   {% endif %}
 </div>

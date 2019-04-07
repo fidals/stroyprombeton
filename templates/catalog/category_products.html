@@ -4,9 +4,14 @@
 {% for product in products %}
   <tr class="table-tr" data-id="{{ product.id }}" data-name="{{ product.name }}">
     <td class="table-td table-photo text-center">
-      {% with image=product_images|get_item:product.id %}
-        {% include 'catalog/category_product_image.html' with image=image page=product.page only %}
-      {% endwith %}
+      <b>-</b>
+      {% comment %}
+        Will be fixed with #565
+
+        {% with image=product_images|get_item:product.id %}
+          {% include 'catalog/category_product_image.html' with image=image page=product.page only %}
+        {% endwith %}
+      {% endcomment %}
     </td>
     <td class="table-td table-code">
       {% if product.code %}
@@ -17,7 +22,7 @@
     </td>
     <td class="table-td table-name">
       <a class="table-link" href="{{ product.url }}">
-        {{ product.name }} {{ product.mark }} {{ product.specification }}
+        {{ product.name }} {{ product.mark }}
       </a>
     </td>
     <td class="table-td table-price">

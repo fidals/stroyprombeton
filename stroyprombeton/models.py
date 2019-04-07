@@ -69,8 +69,6 @@ class Series(pages.models.PageMixin):
     def url(self):
         return self.get_absolute_url()
 
-    # @todo #510:60m  Create Series page.
-    #  And create "All Series page" after that.
     def get_absolute_url(self):
         """Url path to the related page."""
         return reverse('series', args=(self.id,))
@@ -148,6 +146,13 @@ class Option(catalog.models.AbstractOption):
         related_name='options',
         verbose_name=_('product'),
     )
+    series = models.ForeignKey(
+        Series,
+        on_delete=models.CASCADE,
+        related_name='options',
+        verbose_name=_('series'),
+        null=True,
+    )
     date_price_updated = models.DateField(auto_now_add=True, verbose_name=_('date price updated'))
     price = models.FloatField(
         blank=True,
@@ -181,14 +186,6 @@ class Product(catalog.models.AbstractProduct, pages.models.PageMixin):
         on_delete=models.CASCADE,
         related_name='products',
         verbose_name=_('category'),
-    )
-
-    series = models.ForeignKey(
-        Series,
-        on_delete=models.CASCADE,
-        related_name='options',
-        verbose_name=_('series'),
-        null=True,
     )
 
     def __str__(self):

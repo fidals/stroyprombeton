@@ -4,12 +4,10 @@ from django.conf.urls.static import static
 from django.contrib.sitemaps import views as sitemaps_view
 from django.views.decorators.cache import cache_page
 
-from pages.views import RobotsView, SitemapPage
 from pages.urls import custom_page_url
-
+from pages.views import RobotsView, SitemapPage
 from stroyprombeton import sitemaps, views
 from stroyprombeton.admin import stb_admin_site
-
 
 admin_urls = [
     url(r'^', stb_admin_site.urls),
@@ -32,6 +30,8 @@ catalog_urls = [
         views.ProductPage.as_view(), name='product'),
     url(r'^categories/csv/$',
         views.categories_csv_export, name='categories-export'),
+    url(r'^series/(?P<series_id>[0-9]+)/$',
+        views.series, name='series'),
 ]
 
 custom_pages = [
