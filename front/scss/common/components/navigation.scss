@@ -17,7 +17,7 @@
     z-index: 2;
 
     @include media($md) {
-      height: $h-nav-pc;
+      height: 66px;
     }
   }
 
