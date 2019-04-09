@@ -14,11 +14,10 @@ from django.core.files.images import ImageFile
 from django.core.management import call_command
 from django.core.management.base import BaseCommand
 
-import stroyprombeton.tests
 from images.models import Image
-from pages.models import CustomPage, FlatPage, ModelPage, PageTemplate
+from pages.models import CustomPage, FlatPage, ModelPage, Page, PageTemplate
 from pages.utils import save_custom_pages
-from stroyprombeton import models as stb_models
+from stroyprombeton import models as stb_models, tests as stb_tests
 
 TEST_DB = 'test_stb'
 
@@ -31,7 +30,7 @@ EMPTY_ROOT_PATTERN = 'Category root empty #{}'
 CATEGORY_PATTERN = 'Category #{} of #{}'
 FEEDBACKS_COUNT = 9
 REVIEW_IMAGE = os.path.join(
-    os.path.dirname(os.path.abspath(stroyprombeton.tests.__file__)),
+    os.path.dirname(os.path.abspath(stb_tests.__file__)),
     'assets/review.jpg'
 )
 
@@ -79,6 +78,19 @@ def create_pages():
 
 
 class Command(BaseCommand):
+
+    FIRST_IMAGE = os.path.join(
+        os.path.dirname(os.path.abspath(stb_tests.__file__)),
+        'assets/deer.jpg'
+    )
+    SECOND_IMAGE = os.path.join(
+        os.path.dirname(os.path.abspath(stb_tests.__file__)),
+        'assets/gold_deer.jpg'
+    )
+
+    # prod#110 is the first on the root category.
+    # prod#92 is the first in the root categories load_more list
+    PRODUCTS_WITH_IMAGE = [110, 92]
 
     def __init__(self):
         super().__init__()
@@ -206,6 +218,20 @@ class Command(BaseCommand):
 
     def create_products(self, parents, tags):
         """Create products for every non-root category."""
+        def create_images(page: Page):
+            def create_image(file_path, slug):
+                # save files to media folder
+                with open(file_path, mode='rb') as file_src:
+                    # product "/catalog/products/2/" contains image
+                    Image.objects.create(
+                        model=page,
+                        slug=slug,
+                        image=ImageFile(file_src)
+                    )
+
+            create_image(file_path=self.FIRST_IMAGE, slug='deer')
+            create_image(file_path=self.SECOND_IMAGE, slug='gold')
+
         def create_products(count, categories, tags_):
             for category in categories:
                 for i in range(1, count + 1):
@@ -225,6 +251,9 @@ class Command(BaseCommand):
                     for tag in tags_:
                         option.tags.add(tag)
                         option.save()
+
+                    if product.id in self.PRODUCTS_WITH_IMAGE:
+                        create_images(product.page)
 
         # [('1 м', '2 кг', '72 %'), ('2 м', '3 кг', '146 %')]
         zipped_tags = list(zip(*tags))

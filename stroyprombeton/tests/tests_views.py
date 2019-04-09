@@ -325,6 +325,16 @@ class CategoryTable(BaseCatalogTestCase, TestPageMixin):
         self.assertIn(active, response.context['products'])
         self.assertNotIn(inactive, response.context['products'])
 
+    # @todo #565:60m  Fix failed product images on the front side.
+    #  The test below proofs that `product_images` context var works fine.
+    #  Templates and front logic are left to explore.
+    def test_product_images(self):
+        """Category page should contain only options with active related products."""
+        # product with image
+        product = models.Product.objects.get(id=110)
+        response = self.client.get(product.category.url)
+        self.assertTrue(response.context['product_images'][110])
+
 
 @tag('fast', 'catalog')
 class CatalogPagination(BaseCatalogTestCase):
