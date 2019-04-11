@@ -2,17 +2,23 @@ from itertools import chain
 
 from django import forms
 from django.contrib import admin
+from django.contrib.admin.widgets import FilteredSelectMultiple
 from django.contrib.postgres.aggregates import ArrayAgg
 from django.contrib.redirects.models import Redirect
-from django.db.models import Func, Value
+from django.db.models import Func, Value, ManyToManyField
 from django.utils.translation import ugettext_lazy as _
 from django_select2.forms import ModelSelect2Widget
 
 from ecommerce.models import Position
 from generic_admin import models as admin_models, inlines, mixins, sites, filters
 from pages import models as pages_models
+
 from stroyprombeton import models as stb_models
 from stroyprombeton.views import TableEditor
+
+# @todo #433:15m Drop Stb prefix for admin class definitions.
+
+# @todo #433:30m Create separate module for admin features instead of admin.py file.
 
 
 class ParentFilter(admin.SimpleListFilter):
@@ -145,7 +151,7 @@ class StbCategoryInline(inlines.CategoryInline):
     }),)
 
     def formfield_for_dbfield(self, db_field, **kwargs):
-        if db_field.name == 'parent':
+        if db_field.name == 'parent':  # Ignore CPDBear
             kwargs['widget'] = ModelSelect2Widget(
                 model=stb_models.Category,
                 search_fields=[
@@ -153,10 +159,7 @@ class StbCategoryInline(inlines.CategoryInline):
                     'pk__startswith',
                 ],
             )
-        return super(StbCategoryInline, self).formfield_for_dbfield(
-            db_field,
-            **kwargs,
-        )
+        return super().formfield_for_dbfield(db_field, **kwargs)
 
 
 class StbCustomPageAdmin(admin_models.CustomPageAdmin):
@@ -175,9 +178,6 @@ class StbFlatPageAdmin(admin_models.FlatPageAdmin):
     ]
 
 
-# @todo #424:120m Integrate new Option model to django's admin.
-
-
 class StbProductInline(inlines.ProductInline):
     model = stb_models.Product
     form = CustomWidgetsForm
@@ -186,14 +186,6 @@ class StbProductInline(inlines.ProductInline):
         'fields': (
             ('name', 'id'),
             ('category', 'correct_category_id'),
-            ('price', 'is_new_price'),
-            ('in_stock', 'is_popular'),
-            ('code', 'mark'),
-            'specification',
-            ('length', 'width'),
-            ('height', 'weight'),
-            ('diameter_out', 'diameter_in'),
-            'volume',
         )
     }),)
 
@@ -206,10 +198,7 @@ class StbProductInline(inlines.ProductInline):
                     'pk__startswith',
                 ],
             )
-        return super(StbProductInline, self).formfield_for_dbfield(
-            db_field,
-            **kwargs,
-        )
+        return super().formfield_for_dbfield(db_field, **kwargs)
 
 
 class StbProductPageAdmin(admin_models.ProductPageAdmin):
@@ -218,11 +207,14 @@ class StbProductPageAdmin(admin_models.ProductPageAdmin):
     inlines = [StbProductInline, StbImageInline]
     list_filter = [
         'is_active',
-        filters.PriceRange,
         filters.HasContent,
         filters.HasImages,
-        CharacteristicsEqualityFilter,
     ]
+    list_display = ['model_id', 'name', 'custom_parent', 'links', 'is_active']
+
+    def get_queryset(self, request):
+        qs = super(admin_models.ProductPageAdmin, self).get_queryset(request)
+        return self.add_reference_to_field_on_related_model(qs, _product_id='id')
 
 
 class StbCategoryPageAdmin(admin_models.CategoryPageAdmin):
@@ -245,6 +237,27 @@ class OrderAdmin(mixins.PermissionsControl):
     list_display_links = ['email']
 
 
+class OptionAdmin(mixins.PermissionsControl):
+
+    add = True
+    list_filter = [
+        # @todo #433:30m Determine relevance of CharacteristicsEqualityFilter.
+        #  Either drop in case of obsoleteness or integrate with new Option model.
+
+        # @todo #433:30m Integrate PriceRange with new Option model.
+
+        # filters.PriceRange,
+        # CharacteristicsEqualityFilter,
+    ]
+    list_display = ['name', 'id', 'code', 'mark', 'price', 'in_stock', 'is_popular']
+
+    formfield_overrides = {
+        ManyToManyField: {
+            'widget': FilteredSelectMultiple(verbose_name='Tags', is_stacked=False)
+        },
+    }
+
+
 stb_admin_site = StbAdminSite(name='stb_admin')
 
 # Pages
@@ -259,6 +272,7 @@ stb_admin_site.register(stb_models.NewsForAdmin, StbFlatPageAdmin)
 stb_admin_site.register(stb_models.RegionsForAdmin, StbFlatPageAdmin)
 stb_admin_site.register(stb_models.ClientFeedbacksForAdmin, StbFlatPageAdmin)
 stb_admin_site.register(stb_models.Order, OrderAdmin)
+stb_admin_site.register(stb_models.Option, OptionAdmin)
 
 # Redirects
 stb_admin_site.register(Redirect)

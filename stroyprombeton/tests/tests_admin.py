@@ -1,5 +1,3 @@
-import unittest
-
 from django.contrib.auth.models import User
 from django.test import TestCase, tag
 from django.urls import reverse
@@ -33,8 +31,7 @@ class AdminPage(TestCase):
                 'h1', 'name'
             ],
             'product': [
-                'Name', 'Category', 'Price', 'ID', 'Is popular', 'Length', 'Width', 'Height',
-                'Weight', 'Volume', 'Diameter out', 'Diameter in', 'Specification', 'code', 'mark'
+                'Name', 'Category', 'ID',
             ],
             'category': ['Name', 'Parent', 'Position', 'ID', ],
         }
@@ -122,9 +119,6 @@ class AdminPage(TestCase):
         for field in self.list_display['product']:
             self.assertContains(response, field)
 
-    # @todo #455:60m  Resurrect Product admin page fields set.
-    #  And it's test.
-    @unittest.skip
     def test_products_change_fieldset(self):
         """
         Test a change-page required fields.

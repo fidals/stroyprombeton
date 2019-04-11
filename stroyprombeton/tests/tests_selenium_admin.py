@@ -146,13 +146,13 @@ class AdminPage(AdminTestCase, HelpersMixin):
         self.browser.get(self.change_products_url)
         self.wait.until(EC.url_contains('productpage'))
 
-        filter_by_has_image = '//*[@id="changelist-filter"]/ul[4]/li[2]/a'
+        filter_by_has_image = '//*[@id="changelist-filter"]/ul[3]/li[2]/a'
         self.browser.find_element_by_xpath(filter_by_has_image).click()
         self.wait.until(EC.url_contains('has_images=yes'))
         table = self.get_table_with_products().text
         self.assertTrue('2' in table)
 
-        filter_by_has_not_image = '//*[@id="changelist-filter"]/ul[4]/li[3]/a'
+        filter_by_has_not_image = '//*[@id="changelist-filter"]/ul[3]/li[3]/a'
         self.browser.find_element_by_xpath(filter_by_has_not_image).click()
         self.wait.until(EC.url_contains('has_images=no'))
         table = self.get_table_with_products().text
@@ -163,13 +163,13 @@ class AdminPage(AdminTestCase, HelpersMixin):
         self.browser.get(self.change_products_url)
         self.wait.until(EC.url_contains('productpage'))
 
-        filter_by_has_content = '//*[@id="changelist-filter"]/ul[3]/li[2]/a'
+        filter_by_has_content = '//*[@id="changelist-filter"]/ul[2]/li[2]/a'
         self.browser.find_element_by_xpath(filter_by_has_content).click()
         self.wait.until(EC.url_contains('has_content=yes'))
         table = self.browser.find_element_by_class_name(self.product_table).text
         self.assertTrue('0' in table)
 
-        filter_by_has_not_content = '//*[@id="changelist-filter"]/ul[3]/li[3]/a'
+        filter_by_has_not_content = '//*[@id="changelist-filter"]/ul[2]/li[3]/a'
         self.browser.find_element_by_xpath(filter_by_has_not_content).click()
         self.wait.until(EC.url_contains('has_content=no'))
         table = self.get_table_with_products().text
