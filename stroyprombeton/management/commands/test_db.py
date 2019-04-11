@@ -8,6 +8,7 @@ NOTE:
     4. It can only run if your default database called `test`.
 """
 import os
+import typing
 
 from django.conf import settings
 from django.core.files.images import ImageFile
@@ -21,11 +22,17 @@ from stroyprombeton import models as stb_models, tests as stb_tests
 
 TEST_DB = 'test_stb'
 
-# use empty roots to feel how UI looks like.
+# use empty root categories to feel how UI looks like.
 REAL_ROOTS_COUNT = 2
 EMPTY_ROOTS_COUNT = 38
 ROOT_PATTERN = 'Category root #{}'
 EMPTY_ROOT_PATTERN = 'Category root empty #{}'
+
+# use empty series to feel how UI looks like.
+REAL_SERIES_COUNT = 2
+EMPTY_SERIES_COUNT = 38
+SERIES_PATTERN = 'Series #{}'
+EMPTY_SERIES_PATTERN = 'Series empty #{}'
 
 CATEGORY_PATTERN = 'Category #{} of #{}'
 FEEDBACKS_COUNT = 9
@@ -121,6 +128,8 @@ class Command(BaseCommand):
 
         create_pages()
         self.create_products(parents=list(third_level), tags=tags)
+        series = self.create_series()
+        self.bind_products(series)
         self.create_templates()
         self.save_dump()
 
@@ -160,6 +169,29 @@ class Command(BaseCommand):
             create_category(id=i, pattern=EMPTY_ROOT_PATTERN)
         # return only real roots, because only they should have children
         return real_roots
+
+    @staticmethod
+    def create_series():
+        def create(id: int, pattern: str):
+            return stb_models.Series.objects.create(
+                name=pattern.format(id),
+                page=ModelPage.objects.create(name=pattern.format(id)),
+            )
+
+        real_series = [
+            create(id=i, pattern=SERIES_PATTERN)
+            for i in range(REAL_SERIES_COUNT)
+        ]
+        for i in range(EMPTY_SERIES_COUNT):
+            create(id=i, pattern=EMPTY_SERIES_PATTERN)
+        # return only real series, because only they should have children
+        return real_series
+
+    @staticmethod
+    def bind_products(series: typing.List[stb_models.Series]):
+        options = stb_models.Option.objects.all()
+        options.filter(id__range=(1, 50)).update(series=series[0])
+        options.filter(id__range=(51, 55)).update(series=series[1])
 
     def create_tag_groups(self):
         for i, name in enumerate(self.group_names, start=1):

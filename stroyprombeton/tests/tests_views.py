@@ -229,7 +229,7 @@ class Category(BaseCatalogTestCase, TestPageMixin):
         term = '#1'
         category = models.Category.objects.get(name='Category #0 of #1')
         options = models.Option.objects.filter_descendants(category)
-        searched = context.search(
+        searched = context.search(  # Ignore CPDBear
             term, options, context.SearchedOptions.LOOKUPS,
             ordering=('product__name', )
         )
@@ -237,7 +237,7 @@ class Category(BaseCatalogTestCase, TestPageMixin):
         response = self.client.post(
             reverse('fetch_products'),
             data={
-                'categoryId': category.id,
+                'categoryId': category.id,  # Ignore CPDBear
                 'filtered': 'true',
                 'term': term,
                 'offset': 0,
@@ -294,7 +294,7 @@ class Category(BaseCatalogTestCase, TestPageMixin):
         options_qs = (
             models.Option.objects
             .bind_fields()
-            .filter_descendants(self.root_category)
+            .filter_descendants(self.root_category)  # Ignore CPDBear
             .order_by(*settings.OPTIONS_ORDERING)
         )
         # make inactive the first option in a category page list
@@ -930,3 +930,86 @@ class CatalogTags(BaseCatalogTestCase, CategoryTestMixin):
         #  Use it at the templates and in this test.
         disappeared = {f'{d.name} {d.mark}' for d in disappeared_qs}
         self.assertFalse(returned.intersection(disappeared))
+
+
+@tag('fast', 'catalog')
+class Series(BaseCatalogTestCase):
+    fixtures = ['dump.json']
+
+    def setUp(self):
+        self.series = models.Series.objects.filter(options__isnull=False).first()
+
+    def get_series_url(
+        self,
+        series: models.Series = None,
+    ):
+        series = series or self.series
+        return reverse('series', kwargs={'series_slug': series.slug})
+
+    def get_series_page(self, *args, **kwargs):
+        return self.client.get(self.get_series_url(*args, **kwargs))
+
+    def get_series_soup(self, *args, **kwargs) -> BeautifulSoup:
+        series_page = self.get_series_page(*args, **kwargs)
+        return BeautifulSoup(
+            series_page.content.decode('utf-8'),
+            'html.parser'
+        )
+
+    # @todo #570:60m  Implement search on series.
+    #  And resurrect the test below.
+    @unittest.skip
+    def test_fetch_positions_searching(self):
+        term = '#1'
+        options = self.series.options
+        searched = context.search(
+            term, options, context.SearchedOptions.LOOKUPS,
+            ordering=('product__name', )
+        )
+
+        response = self.client.post(
+            reverse('fetch_products'),
+            data={
+                'seriesId': self.series.id,
+                'filtered': 'true',
+                'term': term,
+                'offset': 0,
+                'limit': 10**6,
+            }
+        )
+        self.assertEqual(searched.count(), len(response.context['products']))
+        self.assertEqual(list(searched), list(response.context['products']))
+
+    def test_options_are_from_series(self):
+        response = self.client.get(self.get_series_url(self.series))
+        self.assertTrue(
+            all(option.series == self.series for option in response.context['products'])
+        )
+
+    def test_active_options(self):
+        """Series page should contain only options with active related products."""
+        options_qs = (
+            self.series.options
+            .bind_fields()
+            .order_by(*settings.OPTIONS_ORDERING)
+        )
+        # make inactive the first option in a series page list
+        inactive = options_qs.first()
+        inactive.product.page.is_active = False
+        inactive.product.page.save()
+        active = options_qs.active().first()
+
+        response = self.client.get(self.get_series_url(self.series))
+        self.assertIn(active, response.context['products'])
+        self.assertNotIn(inactive, response.context['products'])
+
+    # @todo #570:30m  Implement product images on series page.
+    #  Take this feature from categories.
+    #  Depends from #565 - images repairing.
+    @unittest.skip
+    def test_product_images(self):
+        """Series page should contain only options with active related products."""
+        # product with image
+        product = models.Product.objects.get(id=110)
+        response = self.client.get(product.series.url)
+        self.assertTrue(response.context['product_images'][110])

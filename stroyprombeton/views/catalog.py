@@ -197,18 +197,14 @@ class ProductPDF(PDFTemplateView, DetailView):
         }
 
 
-# @todo #560:60m  Use series slug instead of id for series url.
-
-# @todo #560:60m  Test series page.
-#  Take some tests from category page.
-def series(request, series_id):
-    series = get_object_or_404(models.Series.objects, id=series_id)
+def series(request, series_slug):
+    series = get_object_or_404(models.Series.objects, slug=series_slug)
 
     return render(
         request,
         'catalog/series.html',
         {
-            'products': series.options.all(),
+            'products': series.options.active(),
             'page': series.page,
         }
     )

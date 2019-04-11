@@ -1,9 +1,12 @@
+import string
 import typing
 
 import mptt
 from django.db import models
 from django.urls import reverse
+from django.utils.text import slugify
 from django.utils.translation import ugettext_lazy as _
+from unidecode import unidecode
 
 import catalog
 import ecommerce
@@ -55,6 +58,9 @@ class Series(pages.models.PageMixin):
     It's like Category, but has no hierarchy.
     """
 
+    SLUG_HASH_SIZE = 5
+    SLUG_MAX_LENGTH = 50
+
     class Meta:
         # @todo #510:15m  Translate "Series" term.
         #  And "series" too. It's used in the relation with Product.
@@ -72,6 +78,35 @@ class Series(pages.models.PageMixin):
     def get_absolute_url(self):
         """Url path to the related page."""
         return reverse('series', args=(self.id,))
+
+    slug = models.SlugField(
+        blank=False, unique=True, max_length=SLUG_MAX_LENGTH,
+    )
+
+    # @todo #569:120m  Design unified slug autogenerating mech.
+    #  Now it's doubled here and in several places at catalog.models.
+    def _get_slug(self) -> str:
+        # Translate all punctuation chars to "_".
+        # It doesn't conflict with `slugify`, which translate spaces to "-"
+        # and punctuation chars to "".
+        slug = slugify(unidecode(self.name.translate(
+            {ord(p): '_' for p in string.punctuation}
+        )))
+
+        # Keep the slug length less then SLUG_MAX_LENGTH
+        if len(slug) < self.SLUG_MAX_LENGTH:
+            return slug
+
+        slug_length = self.SLUG_MAX_LENGTH - self.SLUG_HASH_SIZE - 1
+        return catalog.models.randomize_slug(
+            slug=slug[:slug_length],
+            hash_size=self.SLUG_HASH_SIZE
+        )
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = self._get_slug()
+        super().save(*args, **kwargs)
 
 
 class OptionQuerySet(models.QuerySet):
