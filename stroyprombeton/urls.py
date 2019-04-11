@@ -39,7 +39,7 @@ custom_pages = [
     custom_page_url(r'^$', views.IndexPage.as_view(), {'page': ''}, name='index'),
     custom_page_url(r'^(?P<page>robots\.txt)$', RobotsView.as_view()),
     custom_page_url(r'^(?P<page>client-feedbacks)/$', views.ClientFeedbacksPageView.as_view()),
-    custom_page_url(r'^(?P<page>gbi)/$', views.CategoryTree.as_view()),
+    custom_page_url(r'^(?P<page>gbi)/$', views.CategoryMatrix.as_view()),
     custom_page_url(r'^(?P<page>news)/$', views.NewsPageView.as_view()),
     custom_page_url(r'^(?P<page>price-success)/$', views.OrderPriceSuccess.as_view()),
     custom_page_url(r'^(?P<page>order)/$', views.OrderPage.as_view()),

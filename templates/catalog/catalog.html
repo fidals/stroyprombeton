@@ -10,24 +10,22 @@
   {% include 'components/page_h1.html' with page=page only %}
 
   <div class="container container-fluid">
-    <div class="catalog-ul-wrapper">
-      {% for category in categories %}
-        <div class="catalog-ul-item">
-          {% if request|is_pc %}
-            {% with image=category.page.main_image  %}
-              {% if image %}
-                {% thumbnail image '494x290' format='PNG' as resized_image %}
-                  <img class="catalog-img" src="{{ resized_image.url }}" alt="{{ category.name }}">
-                {% endthumbnail %}
-              {% else %}
-                {% placeholder_image_url as image_url %}
-                <img class="catalog-img" src="{{ image_url }}" alt="{{ category.name }}">
-              {% endif %}
-            {% endwith %}
-          {% endif %}
-          <a class="catalog-title" href="{{ category.url }}">
-            {{ category.name }}
-          </a>
+    <div class="row around-xs">
+      {% comment %}
+        @todo #567:60m  Update top menu "Category" item dropdown content.
+         Now the dropdown contains root categories.
+         Make it to contain only several second level categories and "see more" link.
+         We have no mockups, manage UI in your own way.
+      {% endcomment %}
+
+      {% for root in categories %}
+        <div class="col-md">
+          <h2>{{ root.name }}</h2>
+          <ul>
+            {% for category in root.children.active %}
+              <li class="second-level-category"><a href="{{ category.url }}">{{ category.name }}</a></li>
+            {% endfor %}
+          </ul>
         </div>
       {% endfor %}
     </div>

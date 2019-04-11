@@ -96,24 +96,6 @@ class TestPageMixin:
 
 
 @tag('fast', 'catalog')
-class CategoryTree(TestCase):
-
-    fixtures = ['dump.json']
-
-    def setUp(self):
-        catalog_page = CustomPage.objects.get(slug='gbi')
-        self.response = self.client.get(catalog_page.url)
-
-    def test_root_category_response(self):
-        status_code = self.response.status_code
-        self.assertEqual(status_code, 200)
-
-    def test_catalog_links(self):
-        quantity = len(self.response.context['categories'])
-        self.assertTrue(quantity > 0)
-
-
-@tag('fast', 'catalog')
 class CategoryTile(TestCase, TestPageMixin):
     """
     Test for CategoryPage view.
@@ -162,7 +144,7 @@ class CategoryTile(TestCase, TestPageMixin):
 
 
 @tag('fast', 'catalog')
-class CategoryTable(BaseCatalogTestCase, TestPageMixin):
+class Category(BaseCatalogTestCase, TestPageMixin):
     """
     Test for CategoryPage view.
 
@@ -334,6 +316,26 @@ class CategoryTable(BaseCatalogTestCase, TestPageMixin):
         product = models.Product.objects.get(id=110)
         response = self.client.get(product.category.url)
         self.assertTrue(response.context['product_images'][110])
+
+    def test_category_matrix_page(self):
+        """Matrix page should contain all second level categories."""
+        page = CustomPage.objects.get(slug='gbi')
+        response = self.client.get(page.url)
+        soup = BeautifulSoup(
+            response.content.decode('utf-8'),
+            'html.parser'
+        )
+        self.assertEqual(200, response.status_code)
+
+        second_level_db = (
+            models.Category.objects
+            .active()
+            .filter(parent__in=models.Category.objects.filter(parent=None))
+            .order_by('page__position', 'parent__name', 'name')
+        )
+        second_level_app = soup.find_all(class_='second-level-category')
+        for from_db, from_app in zip(second_level_db, second_level_app):
+            self.assertEqual(from_db.name, from_app.a.text)
 
 
 @tag('fast', 'catalog')
