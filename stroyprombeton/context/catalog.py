@@ -6,44 +6,16 @@ It's not good style. We should use objects composition instead.
 This using will becom possible after se#567 released.
 """
 
-from functools import partial, reduce
-from operator import or_
+from functools import partial
 
 from django.conf import settings
-from django.db import models
-from django.shortcuts import get_object_or_404, _get_queryset
+from django.shortcuts import get_object_or_404
 
 from catalog import context, typing
 from images.models import Image
 from pages import context as pages_context
-from search.search import QuerySetType
 from stroyprombeton import models as stb_models, request_data
-
-
-# doubled `search.search.search` here to change name to product__name.
-# Redesign search module on refarm side in more extensible way.
-def search(term: str, model_type: typing.Union[models.Model, models.Manager, QuerySetType],
-           lookups: list, ordering) -> QuerySetType:
-    """Return search results based on a given model."""
-    def _get_Q(lookup):
-        return models.Q(**{lookup: term})
-
-    term = term.strip()
-    query_set = _get_queryset(model_type)
-    query = reduce(or_, map(_get_Q, lookups))
-
-    return (
-        query_set.filter(query)
-        .annotate(
-            is_name_start_by_term=models.Case(models.When(
-                product__name__istartswith=term,
-                then=models.Value(True)),
-                default=models.Value(False),
-                output_field=models.BooleanField()
-            )
-        )
-        .order_by(models.F('is_name_start_by_term').desc(), *ordering)
-    )
+from stroyprombeton.context import options
 
 
 class TagsByOptions(context.Tags):
@@ -108,13 +80,13 @@ class Catalog(context.Context):
 
     def context(self) -> typing.ContextDict:
         tags = FilteredTags(stb_models.Tag.objects.all(), self.request_data)
-        options = FilteredOptions(self.category, tags.qs(), self.request_data)
+        options_ = options.Filtered(self.category, tags.qs(), self.request_data)
 
         # @todo #514:60m  Create PaginatedOptions class.
         #  Without code doubling between the new class
         #  and `context.products.PaginatedProducts` one.
         sliced_options = context.products.PaginatedProducts(
-            products=options.qs(),
+            products=options_.qs(),
             url=self.request_data.request.path,
             page_number=self.request_data.pagination_page_number,
             per_page=self.request_data.pagination_per_page,
@@ -124,7 +96,7 @@ class Catalog(context.Context):
             sliced_options.products, Image.objects.all()
         )
         grouped_tags = context.tags.GroupedTags(
-            tags=TagsByOptions(self.tags, options.qs())
+            tags=TagsByOptions(self.tags, options_.qs())
         )
         page = Page(self.page, tags)
         category = CategoryContext(self.request_data)
@@ -177,89 +149,7 @@ class FilteredTags(context.Tags):
         return selected_tags.qs()
 
 
-# @todo #514:30m  Improve Options contexts structure.
-#  Move all Options context classes to separated module.
-#  And create base class for them to remove code doubling.
-class FilteredOptions(context.Context):
-    def __init__(
-        self,
-        category: stb_models.Category,
-        tags: stb_models.TagQuerySet,
-        request_data_: request_data.Category
-    ):
-        self.category = category
-        self.tags = tags
-        self.request_data = request_data_
-
-    def qs(self) -> stb_models.OptionQuerySet:
-        return (
-            stb_models.Option.objects
-            .bind_fields()
-            .active()
-            .filter_descendants(self.category)
-            .tagged_or_all(self.tags)
-            .order_by(*settings.OPTIONS_ORDERING)
-        )
-
-    def context(self) -> typing.ContextDict:
-        return {
-            'positions': self.qs()
-        }
-
-
-class SearchedOptions(context.Context):
-
-    LOOKUPS = [
-        'product__name__icontains',
-        'code__icontains',
-        'mark__icontains',
-    ]
-
-    def __init__(  # Ignore CPDBear
-        self,
-        options: stb_models.OptionQuerySet,
-        request_data_: request_data.FetchProducts
-    ):
-        self.options = options
-        self.request_data = request_data_
-
-    def qs(self) -> stb_models.OptionQuerySet:
-        if self.request_data.filtered and self.request_data.term:
-            return search(
-                self.request_data.term,
-                self.options,
-                self.LOOKUPS,
-                ordering=('product__name', )
-            )
-        else:
-            return self.options
-
-    def context(self) -> typing.ContextDict:
-        return {
-            'positions': self.qs()
-        }
-
-
-class SlicedOptions(context.Context):
-    def __init__(
-        self,
-        options: stb_models.OptionQuerySet,
-        request_data_: request_data.FetchProducts
-    ):
-        self.options = options
-        self.request_data = request_data_
-
-    def qs(self) -> stb_models.OptionQuerySet:
-        offset, limit = self.request_data.offset, self.request_data.length
-        return self.options[offset:offset + limit]
-
-    def context(self) -> typing.ContextDict:
-        return {
-            'products': self.qs()
-        }
-
-
-class FetchPositions(context.Context):
+class FetchOptions(context.Context):
 
     # redefined just to type hint
     def __init__(self, request_data_: request_data.FetchProducts):
@@ -268,24 +158,20 @@ class FetchPositions(context.Context):
     def context(self) -> typing.ContextDict:
         category = CategoryContext(self.request_data)
         tags = FilteredTags(stb_models.Tag.objects.all(), self.request_data)
-        # @todo #514:30m  Pass Context objects inside every context class.
-        #  Every class in the current module.
-        #  should receive `Context` object as `options` arg,
-        #  Now they receive `OptionsQuerySet` objects.
-        options = SlicedOptions(
+        options_ = options.Sliced(
             request_data_=self.request_data,
-            options=SearchedOptions(
+            options=options.Searched(
                 request_data_=self.request_data,
-                options=FilteredOptions(
+                options=options.Filtered(
                     category.object(), tags.qs(), self.request_data
-                ).qs()
-            ).qs()
+                )
+            )
         )
         images = context.products.ProductImages(
-            options.qs(), Image.objects.all()
+            options_.qs(), Image.objects.all()
         )
 
         return {
-            'total_products': options.qs().count(),
-            **pages_context.Contexts([options, images]).context()
+            'total_products': options_.qs().count(),
+            **pages_context.Contexts([options_, images]).context()
         }

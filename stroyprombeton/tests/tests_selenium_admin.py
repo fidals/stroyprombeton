@@ -224,14 +224,18 @@ class AdminPage(AdminTestCase, HelpersMixin):
                          .find_elements_by_class_name('jstree-leaf'))
         self.assertGreater(len(node_children), 10)
 
+    # @todo #520:30m  Resurrect `test_tree_redirect_to_entity_edit_page`
     @unittest.skip
     def test_tree_redirect_to_entity_edit_page(self):
         """Test redirect to edit entity page by click on jstree's item."""
         expected_h1 = ['Change category', 'Изменить категория']
+        # items at the admin are sorted in reverse order.
+        # The last one will always be visible
+        category = Category.objects.last()
 
         # click at tree's item should redirect us to entity edit page
         self.wait.until(EC.visibility_of_element_located(
-            (By.ID, f'{self.root_category_id}_anchor')
+            (By.ID, f'{category.id}_anchor')
         )).click()
 
         self.assertIn(self.first_h1, expected_h1)

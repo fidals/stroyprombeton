@@ -229,8 +229,8 @@ class Category(BaseCatalogTestCase, TestPageMixin):
         term = '#1'
         category = models.Category.objects.get(name='Category #0 of #1')
         options = models.Option.objects.filter_descendants(category)
-        searched = context.search(  # Ignore CPDBear
-            term, options, context.SearchedOptions.LOOKUPS,
+        searched = context.options.search(  # Ignore CPDBear
+            term, options, context.options.Searched.LOOKUPS,
             ordering=('product__name', )
         )
 

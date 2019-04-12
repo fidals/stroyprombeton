@@ -18,7 +18,7 @@ from stroyprombeton.views.helpers import set_csrf_cookie
 def fetch_products(request):
     """Filter product table on Category page by Name, code, specification."""
     try:
-        context_ = stb_context.FetchPositions(
+        context_ = stb_context.FetchOptions(
             request_data.FetchProducts(request, url_kwargs={}),
         )
     # @todo #451:60m  Create middleware to for http errors. se2
