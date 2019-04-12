@@ -920,10 +920,7 @@ class CatalogTags(BaseCatalogTestCase, CategoryTestMixin):
             .filter_descendants(self.root_category)
             .exclude(tags=tag)
         )
-        # @todo #498:15m  Create Product.catalog_name property.
-        #  It'll consist of `f'{product.name} {product.mark}'` string.
-        #  Use it at the templates and in this test.
-        disappeared = {f'{d.name} {d.mark}' for d in disappeared_qs}
+        disappeared = {d.catalog_name for d in disappeared_qs}
         self.assertFalse(returned.intersection(disappeared))
 
 

@@ -11,7 +11,6 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC, ui
 
 from pages.urls import reverse_custom_page
-
 from stroyprombeton import models as stb_models, request_data
 from stroyprombeton.tests import helpers as test_helpers
 
@@ -622,10 +621,13 @@ class Search(SeleniumTestCase):
 
     def test_search_have_results(self):
         """Search results page should contain links on relevant pages."""
-        self.search()
+        self.search('#10')
 
-        self.assertTrue(self.browser.find_element_by_link_text('Category root #0'))
-        self.assertTrue(self.browser.find_element_by_link_text('Category #0 of #1'))
+        self.assertTrue(
+            self.browser.find_element_by_link_text(
+                'Product #10 of Category #1 of #42 mark #10'
+            )
+        )
 
     def test_search_results_empty(self):
         """Search results for wrong term should contain empty result set."""

@@ -36,11 +36,7 @@
             </tr>
           </thead>
           <tbody class="js-photoswipe" id="products-wrapper">
-            {% comment %}
-              @todo #560:15m  Rename `category_products.html` to `positions.html`
-               Or maybe `options`. Make this decision for both #457 task and this one.
-            {% endcomment %}
-            {% include 'catalog/category_products.html' with products=products product_images=product_images only %}
+            {% include 'catalog/options.html' with products=products product_images=product_images only %}
           </tbody>
         </table>
       </div>

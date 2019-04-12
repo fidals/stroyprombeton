@@ -212,6 +212,10 @@ class Option(catalog.models.AbstractOption):
         verbose_name=_('is popular'),
     )
 
+    @property
+    def catalog_name(self) -> str:
+        return f'{self.name} {self.mark}'
+
     def __str__(self):
         return self.mark  # Ignore CPDBear
 

@@ -31,7 +31,11 @@
         <td style="border-color:#E4E4E4;padding:10px;text-align:left">
           <a href="{% full_url 'product' position.product_id %}"
              style="text-decoration: none"><!--
-             -->{{ position.name }} {{ position.mark }}
+             {% comment %}
+              @todo #546:30m  Leaked Positions abstraction at templates.
+               Models class Position has no field catalog_name, but this template uses it.
+             {% endcomment %}
+             -->{{ position.catalog_name }}
           </a>
         </td>
         <td style="border-color:#E4E4E4;padding:10px"><!--

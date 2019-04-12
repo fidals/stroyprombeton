@@ -9,7 +9,7 @@
         Will be fixed with #565
 
         {% with image=product_images|get_item:product.id %}
-          {% include 'catalog/category_product_image.html' with image=image page=product.page only %}
+          {% include 'catalog/option_image.html' with image=image page=product.page only %}
         {% endwith %}
       {% endcomment %}
     </td>
@@ -22,7 +22,7 @@
     </td>
     <td class="table-td table-name">
       <a class="table-link" href="{{ product.url }}">
-        {{ product.name }} {{ product.mark }}
+        {{ product.catalog_name }}
       </a>
     </td>
     <td class="table-td table-price">

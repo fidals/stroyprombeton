@@ -26,11 +26,7 @@ def fetch_products(request):
     except exception.Http400 as e:
         return HttpResponseBadRequest(str(e))
 
-    return render(
-        request,
-        'catalog/category_products.html',
-        context_.context()
-    )
+    return render(request, 'catalog/options.html', context_.context())
 
 
 class CSVExportBuffer:

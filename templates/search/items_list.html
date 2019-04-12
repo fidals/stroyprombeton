@@ -4,7 +4,7 @@
   <tr class="table-tr" id="{{ item.id }}">
     <td class="table-td table-type">{{ item|verbose_type }}</td>
     <td class="table-td table-photo text-center">
-      {% include 'catalog/category_product_image.html' with image=item.page.main_image only %}
+      {% include 'catalog/option_image.html' with image=item.page.main_image only %}
     </td>
     <td class="table-td table-code">
       {% if item.code %}
@@ -15,7 +15,7 @@
     </td>
     <td class="table-td table-name">
       <a class="table-link" href="{{ item.get_absolute_url }}">
-        {{ item.name }} {{ item.mark }} {{ item.specification }}
+        {{ item.catalog_name }}
       </a>
     </td>
     {% if item|hasattr_:'price' %}

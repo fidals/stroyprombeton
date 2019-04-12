@@ -25,7 +25,7 @@
     <offers>
       {% for option in options %}
         <offer id="{{ option.product.id }}" available="{{ option.in_stock|yesno:'true,false' }}">
-          <name>{{ option.mark }} - {{ option.product.name }} {{ option.specification }}</name>
+          <name>{{ option.mark }} - {{ option.product.name }}</name>
           <description>
             Купить {{ option.product.name }} {{ option.specification }}. Доставка по Москве, МО, Санкт-Петербург и другим
             регионам России. Гарантия качества от завода жби «СТК Модуль».
