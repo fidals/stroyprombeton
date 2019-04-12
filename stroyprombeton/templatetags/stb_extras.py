@@ -11,6 +11,11 @@ from stroyprombeton.models import Category, Tag
 register = template.Library()
 
 
+# don't put it in the settings,
+# because it's temporary UI decision
+TOP_MENU_CATEGORIES_COUNT = 7
+
+
 @register.inclusion_tag('tags/product_values.html')
 def show_field_if_exist(value, title, link=None):
     return {
@@ -37,10 +42,14 @@ def format_price(price):
 
 
 @register.simple_tag
-def get_root_categories():
+def get_top_menu_categories():
     return (
-        Category.objects.root_nodes().active()
+        Category.objects
+        .bind_fields()
+        .active()
+        .filter(level=1)
         .order_by('page__position', 'name')
+        [:TOP_MENU_CATEGORIES_COUNT]
     )
 
 

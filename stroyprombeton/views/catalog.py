@@ -79,13 +79,7 @@ class CategoryMatrix(ListView):
     def get_queryset(self):
         return (
             models.Category.objects
-            # @todo #567:30m  Create CategoryQS.bind_fields() method at the refarm side.
-            #  Three code rows below should move to the new method.
-            #  `catalog.models.CategoryQuerySet`
-            #  is the proper class name for the new method.
-            .select_related('page')
-            .select_related('parent')
-            .prefetch_related('children')
+            .bind_fields()
             .active()
             .filter(parent=None)
             .order_by('page__position', 'name')

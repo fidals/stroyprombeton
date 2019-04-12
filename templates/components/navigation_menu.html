@@ -1,12 +1,18 @@
 {% load pages_extras %}
 {% load stb_extras %}
-{% get_root_categories as root_categories %}
+{% get_top_menu_categories as categories %}
 
 <li class="nav-item">
   <a class="nav-link" href="{% custom_url 'gbi' %}">Каталог</a>
 
   <ul class="nav-subnav js-nav-subnav">
-    {% for item in root_categories %}
+    <li class="nav-subnav-item">
+      <a class="nav-subnav-item-link" href="{% custom_url 'gbi' %}">
+        <b><u>весь каталог</u></b>
+      </a>
+    </li>
+    <li>&nbsp</li>
+    {% for item in categories %}
       <li class="nav-subnav-item">
         <a class="nav-subnav-item-link" href="{{ item.url }}">
           {{ item.name }}

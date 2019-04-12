@@ -22,6 +22,11 @@ from stroyprombeton import models as stb_models, tests as stb_tests
 
 TEST_DB = 'test_stb'
 
+# @todo #581:60m  Move empty roots to empty second level.
+#  At fixtures remove empty roots,
+#  but create 100 empty second level categories.
+#  We'll not have many root categories at prod DB.
+
 # use empty root categories to feel how UI looks like.
 REAL_ROOTS_COUNT = 2
 EMPTY_ROOTS_COUNT = 38

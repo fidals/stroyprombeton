@@ -1,6 +1,6 @@
 {% load pages_extras %}
 {% load stb_extras %}
-{% get_root_categories as root_categories %}
+{% get_top_menu_categories as categories %}
 
 <nav id="mobile-menu">
   <ul>
@@ -15,7 +15,13 @@
     <li class="mobile-menu-item">
       <span>Категории</span>
       <ul>
-        {% for item in root_categories %}
+        <li class="nav-subnav-item">
+          <a class="nav-subnav-item-link" href="{% custom_url 'gbi' %}">
+            <b><u>весь каталог</u></b>
+          </a>
+        </li>
+        <li>&nbsp</li>
+        {% for item in categories %}
           <li class="mobile-menu-item">
             <a href="{{ item.url }}">
               {{ item.name }}
