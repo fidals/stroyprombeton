@@ -995,6 +995,22 @@ class Series(BaseCatalogTestCase):
         self.assertIn(active, response.context['products'])
         self.assertNotIn(inactive, response.context['products'])
 
+    def test_all_series_matrix_page(self):
+        response = self.client.get(reverse('series_matrix'))
+        self.assertEqual(200, response.status_code)
+        series = (
+            models.Series.objects
+            .filter(page__is_active=True)
+            .order_by('name')
+        )
+        self.assertEqual(series.count(), len(response.context['series']))
+        self.assertTrue(
+            all(
+                from_db == from_app
+                for from_db, from_app in zip(series, response.context['series'])
+            )
+        )
+
     # @todo #570:30m  Implement product images on series page.
     #  Take this feature from categories.
     #  Depends from #565 - images repairing.

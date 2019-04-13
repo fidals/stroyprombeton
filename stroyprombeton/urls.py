@@ -30,6 +30,7 @@ catalog_urls = [
         views.ProductPage.as_view(), name='product'),
     url(r'^categories/csv/$',
         views.categories_csv_export, name='categories-export'),
+    url(r'^series/$', views.series_matrix, name='series_matrix'),
     url(r'^series/(?P<series_slug>[\w_-]+)/$',
         views.series, name='series'),
 ]

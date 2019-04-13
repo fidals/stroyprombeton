@@ -1,0 +1,20 @@
+{% extends 'layout/inner_page.html' %}
+
+{% block content %}
+  {% include 'components/page_h1.html' with page=page only %}
+
+  <div class="container container-fluid">
+    <div class="row">
+      {% comment %}
+        @todo #558:30m  Slice series list into four columns.
+      {% endcomment %}
+      <div class="col-md">
+        <ul>
+          {% for item in series %}
+            <li>{{ item.name }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+    </div>
+  </div>
+{% endblock %}

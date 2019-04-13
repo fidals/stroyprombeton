@@ -187,6 +187,21 @@ class ProductPDF(PDFTemplateView, DetailView):
         }
 
 
+# @todo #558:30m  Create custom page for series matrix page.
+#  It will provide page and seo features: h1, content, metadata and so on.
+def series_matrix(request):
+    series = (
+        models.Series.objects
+        .filter(page__is_active=True)
+        .order_by('name')
+    )
+    return render(
+        request,
+        'catalog/series_matrix.html',
+        {'series': series}
+    )
+
+
 def series(request, series_slug):
     series = get_object_or_404(models.Series.objects, slug=series_slug)
 
