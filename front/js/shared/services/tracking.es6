@@ -10,8 +10,10 @@
   //  Test all events, that perform tracking operations.
 
   window.dataLayer = window.dataLayer || [];
-  const loadedGa = loadGaTransport('gtm_loaded');  // Ignore ESLintBear (no-undef)
   const yaTracker = new YATracker(window.dataLayer, 'RUB');  // Ignore ESLintBear (no-undef)
+
+  // load google analytics scripts and enable ecommerce plugin
+  const loadedGa = loadGaTransport('gtm_loaded');  // Ignore ESLintBear (no-undef)
   loadedGa('require', 'ecommerce');
   const gaTracker = new GATracker(loadedGa, 'ecommerce');  // Ignore ESLintBear (no-undef)
 
