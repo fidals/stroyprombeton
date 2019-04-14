@@ -193,3 +193,14 @@ class AddProductForm(forms.ModelForm):
                     'step': '1.00'
                 })
         }
+
+
+class AdminWidgetsForm(forms.ModelForm):
+    class Meta:
+        widgets = {
+            'description': forms.TextInput,
+            'seo_text': forms.TextInput,
+            'specification': forms.TextInput,
+            'title': forms.TextInput,
+        }
+        fields = '__all__'

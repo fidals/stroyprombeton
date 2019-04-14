@@ -12,6 +12,7 @@
   window.dataLayer = window.dataLayer || [];
   const loadedGa = loadGaTransport('gtm_loaded');  // Ignore ESLintBear (no-undef)
   const yaTracker = new YATracker(window.dataLayer, 'RUB');  // Ignore ESLintBear (no-undef)
+  loadedGa('require', 'ecommerce');
   const gaTracker = new GATracker(loadedGa, 'ecommerce');  // Ignore ESLintBear (no-undef)
 
   const init = () => {

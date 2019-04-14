@@ -7,10 +7,10 @@ from django.views.decorators.cache import cache_page
 from pages.urls import custom_page_url
 from pages.views import RobotsView, SitemapPage
 from stroyprombeton import sitemaps, views
-from stroyprombeton.admin import stb_admin_site
+from stroyprombeton.admin import admin_site
 
 admin_urls = [
-    url(r'^', stb_admin_site.urls),
+    url(r'^', admin_site.urls),
     url(r'^autocomplete/$', views.AdminAutocomplete.as_view(), name='admin_autocomplete'),
     url(r'^get-tree-items/$', views.Tree.as_view()),
     url(r'^redirect-to-product/$', views.RedirectToProduct.as_view()),
