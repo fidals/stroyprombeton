@@ -337,6 +337,17 @@ class Category(BaseCatalogTestCase, TestPageMixin):
         for from_db, from_app in zip(second_level_db, second_level_app):
             self.assertEqual(from_db.name, from_app.a.text)
 
+    def test_series_list(self):
+        """Category should contain it's series list with links."""
+        series = models.Series.objects.first()
+        category = series.options.first().product.category
+        soup = self.get_category_soup(category)
+        series_app = soup.find_all(class_='series-filter-link')
+        self.assertEqual(
+            [s.name for s in category.get_series()],
+            [s.text.strip() for s in series_app]
+        )
+
 
 @tag('fast', 'catalog')
 class CatalogPagination(BaseCatalogTestCase):
@@ -453,6 +464,13 @@ class Product_(TestCase, TestPageMixin):
         product = models.Product.objects.create(**self.data)
         self.response = self.client.get(f'/gbi/products/{product.id}/')
 
+    def get_product_soup(self, product: models.Product) -> BeautifulSoup:
+        page = self.client.get(product.url)
+        return BeautifulSoup(
+            page.content.decode('utf-8'),
+            'html.parser'
+        )
+
     @property
     def product(self):
         return self.response.context['product']
@@ -482,6 +500,15 @@ class Product_(TestCase, TestPageMixin):
         parsed_tags = table.find_all('tr')[1].find_all(class_='option-td')
         for tag_, parsed in zip(tags, parsed_tags):
             self.assertEqual(tag_.name, parsed.string.strip())
+
+    def test_series_label(self):
+        series = models.Series.objects.first()
+        product = series.options.first().product
+        soup = self.get_product_soup(product)
+        link = soup.find(class_='product-serial-val')
+
+        self.assertEqual(series.name, link.text.strip())
+        self.assertEqual(series.url, link['href'])
 
 
 class AbstractFormViewTest:

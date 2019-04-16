@@ -11,7 +11,7 @@
           <div class="search">
             <input class="search-field" id="search-filter" type="text"
                    data-category="{{ category.id }}"
-                   placeholder="Поиск (по названию, артиклу, серии)">
+                   placeholder="Поиск (по названию, артикулу, серии)">
           </div>
         </div>
       </div>
@@ -33,6 +33,27 @@
                 <li class="category-filter-item">
                   <a class="category-filter-link" href="{{ child.url }}">
                     {{ child }}
+                  </a>
+                </li>
+              {% endfor %}
+            </ul>
+          </div>
+        {% endif %}
+        {% comment %}
+          @todo #596:60m  Rename "category-filter" props family.
+           Series use them too.
+           Use a new name like "items-filter" or "catalog-filter".
+           Don't forget to check names in depth.
+           For example `$m-category-filter-margin-right` should be renamed too.
+        {% endcomment %}
+        {% if category.get_series %}
+          <div class="category-filter">
+            <div class="category-filter-title">Серии</div>
+            <ul class="category-filter-list">
+              {% for series_one in category.get_series %}
+                <li class="category-filter-item">
+                  <a class="series-filter-link category-filter-link" href="{{ series_one.url }}">
+                    {{ series_one.name }}
                   </a>
                 </li>
               {% endfor %}

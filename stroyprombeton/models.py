@@ -47,6 +47,33 @@ class Category(catalog.models.AbstractCategory, pages.models.PageMixin):
         """Return url for model."""
         return reverse('category', args=(self.id,))
 
+    def get_series(self) -> models.QuerySet:
+        return (
+            Series.objects
+            .prefetch_related('options')
+            .filter(
+                options__in=models.Subquery(
+                    Option.objects
+                    .select_related('product')
+                    .select_related('product__category')
+                    .filter(
+                        product__category__in=(
+                            # @todo #597:30m  Check mptt's `get_descendants` default optimization.
+                            #  Check if the method already contains
+                            #  relevant prefetch/select_related for parent, children fields.
+                            Category.objects
+                            .select_related('parent')
+                            .prefetch_related('children')
+                            .filter(id=self.id)
+                            .get_descendants(include_self=True)
+                            .active()
+                        )
+                    ).values('id')
+                )
+            ).distinct()
+            .order_by('name')
+        )
+
 
 # @todo #510:60m  Create Series navigation.
 #  See the parent's task body for details about navigation.
@@ -77,7 +104,7 @@ class Series(pages.models.PageMixin):
 
     def get_absolute_url(self):
         """Url path to the related page."""
-        return reverse('series', args=(self.id,))
+        return reverse('series', args=(self.slug,))
 
     slug = models.SlugField(
         blank=False, unique=True, max_length=SLUG_MAX_LENGTH,
@@ -220,6 +247,15 @@ class Option(catalog.models.AbstractOption):
         return self.mark  # Ignore CPDBear
 
 
+class ProductQuerySet(catalog.models.ProductQuerySet):
+
+    # @todo #597:60m  Implement `ProductQuerySet.get_series` method.
+    #  Then reuse it at existing `Product.get_series` method.
+    #  Use this ProductQuerySet class as Product queryset.
+    def get_series(self):
+        pass
+
+
 # not inherited from `catalog.models.AbstractProduct`, because
 # AbstractProduct's set of fields is shared between Product and Option models.
 class Product(catalog.models.AbstractProduct, pages.models.PageMixin):
@@ -262,6 +298,18 @@ class Product(catalog.models.AbstractProduct, pages.models.PageMixin):
             .prefetch_related('category')
             .select_related('page')[:offset]
         )
+
+    def get_series(self) -> models.QuerySet:
+        """
+        Use it only for a single product.
+
+        It'll produce N queries for a batch QuerySet with N products.
+        Use ProductQS.
+        """
+        product = Product.objects.prefetch_related('options').get(id=self.id)
+        return Series.objects.filter(options__in=product.options.active())
+
+    # @todo #597:30m  Remove Product.price field
 
     # we'll remove this field
     # after integration admin to Options feature at #433

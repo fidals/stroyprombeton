@@ -18,14 +18,14 @@
           <span class="product-serial-val">{{ product.code }}</span>
         {% endif %}
 
-        {% if product.specification %}
+        {% for series_one in product.get_series %}
           <span class="product-serial">
             <span class="product-serial-title">Серия</span>
-            <a href="{{ product.category.url }}" class="product-serial-val link-on-top-level">
-              {{ product.specification }}
+            <a href="{{ series_one.url }}" class="product-serial-val link-on-top-level">
+              {{ series_one.name }}
             </a>
           </span>
-        {% endif %}
+        {% endfor %}
 
         {% if product.mark %}
           <span class="product-serial-title">Марка</span>
