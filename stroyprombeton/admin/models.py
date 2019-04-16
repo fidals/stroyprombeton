@@ -70,10 +70,7 @@ class OptionAdmin(mixins.PermissionsControl):
     list_filter = [
         # @todo #433:30m Determine relevance of CharacteristicsEqualityFilter.
         #  Either drop in case of obsoleteness or integrate with new Option model.
-
-        # @todo #433:30m Integrate PriceRange with new Option model.
-
-        # filters.PriceRange,
+        rf_filters.PriceRange,
         # CharacteristicsEqualityFilter,
     ]
     list_display = ['name', 'id', 'code', 'mark', 'price', 'in_stock', 'is_popular']
