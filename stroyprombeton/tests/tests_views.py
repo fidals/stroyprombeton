@@ -14,6 +14,7 @@ from operator import attrgetter
 
 from bs4 import BeautifulSoup
 from django.conf import settings
+from django.db.models import Count
 from django.http import HttpResponse, QueryDict
 from django.test import override_settings, TestCase, tag
 from django.urls import reverse
@@ -966,7 +967,7 @@ class Series(BaseCatalogTestCase):
         return reverse('series', kwargs={'series_slug': series.slug})
 
     def get_series_page(self, *args, **kwargs):
-        return self.client.get(self.get_series_url(*args, **kwargs))
+        return self.client.get(self.get_series_url(*args, **kwargs))  # Ignore CPDBear
 
     def get_series_soup(self, *args, **kwargs) -> BeautifulSoup:
         series_page = self.get_series_page(*args, **kwargs)
@@ -1048,3 +1049,57 @@ class Series(BaseCatalogTestCase):
         product = models.Product.objects.get(id=110)
         response = self.client.get(product.series.url)
         self.assertTrue(response.context['product_images'][110])
+
+
+@tag('fast', 'catalog')
+class SeriesByCategory(BaseCatalogTestCase):
+    fixtures = ['dump.json']
+
+    @staticmethod
+    def get_series_url(series: models.Series, category: models.Category):
+        return reverse(
+            'series_by_category', kwargs={
+                'series_slug': series.slug,
+                'category_id': category.id
+            }
+        )
+
+    def get_series_page(self, *args, **kwargs):
+        print('get series page')
+        return self.client.get(self.get_series_url(*args, **kwargs))
+
+    def get_series_soup(self, *args, **kwargs) -> BeautifulSoup:
+        series_page = self.get_series_page(*args, **kwargs)
+        return BeautifulSoup(
+            series_page.content.decode('utf-8'),
+            'html.parser'
+        )
+
+    def test_filter_by_category(self):
+        """
+        Series+category page should contain only "right" options.
+
+        Right options belongs to the series and to the category together.
+        """
+        series = models.Series.objects.first()
+        product = series.options.first().product
+        category_to_exclude = product.category
+        category_to_include = (
+            models.Category.objects
+            .exclude(id=category_to_exclude.id)
+            .annotate(count=Count('products'))
+            .filter(count__gt=0)
+            .first()
+        )
+        option_to_include = category_to_include.products.first().options.first()
+        option_to_include.series = series
+        option_to_include.save()
+        self.assertEqual(1, series.options.filter(product__category=category_to_include).count())
+
+        soup = self.get_series_soup(series, category_to_include)
+        options_app = soup.find_all(class_='table-link')
+        self.assertEqual(1, len(options_app))
+        self.assertEqual(
+            option_to_include.catalog_name,
+            options_app[0].text.strip()
+        )

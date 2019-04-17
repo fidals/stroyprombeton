@@ -15,10 +15,6 @@
           </div>
         </div>
       </div>
-
-      <div class="row text-right">
-        <div class="col-xs-12 col-lg-11 public-offer">Не является публичной офертой.</div>
-      </div>
     </div>
   </section>
 
@@ -52,7 +48,13 @@
             <ul class="category-filter-list">
               {% for series_one in category.get_series %}
                 <li class="category-filter-item">
-                  <a class="series-filter-link category-filter-link" href="{{ series_one.url }}">
+                  {% comment %}
+                    @todo #610:30m  Reverse series-category url instead of hardcoding it.
+                     See the `a.href` property below.
+                     Reverse the url at the views or at the templates.
+                  {% endcomment %}
+                  <a class="series-filter-link category-filter-link"
+                     href="/gbi/series/{{ series_one.slug }}/category/{{ category.id }}">
                     {{ series_one.name }}
                   </a>
                 </li>

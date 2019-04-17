@@ -33,6 +33,8 @@ catalog_urls = [
     url(r'^series/$', views.series_matrix, name='series_matrix'),
     url(r'^series/(?P<series_slug>[\w_-]+)/$',
         views.series, name='series'),
+    url(r'^series/(?P<series_slug>[\w_-]+)/category/(?P<category_id>[0-9]+)/$',
+        views.series_by_category, name='series_by_category'),
 ]
 
 custom_pages = [

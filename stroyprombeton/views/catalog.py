@@ -208,7 +208,7 @@ def series_matrix(request):
     )
 
 
-def series(request, series_slug):
+def series(request, series_slug: str):
     series = get_object_or_404(models.Series.objects, slug=series_slug)
 
     return render(
@@ -217,5 +217,28 @@ def series(request, series_slug):
         {
             'products': series.options.active(),
             'page': series.page,
+        }
+    )
+
+
+def series_by_category(request, series_slug: str, category_id: int):
+    series = get_object_or_404(models.Series.objects, slug=series_slug)
+    category = get_object_or_404(models.Category.objects, id=category_id)
+    # @todo #610:30m  Return 404 if options list is empty not found.
+    options = (
+        models.Option.objects
+        .bind_fields()
+        .filter(series=series)
+        .filter_descendants(category)
+        .active()
+    )
+
+    return render(
+        request,
+        'catalog/series.html',
+        {
+            'products': options,
+            'page': series.page,
+            'category': category,
         }
     )

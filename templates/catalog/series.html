@@ -14,16 +14,32 @@
           </div>
         </div>
       </div>
-
-      <div class="row text-right">
-        <div class="col-xs-12 col-lg-11 public-offer">Не является публичной офертой.</div>
-      </div>
     </div>
   </section>
 
   <div class="container container-fluid">
+    {% if category %}
+      <div class="row">
+        <div class="col-md-9">
+          <p>
+            Изделия отфильтрованы по секции
+            <a href="{{ category.url }}">{{ category.name }}</a>.
+          </p>
+          <p>
+            <a href="{{ page.url }}">Полный список изделий</a> этой серии.
+          </p>
+        </div>
+      </div>
+      {% comment %}
+        @todo #610:15m  Use css margin between blocks on series page.
+         Instead of set of "br" html tags.
+      {% endcomment %}
+      <div class="row"><div class="col-md-9"><br><br><br></div></div>
+    {% endif %}
+
     <div class="row">
       <div class="col-md-9 product-list">
+        <div class="public-offer">Не является публичной офертой.</div>
         <table class="table">
           <thead>
             <tr>
