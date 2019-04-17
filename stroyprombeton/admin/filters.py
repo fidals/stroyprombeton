@@ -25,19 +25,23 @@ class ParentFilter(admin.SimpleListFilter):
         return queryset.filter(parent__slug=self.value())
 
 
-class CharacteristicsEqualityFilter(admin.SimpleListFilter):
+class DuplicateFilter(admin.SimpleListFilter):
 
-    title = _('characteristics equality')
-    parameter_name = 'equality'
+    title = _('duplicates')
+    parameter_name = 'duplicates'
 
     def lookups(self, request, model_admin):
         return (
-            ('h1', _('Only same h1')),
-            ('all', _('Same h1, characteristics, price'))
+            ('markh1', _('Mark and h1')),
+            ('all', _('Mark, code, price, series and etc.'))
+            # @todo #591:60m Implement duplicates filter by tags, mark and series.
+
+            # ('params', _('Mark, series and parameters')),
         )
 
     def queryset(self, request, queryset):
-        if not self.value():
+        lookup = self.value()
+        if not lookup:
             return
 
         def find_duplicates_by_field(queryset, field_name):
@@ -51,23 +55,21 @@ class CharacteristicsEqualityFilter(admin.SimpleListFilter):
                 .values_list('ids', flat=True)
             ))
 
-        if self.value() == 'h1':
+        if lookup == 'markh1':
             ids = [
                 find_duplicates_by_field(queryset, field_name)
-                for field_name in ['name', 'stroyprombeton_product__mark']
+                for field_name in ['product__page__name', 'mark']
+
             ]
             return queryset.filter(id__in=set.intersection(*ids))
 
-        if self.value() == 'all':
+        if lookup == 'all':
             ids = [
                 find_duplicates_by_field(queryset, field_name)
                 for field_name in [
-                    'stroyprombeton_product__price', 'stroyprombeton_product__code',
-                    'stroyprombeton_product__mark', 'stroyprombeton_product__specification',
-                    'stroyprombeton_product__length', 'stroyprombeton_product__width',
-                    'stroyprombeton_product__height', 'stroyprombeton_product__weight',
-                    'stroyprombeton_product__volume', 'stroyprombeton_product__diameter_out',
-                    'stroyprombeton_product__diameter_in', 'description', 'title', 'name', 'h1'
+                    'price', 'code', 'mark', 'product__page__description',
+                    'product__page__title', 'product__page__name',
+                    'product__page__h1',
                 ]
             ]
             return queryset.filter(id__in=set.intersection(*ids))
