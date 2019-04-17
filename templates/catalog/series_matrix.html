@@ -11,7 +11,7 @@
       <div class="col-md">
         <ul>
           {% for item in series %}
-            <li>{{ item.name }}</li>
+            <li><a href="{{ item.url }}">{{ item.name }}</a></li>
           {% endfor %}
         </ul>
       </div>

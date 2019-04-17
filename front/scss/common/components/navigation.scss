@@ -15,10 +15,6 @@
     background-color: $c-nav-bg;
     position: relative;
     z-index: 2;
-
-    @include media($md) {
-      height: 66px;
-    }
   }
 
   &-logo {
@@ -165,11 +161,11 @@
   border-radius: 2px;
   box-shadow: $sh-modal;
   display: none;
-  left: 0;
   padding: 14px;
   position: absolute;
   top: 42px;
   width: 360px;
+  margin-left: 12px;
 
   .nav-item:hover & {
     display: block;
