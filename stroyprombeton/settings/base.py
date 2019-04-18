@@ -342,6 +342,10 @@ CUSTOM_PAGES = {
         'slug': 'robots.txt',
         'content': get_robots_content(),
     },
+    'series': {
+        'slug': 'series',
+        'name': 'Серии',
+    },
 }
 
 # region-coordinates mapping

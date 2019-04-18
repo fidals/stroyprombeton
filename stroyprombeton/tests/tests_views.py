@@ -1024,7 +1024,8 @@ class Series(BaseCatalogTestCase):
         self.assertNotIn(inactive, response.context['products'])
 
     def test_all_series_matrix_page(self):
-        response = self.client.get(reverse('series_matrix'))
+        page = CustomPage.objects.get(slug='series')
+        response = self.client.get(page.url)
         self.assertEqual(200, response.status_code)
         series = (
             models.Series.objects

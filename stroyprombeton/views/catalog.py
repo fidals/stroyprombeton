@@ -187,24 +187,19 @@ class ProductPDF(PDFTemplateView, DetailView):
         }
 
 
-# @todo #596:120m  Filter options by category on Series page.
-#  Category page contains links on series pages.
-#  This link should look like `/series/<series_slug>/category/<category_id>`.
-#  And lead to the Series page with options filtered by this category.
-#  You should propose some UI decision to enable/disable this filter.
-
-# @todo #558:30m  Create custom page for series matrix page.
-#  It will provide page and seo features: h1, content, metadata and so on.
-def series_matrix(request):
-    series = (
-        models.Series.objects
-        .filter(page__is_active=True)
-        .order_by('name')
-    )
+def series_matrix(request, page='series'):
+    page = CustomPage.objects.get(slug=page)
     return render(
         request,
         'catalog/series_matrix.html',
-        {'series': series}
+        {
+            'page': page,
+            'series': (
+                models.Series.objects
+                .filter(page__is_active=True)
+                .order_by('name')
+            ),
+        }
     )
 
 
