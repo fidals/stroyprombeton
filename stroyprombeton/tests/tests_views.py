@@ -1061,6 +1061,16 @@ class Series(BaseCatalogTestCase):
             )
         )
 
+    def test_emtpy_404(self):
+        """Series with not active options should return response 404."""
+        series = (
+            models.Series.objects
+            .annotate(count=Count('options'))
+            .filter(count=0)
+        ).first()
+        response = self.get_series_page(series)
+        self.assertEqual(404, response.status_code)
+
     # @todo #570:30m  Implement product images on series page.
     #  Take this feature from categories.
     #  Depends from #565 - images repairing.
