@@ -97,54 +97,6 @@ class TestPageMixin:
 
 
 @tag('fast', 'catalog')
-class CategoryTile(TestCase, TestPageMixin):
-    """
-    Test for CategoryPage view.
-
-    With condition, that using CategoryTile template.
-    """
-
-    def setUp(self):
-        """Create root and child category."""
-        # @todo #142:30m Move tests custom data to test_db.
-        #  Use this command `stroyprombeton/management/commands/test_db.py`
-        self.data = {
-            'name': 'Test root category',
-            'page': ModelPage.objects.create(
-                content='Козырьки устанавливают над входами зданий.',
-                name='Козырьки',
-            ),
-        }
-
-        self.root_category = models.Category.objects.create(**self.data)
-
-        self.child_data = {
-            'name': 'Test child category',
-            'parent': self.root_category,
-            'page': ModelPage.objects.create(
-                content='Козырьки применяют при строительстве зданий.',
-                name='Козырьки входов, плиты парапетные.',
-            )
-        }
-
-        models.Category.objects.create(**self.child_data)
-
-        self.response = self.client.get(f'/gbi/categories/{self.root_category.id}/')
-
-    def test_children_categories_quantity(self):
-        self.assertEqual(
-            len(self.response.context['children']),
-            1
-        )
-
-    def test_children_category_name(self):
-        self.assertEqual(
-            self.response.context['children'][0].name,
-            self.child_data['name']
-        )
-
-
-@tag('fast', 'catalog')
 class Category(BaseCatalogTestCase, TestPageMixin):
     """
     Test for CategoryPage view.
