@@ -619,11 +619,32 @@ class Search(TestCase):
             get_params=get_params.urlencode()
         )
 
+    def get_results_page(self, *args, **kwargs):
+        return self.client.get(self.get_search_url(*args, **kwargs))
+
+    def get_results_soup(self, *args, **kwargs):
+        page = self.get_results_page(*args, **kwargs)
+        return BeautifulSoup(
+            page.content.decode('utf-8'),
+            'html.parser'
+        )
+
     def test_result_page_contains_query(self):
         """Search results page should contain it's search query."""
         url = self.get_search_url(term=self.WRONG_TERM)
         response = self.client.get(url)
         self.assertNotContains(response, self.WRONG_TERM)
+
+    # @todo #622:60m  Fix search engine logic.
+    #  If query fully equals some product.name,
+    #  search results should return this product as the first results entry.
+    @unittest.expectedFailure
+    def test_search_by_product_name(self):
+        """Search results page should contain product names."""
+        product = models.Product.objects.first()
+        soup = self.get_results_soup(term=product.name)
+        first = soup.find(class_='table-link')
+        self.assertEqual(product.name, first.text.strip())
 
     def test_search_by_id(self):
         """Search view should return redirect on model page, if id was received as term."""
