@@ -213,9 +213,7 @@ def series(request, series_slug: str):
     #  - Use view context system. Category view does it too.
     #  Those solutions don't except each other.
     if not options:
-        return http.HttpResponseNotFound(
-            '<h1>В секции нет изделий</h1'
-        )
+        raise http.Http404('<h1>В секции нет изделий</h1')
     return render(
         request,
         'catalog/series.html',
@@ -237,9 +235,7 @@ def series_by_category(request, series_slug: str, category_id: int):
         .active()
     )
     if not options:
-        return http.HttpResponseNotFound(
-            '<h1>В секции нет изделий</h1'
-        )
+        raise http.Http404('<h1>В секции нет изделий</h1')
 
     return render(
         request,

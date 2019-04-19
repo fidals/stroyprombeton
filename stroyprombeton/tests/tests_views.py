@@ -349,6 +349,12 @@ class Category(BaseCatalogTestCase, TestPageMixin):
             [s.text.strip() for s in series_app]
         )
 
+    def test_empty_products_404(self):
+        """Category with no products should return 404 response."""
+        category = models.Category.objects.get(name='Category root empty #17')
+        response = self.get_category_page(category)
+        self.assertEqual(404, response.status_code)
+
 
 @tag('fast', 'catalog')
 class CatalogPagination(BaseCatalogTestCase):
