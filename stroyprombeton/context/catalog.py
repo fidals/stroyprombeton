@@ -8,6 +8,7 @@ This using will becom possible after se#567 released.
 
 from functools import partial
 
+from django import http
 from django.conf import settings
 from django.shortcuts import get_object_or_404
 
@@ -81,6 +82,9 @@ class Catalog(context.Context):
     def context(self) -> typing.ContextDict:
         tags = FilteredTags(stb_models.Tag.objects.all(), self.request_data)
         options_ = options.Filtered(self.category, tags.qs(), self.request_data)
+
+        if not options_.qs():
+            raise http.Http404('<h1>В категории нет изделий</h1')
 
         # @todo #514:60m  Create PaginatedOptions class.
         #  Without code doubling between the new class

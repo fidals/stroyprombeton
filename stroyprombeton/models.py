@@ -39,6 +39,10 @@ class Category(catalog.models.AbstractCategory, pages.models.PageMixin):
         verbose_name=_('specification'),
     )
 
+    @property
+    def catalog_name(self):
+        return self.name
+
     @classmethod
     def get_default_parent(cls):
         return pages.models.CustomPage.objects.filter(slug='gbi').first()

@@ -1,7 +1,7 @@
 from csv import writer as CSVWriter
 
+from django import http
 from django.conf import settings
-from django.http import HttpResponseBadRequest, StreamingHttpResponse
 from django.shortcuts import get_object_or_404, render
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
@@ -24,7 +24,7 @@ def fetch_products(request):
     # @todo #451:60m  Create middleware to for http errors. se2
     #  Middleware should transform http exceptions to http errors errors.
     except exception.Http400 as e:
-        return HttpResponseBadRequest(str(e))
+        return http.HttpResponseBadRequest(str(e))
 
     return render(request, 'catalog/options.html', context_.context())
 
@@ -57,7 +57,7 @@ def categories_csv_export(request, filename='categories.csv', breadcrumbs_delimi
         models.CategoryPage.objects.active()
     )
 
-    response = StreamingHttpResponse(
+    response = http.StreamingHttpResponse(
         (writer.writerow(c) for c in categories),
         content_type="text/csv",
     )
@@ -205,12 +205,20 @@ def series_matrix(request, page='series'):
 
 def series(request, series_slug: str):
     series = get_object_or_404(models.Series.objects, slug=series_slug)
-
+    options = series.options.active()
+    # @todo #619:60m  Prevent code doubling in series views.
+    #  Now series and series_matrix have doubled code.
+    #  Possible solutions:
+    #  - Use only one view for series and series+category. As category page does
+    #  - Use view context system. Category view does it too.
+    #  Those solutions don't except each other.
+    if not options:
+        raise http.Http404('<h1>В секции нет изделий</h1')
     return render(
         request,
         'catalog/series.html',
         {
-            'products': series.options.active(),
+            'products': options,
             'page': series.page,
         }
     )
@@ -219,7 +227,6 @@ def series(request, series_slug: str):
 def series_by_category(request, series_slug: str, category_id: int):
     series = get_object_or_404(models.Series.objects, slug=series_slug)
     category = get_object_or_404(models.Category.objects, id=category_id)
-    # @todo #610:30m  Return 404 if options list is empty not found.
     options = (
         models.Option.objects
         .bind_fields()
@@ -227,6 +234,8 @@ def series_by_category(request, series_slug: str, category_id: int):
         .filter_descendants(category)
         .active()
     )
+    if not options:
+        raise http.Http404('<h1>В секции нет изделий</h1')
 
     return render(
         request,

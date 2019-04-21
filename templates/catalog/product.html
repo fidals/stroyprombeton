@@ -55,6 +55,7 @@
         <div class="option-order row">
           <table class="options-table table">
             <tr>
+              <th>Марка</th>
               {% for group in tag_groups %}
                 <th>{{ group.name }}</th>
               {% endfor %}
@@ -66,6 +67,7 @@
             </tr>
             {% for option in product.options.all %}
               <tr>
+                <td class="option-td">{{ option.mark }}</td>
                 {% for group in tag_groups %}
                   <td class="option-td">
                     {% get_tag_name group option %}

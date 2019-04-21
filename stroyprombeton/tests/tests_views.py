@@ -97,54 +97,6 @@ class TestPageMixin:
 
 
 @tag('fast', 'catalog')
-class CategoryTile(TestCase, TestPageMixin):
-    """
-    Test for CategoryPage view.
-
-    With condition, that using CategoryTile template.
-    """
-
-    def setUp(self):
-        """Create root and child category."""
-        # @todo #142:30m Move tests custom data to test_db.
-        #  Use this command `stroyprombeton/management/commands/test_db.py`
-        self.data = {
-            'name': 'Test root category',
-            'page': ModelPage.objects.create(
-                content='Козырьки устанавливают над входами зданий.',
-                name='Козырьки',
-            ),
-        }
-
-        self.root_category = models.Category.objects.create(**self.data)
-
-        self.child_data = {
-            'name': 'Test child category',
-            'parent': self.root_category,
-            'page': ModelPage.objects.create(
-                content='Козырьки применяют при строительстве зданий.',
-                name='Козырьки входов, плиты парапетные.',
-            )
-        }
-
-        models.Category.objects.create(**self.child_data)
-
-        self.response = self.client.get(f'/gbi/categories/{self.root_category.id}/')
-
-    def test_children_categories_quantity(self):
-        self.assertEqual(
-            len(self.response.context['children']),
-            1
-        )
-
-    def test_children_category_name(self):
-        self.assertEqual(
-            self.response.context['children'][0].name,
-            self.child_data['name']
-        )
-
-
-@tag('fast', 'catalog')
 class Category(BaseCatalogTestCase, TestPageMixin):
     """
     Test for CategoryPage view.
@@ -349,6 +301,12 @@ class Category(BaseCatalogTestCase, TestPageMixin):
             [s.text.strip() for s in series_app]
         )
 
+    def test_empty_products_404(self):
+        """Category with no products should return 404 response."""
+        category = models.Category.objects.get(name='Category root empty #17')
+        response = self.get_category_page(category)
+        self.assertEqual(404, response.status_code)
+
 
 @tag('fast', 'catalog')
 class CatalogPagination(BaseCatalogTestCase):
@@ -494,11 +452,12 @@ class Product_(TestCase, TestPageMixin):
             response.content.decode('utf-8'),
             'html.parser'
         ).find(class_='options-table')
-        groups = table.find_all('th')
+        # the first column is hardcoded field mark
+        groups = table.find_all('th')[1:]
         for tag_, group in zip(tags, groups):
             self.assertIn(tag_.group.name, group)
 
-        parsed_tags = table.find_all('tr')[1].find_all(class_='option-td')
+        parsed_tags = table.find_all('tr')[1].find_all(class_='option-td')[1:]
         for tag_, parsed in zip(tags, parsed_tags):
             self.assertEqual(tag_.name, parsed.string.strip())
 
@@ -619,11 +578,32 @@ class Search(TestCase):
             get_params=get_params.urlencode()
         )
 
+    def get_results_page(self, *args, **kwargs):
+        return self.client.get(self.get_search_url(*args, **kwargs))
+
+    def get_results_soup(self, *args, **kwargs):
+        page = self.get_results_page(*args, **kwargs)
+        return BeautifulSoup(
+            page.content.decode('utf-8'),
+            'html.parser'
+        )
+
     def test_result_page_contains_query(self):
         """Search results page should contain it's search query."""
         url = self.get_search_url(term=self.WRONG_TERM)
         response = self.client.get(url)
         self.assertNotContains(response, self.WRONG_TERM)
+
+    # @todo #622:60m  Fix search engine logic.
+    #  If query fully equals some product.name,
+    #  search results should return this product as the first results entry.
+    @unittest.expectedFailure
+    def test_search_by_product_name(self):
+        """Search results page should contain product names."""
+        product = models.Product.objects.first()
+        soup = self.get_results_soup(term=product.name)
+        first = soup.find(class_='table-link')
+        self.assertEqual(product.name, first.text.strip())
 
     def test_search_by_id(self):
         """Search view should return redirect on model page, if id was received as term."""
@@ -1040,6 +1020,16 @@ class Series(BaseCatalogTestCase):
             )
         )
 
+    def test_emtpy_404(self):
+        """Series with not active options should return response 404."""
+        series = (
+            models.Series.objects
+            .annotate(count=Count('options'))
+            .filter(count=0)
+        ).first()
+        response = self.get_series_page(series)
+        self.assertEqual(404, response.status_code)
+
     # @todo #570:30m  Implement product images on series page.
     #  Take this feature from categories.
     #  Depends from #565 - images repairing.
@@ -1066,7 +1056,6 @@ class SeriesByCategory(BaseCatalogTestCase):
         )
 
     def get_series_page(self, *args, **kwargs):
-        print('get series page')
         return self.client.get(self.get_series_url(*args, **kwargs))
 
     def get_series_soup(self, *args, **kwargs) -> BeautifulSoup:
