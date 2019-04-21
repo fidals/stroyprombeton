@@ -625,7 +625,7 @@ class Search(SeleniumTestCase):
 
         self.assertTrue(
             self.browser.find_element_by_link_text(
-                'Product #10 of Category #1 of #42 mark #10'
+                'Product #10 of Category #1 of #42'
             )
         )
 
