@@ -1056,7 +1056,6 @@ class SeriesByCategory(BaseCatalogTestCase):
         )
 
     def get_series_page(self, *args, **kwargs):
-        print('get series page')
         return self.client.get(self.get_series_url(*args, **kwargs))
 
     def get_series_soup(self, *args, **kwargs) -> BeautifulSoup:
