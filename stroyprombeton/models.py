@@ -260,7 +260,7 @@ class ProductQuerySet(catalog.models.ProductQuerySet):
         pass
 
 
-# not inherite d from `catalog.models.AbstractProduct`, because
+# not inherited from `catalog.models.AbstractProduct`, because
 # AbstractProduct's set of fields is shared between Product and Option models.
 class Product(catalog.models.AbstractProduct, pages.models.PageMixin):
     objects = catalog.models.ProductManager()

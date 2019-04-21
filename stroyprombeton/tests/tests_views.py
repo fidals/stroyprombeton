@@ -452,11 +452,12 @@ class Product_(TestCase, TestPageMixin):
             response.content.decode('utf-8'),
             'html.parser'
         ).find(class_='options-table')
-        groups = table.find_all('th')
+        # the first column is hardcoded field mark
+        groups = table.find_all('th')[1:]
         for tag_, group in zip(tags, groups):
             self.assertIn(tag_.group.name, group)
 
-        parsed_tags = table.find_all('tr')[1].find_all(class_='option-td')
+        parsed_tags = table.find_all('tr')[1].find_all(class_='option-td')[1:]
         for tag_, parsed in zip(tags, parsed_tags):
             self.assertEqual(tag_.name, parsed.string.strip())
 
