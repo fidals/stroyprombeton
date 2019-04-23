@@ -563,10 +563,11 @@ class RobotsPage(TestCase):
 
 @tag('fast')
 class Search(TestCase):
+    """Test all search methods: search page and autocompletes."""
 
     fixtures = ['dump.json']
-    RIGHT_TERM = 'category #'
-    WRONG_TERM = 'bugaga wrong term'
+    TERM = 'Prod'
+    WRONG_TERM = 'Bugaga'  # it's short for trigram search testing
 
     def get_search_url(self, term=''):
         term = term or self.RIGHT_TERM
@@ -578,21 +579,23 @@ class Search(TestCase):
             get_params=get_params.urlencode()
         )
 
-    def get_results_page(self, *args, **kwargs):
-        return self.client.get(self.get_search_url(*args, **kwargs))
+    def search(self, term=''):
+        return self.client.get(self.get_search_url(term), follow=True)
 
     def get_results_soup(self, *args, **kwargs):
-        page = self.get_results_page(*args, **kwargs)
         return BeautifulSoup(
-            page.content.decode('utf-8'),
+            self.search(*args, **kwargs).content.decode('utf-8'),
             'html.parser'
         )
 
-    def test_result_page_contains_query(self):
-        """Search results page should contain it's search query."""
-        url = self.get_search_url(term=self.WRONG_TERM)
-        response = self.client.get(url)
-        self.assertNotContains(response, self.WRONG_TERM)
+    # @todo #626:30m Bring back a search query to search results page's input.
+    @unittest.expectedFailure
+    def test_search_query_on_result_page(self):
+        """The search query appears in search input of search results page."""
+        self.assertContains(
+            self.search(term=self.WRONG_TERM),
+            self.WRONG_TERM,
+        )
 
     # @todo #622:60m  Fix search engine logic.
     #  If query fully equals some product.name,
@@ -608,26 +611,14 @@ class Search(TestCase):
     def test_search_by_id(self):
         """Search view should return redirect on model page, if id was received as term."""
         product = models.Product.objects.first()
-        url = self.get_search_url(term=str(product.id))
-        response = self.client.get(url, follow=True)
-        self.assertContains(response, product.name)
-
-
-@tag('fast')
-class TestSearch(TestCase):
-    """Test all search methods: search page and autocompletes."""
-
-    fixtures = ['dump.json']
-    TERM = 'Prod'
-    WRONG_TERM = 'Bugaga'  # it's short for trigram search testing
+        self.assertContains(
+            self.search(term=str(product.id)),
+            product.name,
+        )
 
     def test_search_has_results(self):
         """Search page should contain at least one result for right term."""
-        term = self.TERM
-        response = self.client.get(
-            f'/search/?term={term}',
-            follow=True
-        )
+        response = self.search(term=self.TERM)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, _('Product'))
         # search page should contain not only results.
@@ -637,11 +628,7 @@ class TestSearch(TestCase):
 
     def test_search_no_results(self):
         """Search page should not contain results for wrong term."""
-        term = self.WRONG_TERM
-        response = self.client.get(
-            f'/search/?term={term}',
-            follow=True
-        )
+        response = self.search(term=self.WRONG_TERM)
         self.assertEqual(response.status_code, 200)
         self.assertNotContains(response, '<div class="search-result-item">')
 

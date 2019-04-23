@@ -6,7 +6,7 @@
       <form class="search" id="search" action="{% custom_url 'search' %}" method="get">
         <input
           class="search-field js-search-field" placeholder="Поиск по каталогу"
-          name="term" value="{{ query }}" type="text">
+          name="term" {% if query %}value="{{ query }}"{% endif %} type="text">
 
         <button class="search-btn" id="search-btn" type="submit">
           <i class="fa fa-search" aria-hidden="true"></i>
