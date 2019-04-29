@@ -347,6 +347,17 @@ class ProductPage(pages.models.ModelPage):
     objects = pages.models.ModelPage.create_model_page_managers(Product)
 
 
+class SeriesPage(pages.models.ModelPage):
+    """Proxy model for Admin."""
+
+    class Meta(pages.models.ModelPage.Meta):
+        proxy = True
+        verbose_name = _('serie')
+        verbose_name_plural = _('series')
+
+    objects = pages.models.ModelPage.create_model_page_managers(Series)
+
+
 def get_manager(parent_slug):
     class FlatPageTypeManager(mptt.models.TreeManager):
         def get_queryset(self):

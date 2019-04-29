@@ -22,6 +22,7 @@ admin_site.register(stb_models.RegionsForAdmin, admin_models.FlatPageAdmin)
 admin_site.register(stb_models.ClientFeedbacksForAdmin, admin_models.FlatPageAdmin)
 admin_site.register(stb_models.Order, admin_models.OrderAdmin)
 admin_site.register(stb_models.Option, admin_models.OptionAdmin)
+admin_site.register(stb_models.SeriesPage, admin_models.SeriesPageAdmin)
 
 # Redirects
 admin_site.register(Redirect)

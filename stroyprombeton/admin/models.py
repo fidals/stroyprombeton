@@ -1,5 +1,6 @@
 from django.contrib.admin.widgets import FilteredSelectMultiple
 from django.db.models import ManyToManyField
+from django.utils.translation import ugettext_lazy as _
 
 from generic_admin import models as admin_models, mixins, filters as rf_filters
 
@@ -78,3 +79,30 @@ class OptionAdmin(mixins.PermissionsControl):
             'widget': FilteredSelectMultiple(verbose_name='Tags', is_stacked=False)
         },
     }
+
+
+class SeriesPageAdmin(mixins.PageWithModels):
+
+    add = True
+    change = True
+    delete = True
+    form = AdminWidgetsForm
+
+    # @todo #624:60m Create SeriesInline and autocomplete on admin series-list page.
+    inlines = [inlines.ImageInline]
+    list_display = ['model_id', 'name', 'custom_parent', 'is_active']
+    list_filter = [
+        'is_active',
+        rf_filters.HasContent,
+        rf_filters.HasImages,
+    ]
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        return self.add_reference_to_field_on_related_model(qs, _series_id='id')
+
+    def model_id(self, obj):
+        return super().model_id(obj)
+
+    model_id.admin_order_field = '_series_id'
+    model_id.short_description = _('Id')
