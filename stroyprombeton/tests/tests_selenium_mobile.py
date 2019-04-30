@@ -19,15 +19,16 @@ class SeleniumTestCase(LiveServerTestCase):
     def setUpClass(cls):
         """Instantiate browser instance."""
         super().setUpClass()
+        # http://chromedriver.chromium.org/mobile-emulation
+        chrome_options = webdriver.ChromeOptions()
+        chrome_options.add_experimental_option(
+            'mobileEmulation',
+            {'deviceName': 'iPhone 6'},
+        )
 
         cls.browser = webdriver.Remote(
             command_executor=settings.SELENIUM_URL,
-            desired_capabilities={
-                **CAPABILITIES,
-                'mobileEmulation': {
-                    'deviceName': 'Apple iPhone 5'
-                },
-            },
+            desired_capabilities=chrome_options.to_capabilities(),
         )
         cls.browser.implicitly_wait(5)
 
