@@ -1,7 +1,7 @@
 {% extends 'layout/inner_page.html' %}
 
 {% block content %}
-  {% include 'components/breadcrumbs.html' with page=page only %}
+  {% include 'components/breadcrumbs.html' with page=page base_url=base_url only %}
   {% include 'components/page_h1.html' with page=page category=category children=children only %}
 
   <section class="category-search">

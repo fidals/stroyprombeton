@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from django.conf import settings
 from django.contrib.sitemaps import Sitemap
 
@@ -19,6 +21,9 @@ class IndexSitemap(Sitemap):
 
     def items(self):
         return CustomPage.objects.filter(slug='')
+
+    def lastmod(self, _):
+        return datetime.now()
 
 
 class FlatPagesSitemap(AbstractSitemap):

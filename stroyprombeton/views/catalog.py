@@ -97,8 +97,8 @@ class CategoryPage(catalog.CategoryPage):
 
     def get_object(self, queryset=None):
         category_pk = self.kwargs.get(self.pk_url_kwarg)
-        lookup = '{}__id'.format(self.related_model_name)
-        return self.queryset.filter(**{lookup: category_pk}).get()
+        lookup = f'{self.related_model_name}__id'
+        return get_object_or_404(self.queryset.filter(**{lookup: category_pk}))
 
     def get_context_data(self, **kwargs):
         """Add sorting options and view_types in context."""
@@ -114,6 +114,8 @@ class CategoryPage(catalog.CategoryPage):
 
 @set_csrf_cookie
 class ProductPage(catalog.ProductPage):
+    ANCESTORS_LABELS = ['Тип изделия', 'класс', 'вид']
+
     queryset = (
         models.Product.objects
         .active()
@@ -136,12 +138,17 @@ class ProductPage(catalog.ProductPage):
             for product in siblings
         ]
 
-        product_ancestors = product.page.get_ancestors_fields('name', 'get_absolute_url')
         offset = 1  # "каталог" page
         limit = 3
-        product_categories = [
-            {'name': name, 'url': url()}
-            for (name, url) in product_ancestors[offset:offset + limit]
+        ancestors_qs = (
+            product.category
+            .get_ancestors(include_self=True)
+            .active()
+            [offset:offset + limit]
+        )
+        ancestor_pairs = [
+            (label, category)
+            for label, category in zip(self.ANCESTORS_LABELS, ancestors_qs)
         ]
         tag_groups = (
             models.Tag.objects
@@ -152,7 +159,7 @@ class ProductPage(catalog.ProductPage):
         return {
             **context,
             'sibling_with_images': siblings_with_images,
-            'product_categories': product_categories,
+            'ancestor_pairs': ancestor_pairs,
             'tag_groups': tag_groups,
         }
 

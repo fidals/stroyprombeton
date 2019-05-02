@@ -4,7 +4,7 @@
 {% load stb_extras %}
 
 {% block content %}
-  {% include 'components/breadcrumbs.html' with page=page only %}
+  {% include 'components/breadcrumbs.html' with page=page base_url=base_url only %}
 
   <div itemscope itemtype="http://schema.org/Product">
     <meta itemprop="name" content="{{ page.display_h1 }}">
@@ -121,7 +121,12 @@
                 </p>
               </span>
               <br>
-                Тип изделия &mdash; <a href="{{ product_categories.0.url }}" class="link-on-top-level">{{ product_categories.0.name }};</a> класс &mdash; <a href="{{ product_categories.1.url }}" class="link-on-top-level">{{ product_categories.1.name }};</a> вид &mdash; <a href="{{ product_categories.2.url }}" class="link-on-top-level">{{ product_categories.2.name }}.</a>
+              {% for label, category in ancestor_pairs %}
+                {{ label }} &mdash;
+                <a href="{{ category.url }}" class="link-on-top-level">
+                  {{ category.name }}{% if not forloop.last %};{% else %}.{% endif %}
+                </a>
+              {% endfor %}
               </p>
               <br>
             </div>

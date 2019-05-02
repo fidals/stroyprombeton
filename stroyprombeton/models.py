@@ -311,7 +311,11 @@ class Product(catalog.models.AbstractProduct, pages.models.PageMixin):
         Use ProductQS.
         """
         product = Product.objects.prefetch_related('options').get(id=self.id)
-        return Series.objects.filter(options__in=product.options.active())
+        return (
+            Series.objects
+            .filter(options__in=product.options.active())
+            .distinct()
+        )
 
     # @todo #597:30m  Remove Product.price field
 
