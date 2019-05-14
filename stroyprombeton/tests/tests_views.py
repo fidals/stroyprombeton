@@ -260,15 +260,20 @@ class Category(BaseCatalogTestCase, TestPageMixin):
         self.assertIn(active, response.context['products'])
         self.assertNotIn(inactive, response.context['products'])
 
-    # @todo #565:60m  Fix failed product images on the front side.
-    #  The test below proofs that `product_images` context var works fine.
-    #  Templates and front logic are left to explore.
     def test_product_images(self):
-        """Category page should contain only options with active related products."""
+        # product with image
+        product = models.Product.objects.get(id=110)
+        response = self.client.get(product.category.url)  # Ignore CPDBear
+        image = response.context['product_images'][110]
+        self.assertTrue(image)
+        self.assertTrue(image.image.url)
+
+    def test_product_image_button(self):
+        """Category page should contain button to open existing product image."""
         # product with image
         product = models.Product.objects.get(id=110)
         response = self.client.get(product.category.url)
-        self.assertTrue(response.context['product_images'][110])
+        self.assertContains(response, 'table-photo-ico')
 
     def test_category_matrix_page(self):
         """Matrix page should contain all second level categories."""
@@ -1017,16 +1022,27 @@ class Series(BaseCatalogTestCase):
         response = self.get_series_page(series)
         self.assertEqual(404, response.status_code)
 
-    # @todo #570:30m  Implement product images on series page.
-    #  Take this feature from categories.
-    #  Depends from #565 - images repairing.
-    @unittest.skip
     def test_product_images(self):
         """Series page should contain only options with active related products."""
         # product with image
         product = models.Product.objects.get(id=110)
-        response = self.client.get(product.series.url)
-        self.assertTrue(response.context['product_images'][110])
+        series = models.Series.objects.first()
+        product.options.update(series=series)
+        response = self.client.get(series.url)
+        image = response.context['product_images'][110]
+        self.assertTrue(image)
+        self.assertTrue(image.image.url)
+
+    def test_product_image_button(self):
+        """Series page should contain button to open existing product image."""
+        # product with image
+        product = models.Product.objects.get(id=110)
+        # @todo #30m  Make product/option ids out of sync.
+        #  Now current product.id is equal to it's option id.
+        #  See the assertion below.
+        assert product.id == product.options.first().id
+        response = self.client.get(product.category.url)
+        self.assertContains(response, 'table-photo-ico')
 
 
 @tag('fast', 'catalog')

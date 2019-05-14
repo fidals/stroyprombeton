@@ -7,9 +7,9 @@
     <img
       class="table-photo-img js-photoswipe-slide"
       src="{% static 'images/icon-photo.png' %}"
-      data-original-src="{{ image.url }}"
-      data-original-src-width="{{ image.width }}"
-      data-original-src-height="{{ image.height }}"
+      data-original-src="{{ image.image.url }}"
+      data-original-src-width="{{ image.image.width }}"
+      data-original-src-height="{{ image.image.height }}"
       alt="{% get_img_alt page %}"
     >
   </a>

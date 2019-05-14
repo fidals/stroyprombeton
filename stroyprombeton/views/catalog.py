@@ -7,6 +7,7 @@ from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 from wkhtmltopdf.views import PDFTemplateView
 
+from catalog import context
 from catalog.views import catalog
 from images.models import Image
 from pages.models import CustomPage, ModelPage
@@ -219,12 +220,16 @@ def series(request, series_slug: str):
     #  - Use only one view for series and series+category. As category page does
     #  - Use view context system. Category view does it too.
     #  Those solutions don't except each other.
+    images = context.products.ProductImages(
+        set([o.product for o in options]), Image.objects.all()
+    )
     if not options:
         raise http.Http404('<h1>В секции нет изделий</h1')
     return render(
         request,
         'catalog/series.html',
         {
+            **images.context(),
             'products': options,
             'page': series.page,
         }
@@ -244,10 +249,14 @@ def series_by_category(request, series_slug: str, category_id: int):
     if not options:
         raise http.Http404('<h1>В секции нет изделий</h1')
 
+    images = context.products.ProductImages(
+        set([o.product for o in options]), Image.objects.all()
+    )
     return render(
         request,
         'catalog/series.html',
         {
+            **images.context(),
             'products': options,
             'page': series.page,
             'category': category,
