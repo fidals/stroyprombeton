@@ -14,7 +14,14 @@ class Search(search_views.SearchView):
             name='category',
             qs=stb_models.Category.objects.active(),
             # ignore CPDBear
-            fields=['name', 'specification'],
+            fields=['name'],
+            min_similarity=settings.TRIGRAM_MIN_SIMILARITY,
+        ),
+        search_engine.Search(
+            name='series',
+            qs=stb_models.Series.objects.active(),
+            # ignore CPDBear
+            fields=['name'],
             min_similarity=settings.TRIGRAM_MIN_SIMILARITY,
         ),
         search_engine.Search(
@@ -59,6 +66,13 @@ class Autocomplete(search_views.AutocompleteView):
 
     # ignore CPDBear
     search_entities = [
+        search_engine.Search(
+            name='category',
+            qs=stb_models.Category.objects.active(),
+            # ignore CPDBear
+            fields=['name'],
+            min_similarity=settings.TRIGRAM_MIN_SIMILARITY,
+        ),
         search_engine.Search(
             name='product',
             qs=stb_models.Option.objects.active(),

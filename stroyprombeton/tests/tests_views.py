@@ -566,6 +566,10 @@ class RobotsPage(TestCase):
         self.assertEqual(self.response.status_code, 200)
 
 
+# @todo #60m:  Create arch for the Search tests.
+#  Create code, that will be able to test search
+#  by dataset presented in pattern "term -> results".
+#  Maybe hypothesis lib will be helpful for it.
 @tag('fast')
 class Search(TestCase):
     """Test all search methods: search page and autocompletes."""
@@ -613,7 +617,7 @@ class Search(TestCase):
         first = soup.find(class_='table-link')
         self.assertEqual(product.name, first.text.strip())
 
-    def test_search_by_id(self):
+    def test_id_results(self):
         """Search view should return redirect on model page, if id was received as term."""
         product = models.Product.objects.first()
         self.assertContains(
@@ -621,7 +625,7 @@ class Search(TestCase):
             product.name,
         )
 
-    def test_search_has_results(self):
+    def test_some_results(self):
         """Search page should contain at least one result for right term."""
         response = self.search(term=self.TERM)
         self.assertEqual(response.status_code, 200)
@@ -631,7 +635,17 @@ class Search(TestCase):
         self.assertContains(response, '<title>')
         self.assertContains(response, '<td class="table-td table-name">')
 
-    def test_search_no_results(self):
+    def test_series_results(self):
+        """Search page should contain at least one result for right term."""
+        response = self.search(term='Serie')
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, _('Series'))
+        # search page should contain not only results.
+        # But markup, menu links and so on.
+        self.assertContains(response, '<title>')
+        self.assertContains(response, '<td class="table-td table-name">')
+
+    def test_no_results(self):
         """Search page should not contain results for wrong term."""
         response = self.search(term=self.WRONG_TERM)
         self.assertEqual(response.status_code, 200)

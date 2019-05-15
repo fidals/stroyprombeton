@@ -79,6 +79,23 @@ class Category(catalog.models.AbstractCategory, pages.models.PageMixin):
         )
 
 
+class SeriesQuerySet(models.QuerySet):
+
+    def bind_fields(self):
+        """Prefetch or select typical related fields to reduce sql queries count."""
+        return self.select_related('page')
+
+    def active(self):
+        return self.filter(page__is_active=True)
+
+
+class SeriesManager(models.Manager.from_queryset(SeriesQuerySet)):
+    """Get all products of given category by Category's id or instance."""
+
+    def active(self):
+        return self.get_queryset().active()
+
+
 # @todo #510:60m  Create Series navigation.
 #  See the parent's task body for details about navigation.
 #  This task depends on Series page creation.
@@ -88,6 +105,8 @@ class Series(pages.models.PageMixin):
 
     It's like Category, but has no hierarchy.
     """
+
+    objects = SeriesManager()
 
     SLUG_HASH_SIZE = 5
     SLUG_MAX_LENGTH = 50
