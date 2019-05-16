@@ -1013,16 +1013,17 @@ class Series(BaseCatalogTestCase):
         page = CustomPage.objects.get(slug='series')
         response = self.client.get(page.url)
         self.assertEqual(200, response.status_code)
-        series = (
+        db_series = (
             models.Series.objects
             .filter(page__is_active=True)
             .order_by('name')
         )
-        self.assertEqual(series.count(), len(response.context['series']))
+        app_series = list(chain(*response.context['parted_series']))
+        self.assertEqual(db_series.count(), len(app_series))
         self.assertTrue(
             all(
                 from_db == from_app
-                for from_db, from_app in zip(series, response.context['series'])
+                for from_db, from_app in zip(db_series, app_series)
             )
         )
 

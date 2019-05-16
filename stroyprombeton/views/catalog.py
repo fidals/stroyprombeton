@@ -1,3 +1,5 @@
+import typing
+from collections import defaultdict
 from csv import writer as CSVWriter
 
 from django import http
@@ -196,17 +198,27 @@ class ProductPDF(PDFTemplateView, DetailView):
 
 
 def series_matrix(request, page='series'):
+    def partition_(items: list, columns: int) -> typing.Collection[list]:
+        """Partition items to the columns by given columns count."""
+        result = defaultdict(list)
+        column_length = len(items) // columns
+        for i, e in enumerate(items):
+            result[int(i / column_length)].append(e)
+        return result.values()
+
+    columns = settings.SERIES_MATRIX_COLUMNS_COUNT
     page = CustomPage.objects.get(slug=page)
+    series = (
+        models.Series.objects
+        .filter(page__is_active=True)
+        .order_by('name')
+    )
     return render(
         request,
         'catalog/series_matrix.html',
         {
             'page': page,
-            'series': (
-                models.Series.objects
-                .filter(page__is_active=True)
-                .order_by('name')
-            ),
+            'parted_series': partition_(series, columns),
         }
     )
 
