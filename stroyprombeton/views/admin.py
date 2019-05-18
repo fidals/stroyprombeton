@@ -1,8 +1,9 @@
-from django.db.models import ObjectDoesNotExist
+from django.db.models import ObjectDoesNotExist, Value
+from django.db.models.functions import Concat
+from django.http import HttpResponse
 from django.utils.translation import ugettext_lazy as _
 
 from generic_admin import views as admin_views
-
 from stroyprombeton import models, forms
 
 
@@ -82,3 +83,18 @@ class RedirectToProduct(admin_views.RedirectToProductPage):
     model = models.Product
     admin_page_product_urlconf = 'admin:stroyprombeton_productpage_change'
     site_page_product_urlconf = 'product'
+
+
+def csv_options(request):
+    # hard code url because it's template
+    options = (
+        models.Option.objects
+        .bind_fields()
+        .active()
+        .annotate(label=Concat('product__name', Value(' '), 'mark'))
+    )
+    csv = '\n'.join([f'{o.url};{o.label}' for o in options])
+    return HttpResponse(
+        content_type='text/csv',
+        content=csv.encode()
+    )

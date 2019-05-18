@@ -26,7 +26,7 @@ from stroyprombeton import context, models, request_data
 from stroyprombeton.tests.helpers import CategoryTestMixin
 from stroyprombeton.tests.tests_forms import PriceFormTest
 
-CANONICAL_HTML_TAG = '<link rel="canonical" href="{path}">'
+CANONICAL_HTML_TAG = '<link rel="canonical" href="{base_url}{path}">'
 CATEGORY_ROOT_NAME = 'Category root #0'
 
 
@@ -757,7 +757,10 @@ class CatalogTags(BaseCatalogTestCase, CategoryTestMixin):
         self.assertEqual(response.status_code, 200)
         self.assertContains(
             response,
-            CANONICAL_HTML_TAG.format(path=response.request['PATH_INFO']),
+            CANONICAL_HTML_TAG.format(
+                base_url=settings.BASE_URL,
+                path=response.request['PATH_INFO']
+            )
         )
 
     def test_tags_page_has_no_canonical_meta_tag(self):
@@ -767,7 +770,10 @@ class CatalogTags(BaseCatalogTestCase, CategoryTestMixin):
         self.assertEqual(response.status_code, 200)
         self.assertNotContains(
             response,
-            CANONICAL_HTML_TAG.format(path=response.request['PATH_INFO']),
+            CANONICAL_HTML_TAG.format(
+                base_url=settings.BASE_URL,
+                path=response.request['PATH_INFO']
+            )
         )
 
     def test_paginated_tags_page_has_no_canonical_meta_tag(self):
@@ -782,7 +788,10 @@ class CatalogTags(BaseCatalogTestCase, CategoryTestMixin):
         self.assertEqual(response.status_code, 200)
         self.assertNotContains(
             response,
-            CANONICAL_HTML_TAG.format(path=response.request['PATH_INFO'])
+            CANONICAL_HTML_TAG.format(
+                base_url=settings.BASE_URL,
+                path=response.request['PATH_INFO']
+            )
         )
 
     def test_contains_product_with_certain_tags(self):
