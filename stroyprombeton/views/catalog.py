@@ -1,6 +1,7 @@
 import typing
 from collections import defaultdict
 from csv import writer as CSVWriter
+from operator import attrgetter
 
 from django import http
 from django.conf import settings
@@ -131,7 +132,20 @@ class ProductPage(catalog.ProductPage):
         context = super(ProductPage, self).get_context_data(**kwargs)
         product = context[self.context_object_name]
 
-        siblings = product.get_siblings(settings.PRODUCT_SIBLINGS_COUNT)
+        siblings_count = settings.PRODUCT_SIBLINGS_COUNT
+        sibling_options = (
+            models.Option.objects
+            .filter(series__in=(
+                product.options.active()
+                .values_list('series__id', flat=True))
+            )
+        )
+        # @todo #656:60m  Create tests for product siblings.
+        siblings = sorted(
+            set([o.product for o in sibling_options][:siblings_count]),
+            key=attrgetter('name')
+        )
+
         images = Image.objects.get_main_images_by_pages(
             sibling.page for sibling in siblings
         )
