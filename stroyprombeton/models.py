@@ -78,6 +78,13 @@ class Category(catalog.models.AbstractCategory, pages.models.PageMixin):
             .order_by('name')
         )
 
+    def get_min_price(self) -> float:
+        return (
+            Option.objects
+            .filter(product__in=self.products.active())
+            .min_price()
+        )
+
 
 class SeriesQuerySet(models.QuerySet):
 
@@ -153,6 +160,13 @@ class Series(pages.models.PageMixin):
             hash_size=self.SLUG_HASH_SIZE
         )
 
+    def get_min_price(self) -> float:
+        return (
+            Option.objects
+            .filter(product__in=self.products.active())
+            .min_price()
+        )
+
     def save(self, *args, **kwargs):
         if not self.slug:
             self.slug = self._get_slug()
@@ -191,6 +205,10 @@ class OptionQuerySet(models.QuerySet):
             if tags.exists()
             else self
         )
+
+    def min_price(self) -> float:
+        min_price = self.aggregate(min_price=models.Min('price'))['min_price']
+        return min_price or 0.0
 
 
 class OptionManager(models.Manager.from_queryset(OptionQuerySet)):
