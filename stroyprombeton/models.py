@@ -92,8 +92,15 @@ class SeriesQuerySet(models.QuerySet):
         """Prefetch or select typical related fields to reduce sql queries count."""
         return self.select_related('page')
 
-    def active(self):
+    def active(self) -> 'SeriesQuerySet':
         return self.filter(page__is_active=True)
+
+    def exclude_empty(self) -> 'SeriesQuerySet':
+        return (
+            self.active()
+            .filter(options__product__page__is_active=True)
+            .distinct()
+        )
 
 
 class SeriesManager(models.Manager.from_queryset(SeriesQuerySet)):

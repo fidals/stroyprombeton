@@ -215,16 +215,16 @@ def series_matrix(request, page='series'):
     def partition_(items: list, columns: int) -> typing.Collection[list]:
         """Partition items to the columns by given columns count."""
         result = defaultdict(list)
-        column_length = len(items) // columns
+        column_length = len(items) // columns + 1
         for i, e in enumerate(items):
-            result[int(i / column_length)].append(e)
+            result[i // column_length].append(e)
         return result.values()
 
     columns = settings.SERIES_MATRIX_COLUMNS_COUNT
     page = CustomPage.objects.get(slug=page)
     series = (
-        models.Series.objects
-        .filter(page__is_active=True)
+        models.Series.objects.bind_fields()
+        .exclude_empty()
         .order_by('name')
     )
     return render(

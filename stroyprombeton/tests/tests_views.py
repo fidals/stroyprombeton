@@ -948,6 +948,47 @@ class CatalogTags(BaseCatalogTestCase, CategoryTestMixin):
 
 
 @tag('fast', 'catalog')
+class SeriesMatrix(BaseCatalogTestCase):
+    fixtures = ['dump.json']
+
+    def get_page_url(self):
+        page = CustomPage.objects.get(slug='series')
+        return page.url
+
+    def get_page(self):
+        return self.client.get(self.get_page_url())  # Ignore CPDBear
+
+    def get_page_soup(self) -> BeautifulSoup:
+        page = self.get_page()
+        return BeautifulSoup(
+            page.content.decode('utf-8'),
+            'html.parser'
+        )
+
+    def test_page(self):
+        self.assertEqual(200, self.get_page().status_code)
+
+    def test_series_are_active(self):
+        """Every series presented in series list should be active."""
+        response = self.get_page()
+        db_series = (
+            models.Series.objects.bind_fields()
+            .exclude_empty()
+            .order_by('name')
+        )
+        app_series = list(chain.from_iterable(
+            response.context['parted_series']
+        ))
+        self.assertEqual(db_series.count(), len(app_series))
+        self.assertTrue(
+            all(
+                from_db == from_app
+                for from_db, from_app in zip(db_series, app_series)
+            )
+        )
+
+
+@tag('fast', 'catalog')
 class Series(BaseCatalogTestCase):
     fixtures = ['dump.json']
 
@@ -1017,24 +1058,6 @@ class Series(BaseCatalogTestCase):
         response = self.client.get(self.get_series_url(self.series))
         self.assertIn(active, response.context['products'])
         self.assertNotIn(inactive, response.context['products'])
-
-    def test_all_series_matrix_page(self):
-        page = CustomPage.objects.get(slug='series')
-        response = self.client.get(page.url)
-        self.assertEqual(200, response.status_code)
-        db_series = (
-            models.Series.objects
-            .filter(page__is_active=True)
-            .order_by('name')
-        )
-        app_series = list(chain(*response.context['parted_series']))
-        self.assertEqual(db_series.count(), len(app_series))
-        self.assertTrue(
-            all(
-                from_db == from_app
-                for from_db, from_app in zip(db_series, app_series)
-            )
-        )
 
     def test_emtpy_404(self):
         """Series with not active options should return response 404."""
