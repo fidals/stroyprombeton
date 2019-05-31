@@ -292,7 +292,7 @@ class STBTableEditor extends TableEditor {  // Ignore ESLintBear (no-undef)
   }
 }
 
-new AdminCommonPlugins();  // Ignore ESLintBear (no-undef)
+new AdminCommonPlugins({ categorypage: 'category', productpage: 'product', seriespage: 'series' });  // Ignore ESLintBear (no-undef)
 new AdminSidebar();  // Ignore ESLintBear (no-undef)
 const stbFilters = new TableEditorFilters(toggleFilterBtnText);  // Ignore ESLintBear (no-undef)
 const stbColModel = new TableEditorColModel(customColModels, stbFilters);  // Ignore ESLintBear (no-undef)

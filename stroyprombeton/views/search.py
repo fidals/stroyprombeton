@@ -3,6 +3,7 @@ from django.conf import settings
 from ecommerce.forms import OrderBackcallForm
 from pages.models import CustomPage, FlatPage, Page
 from search import views as search_views, search as search_engine
+
 from stroyprombeton import models as stb_models
 
 
@@ -107,5 +108,11 @@ class AdminAutocomplete(search_views.AdminAutocompleteView):
             qs=Page.objects.active(),
             fields=['name'],
             min_similarity=settings.TRIGRAM_MIN_SIMILARITY,
-        )
+        ),
+        search_engine.Search(
+            name='series',
+            qs=stb_models.Series.objects.active(),
+            fields=['name'],
+            min_similarity=settings.TRIGRAM_MIN_SIMILARITY,
+        ),
     ]

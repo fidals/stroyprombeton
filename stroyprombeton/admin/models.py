@@ -88,8 +88,7 @@ class SeriesPageAdmin(mixins.PageWithModels):
     delete = True
     form = AdminWidgetsForm
 
-    # @todo #624:60m Create SeriesInline and autocomplete on admin series-list page.
-    inlines = [inlines.ImageInline]
+    inlines = [inlines.SeriesInline, inlines.ImageInline]
     list_display = ['model_id', 'name', 'custom_parent', 'is_active']
     list_filter = [
         'is_active',

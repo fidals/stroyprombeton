@@ -65,3 +65,8 @@ class ProductInline(inlines.ProductInline):
                 ],
             )
         return super().formfield_for_dbfield(db_field, **kwargs)
+
+
+class SeriesInline(admin.StackedInline):
+
+    model = stb_models.Series
