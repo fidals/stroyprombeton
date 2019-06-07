@@ -28,6 +28,8 @@ from stroyprombeton.tests.tests_forms import PriceFormTest
 
 CANONICAL_HTML_TAG = '<link rel="canonical" href="{base_url}{path}">'
 CATEGORY_ROOT_NAME = 'Category root #0'
+PRODUCT_WITH_IMAGE = 110
+OPTION_WITH_IMAGE = 220
 
 
 def json_to_dict(response: HttpResponse) -> dict():
@@ -262,16 +264,18 @@ class Category(BaseCatalogTestCase, TestPageMixin):
 
     def test_product_images(self):
         # product with image
-        product = models.Product.objects.get(id=110)
+        # @todo #665:30m  In tests get product-option with image from DB.
+        #  Reuse the getting all over the tests.
+        product = models.Product.objects.get(id=PRODUCT_WITH_IMAGE)
         response = self.client.get(product.category.url)  # Ignore CPDBear
-        image = response.context['product_images'][110]
+        image = response.context['product_images'][OPTION_WITH_IMAGE]
         self.assertTrue(image)
         self.assertTrue(image.image.url)
 
     def test_product_image_button(self):
         """Category page should contain button to open existing product image."""
         # product with image
-        product = models.Product.objects.get(id=110)
+        product = models.Product.objects.get(id=PRODUCT_WITH_IMAGE)  # Ignore CPDBear
         response = self.client.get(product.category.url)
         self.assertContains(response, 'table-photo-ico')
 
@@ -1072,7 +1076,7 @@ class Series(BaseCatalogTestCase):
     def test_product_images(self):
         """Series page should contain only options with active related products."""
         # product with image
-        product = models.Product.objects.get(id=110)
+        product = models.Product.objects.get(id=PRODUCT_WITH_IMAGE)
         series = models.Series.objects.first()
         product.options.update(series=series)
         response = self.client.get(series.url)
@@ -1083,11 +1087,7 @@ class Series(BaseCatalogTestCase):
     def test_product_image_button(self):
         """Series page should contain button to open existing product image."""
         # product with image
-        product = models.Product.objects.get(id=110)
-        # @todo #30m  Make product/option ids out of sync.
-        #  Now current product.id is equal to it's option id.
-        #  See the assertion below.
-        assert product.id == product.options.first().id
+        product = models.Product.objects.get(id=PRODUCT_WITH_IMAGE)
         response = self.client.get(product.category.url)
         self.assertContains(response, 'table-photo-ico')
 

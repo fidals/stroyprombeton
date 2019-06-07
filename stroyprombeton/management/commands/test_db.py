@@ -280,14 +280,21 @@ class Command(BaseCommand):
                         page=ModelPage.objects.create(name=name),
                         # remove this in favor Option
                     )
-                    option = stb_models.Option.objects.create(
+                    option_left = stb_models.Option.objects.create(
                         price=i * 100,
-                        mark=f'mark #{i}',
+                        mark=f'mark #{2*i - 1}',
+                        product=product,
+                    )
+                    option_right = stb_models.Option.objects.create(
+                        price=i * 200,
+                        mark=f'mark #{2*i}',
                         product=product,
                     )
                     for tag in tags_:
-                        option.tags.add(tag)
-                        option.save()
+                        option_left.tags.add(tag)
+                        option_left.save()
+                        option_right.tags.add(tag)
+                        option_right.save()
 
                     if product.id in self.PRODUCTS_WITH_IMAGE:
                         create_images(product.page)

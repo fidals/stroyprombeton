@@ -1,16 +1,13 @@
 import os
-
 from xml.etree import ElementTree
 
 from django.conf import settings
+from django.core.management import call_command
 from django.test import TestCase, tag
 
 from pages.models import Page
-
-from django.core.management import call_command
-
-from stroyprombeton.models import Option, Product
 from stroyprombeton.management.commands.seo_texts import populate_entities
+from stroyprombeton.models import Option, Product
 
 
 @tag('fast')
@@ -107,10 +104,9 @@ class RemoveDuplicates(TestCase):
         options = list(product.options.all())
         call_command(
             'remove_option_duplicates',
-            'code', 'product',
+            'mark', 'product',
             noinput='true',
         )
-        self.assertEqual(len(options), product.options.count())
         self.assertEqual(options, list(product.options.all()))
 
     def test_remove_similar_options(self):

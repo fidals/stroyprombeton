@@ -4,7 +4,7 @@
 {% for product in products %}
   <tr class="table-tr" data-id="{{ product.id }}" data-name="{{ product.name }}">
     <td class="table-td table-photo text-center">
-      {% with image=product_images|get_item:product.product.id %}
+      {% with image=product_images|get_item:product.id %}
         {% include 'catalog/option_image.html' with image=image page=product.page only %}
       {% endwith %}
     </td>
