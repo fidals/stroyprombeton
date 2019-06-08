@@ -65,8 +65,8 @@
               <th>Итог</th>
               <th>{# Column for order button #}</th>
             </tr>
-            {% for option in product.options.all %}
-              <tr>
+            {% for option in options.all %}
+              <tr data-id="{{ option.id }}" id="option-{{ option.id }}">
                 <td class="option-td">{{ option.mark }}</td>
                 {% for group in tag_groups %}
                   <td class="option-td">
@@ -83,13 +83,13 @@
                 </td>
 
                 <td class="option-td">
-                  {% include 'catalog/count_input.html' %}
+                  {% include 'catalog/count_input.html' with quantity='1' only %}
                 </td>
                 <td class="option-td">
                   <span class="js-option-sum">{{ option.price|format_price }}</span>
                 </td>
                 <td class="option-td">
-                  <button class="btn buy-product" id="buy-product"
+                  <button class="btn buy-product js-buy-product"
                    data-name="{{ option.name }}"
                    data-category="{{ option.product.category.name }}"
                    data-id="{{ option.id }}"

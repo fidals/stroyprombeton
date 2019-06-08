@@ -172,12 +172,14 @@ class ProductPage(catalog.ProductPage):
             .filter_by_options(product.options.all())
             .group_tags()
         ).keys()
+        options = product.options.all().order_by(*settings.OPTIONS_ORDERING)
 
         return {
             **context,
             'sibling_with_images': siblings_with_images,
             'ancestor_pairs': ancestor_pairs,
             'tag_groups': tag_groups,
+            'options': options,
         }
 
 

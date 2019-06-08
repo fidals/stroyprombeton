@@ -36,7 +36,7 @@
                     </a>
                   </td>
                   <td class="order-table-count">
-                    {% include 'catalog/count_input.html' %}
+                    {% include 'catalog/count_input.html' with quantity=position.quantity only %}
                   </td>
                   <td class="order-table-price">
                     {{ position.price|format_price }}

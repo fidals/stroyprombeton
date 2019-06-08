@@ -1,7 +1,7 @@
 (() => {
   const DOM = {
-    $addToCart: $('#buy-product'),
-    $counter: $('.js-count-input'),
+    $addToCart: $('.js-buy-product'),
+    counter: '.js-count-input',
     $slick: $('.js-slick'),
     slickItem: '.slick-slide',
   };
@@ -9,7 +9,10 @@
   const init = () => {
     pluginsInit();
     setUpListeners();
-    publishDetail();
+    // @todo #662:30m  Fix on product detail event publishing.
+    //  Now it takes option details instead of product ones.
+
+    // publishDetail();
   };
 
   function pluginsInit() {
@@ -55,17 +58,20 @@
     });
   }
 
-  function getProductData() {
+  function getProductData($addToCartButton) {
+    const id = parseInt($addToCartButton.data('id'), 10);
+    const $countInput = $(`tr#option-${id} .table-count-input`);
     return {
-      id: parseInt(DOM.$addToCart.data('id'), 10),
-      name: DOM.$addToCart.data('name'),
-      category: DOM.$addToCart.data('category'),
-      quantity: parseInt(DOM.$counter.val(), 10),
+      id,
+      name: $addToCartButton.data('name'),
+      category: $addToCartButton.data('category'),
+      quantity: parseInt($countInput.attr('value'), 10),
     };
   }
 
   function buyProduct() {
-    const data = getProductData();
+    const $addToCartButton = $(this);
+    const data = getProductData($addToCartButton);
     const { id, quantity } = data;
 
     server.addToCart(id, quantity)
@@ -75,12 +81,12 @@
       });
   }
 
-  function publishDetail() {
-    const { id, name, category } = getProductData();
-    if (id) {
-      mediator.publish('onProductDetail', [{ id, name, category }]);
-    }
-  }
+  // function publishDetail() {
+  //  const { id, name, category } = getProductData();
+  //  if (id) {
+  //    mediator.publish('onProductDetail', [{ id, name, category }]);
+  //  }
+  // }
 
   init();
 })();
