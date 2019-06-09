@@ -177,18 +177,22 @@ class Command(BaseCommand):
 
     @staticmethod
     def create_series():
-        def create(id: int, pattern: str):
+        def create(id: int, pattern: str, parent):
             return stb_models.Series.objects.create(
                 name=pattern.format(id),
-                page=ModelPage.objects.create(name=pattern.format(id)),
+                page=ModelPage.objects.create(
+                    name=pattern.format(id),
+                    parent=parent,
+                ),
             )
 
+        parent = CustomPage.objects.get(slug='series')
         real_series = [
-            create(id=i, pattern=SERIES_PATTERN)
+            create(id=i, pattern=SERIES_PATTERN, parent=parent)
             for i in range(REAL_SERIES_COUNT)
         ]
         for i in range(EMPTY_SERIES_COUNT):
-            create(id=i, pattern=EMPTY_SERIES_PATTERN)
+            create(id=i, pattern=EMPTY_SERIES_PATTERN, parent=parent)
         # return only real series, because only they should have children
         return real_series
 
