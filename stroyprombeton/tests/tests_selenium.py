@@ -1,6 +1,7 @@
 import unittest
 from urllib.parse import urljoin
 
+from django.conf import settings
 from django.core import mail
 from django.template.defaultfilters import floatformat
 from django.test import tag
@@ -263,9 +264,6 @@ class OrderPage(BaseCartSeleniumTestCase):
             self.get_total(),
         )
 
-    # @todo #665:30m  Fix email order.
-    #  It became broken after options integration to the cart.
-    @unittest.expectedFailure
     @test_helpers.disable_celery
     def test_order_email(self):
         option = stb_models.Option.objects.first()
@@ -302,20 +300,15 @@ class OrderPage(BaseCartSeleniumTestCase):
         sent_mail_body = mail.outbox[0].body
 
         self.assertInHTML(
-            '<td style="border-color:#E4E4E4;padding:10px">{0}</td>'
-            .format(str(option.code or '')),
+            '<td style="border-color:#E4E4E4;padding:10px">'
+            f'{option.code or ""}</td>',
             sent_mail_body
         )
         self.assertIn(
-            '<a href="http://www.stroyprombeton.ru{0}"'
-            .format(option.product.url),
+            f'<a href="{ settings.BASE_URL }{option.url}"',
             sent_mail_body
         )
-        self.assertInHTML(
-            '<td style="border-color:#E4E4E4;padding:10px;font-weight:bold">{0}</td>'
-            .format(total_price),
-            sent_mail_body
-        )
+        self.assertInHTML(total_price, sent_mail_body)
 
         for _, html_chunk in customer_data:
             self.assertInHTML(f'<b>{html_chunk}</b>', sent_mail_body)

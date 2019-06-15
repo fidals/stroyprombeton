@@ -5,7 +5,7 @@ from django.template import Template, Context
 from django.views.decorators.http import require_POST
 from django.views.generic import FormView, TemplateView
 
-from ecommerce import views as ec_views
+from ecommerce import cart as ec_cart, views as ec_views
 from ecommerce.mailer import send_backcall
 from pages.models import CustomPage
 from pages.views import CustomPageView
@@ -14,8 +14,17 @@ from stroyprombeton.forms import OrderForm, PriceForm
 from stroyprombeton.models import Option, Order
 
 
-# @todo #396:120m Adapt ecommerce to Options.
+class Cart(ec_cart.Cart):
+    def get_position_data(self, position: Option):
+        return {
+            **super().get_position_data(position),
+            'code': position.code or '',
+            'catalog_name': position.catalog_name,
+        }
+
+
 class OrderPage(ec_views.OrderPage):
+    cart = Cart
     order_form = OrderForm
     email_extra_context = {
         'base_url': settings.BASE_URL,
@@ -28,6 +37,7 @@ class OrderSuccess(ec_views.OrderSuccess):
 
 
 class AddToCart(ec_views.AddToCart):
+    cart = Cart
     order_form = OrderForm
     position_model = Option
     # @todo #468  Rename position_key to 'option' at js files.
@@ -36,18 +46,21 @@ class AddToCart(ec_views.AddToCart):
 
 
 class RemoveFromCart(ec_views.RemoveFromCart):
+    cart = Cart
     order_form = OrderForm
     position_model = Option
     position_key = 'product'
 
 
 class FlushCart(ec_views.FlushCart):
+    cart = Cart
     order_form = OrderForm
     position_model = Option
     position_key = 'product'
 
 
 class ChangeCount(ec_views.ChangeCount):
+    cart = Cart
     order_form = OrderForm
     position_model = Option
     position_key = 'product'

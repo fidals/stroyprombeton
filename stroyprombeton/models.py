@@ -18,6 +18,21 @@ class Order(ecommerce.models.Order):
     address = models.TextField(default='', blank=True, verbose_name='address')
     comment = models.TextField(default='', blank=True, verbose_name='comment')
 
+    def set_positions(self, cart):
+        self.save()
+        for id_, position in cart:
+            self.positions.create(
+                order=self,
+                product_id=id_,
+                name=position['name'],
+                price=position['price'],
+                quantity=position['quantity'],
+                code=position['code'],
+                catalog_name=position['catalog_name'],
+                url=position['url'],
+            )
+        return self
+
 
 # @todo #rf169 Fix model.Manager inheritance problem
 #  Category model ignores parent's manager.
