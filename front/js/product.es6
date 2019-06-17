@@ -2,6 +2,7 @@
   const DOM = {
     $addToCart: $('.js-buy-product'),
     counter: '.js-count-input',
+    $productInfo: $('.js-product-info'),
     $slick: $('.js-slick'),
     slickItem: '.slick-slide',
   };
@@ -9,10 +10,7 @@
   const init = () => {
     pluginsInit();
     setUpListeners();
-    // @todo #662:30m  Fix on product detail event publishing.
-    //  Now it takes option details instead of product ones.
-
-    // publishDetail();
+    publishDetail();
   };
 
   function pluginsInit() {
@@ -20,7 +18,7 @@
   }
 
   function setUpListeners() {
-    DOM.$addToCart.click(buyProduct);
+    DOM.$addToCart.click(buy);
   }
 
   function initSlickSlider() {
@@ -58,35 +56,40 @@
     });
   }
 
-  function getProductData($addToCartButton) {
-    const id = parseInt($addToCartButton.data('id'), 10);
-    const $countInput = $(`tr#option-${id} .table-count-input`);
+  function getProductData() {
     return {
-      id,
-      name: $addToCartButton.data('name'),
-      category: $addToCartButton.data('category'),
-      quantity: parseInt($countInput.attr('value'), 10),
+      id: parseInt(DOM.$productInfo.data('id'), 10),
+      name: DOM.$productInfo.data('name'),
+      category: DOM.$productInfo.data('category'),
     };
   }
 
-  function buyProduct() {
+  function getOptionData($addToCartButton) {
+    const $countInput = $addToCartButton.parents('tr').find('.table-count-input');
+    return {
+      id: parseInt($addToCartButton.data('id'), 10),
+      quantity: parseInt($countInput.val(), 10),
+    };
+  }
+
+  function buy() {
     const $addToCartButton = $(this);
-    const data = getProductData($addToCartButton);
-    const { id, quantity } = data;
+    const option = getOptionData($addToCartButton);
+    const { id, quantity } = option;
 
     server.addToCart(id, quantity)
-      .then((newData) => {
-        mediator.publish('onCartUpdate', newData);
-        mediator.publish('onProductAdd', [data]);
+      .then((cart) => {
+        mediator.publish('onCartUpdate', cart);
+        mediator.publish('onProductAdd', [option]);
       });
   }
 
-  // function publishDetail() {
-  //  const { id, name, category } = getProductData();
-  //  if (id) {
-  //    mediator.publish('onProductDetail', [{ id, name, category }]);
-  //  }
-  // }
+  function publishDetail() {
+    const { id, name, category } = getProductData();
+    if (id) {
+      mediator.publish('onProductDetail', [{ id, name, category }]);
+    }
+  }
 
   init();
 })();

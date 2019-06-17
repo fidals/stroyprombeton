@@ -38,7 +38,11 @@
       </div>
     </section>
 
-    <section class="product-info">
+    <section class="js-product-info"
+     data-id="{{ product.id }}"
+     data-name="{{ product.name }}"
+     data-category="{{ product.category.name }}"
+    >
       <div class="container container-fluid">
         <div class="row">
           <div class="
@@ -90,9 +94,8 @@
                 </td>
                 <td class="option-td">
                   <button class="btn buy-product js-buy-product"
-                   data-name="{{ option.name }}"
-                   data-category="{{ option.product.category.name }}"
                    data-id="{{ option.id }}"
+                   data-catalog-name="{{ option.catalog_name }}"
                    type="submit">Заказать</button>
                 </td>
               </tr>

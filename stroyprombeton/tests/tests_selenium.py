@@ -160,17 +160,12 @@ class ProductPage(BaseCartSeleniumTestCase):
 
         self.assertEqual(self.positions_count(), 2)
 
-    # @todo #665:30m  Fix the wrong product page's count input.
-    @unittest.expectedFailure
     def test_buy_product_with_count(self):
         self.buy_on_product_page(quantity=42)
         self.show_cart()
 
         self.assertIn('42', header_product_count(self))
 
-    # @todo #662:30m  Fix input value changing on the product page.
-    #  Now it's always "1". Launch the test below.
-    @unittest.skip
     def test_buy_the_last_option(self):
         """The last option should have working "order" button."""
         product = stb_models.Product.objects.first()
@@ -253,11 +248,11 @@ class OrderPage(BaseCartSeleniumTestCase):
         count = 42
         total_before = self.get_total()
 
-        def wait_total_changes(driver):
+        def wait_total_changed(driver):
             return self.get_total(driver) != total_before
 
         self.send_keys_and_wait(count, (By.CLASS_NAME, 'js-count-input'))
-        self.wait.until(wait_total_changes)
+        self.wait.until(wait_total_changed)
 
         self.assertEqual(
             f'{floatformat(str(option.price * count), 0)} руб',
