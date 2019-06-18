@@ -183,11 +183,7 @@ class Series(pages.models.PageMixin):
         )
 
     def get_min_price(self) -> float:
-        return (
-            Option.objects
-            .filter(product__in=self.products.active())
-            .min_price()
-        )
+        return Option.objects.filter(series=self).min_price()
 
     def save(self, *args, **kwargs):
         if not self.slug:
