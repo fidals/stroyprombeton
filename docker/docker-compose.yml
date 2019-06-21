@@ -65,6 +65,9 @@ services:
       - 15672
 
   selenium:
+    # using oxygen instead of last 3.141.59
+    # because of failed chromedriver in the fresh version
+    # See the #878 for details.
     image: selenium/standalone-chrome-debug:3.141.59-oxygen
     restart: always
     ports:
