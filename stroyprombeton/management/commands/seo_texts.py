@@ -1,3 +1,6 @@
+# @todo #669:30m  Explore seo_texts command.
+#  Either document or remove it.
+
 from functools import reduce
 from operator import or_
 
@@ -6,7 +9,6 @@ from django.db import transaction
 from django.db.models.expressions import Q
 
 from stroyprombeton.models import ProductPage
-
 
 product_page = {
     'content': '''

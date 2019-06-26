@@ -105,7 +105,7 @@ class SeriesQuerySet(models.QuerySet):
 
     def bind_fields(self):
         """Prefetch or select typical related fields to reduce sql queries count."""
-        return self.select_related('page')
+        return self.select_related('page')  # Ignore CPDBear
 
     def active(self) -> 'SeriesQuerySet':
         return self.filter(page__is_active=True)
@@ -125,9 +125,6 @@ class SeriesManager(models.Manager.from_queryset(SeriesQuerySet)):
         return self.get_queryset().active()
 
 
-# @todo #510:60m  Create Series navigation.
-#  See the parent's task body for details about navigation.
-#  This task depends on Series page creation.
 class Series(pages.models.PageMixin):
     """
     Series is another way to organize products.
@@ -141,10 +138,8 @@ class Series(pages.models.PageMixin):
     SLUG_MAX_LENGTH = 50
 
     class Meta:
-        # @todo #510:15m  Translate "Series" term.
-        #  And "series" too. It's used in the relation with Product.
         verbose_name = _('Series')
-        verbose_name_plural = _('Series')
+        verbose_name_plural = _('Series')  # Ignore CPDBear
 
     name = models.CharField(
         max_length=1000, db_index=True, unique=True, verbose_name=_('name')
@@ -156,8 +151,10 @@ class Series(pages.models.PageMixin):
 
     def get_absolute_url(self):
         """Url path to the related page."""
-        return reverse('series', args=(self.slug,))
+        return reverse('series', args=(self.slug,))  # Ignore CPDBear
 
+    # @todo #669:60m  Remove `Series.slug` field.
+    #  Series page already contains it.
     slug = models.SlugField(
         blank=False, unique=True, max_length=SLUG_MAX_LENGTH,
     )
@@ -189,6 +186,80 @@ class Series(pages.models.PageMixin):
         if not self.slug:
             self.slug = self._get_slug()
         super().save(*args, **kwargs)
+
+
+class SectionQuerySet(models.QuerySet):
+
+    def bind_fields(self):
+        """Prefetch or select typical related fields to reduce sql queries count."""
+        return (
+            self.select_related('page')
+            .prefetch_related('products')
+        )
+
+    def active(self) -> 'SeriesQuerySet':
+        return self.filter(page__is_active=True)
+
+    def exclude_empty(self) -> 'SeriesQuerySet':
+        return (
+            self.active()
+            .filter(products__page__is_active=True)
+            .distinct()
+        )
+
+
+class SectionManager(models.Manager.from_queryset(SeriesQuerySet)):
+    """Get all products of given category by Category's id or instance."""
+
+    def active(self):
+        return self.get_queryset().active()
+
+
+# @todo #669:30m  Add Sections to the admin panel.
+# @todo #669:30m  Get rid of Category-Series-Section models code doubling.
+class Section(pages.models.PageMixin):
+    """
+    Section is one more way to organize products.
+
+    It's like Category, but has no hierarchy.
+    And it's like Series, but it's bound to products instead of options.
+    """
+
+    # @todo #669:30m  Doc section concept.
+    #  What problem it solves, who required it.
+    #  Why we solved problem in this way.
+
+    objects = SeriesManager()
+
+    SLUG_HASH_SIZE = 5
+    SLUG_MAX_LENGTH = 50
+
+    class Meta:
+        # @todo #510:15m  Translate "Section" term.
+        #  And "series" too. It's used in the relation with Product.
+        verbose_name = _('Section')
+        verbose_name_plural = _('Sections')
+
+    name = models.CharField(
+        max_length=1000, db_index=True, unique=True, verbose_name=_('name')
+    )
+
+    @property
+    def url(self):
+        return self.get_absolute_url()
+
+    def get_absolute_url(self):
+        """Url path to the related page."""
+        return reverse('section', args=(self.page.slug,))
+
+    # @todo #669:60m  Implement `Section.get_min_price` method.
+    #  And look at the get_min_price arch in a whole.
+    #  Maybe only ProductsQS and OptionsQS should have min_price,
+    #  but Section and Series should not.
+    #  Category, Series and Product page templates at the production DB
+    #  contains series min price usage.
+    def get_min_price(self) -> float:
+        raise NotImplemented()
 
 
 class OptionQuerySet(models.QuerySet):
@@ -326,6 +397,14 @@ class Product(catalog.models.AbstractProduct, pages.models.PageMixin):
         on_delete=models.CASCADE,
         related_name='products',
         verbose_name=_('category'),
+    )
+
+    section = models.ForeignKey(
+        Section,
+        on_delete=models.CASCADE,
+        related_name='products',
+        verbose_name=_('section'),
+        null=True,
     )
 
     def __str__(self):

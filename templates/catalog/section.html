@@ -1,7 +1,6 @@
 {% extends 'layout/inner_page.html' %}
 
 {% block content %}
-  {# @todo #663:30m  Test series crumbs. #}
   {% include 'components/breadcrumbs.html' with page=page base_url=base_url only %}
   {% include 'components/page_h1.html' with page=page only %}
 
@@ -18,10 +17,6 @@
           </p>
         </div>
       </div>
-      {% comment %}
-        @todo #610:15m  Use css margin between blocks on series page.
-         Instead of set of "br" html tags.
-      {% endcomment %}
       <div class="row"><div class="col-md-9"><br><br><br></div></div>
     {% endif %}
 

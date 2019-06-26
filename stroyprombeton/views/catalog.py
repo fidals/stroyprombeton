@@ -264,6 +264,27 @@ def series(request, series_slug: str):
     )
 
 
+# @todo #669:120m  Create sections navigation.
+#  Top menu link, matrix page, links from and to categories.
+def section(request, section_slug: str):
+    section = get_object_or_404(models.Section.objects, page__slug=section_slug)
+    products = section.products.active()
+    images = context.products.ProductImages(
+        products, Image.objects.all()
+    )
+    if not products:
+        raise http.Http404('<h1>В секции нет изделий</h1')
+    return render(
+        request,
+        'catalog/section.html',
+        {
+            **images.context(),
+            'products': products,
+            'page': section.page,
+        }
+    )
+
+
 def series_by_category(request, series_slug: str, category_id: int):
     series = get_object_or_404(models.Series.objects, slug=series_slug)
     category = get_object_or_404(models.Category.objects, id=category_id)

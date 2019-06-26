@@ -1016,30 +1016,6 @@ class Series(BaseCatalogTestCase):
             'html.parser'
         )
 
-    # @todo #570:60m  Implement search on series.
-    #  And resurrect the test below.
-    @unittest.skip
-    def test_fetch_positions_searching(self):
-        term = '#1'
-        options = self.series.options
-        searched = context.search(
-            term, options, context.SearchedOptions.LOOKUPS,
-            ordering=('product__name', )
-        )
-
-        response = self.client.post(
-            reverse('fetch_products'),
-            data={
-                'seriesId': self.series.id,
-                'filtered': 'true',
-                'term': term,
-                'offset': 0,
-                'limit': 10**6,
-            }
-        )
-        self.assertEqual(searched.count(), len(response.context['products']))
-        self.assertEqual(list(searched), list(response.context['products']))
-
     def test_options_are_from_series(self):
         response = self.client.get(self.get_series_url(self.series))
         self.assertTrue(
@@ -1049,7 +1025,7 @@ class Series(BaseCatalogTestCase):
     def test_active_options(self):
         """Series page should contain only options with active related products."""
         options_qs = (
-            self.series.options
+            self.series.options  # Ignore CPDBear
             .bind_fields()
             .order_by(*settings.OPTIONS_ORDERING)
         )
@@ -1079,13 +1055,112 @@ class Series(BaseCatalogTestCase):
         product = models.Product.objects.get(id=PRODUCT_WITH_IMAGE)
         series = models.Series.objects.first()
         product.options.update(series=series)
-        response = self.client.get(series.url)
+        response = self.client.get(series.url)  # Ignore CPDBear
         image = response.context['product_images'][110]
         self.assertTrue(image)
         self.assertTrue(image.image.url)
 
     def test_product_image_button(self):
         """Series page should contain button to open existing product image."""
+        # product with image
+        product = models.Product.objects.get(id=PRODUCT_WITH_IMAGE)  # Ignore CPDBear
+        response = self.client.get(product.category.url)
+        self.assertContains(response, 'table-photo-ico')
+
+
+# will be removed during this Section class implementing.
+@tag('fast', 'catalog')
+class SectionFirst(BaseCatalogTestCase):
+    fixtures = ['dump.json']
+
+    def test_page_success(self):
+        section = models.Section.objects.create(
+            name='First section',
+            page=ModelPage.objects.create(
+                name='First section',
+                slug='first',
+            ),
+        )
+        models.Product.objects.active().update(section=section)
+        response = self.client.get(section.url)
+        self.assertEqual(200, response.status_code)
+
+
+# @todo #669:120m  Create tests for Section.
+#  Use Section tests draft below. Rm current SectionFirst draft.
+#  Create fixtures with sections.
+@unittest.skip
+@tag('fast', 'catalog')
+class Section(BaseCatalogTestCase):
+    fixtures = ['dump.json']
+
+    def setUp(self):
+        self.section = models.Section.objects.filter(products__isnull=False).first()
+
+    def get_section_url(
+        self,
+        section: models.Section = None,
+    ):
+        section = section or self.section
+        return section.url
+
+    def get_section_page(self, *args, **kwargs):
+        return self.client.get(self.get_section_url(*args, **kwargs))  # Ignore CPDBear
+
+    def get_section_soup(self, *args, **kwargs) -> BeautifulSoup:
+        section_page = self.get_section_page(*args, **kwargs)
+        return BeautifulSoup(
+            section_page.content.decode('utf-8'),
+            'html.parser'
+        )
+
+    def test_options_are_from_section(self):
+        response = self.client.get(self.get_section_url(self.section))
+        self.assertTrue(
+            all(option.section == self.section for option in response.context['products'])
+        )
+
+    def test_active_options(self):
+        """Section page should contain only options with active related products."""
+        options_qs = (
+            self.section.options
+            .bind_fields()
+            # @todo #699:60m  Implement `OptionsQS.default_order` method. se2
+            .order_by(*settings.OPTIONS_ORDERING)
+        )
+        # make inactive the first option in a section page list
+        inactive = options_qs.first()
+        inactive.product.page.is_active = False
+        inactive.product.page.save()
+        active = options_qs.active().first()
+
+        response = self.client.get(self.get_section_url(self.section))
+        self.assertIn(active, response.context['products'])
+        self.assertNotIn(inactive, response.context['products'])
+
+    def test_emtpy_404(self):
+        """Section with not active options should return response 404."""
+        section = (
+            models.Section.objects
+            .annotate(count=Count('options'))
+            .filter(count=0)
+        ).first()
+        response = self.get_section_page(section)
+        self.assertEqual(404, response.status_code)
+
+    def test_product_images(self):
+        """Section page should contain only options with active related products."""
+        # product with image
+        product = models.Product.objects.get(id=PRODUCT_WITH_IMAGE)
+        section = models.Section.objects.first()
+        product.options.update(section=section)
+        response = self.client.get(section.url)
+        image = response.context['product_images'][110]
+        self.assertTrue(image)
+        self.assertTrue(image.image.url)
+
+    def test_product_image_button(self):
+        """Section page should contain button to open existing product image."""
         # product with image
         product = models.Product.objects.get(id=PRODUCT_WITH_IMAGE)
         response = self.client.get(product.category.url)
