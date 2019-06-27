@@ -219,10 +219,9 @@ class SectionManager(models.Manager.from_queryset(SeriesQuerySet)):
 # @todo #669:30m  Get rid of Category-Series-Section models code doubling.
 class Section(pages.models.PageMixin):
     """
-    Section is one more way to organize products.
+    Group of products created by product type principle.
 
-    It's like Category, but has no hierarchy.
-    And it's like Series, but it's bound to products instead of options.
+    See doc/section.md for details.
     """
 
     # @todo #669:30m  Doc section concept.
@@ -235,8 +234,6 @@ class Section(pages.models.PageMixin):
     SLUG_MAX_LENGTH = 50
 
     class Meta:
-        # @todo #510:15m  Translate "Section" term.
-        #  And "series" too. It's used in the relation with Product.
         verbose_name = _('Section')
         verbose_name_plural = _('Sections')
 

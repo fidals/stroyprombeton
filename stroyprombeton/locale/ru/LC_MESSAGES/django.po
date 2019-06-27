@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2019-04-04 12:34+0000\n"
+"POT-Creation-Date: 2019-06-26 12:08+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -20,51 +20,55 @@ msgstr ""
 "%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n"
 "%100>=11 && n%100<=14)? 2 : 3);\n"
 
-#: stroyprombeton/admin.py:19
+#: stroyprombeton/admin/filters.py:11
 msgid "parent"
 msgstr "родитель"
 
-#: stroyprombeton/admin.py:24
+#: stroyprombeton/admin/filters.py:16
 msgid "news"
 msgstr "новости"
 
-#: stroyprombeton/admin.py:25
+#: stroyprombeton/admin/filters.py:17
 msgid "regions"
 msgstr "регионы"
 
-#: stroyprombeton/admin.py:26
+#: stroyprombeton/admin/filters.py:18
 msgid "client feedbacks"
 msgstr "отзывы клиентов"
 
-#: stroyprombeton/admin.py:37
-msgid "characteristics equality"
-msgstr "По совпадению характеристик"
+#: stroyprombeton/admin/filters.py:30
+msgid "duplicates"
+msgstr ""
 
-#: stroyprombeton/admin.py:42
-msgid "Only same h1"
-msgstr "Только по h1"
+#: stroyprombeton/admin/filters.py:35
+msgid "Mark and h1"
+msgstr ""
 
-#: stroyprombeton/admin.py:43
-msgid "Same h1, characteristics, price"
-msgstr "По h1, характеристикам, цене"
+#: stroyprombeton/admin/filters.py:36
+msgid "Mark, code, price, series and etc."
+msgstr ""
 
-#: stroyprombeton/admin.py:85 stroyprombeton/models.py:36
+#: stroyprombeton/admin/filters.py:80 stroyprombeton/models.py:54
 msgid "specification"
 msgstr "документация"
 
-#: stroyprombeton/admin.py:90
+#: stroyprombeton/admin/filters.py:85
 #, fuzzy
 #| msgid "specification"
 msgid "Has specification"
 msgstr "Есть документация"
 
-#: stroyprombeton/admin.py:91
+#: stroyprombeton/admin/filters.py:86
 #, fuzzy
 #| msgid "specification"
 msgid "Has no specification"
 msgstr "Нет документации"
 
-#: stroyprombeton/admin.py:122
+#: stroyprombeton/admin/models.py:107
+msgid "Id"
+msgstr ""
+
+#: stroyprombeton/admin/sites.py:10
 msgid "Stroyprombeton administration"
 msgstr "Админка Stroyprombeton"
 
@@ -72,71 +76,106 @@ msgstr "Админка Stroyprombeton"
 msgid "Stroyprombeton"
 msgstr "Стройпромбетон"
 
-#: stroyprombeton/models.py:92 stroyprombeton/tests/tests_views.py:594
-msgid "Product"
-msgstr "Изделие"
+#: stroyprombeton/models.py:141 stroyprombeton/models.py:142
+#: stroyprombeton/tests/tests_views.py:646
+msgid "Series"
+msgstr "Серия"
 
-#: stroyprombeton/models.py:93
-msgid "Products"
-msgstr "Изделия"
-
-#: stroyprombeton/models.py:112
-msgid "code"
-msgstr "код"
-
-#: stroyprombeton/models.py:113
-msgid "mark"
-msgstr "марка"
-
-#: stroyprombeton/models.py:118
-msgid "tags"
-msgstr ""
-
-#: stroyprombeton/models.py:124 stroyprombeton/models.py:208
-msgid "product"
-msgstr "товар"
-
-#: stroyprombeton/models.py:126
-msgid "date price updated"
-msgstr "дата обновления цены"
-
-#: stroyprombeton/models.py:131
-msgid "price"
-msgstr "цена"
-
-#: stroyprombeton/models.py:136
-msgid "in stock"
-msgstr "наличие"
-
-#: stroyprombeton/models.py:141
-msgid "is popular"
-msgstr "популярность"
-
-#: stroyprombeton/models.py:153
+#: stroyprombeton/models.py:145 stroyprombeton/models.py:243
+#: stroyprombeton/models.py:393
 msgid "name"
 msgstr "название"
 
-#: stroyprombeton/models.py:158 stroyprombeton/models.py:197
+#: stroyprombeton/models.py:239
+#, fuzzy
+msgid "Section"
+msgstr "Тип изделия"
+
+msgid "description"
+msgstr "описание"
+
+#: stroyprombeton/models.py:240
+#, fuzzy
+msgid "Sections"
+msgstr "Типы изделий"
+
+#: stroyprombeton/models.py:312 stroyprombeton/tests/tests_views.py:636
+msgid "Product"
+msgstr "Изделие"
+
+#: stroyprombeton/models.py:313
+msgid "Products"
+msgstr "Изделия"
+
+#: stroyprombeton/models.py:332
+msgid "code"
+msgstr "код"
+
+#: stroyprombeton/models.py:333
+msgid "mark"
+msgstr "марка"
+
+#: stroyprombeton/models.py:338
+msgid "tags"
+msgstr ""
+
+#: stroyprombeton/models.py:344 stroyprombeton/models.py:481
+msgid "product"
+msgstr "товар"
+
+#: stroyprombeton/models.py:350 stroyprombeton/models.py:493
+msgid "series"
+msgstr "серия"
+
+#: stroyprombeton/models.py:353
+msgid "date price updated"
+msgstr "дата обновления цены"
+
+#: stroyprombeton/models.py:358 stroyprombeton/models.py:461
+msgid "price"
+msgstr "цена"
+
+#: stroyprombeton/models.py:363
+msgid "in stock"
+msgstr "наличие"
+
+#: stroyprombeton/models.py:368
+msgid "is popular"
+msgstr "популярность"
+
+#: stroyprombeton/models.py:398 stroyprombeton/models.py:470
 msgid "category"
 msgstr "категория"
 
-#: stroyprombeton/models.py:198
+#: stroyprombeton/models.py:405
+#, fuzzy
+#| msgid "specification"
+msgid "section"
+msgstr "документация"
+
+#: stroyprombeton/models.py:471
 msgid "categories"
 msgstr "категории"
 
-#: stroyprombeton/models.py:209
+#: stroyprombeton/models.py:482
 msgid "products"
 msgstr "товары"
 
-#: stroyprombeton/models.py:233 stroyprombeton/models.py:234
+#: stroyprombeton/models.py:492
+#, fuzzy
+#| msgid "series"
+msgid "serie"
+msgstr "серия"
+
+#: stroyprombeton/models.py:517 stroyprombeton/models.py:518
 msgid "News"
 msgstr "Новости"
 
-#: stroyprombeton/models.py:242 stroyprombeton/models.py:243
+#: stroyprombeton/models.py:526 stroyprombeton/models.py:527
 msgid "Regions"
 msgstr "Регионы"
 
-#: stroyprombeton/models.py:251 stroyprombeton/models.py:252
+#: stroyprombeton/models.py:535 stroyprombeton/models.py:536
 msgid "Client feedbacks"
 msgstr "Отзывы клиентов"
 
@@ -144,10 +183,19 @@ msgstr "Отзывы клиентов"
 msgid "Russian"
 msgstr ""
 
-#: stroyprombeton/views/admin.py:10
+#: stroyprombeton/views/admin.py:11
 #, python-format
 msgid "Category with name ( %s ) does not exist."
 msgstr "Категория с именем ( %s ) не существует."
+
+#~ msgid "characteristics equality"
+#~ msgstr "По совпадению характеристик"
+
+#~ msgid "Only same h1"
+#~ msgstr "Только по h1"
+
+#~ msgid "Same h1, characteristics, price"
+#~ msgstr "По h1, характеристикам, цене"
 
 #~ msgid "is new price"
 #~ msgstr "новая цена"
@@ -173,23 +221,17 @@ msgstr "Категория с именем ( %s ) не существует."
 #~ msgid "diameter in"
 #~ msgstr "диаметр внутренний"
 
-msgid "catalog"
-msgstr "каталог"
+#~ msgid "catalog"
+#~ msgstr "каталог"
 
-msgid "Series"
-msgstr "Серия"
+#~ msgid "Category"
+#~ msgstr "Раздел"
 
-msgid "series"
-msgstr "серия"
+#~ msgid "Categories"
+#~ msgstr "Разделы"
 
-msgid "Category"
-msgstr "Раздел"
-
-msgid "Categories"
-msgstr "Разделы"
-
-msgid "rub"
-msgstr "руб"
+#~ msgid "rub"
+#~ msgstr "руб"
 
 #~ msgid "has images"
 #~ msgstr "По картинкам"
@@ -343,9 +385,6 @@ msgstr "руб"
 
 #~ msgid "title"
 #~ msgstr "заголовок"
-
-#~ msgid "description"
-#~ msgstr "описание"
 
 #~ msgid "created"
 #~ msgstr "дата создания"
