@@ -1068,28 +1068,6 @@ class Series(BaseCatalogTestCase):
         self.assertContains(response, 'table-photo-ico')
 
 
-# will be removed during this Section class implementing.
-@tag('fast', 'catalog')
-class SectionFirst(BaseCatalogTestCase):
-    fixtures = ['dump.json']
-
-    def test_page_success(self):
-        section = models.Section.objects.create(
-            name='First section',
-            page=ModelPage.objects.create(
-                name='First section',
-                slug='first',
-            ),
-        )
-        models.Product.objects.active().update(section=section)
-        response = self.client.get(section.url)
-        self.assertEqual(200, response.status_code)
-
-
-# @todo #669:120m  Create tests for Section.
-#  Use Section tests draft below. Rm current SectionFirst draft.
-#  Create fixtures with sections.
-@unittest.skip
 @tag('fast', 'catalog')
 class Section(BaseCatalogTestCase):
     fixtures = ['dump.json']
@@ -1114,25 +1092,26 @@ class Section(BaseCatalogTestCase):
             'html.parser'
         )
 
-    def test_options_are_from_section(self):
+    def test_page_success(self):
+        section = models.Section.objects.first()
+        response = self.client.get(section.url)
+        self.assertEqual(200, response.status_code)
+
+    def test_products_are_from_section(self):
         response = self.client.get(self.get_section_url(self.section))
         self.assertTrue(
-            all(option.section == self.section for option in response.context['products'])
+            all(p.section == self.section for p in response.context['products']),
+            response.context['products']
         )
 
     def test_active_options(self):
         """Section page should contain only options with active related products."""
-        options_qs = (
-            self.section.options
-            .bind_fields()
-            # @todo #699:60m  Implement `OptionsQS.default_order` method. se2
-            .order_by(*settings.OPTIONS_ORDERING)
-        )
+        products = self.section.products.bind_fields()
         # make inactive the first option in a section page list
-        inactive = options_qs.first()
-        inactive.product.page.is_active = False
-        inactive.product.page.save()
-        active = options_qs.active().first()
+        inactive = products.first()
+        inactive.page.is_active = False
+        inactive.page.save()
+        active = products.active().first()
 
         response = self.client.get(self.get_section_url(self.section))
         self.assertIn(active, response.context['products'])
@@ -1142,7 +1121,7 @@ class Section(BaseCatalogTestCase):
         """Section with not active options should return response 404."""
         section = (
             models.Section.objects
-            .annotate(count=Count('options'))
+            .annotate(count=Count('products'))
             .filter(count=0)
         ).first()
         response = self.get_section_page(section)
@@ -1152,9 +1131,9 @@ class Section(BaseCatalogTestCase):
         """Section page should contain only options with active related products."""
         # product with image
         product = models.Product.objects.get(id=PRODUCT_WITH_IMAGE)
-        section = models.Section.objects.first()
-        product.options.update(section=section)
-        response = self.client.get(section.url)
+        product.section = models.Section.objects.first()
+        product.save()
+        response = self.client.get(product.section.url)
         image = response.context['product_images'][110]
         self.assertTrue(image)
         self.assertTrue(image.image.url)

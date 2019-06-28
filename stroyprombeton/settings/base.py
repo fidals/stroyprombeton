@@ -346,6 +346,10 @@ CUSTOM_PAGES = {
         'slug': 'series',
         'name': 'Серии',
     },
+    'sections': {
+        'slug': 'sections',
+        'name': 'Типы изделий',
+    },
 }
 
 # region-coordinates mapping

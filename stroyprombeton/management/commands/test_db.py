@@ -34,10 +34,15 @@ ROOT_PATTERN = 'Category root #{}'
 EMPTY_ROOT_PATTERN = 'Category root empty #{}'
 
 # use empty series to feel how UI looks like.
-REAL_SERIES_COUNT = 2
+FILLED_SERIES_COUNT = 2
 EMPTY_SERIES_COUNT = 38
 SERIES_PATTERN = 'Series #{}'
 EMPTY_SERIES_PATTERN = 'Series empty #{}'
+
+FILLED_SECTIONS_COUNT = 2
+EMPTY_SECTIONS_COUNT = 18
+SECTIONS_PATTERN = 'Sections #{}'
+EMPTY_SECTIONS_PATTERN = 'Sections empty #{}'
 
 CATEGORY_PATTERN = 'Category #{} of #{}'
 FEEDBACKS_COUNT = 9
@@ -134,7 +139,9 @@ class Command(BaseCommand):
         create_pages()
         self.create_products(parents=list(third_level), tags=tags)
         series = self.create_series()
-        self.bind_products(series)
+        section = self.create_sections()
+        self.bind_options(series)
+        self.bind_products(section)
         self.create_templates()
         self.save_dump()
 
@@ -189,7 +196,7 @@ class Command(BaseCommand):
         parent = CustomPage.objects.get(slug='series')
         real_series = [
             create(id=i, pattern=SERIES_PATTERN, parent=parent)
-            for i in range(REAL_SERIES_COUNT)
+            for i in range(FILLED_SERIES_COUNT)
         ]
         for i in range(EMPTY_SERIES_COUNT):
             create(id=i, pattern=EMPTY_SERIES_PATTERN, parent=parent)
@@ -197,10 +204,37 @@ class Command(BaseCommand):
         return real_series
 
     @staticmethod
-    def bind_products(series: typing.List[stb_models.Series]):
+    def create_sections():
+        def create(id: int, pattern: str, parent):
+            return stb_models.Section.objects.create(  # Ignore CPDBear
+                name=pattern.format(id),
+                page=ModelPage.objects.create(
+                    name=pattern.format(id),
+                    parent=parent,
+                ),
+            )
+
+        parent = CustomPage.objects.get(slug='sections')
+        real_sections = [
+            create(id=i, pattern=SERIES_PATTERN, parent=parent)
+            for i in range(FILLED_SECTIONS_COUNT)
+        ]
+        for i in range(EMPTY_SECTIONS_COUNT):
+            create(id=i, pattern=EMPTY_SERIES_PATTERN, parent=parent)
+        # return only real series, because only they should have children
+        return real_sections
+
+    @staticmethod
+    def bind_options(series: typing.List[stb_models.Series]):
         options = stb_models.Option.objects.all()
         options.filter(id__range=(1, 50)).update(series=series[0])
         options.filter(id__range=(51, 55)).update(series=series[1])
+
+    @staticmethod
+    def bind_products(sections: typing.List[stb_models.Section]):
+        products = stb_models.Product.objects.all()
+        products.filter(id__range=(1, 25)).update(section=sections[0])
+        products.filter(id__range=(26, 30)).update(section=sections[1])
 
     def create_tag_groups(self):
         for i, name in enumerate(self.group_names, start=1):
