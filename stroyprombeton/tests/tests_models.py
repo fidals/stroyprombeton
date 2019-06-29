@@ -1,5 +1,3 @@
-import unittest
-
 from django.test import TestCase, tag
 
 from pages import models as pages_models
@@ -15,17 +13,31 @@ class Category_(TestCase):
         option = stb_models.Option.objects.first()
         least = option.product.category
         root = least.get_root()
+        self.assertNumQueries(2, lambda: len(root.get_series()))
         self.assertIn(option.series, least.get_series())
         self.assertIn(option.series, root.get_series())
 
-    # @todo #692:30m  Implement min_price for non-leaf category.
-    @unittest.expectedFailure
     def test_min_price(self):
         """Non-leaf category should find min price recursively."""
         option = stb_models.Option.objects.filter(price__gt=0).first()
         category = option.product.category.parent
+        self.assertNumQueries(1, category.get_min_price)
         self.assertGreater(category.get_min_price(), 0)
         self.assertLessEqual(category.get_min_price(), option.price)
+
+
+@tag('fast')
+class Section(TestCase):
+
+    fixtures = ['dump.json']
+
+    def test_min_price(self):
+        """Non-leaf category should find min price recursively."""
+        option = stb_models.Option.objects.filter(price__gt=0).first()
+        section = option.product.section
+        self.assertNumQueries(1, section.get_min_price)
+        self.assertGreater(section.get_min_price(), 0)
+        self.assertLessEqual(section.get_min_price(), option.price)
 
 
 @tag('fast')

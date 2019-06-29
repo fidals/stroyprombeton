@@ -76,29 +76,19 @@ class Category(catalog.models.AbstractCategory, pages.models.PageMixin):
                     .select_related('product')
                     .select_related('product__category')
                     .filter(
-                        product__category__in=(
-                            # @todo #597:30m  Check mptt's `get_descendants` default optimization.
-                            #  Check if the method already contains
-                            #  relevant prefetch/select_related for parent, children fields.
-                            Category.objects
-                            .select_related('parent')
-                            .prefetch_related('children')
-                            .filter(id=self.id)
-                            .get_descendants(include_self=True)
-                            .active()
-                        )
+                        product__in=Product.objects.filter_descendants(self)
                     ).values('id')
                 )
             ).distinct()
             .order_by('name')
         )
 
+    def recursive_products(self) -> 'ProductQuerySet':
+        return Product.objects.filter_descendants(self)
+
     def get_min_price(self) -> float:
-        return (
-            Option.objects
-            .filter(product__in=self.products.active())
-            .min_price()
-        )
+        """Helper for templates."""
+        return self.recursive_products().options().min_price()
 
 
 class SeriesQuerySet(models.QuerySet):
@@ -180,7 +170,8 @@ class Series(pages.models.PageMixin):
         )
 
     def get_min_price(self) -> float:
-        return Option.objects.filter(series=self).min_price()
+        """Helper for templates."""
+        return self.options.min_price()
 
     def save(self, *args, **kwargs):
         if not self.slug:
@@ -249,14 +240,9 @@ class Section(pages.models.PageMixin):
         """Url path to the related page."""
         return reverse('section', args=(self.page.slug,))
 
-    # @todo #669:60m  Implement `Section.get_min_price` method.
-    #  And look at the get_min_price arch in a whole.
-    #  Maybe only ProductsQS and OptionsQS should have min_price,
-    #  but Section and Series should not.
-    #  Category, Series and Product page templates at the production DB
-    #  contains series min price usage.
     def get_min_price(self) -> float:
-        raise NotImplemented()
+        """Helper for templates."""
+        return self.products.options().min_price()
 
 
 class OptionQuerySet(models.QuerySet):
@@ -268,6 +254,7 @@ class OptionQuerySet(models.QuerySet):
         """Prefetch or select typical related fields to reduce sql queries count."""
         return (
             self.select_related('product')
+            .select_related('series')
             .prefetch_related('tags')
         )
 
@@ -382,11 +369,27 @@ class ProductQuerySet(catalog.models.ProductQuerySet):
     def get_series(self):
         pass
 
+    def options(self) -> OptionQuerySet:
+        return Option.objects.filter(product__in=self).distinct()
+
+
+class ProductManager(models.Manager.from_queryset(ProductQuerySet)):
+    """Get all products of given category by Category's id or instance."""
+
+    def filter_descendants(self, category: Category) -> ProductQuerySet:
+        return self.get_queryset().filter_descendants(category)
+
+    def active(self):
+        return self.get_queryset().active()
+
+    def tagged(self, tags: typing.Iterable['Tag']):
+        return self.get_queryset().tagged(tags)
+
 
 # not inherited from `catalog.models.AbstractProduct`, because
 # AbstractProduct's set of fields is shared between Product and Option models.
 class Product(catalog.models.AbstractProduct, pages.models.PageMixin):
-    objects = catalog.models.ProductManager()
+    objects = ProductManager()
 
     name = models.CharField(max_length=255, db_index=True, verbose_name=_('name'))
     category = models.ForeignKey(
