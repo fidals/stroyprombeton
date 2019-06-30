@@ -79,7 +79,7 @@ pipeline:
     <<: *test
     commands:
       - python manage.py collectstatic --noinput
-      - python manage.py test --parallel --tag slow -k --verbosity 3
+      - python manage.py test --parallel --tag slow -k --rerun-failed 2 --verbosity 3
 
   lint-coala:
     <<: *lint
