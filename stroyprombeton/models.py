@@ -206,7 +206,6 @@ class SectionManager(models.Manager.from_queryset(SeriesQuerySet)):
         return self.get_queryset().active()
 
 
-# @todo #669:30m  Add Sections to the admin panel.
 # @todo #669:30m  Get rid of Category-Series-Section models code doubling.
 class Section(pages.models.PageMixin):
     """
@@ -494,6 +493,17 @@ class SeriesPage(pages.models.ModelPage):
         verbose_name_plural = _('series')
 
     objects = pages.models.ModelPage.create_model_page_managers(Series)
+
+
+class SectionPage(pages.models.ModelPage):
+    """Proxy model for Admin."""
+
+    class Meta(pages.models.ModelPage.Meta):
+        proxy = True
+        verbose_name = _('section')
+        verbose_name_plural = _('sections')
+
+    objects = pages.models.ModelPage.create_model_page_managers(Section)
 
 
 def get_manager(parent_slug):

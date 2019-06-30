@@ -70,3 +70,8 @@ class ProductInline(inlines.ProductInline):
 class SeriesInline(admin.StackedInline):
 
     model = stb_models.Series
+
+
+class SectionInline(admin.StackedInline):
+
+    model = stb_models.Section

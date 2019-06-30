@@ -88,7 +88,7 @@ class SeriesPageAdmin(mixins.PageWithModels):
     delete = True
     form = AdminWidgetsForm
 
-    inlines = [inlines.SeriesInline, inlines.ImageInline]
+    inlines = [inlines.SeriesInline, inlines.ImageInline]  # Ignore CPDBear
     list_display = ['model_id', 'name', 'custom_parent', 'is_active']
     list_filter = [
         'is_active',
@@ -104,4 +104,30 @@ class SeriesPageAdmin(mixins.PageWithModels):
         return super().model_id(obj)
 
     model_id.admin_order_field = '_series_id'
+    model_id.short_description = _('Id')
+
+
+class SectionPageAdmin(mixins.PageWithModels):
+
+    add = True
+    change = True
+    delete = True
+    form = AdminWidgetsForm
+
+    inlines = [inlines.SectionInline, inlines.ImageInline]
+    list_display = ['model_id', 'name', 'custom_parent', 'is_active']
+    list_filter = [
+        'is_active',
+        rf_filters.HasContent,
+        rf_filters.HasImages,
+    ]
+
+    def get_queryset(self, request):
+        qs = super().get_queryset(request)
+        return self.add_reference_to_field_on_related_model(qs, _section_id='id')
+
+    def model_id(self, obj):
+        return super().model_id(obj)
+
+    model_id.admin_order_field = '_section_id'
     model_id.short_description = _('Id')
