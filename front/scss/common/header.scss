@@ -106,17 +106,12 @@
   }
 }
 
-.header-logo-wrapper {
-  overflow: hidden;
-  position: relative;
-  width: 52px;
-
-  @include media(710) {
-    width: 265px;
-  }
-}
-
 .header-logo {
+  background-size: contain;
+  display: block;
+  height: 44px;
+  width: 74px;
+
   @include media($xxs) {
     background: url("#{$img-path}/stb-logo-square.png") no-repeat;
   }
@@ -125,7 +120,13 @@
     background: url("#{$img-path}/stb-logo.png") no-repeat;
   }
 
-  background-size: contain;
-  display: block;
-  height: 44px;
+  &-logo-wrapper {
+    overflow: hidden;
+    position: relative;
+    width: 52px;
+
+    @include media(710) {
+      width: 265px;
+    }
+  }
 }

@@ -188,10 +188,10 @@ class SectionQuerySet(models.QuerySet):
             .prefetch_related('products')
         )
 
-    def active(self) -> 'SeriesQuerySet':
+    def active(self) -> 'SectionQuerySet':
         return self.filter(page__is_active=True)
 
-    def exclude_empty(self) -> 'SeriesQuerySet':
+    def exclude_empty(self) -> 'SectionQuerySet':
         return (
             self.active()
             .filter(products__page__is_active=True)
@@ -199,7 +199,7 @@ class SectionQuerySet(models.QuerySet):
         )
 
 
-class SectionManager(models.Manager.from_queryset(SeriesQuerySet)):
+class SectionManager(models.Manager.from_queryset(SectionQuerySet)):
     """Get all products of given category by Category's id or instance."""
 
     def active(self):
@@ -218,7 +218,7 @@ class Section(pages.models.PageMixin):
     #  What problem it solves, who required it.
     #  Why we solved problem in this way.
 
-    objects = SeriesManager()
+    objects = SectionManager()
 
     SLUG_HASH_SIZE = 5
     SLUG_MAX_LENGTH = 50

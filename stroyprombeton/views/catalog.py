@@ -231,10 +231,37 @@ def series_matrix(request, page='series'):
     )
     return render(
         request,
-        'catalog/series_matrix.html',
+        'catalog/matrix.html',
         {
             'page': page,
-            'parted_series': partition_(series, columns),
+            'parted_items': partition_(series, columns),
+        }
+    )
+
+
+# waiting for #631 to avoid code doubling between series and sections
+def sections_matrix(request, page='sections'):
+    def partition_(items: list, columns: int) -> typing.Collection[list]:
+        """Part items to the columns by given columns count."""
+        result = defaultdict(list)  # Ignore CPDBear
+        column_length = len(items) // columns + 1
+        for i, e in enumerate(items):
+            result[i // column_length].append(e)
+        return result.values()
+
+    columns = settings.SECTIONS_MATRIX_COLUMNS_COUNT
+    page = CustomPage.objects.get(slug=page)
+    sections = (
+        models.Section.objects.bind_fields()
+        .exclude_empty()
+        .order_by('name')
+    )
+    return render(
+        request,
+        'catalog/matrix.html',
+        {
+            'page': page,
+            'parted_items': partition_(sections, columns),
         }
     )
 
@@ -264,8 +291,6 @@ def series(request, series_slug: str):
     )
 
 
-# @todo #669:120m  Create sections navigation.
-#  Top menu link, matrix page, links from and to categories.
 def section(request, section_slug: str):
     section = get_object_or_404(models.Section.objects, page__slug=section_slug)
     products = section.products.active()

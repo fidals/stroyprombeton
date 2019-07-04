@@ -5,11 +5,12 @@
 
   <div class="container container-fluid">
     <div class="row">
-      {% for partition in parted_series %}
+      {# "items" are categories, sections or series #}
+      {% for partition in parted_items %}
         <div class="col-xs-12 col-sm-4 col-md-3">
           <ul>
-            {% for series in partition %}
-              <li><a href="{{ series.url }}">{{ series.name }}</a></li>
+            {% for item in partition %}
+              <li><a href="{{ item.url }}">{{ item.name }}</a></li>
             {% endfor %}
           </ul>
         </div>

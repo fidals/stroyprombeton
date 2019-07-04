@@ -42,6 +42,14 @@
            Don't forget to check names in depth.
            For example `$m-category-filter-margin-right` should be renamed too.
         {% endcomment %}
+        {% comment %}
+          @todo #701:60m  Link between sections and category pages.
+           Category should link on sections it already links on series.
+           But don't copy SeriesByCategory functionality.
+           Link on the plain section page.
+           Section should link to categories with your's UI.
+           Start from the code below.
+        {% endcomment %}
         {% if category.get_series %}
           <div class="category-filter">
             <div class="category-filter-title">Серии</div>

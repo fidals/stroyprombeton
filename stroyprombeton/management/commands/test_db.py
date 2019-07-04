@@ -41,8 +41,8 @@ EMPTY_SERIES_PATTERN = 'Series empty #{}'
 
 FILLED_SECTIONS_COUNT = 2
 EMPTY_SECTIONS_COUNT = 18
-SECTIONS_PATTERN = 'Sections #{}'
-EMPTY_SECTIONS_PATTERN = 'Sections empty #{}'
+SECTION_PATTERN = 'Section #{}'
+EMPTY_SECTION_PATTERN = 'Section empty #{}'
 
 CATEGORY_PATTERN = 'Category #{} of #{}'
 FEEDBACKS_COUNT = 9
@@ -216,11 +216,11 @@ class Command(BaseCommand):
 
         parent = CustomPage.objects.get(slug='sections')
         real_sections = [
-            create(id=i, pattern=SERIES_PATTERN, parent=parent)
+            create(id=i, pattern=SECTION_PATTERN, parent=parent)
             for i in range(FILLED_SECTIONS_COUNT)
         ]
         for i in range(EMPTY_SECTIONS_COUNT):
-            create(id=i, pattern=EMPTY_SERIES_PATTERN, parent=parent)
+            create(id=i, pattern=EMPTY_SECTION_PATTERN, parent=parent)
         # return only real series, because only they should have children
         return real_sections
 

@@ -46,6 +46,7 @@ custom_pages = [
     custom_page_url(r'^(?P<page>client-feedbacks)/$', views.ClientFeedbacksPageView.as_view()),
     custom_page_url(r'^(?P<page>gbi)/$', views.CategoryMatrix.as_view()),
     custom_page_url(r'^(?P<page>series)/$', views.series_matrix),
+    custom_page_url(r'^(?P<page>sections)/$', views.sections_matrix),
     custom_page_url(r'^(?P<page>news)/$', views.NewsPageView.as_view()),
     custom_page_url(r'^(?P<page>price-success)/$', views.OrderPriceSuccess.as_view()),
     custom_page_url(r'^(?P<page>order)/$', views.OrderPage.as_view()),

@@ -951,6 +951,8 @@ class CatalogTags(BaseCatalogTestCase, CategoryTestMixin):
         self.assertFalse(returned.intersection(disappeared))
 
 
+# don't create SectionMatrix test to avoid tests code doubling.
+# At #631 we'll get rid of the doubling.
 @tag('fast', 'catalog')
 class SeriesMatrix(BaseCatalogTestCase):
     fixtures = ['dump.json']
@@ -981,7 +983,7 @@ class SeriesMatrix(BaseCatalogTestCase):
             .order_by('name')
         )
         app_series = list(chain.from_iterable(
-            response.context['parted_series']
+            response.context['parted_items']
         ))
         self.assertEqual(db_series.count(), len(app_series))
         self.assertTrue(
