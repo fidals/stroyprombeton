@@ -17,6 +17,7 @@ docker/env_files/*
 celerybeat*
 fake_db.py
 .vscode/
+venv/
 package-lock.json
 report.xml
 database

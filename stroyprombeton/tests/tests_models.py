@@ -10,12 +10,20 @@ class Category_(TestCase):
     fixtures = ['dump.json']
 
     def test_series(self):
-        option = stb_models.Option.objects.first()
+        option = stb_models.Option.objects.filter(series__isnull=False).first()
         least = option.product.category
         root = least.get_root()
         self.assertNumQueries(2, lambda: len(root.get_series()))
         self.assertIn(option.series, least.get_series())
         self.assertIn(option.series, root.get_series())
+
+    def test_sections(self):
+        product = stb_models.Product.objects.filter(section__isnull=False).first()
+        least = product.category
+        root = least.get_root()
+        self.assertNumQueries(1, lambda: len(root.get_sections()))
+        self.assertIn(product.section, least.get_sections())
+        self.assertIn(product.section, root.get_sections())
 
     def test_min_price(self):
         """Non-leaf category should find min price recursively."""

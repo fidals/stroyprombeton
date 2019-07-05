@@ -5,21 +5,10 @@
   {% include 'components/page_h1.html' with page=page only %}
 
   <div class="container container-fluid">
-    {% if category %}
-      <div class="row">
-        <div class="col-md-9">
-          <p>
-            Изделия отфильтрованы по секции
-            <a href="{{ category.url }}">{{ category.name }}</a>.
-          </p>
-          <p>
-            <a href="{{ page.url }}">Полный список изделий</a> этой серии.
-          </p>
-        </div>
-      </div>
-      <div class="row"><div class="col-md-9"><br><br><br></div></div>
-    {% endif %}
-
+    {% comment %}
+      @todo #721:60m  Show categories list from section page.
+       We have no mockups. Create your own UI.
+    {% endcomment %}
     <div class="row">
       <div class="col-md-9 product-list">
         <div class="public-offer">Не является публичной офертой.</div>

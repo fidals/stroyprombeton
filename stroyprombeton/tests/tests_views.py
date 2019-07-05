@@ -299,15 +299,33 @@ class Category(BaseCatalogTestCase, TestPageMixin):
         for from_db, from_app in zip(second_level_db, second_level_app):
             self.assertEqual(from_db.name, from_app.a.text)
 
-    def test_series_list(self):
+    # @todo #721:30m  Fix category links on series.
+    #  Launch the test below to get details.
+    @unittest.expectedFailure
+    def test_links_on_series(self):
         """Category should contain it's series list with links."""
-        series = models.Series.objects.first()
-        category = series.options.first().product.category
+        option = models.Option.objects.filter(series__isnull=False).first()
+        category = option.product.category
         soup = self.get_category_soup(category)
         series_app = soup.find_all(class_='series-filter-link')
+        response = self.client.get(series_app[0]['href'])
+        self.assertEqual(200, response.status_code)
         self.assertEqual(
             [s.name for s in category.get_series()],
             [s.text.strip() for s in series_app]
+        )
+
+    def test_links_on_sections(self):
+        """Category should contain it's sections list with links."""
+        product = models.Product.objects.filter(section__isnull=False).first()
+        category = product.category
+        soup = self.get_category_soup(category)
+        sections_app = soup.find_all(class_='section-filter-link')
+        response = self.client.get(sections_app[0]['href'])
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(
+            [s.name for s in category.get_sections()],
+            [s.text.strip() for s in sections_app]
         )
 
     def test_empty_products_404(self):

@@ -42,14 +42,6 @@
            Don't forget to check names in depth.
            For example `$m-category-filter-margin-right` should be renamed too.
         {% endcomment %}
-        {% comment %}
-          @todo #701:60m  Link between sections and category pages.
-           Category should link on sections it already links on series.
-           But don't copy SeriesByCategory functionality.
-           Link on the plain section page.
-           Section should link to categories with your's UI.
-           Start from the code below.
-        {% endcomment %}
         {% if category.get_series %}
           <div class="category-filter">
             <div class="category-filter-title">Серии</div>
@@ -62,8 +54,23 @@
                      Reverse the url at the views or at the templates.
                   {% endcomment %}
                   <a class="series-filter-link category-filter-link"
-                     href="/gbi/series/{{ series_one.slug }}/category/{{ category.id }}">
-                    {{ series_one.name }}
+                     href="/gbi/series/{{ series_one.page.slug }}/category/{{ category.id }}/">
+                    {{ series_one.seo_name }}
+                  </a>
+                </li>
+              {% endfor %}
+            </ul>
+          </div>
+        {% endif %}
+        {% if category.get_sections %}
+          <div class="category-filter">
+            <div class="category-filter-title">Типы изделий</div>
+            <ul class="category-filter-list">
+              {% for section in category.get_sections %}
+                <li class="category-filter-item">
+                  <a class="section-filter-link category-filter-link"
+                     href="/gbi/section/{{ section.page.slug }}/">
+                    {{ section.name }}
                   </a>
                 </li>
               {% endfor %}

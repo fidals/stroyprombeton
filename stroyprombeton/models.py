@@ -83,6 +83,19 @@ class Category(catalog.models.AbstractCategory, pages.models.PageMixin):
             .order_by('name')
         )
 
+    def get_sections(self) -> models.QuerySet:
+        return (
+            Section.objects
+            .filter(products__in=models.Subquery(
+                Product.objects
+                .select_related('category')
+                .filter_descendants(self)
+                .values('id')
+            ))
+            .distinct()
+            .order_by('name')
+        )
+
     def recursive_products(self) -> 'ProductQuerySet':
         return Product.objects.filter_descendants(self)
 
@@ -148,6 +161,9 @@ class Series(pages.models.PageMixin):
     slug = models.SlugField(
         blank=False, unique=True, max_length=SLUG_MAX_LENGTH,
     )
+
+    def __str__(self):
+        return self.name
 
     # @todo #569:120m  Design unified slug autogenerating mech.
     #  Now it's doubled here and in several places at catalog.models.
@@ -231,6 +247,9 @@ class Section(pages.models.PageMixin):
         max_length=1000, db_index=True, unique=True, verbose_name=_('name')
     )
 
+    def __str__(self):
+        return self.name
+
     @property
     def url(self):
         return self.get_absolute_url()
@@ -238,6 +257,10 @@ class Section(pages.models.PageMixin):
     def get_absolute_url(self):
         """Url path to the related page."""
         return reverse('section', args=(self.page.slug,))
+
+    @property
+    def seo_name(self):
+        return self.name + ' железобетонные'
 
     def get_min_price(self) -> float:
         """Helper for templates."""
