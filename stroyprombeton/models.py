@@ -440,6 +440,10 @@ class Product(catalog.models.AbstractProduct, pages.models.PageMixin):
     def parent(self):
         return self.category or None
 
+    @property
+    def catalog_name(self) -> str:
+        return str(self.name)
+
     def get_absolute_url(self):
         return reverse('product', args=(self.id,))
 
