@@ -110,7 +110,6 @@
   background-size: contain;
   display: block;
   height: 44px;
-  width: 74px;
 
   @include media($xxs) {
     background: url("#{$img-path}/stb-logo-square.png") no-repeat;
