@@ -11,6 +11,12 @@ generate-production-static-data deploy
 
 
 # ---------------------- Dev section ----------------------
+bash:
+	$(dc) exec app bash
+
+repl:
+	$(dc) exec app python manage.py shell
+
 migrate:
 	$(dc) exec app python manage.py migrate
 
