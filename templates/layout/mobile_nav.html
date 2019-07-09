@@ -13,21 +13,17 @@
     </li>
 
     <li class="mobile-menu-item">
-      <span>Категории</span>
+      <span>Каталог</span>
       <ul>
         <li class="nav-subnav-item">
-          <a class="nav-subnav-item-link" href="{% custom_url 'gbi' %}">
-            <b><u>весь каталог</u></b>
-          </a>
+          <a class="nav-subnav-item-link" href="{% custom_url 'gbi' %}">Категории</a>
         </li>
-        <li>&nbsp</li>
-        {% for item in categories %}
-          <li class="mobile-menu-item">
-            <a href="{{ item.url }}">
-              {{ item.name }}
-            </a>
-          </li>
-        {% endfor %}
+        <li class="nav-subnav-item">
+          <a class="nav-subnav-item-link" href="{% custom_url 'series' %}">Серии</a>
+        </li>
+        <li class="nav-subnav-item">
+          <a class="nav-subnav-item-link" href="{% custom_url 'sections' %}">Типы изделий</a>
+        </li>
       </ul>
     </li>
 
