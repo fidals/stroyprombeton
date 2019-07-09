@@ -222,17 +222,12 @@ class SectionManager(models.Manager.from_queryset(SectionQuerySet)):
         return self.get_queryset().active()
 
 
-# @todo #669:30m  Get rid of Category-Series-Section models code doubling.
 class Section(pages.models.PageMixin):
     """
     Group of products created by product type principle.
 
     See doc/section.md for details.
     """
-
-    # @todo #669:30m  Doc section concept.
-    #  What problem it solves, who required it.
-    #  Why we solved problem in this way.
 
     objects = SectionManager()
 
