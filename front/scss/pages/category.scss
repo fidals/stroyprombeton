@@ -139,7 +139,6 @@
 
 .category-about {
   align-items: center;
-  display: flex;
   justify-content: center;
 
   &-text {
@@ -152,5 +151,9 @@
 
   &-img {
     width: 25%;
+  }
+
+  @include media($xs) {
+    display: flex;
   }
 }

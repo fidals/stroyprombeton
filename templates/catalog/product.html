@@ -56,29 +56,30 @@
           </div>
         </div>
 
-        <div class="option-order row">
-          <table class="options-table table">
+        <div class="row">
+          <div class="col-md-12 option-list">
+            <table class="options-table table">
             <tr>
-              <th>Марка</th>
+              <th class="table-th">Марка</th>
               {% for group in tag_groups %}
-                <th>{{ group.name }}</th>
+                <th class="table-th">{{ group.name }}</th>
               {% endfor %}
 
-              <th>Цена</th>
-              <th>Кол-во</th>
-              <th>Итог</th>
-              <th>{# Column for order button #}</th>
+              <th class="table-th">Цена</th>
+              <th class="table-th">Кол-во</th>
+              <th class="table-th">Итог</th>
+              <th class="table-th">{# Column for order button #}</th>
             </tr>
             {% for option in options.all %}
-              <tr data-id="{{ option.id }}" id="option-{{ option.id }}">
-                <td class="option-td">{{ option.mark }}</td>
+              <tr class="table-tr" data-id="{{ option.id }}" id="option-{{ option.id }}">
+                <td class="table-td">{{ option.mark }}</td>
                 {% for group in tag_groups %}
-                  <td class="option-td">
+                  <td class="table-td tags">
                     {% get_tag_name group option %}
                   </td>
                 {% endfor %}
 
-                <td class="option-td option-td-price js-option-price">
+                <td class="table-td option-td-price js-option-price">
                   <div itemprop="offers" itemscope itemtype="http://schema.org/Offer">
                     {{ option.price|format_price }}
                     <meta itemprop="price" content="{{ option.price|floatformat:2 }}">
@@ -86,13 +87,13 @@
                   </div>
                 </td>
 
-                <td class="option-td">
+                <td class="table-td table-count table-td">
                   {% include 'catalog/count_input.html' with quantity='1' only %}
                 </td>
-                <td class="option-td">
+                <td class="table-td table-price table-td sum">
                   <span class="js-option-sum">{{ option.price|format_price }}</span>
                 </td>
-                <td class="option-td">
+                <td class="table-td table-order table-td">
                   <button class="btn buy-product js-buy-product"
                    data-id="{{ option.id }}"
                    data-catalog-name="{{ option.catalog_name }}"
@@ -101,6 +102,7 @@
               </tr>
             {% endfor %}
           </table>
+          </div>
           <div class="public-offer">Не является публичной офертой</div>
         </div>
 
