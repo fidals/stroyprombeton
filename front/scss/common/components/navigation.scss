@@ -171,17 +171,38 @@
     display: block;
   }
 
-  &-item {
+  & a {
+    color: $c-nav-subnav-link;
+  }
+
+  & a:hover {
+    color: $c-nav-subnav-link-hover;
+  }
+
+  &-block {
     &:not(:last-child) {
-      margin-bottom: 10px;
+      margin-bottom: 7px;
+      padding-bottom: 7px;
+      border-bottom: 1px solid $c-border-grey;
     }
 
-    &-link {
-      color: $c-nav-subnav-link;
+    & .label {
+      width: 30%;
+      display: inline-block;
+      vertical-align: top;
+
+      & a {
+        text-decoration: underline;
+      }
     }
 
-    &-link:hover {
-      color: $c-nav-subnav-link-hover;
+    & .examples {
+      width: 65%;
+      display: inline-block;
+
+      & .example {
+        margin: 0 0 8px 0;
+      }
     }
 
     &-remove {

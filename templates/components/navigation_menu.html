@@ -6,24 +6,29 @@
   <a class="nav-link" href="{% custom_url 'gbi' %}">Каталог</a>
 
   {% comment %}
-    @todo #736:60m  Show example catalog items at the menu header.
-     Show some catalog items to clarify catalog terms with UX.
-     We had been shown such examples already.
-     See comments of the parent task.
+    @todo #740:60m  Show example Series and Sections in top menu. Mobile too.
+     As categories already shown.
+     Then show all the examples stuff at the mobile version.
+     See pr#737 with removed mobile version template code.
   {% endcomment %}
-  <ul class="nav-subnav js-nav-subnav">
-    <li class="nav-subnav-item">
-      <a class="nav-subnav-item-link" href="{% custom_url 'gbi' %}">Категории</a>
-    </li>
+  <div class="nav-subnav js-nav-subnav">
+    <div class="nav-subnav-block">
+      <div class="label"><a href="{% custom_url 'gbi' %}">Категории</a></div>
+      <ul class="examples">
+        {% for item in categories %}
+          <li class="example"><a href="{{ item.url }}">{{ item.name }}</a></li>
+        {% endfor %}
+      </ul>
+    </div>
 
-    <li class="nav-subnav-item">
-      <a class="nav-subnav-item-link" href="{% custom_url 'series' %}">Серии</a>
-    </li>
+    <div class="nav-subnav-block">
+      <div class="label"><a href="{% custom_url 'series' %}">Серии</a></div>
+    </div>
 
-    <li class="nav-subnav-item">
-      <a class="nav-subnav-item-link" href="{% custom_url 'sections' %}">Типы изделий</a>
-    </li>
-  </ul>
+    <div class="nav-subnav-block">
+      <div class="label"><a href="{% custom_url 'sections' %}">Типы изделий</a></div>
+    </div>
+  </div>
 </li>
 
 <li class="nav-item">
