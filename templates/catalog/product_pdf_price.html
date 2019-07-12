@@ -4,7 +4,6 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-
   <style>
     * {
       font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
@@ -37,7 +36,6 @@
     td:not(:last-child) {
       border-right: 1px solid #000;
     }
-    
     .text-center {
       text-align: center;
     }
@@ -57,6 +55,7 @@
       </tr>
     </thead>
     <tbody>
+      {# @todo #744:60m Render an option's tags for pdf price list #}
       {% for product in products %}
         <tr id="{{ product.id }}">
           <td>

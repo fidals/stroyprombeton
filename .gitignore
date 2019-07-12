@@ -22,3 +22,5 @@ package-lock.json
 report.xml
 database
 *.orig
+*.sublime-project
+*.sublime-workspace

@@ -13,6 +13,7 @@ from wkhtmltopdf.views import PDFTemplateView
 from catalog import context
 from catalog.views import catalog
 from images.models import Image
+from pages import context as pages_context
 from pages.models import CustomPage, ModelPage
 from pages.templatetags.pages_extras import breadcrumbs as get_page_breadcrumbs
 from stroyprombeton import context as stb_context, models, exception, request_data
@@ -192,24 +193,29 @@ class ProductPDF(PDFTemplateView, DetailView):
 
     def get(self, *args, **kwargs):
         self.object = self.get_object()
-        return super(ProductPDF, self).get(*args, **kwargs)
+        return super().get(*args, **kwargs)
 
     def get_context_data(self, **kwargs):
-        context = super(ProductPDF, self).get_context_data(**kwargs)
-        category = context[self.context_object_name]
+        context_ = super().get_context_data(**kwargs)
+        category = context_[self.context_object_name]
 
-        products = (
-            models.Product.objects
-            .active()
-            .filter_descendants(category)
-            # use `OPTIONS_ORDERING` instead
-            # .order_by(*settings.PRODUCTS_ORDERING)
+        options_ = stb_context.options.CategoryFiltered(
+            stb_context.options.All(),
+            category
+        )
+        grouped_tags = context.tags.GroupedTags(
+            tags=stb_context.TagsByOptions(
+                stb_context.tags.All(),
+                options_.qs(),
+            )
         )
 
         return {
-            **context,
+            **context_,
+            **pages_context.Contexts([
+                options_, grouped_tags,
+            ]).context(),
             'category': category,
-            'products': products,
         }
 
 

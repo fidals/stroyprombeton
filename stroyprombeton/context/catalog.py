@@ -15,8 +15,7 @@ from django.shortcuts import get_object_or_404
 from catalog import context, typing
 from images.models import Image
 from pages import context as pages_context
-from stroyprombeton import models as stb_models, request_data
-from stroyprombeton.context import options
+from stroyprombeton import models as stb_models, context as stb_context, request_data
 
 
 class TagsByOptions(context.Tags):
@@ -75,13 +74,9 @@ class Catalog(context.Context):
             id=self.request_data.id
         )
 
-    @property
-    def tags(self) -> context.Tags:
-        return context.Tags(stb_models.Tag.objects.all())
-
     def context(self) -> typing.ContextDict:
         tags = FilteredTags(stb_models.Tag.objects.all(), self.request_data)
-        options_ = options.Filtered(self.category, tags.qs(), self.request_data)
+        options_ = stb_context.options.Filtered(self.category, tags.qs())
 
         if not options_.qs():
             raise http.Http404('<h1>В категории нет изделий</h1')
@@ -100,7 +95,7 @@ class Catalog(context.Context):
             sliced_options.products, Image.objects.all()
         )
         grouped_tags = context.tags.GroupedTags(
-            tags=TagsByOptions(self.tags, options_.qs())
+            tags=TagsByOptions(stb_context.tags.All(), options_.qs())
         )
         page = Page(self.page, tags)
         category = CategoryContext(self.request_data)
@@ -162,12 +157,12 @@ class FetchOptions(context.Context):
     def context(self) -> typing.ContextDict:
         category = CategoryContext(self.request_data)
         tags = FilteredTags(stb_models.Tag.objects.all(), self.request_data)
-        options_ = options.Sliced(
+        options_ = stb_context.options.Sliced(
             request_data_=self.request_data,
-            options=options.Searched(
+            options=stb_context.options.Searched(
                 request_data_=self.request_data,
-                options=options.Filtered(
-                    category.object(), tags.qs(), self.request_data
+                options=stb_context.options.Filtered(
+                    category.object(), tags.qs(),
                 )
             )
         )

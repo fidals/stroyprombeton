@@ -741,13 +741,36 @@ class ProductPrice(TestCase):
 
     fixtures = ['dump.json']
 
-    def test_price_list(self):
-        """Context for pdf generation should include Category and Products."""
-        self.response = self.client.get('/gbi/categories/1/pdf/')
+    def setUp(self):
+        self.category = models.CategoryPage.objects.filter(level=0).first()
+        self.response = self.client.get(
+            reverse('product_pdf', args=(self.category.id,))
+        )
+        self.context = self.response.context
 
-        self.assertTrue(self.response['Content-Type'] == 'application/pdf')
-        self.assertTrue(self.response.context['category'].name == CATEGORY_ROOT_NAME)
-        self.assertTrue(len(self.response.context['products']) > 100)
+    def test_content_type(self):
+        self.assertEqual(self.response['Content-Type'], 'application/pdf')
+
+    def test_category_name(self):
+        self.assertEqual(self.context['category'].name, self.category.name)
+
+    def test_products(self):
+        self.assertIsInstance(self.context['products'], models.OptionQuerySet)
+        self.assertGreater(self.context['products'].count(), 100)
+
+    def test_tags_are_grouped(self):
+        for group, tags in self.context['group_tags_pairs']:
+            for tag_ in tags:
+                self.assertEqual(group, tag_.group)
+
+    def test_product_tags(self):
+        tags = set(chain.from_iterable(
+            grouped_tags
+            for _, grouped_tags in self.context['group_tags_pairs']
+        ))
+
+        for product in self.context['products'].filter(tags__isnull=False):
+            self.assertTrue(tags & set(product.tags.all()))
 
 
 @tag('fast', 'catalog')

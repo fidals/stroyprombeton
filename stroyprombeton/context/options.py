@@ -49,26 +49,72 @@ class Options(abc.ABC):
         }
 
 
+class All(Options):
+
+    def __init__(self, qs: stb_models.OptionQuerySet = None):
+        self._qs = qs or stb_models.Option.objects.all()
+
+    def qs(self) -> stb_models.OptionQuerySet:
+        return (
+            self._qs
+            .bind_fields()
+            .active()
+            .order_by(*settings.OPTIONS_ORDERING)
+        )
+
+
+class CategoryFiltered(Options):
+
+    def __init__(
+        self,
+        options: Options,
+        category: stb_models.Category
+    ):
+        self.options = options
+        self.category = category
+
+    def qs(self) -> stb_models.OptionQuerySet:
+        return (
+            self.options
+            .qs()
+            .filter_descendants(self.category)
+        )
+
+
+class TagsFiltered(Options):
+    def __init__(
+        self,
+        options: Options,
+        tags: stb_models.TagQuerySet,
+    ):
+        self.options = options
+        self.tags = tags
+
+    def qs(self) -> stb_models.OptionQuerySet:
+        return (
+            self.options
+            .qs()
+            .tagged_or_all(self.tags)
+        )
+
+
 class Filtered(Options):
     def __init__(
         self,
         category: stb_models.Category,
         tags: stb_models.TagQuerySet,
-        request_data_: request_data.Category
     ):
-        self.category = category
-        self.tags = tags
-        self.request_data = request_data_
+        """Filtered options by a category and tags."""
+        self.filtered = TagsFiltered(
+            CategoryFiltered(
+                All(),
+                category,
+            ),
+            tags,
+        )
 
     def qs(self) -> stb_models.OptionQuerySet:
-        return (
-            stb_models.Option.objects
-            .bind_fields()
-            .active()
-            .filter_descendants(self.category)
-            .tagged_or_all(self.tags)
-            .order_by(*settings.OPTIONS_ORDERING)
-        )
+        return self.filtered.qs()
 
 
 class Searched(Options):
