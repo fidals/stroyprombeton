@@ -99,10 +99,79 @@ class SecondLevelCategoryPage(CategoryPage):
         ]
 
 
-class ThirdLevelCategoryPage(CategoryPage):
-    def options(self) -> list:
-        # @todo #741:60m  Parse stalbeton's options.
+class PageElement:
+    def __init__(self, soup: bs4.element.Tag):
+        self.soup = soup
+
+
+# @todo #761:60m  Implement parse_stalbeton.Properties class.
+#  It full name is `OptionPropertiesSet`.
+#  We can extract property dimensions only from html tag class names.
+#  For ex the same property Length can have
+#  either 'unit_length_mm' or 'unit_length_m' class name.
+class OptionPropertiesSet(PageElement):
+    @property
+    def length(self) -> typing.Union[float, None]:
         raise NotImplemented()
+
+    @property
+    def width(self) -> typing.Union[float, None]:
+        raise NotImplemented()
+
+    @property
+    def height(self) -> typing.Union[float, None]:
+        raise NotImplemented()
+
+    @property
+    def diameter_out(self) -> typing.Union[float, None]:
+        raise NotImplemented()
+
+    @property
+    def diameter_in(self) -> typing.Union[float, None]:
+        raise NotImplemented()
+
+    @property
+    def volume(self) -> typing.Union[float, None]:
+        raise NotImplemented()
+
+    @property
+    def mass(self) -> typing.Union[int, None]:
+        raise NotImplemented()
+
+
+class Option(PageElement):
+    @property
+    def path(self) -> str:
+        return self.soup.find(class_='link_theme-line')['href']
+
+    @property
+    def name(self) -> str:
+        return self.soup.find(class_='link_theme-line').text
+
+    @property
+    def product_name(self) -> str:
+        return self.soup.find(class_='product-info-caption__item').text
+
+    @property
+    def series(self) -> str:
+        return self.soup.find(class_='product-info-caption__link').text
+
+    @property
+    def price(self) -> typing.Union[int, None]:
+        text = self.soup.find(class_='unit_price').text.replace(' ', '')
+        # input text can't be float number
+        return int(text) if text.isnumeric() else None
+
+    def options(self) -> OptionPropertiesSet:
+        return OptionPropertiesSet(self.soup.find(class_='product-info-param'))
+
+
+class ThirdLevelCategoryPage(CategoryPage):
+    def options(self) -> typing.List[Option]:
+        return [
+            Option(soup)
+            for soup in self.soup.select('.product-grid-list-item')
+        ]
 
     # @todo #741:60m Parse series from stalbeton.
     #  Series are already parsed as text strings.
