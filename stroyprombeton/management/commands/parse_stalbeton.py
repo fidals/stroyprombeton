@@ -24,7 +24,7 @@ class ThroughElements:
     def work_doc(self) -> typing.List['CategoryPage']:
         # @todo #741:30m  Parse work docs from stalbeton.
         #  Don't create series entity. It's for another task.
-        raise NotImplemented()
+        raise NotImplementedError()
 
 
 class Page:
@@ -111,32 +111,32 @@ class PageElement:
 #  either 'unit_length_mm' or 'unit_length_m' class name.
 class OptionPropertiesSet(PageElement):
     @property
-    def length(self) -> typing.Union[float, None]:
-        raise NotImplemented()
+    def length(self) -> float:
+        raise NotImplementedError()
 
     @property
-    def width(self) -> typing.Union[float, None]:
-        raise NotImplemented()
+    def width(self) -> float:
+        raise NotImplementedError()
 
     @property
-    def height(self) -> typing.Union[float, None]:
-        raise NotImplemented()
+    def height(self) -> float:
+        raise NotImplementedError()
 
     @property
-    def diameter_out(self) -> typing.Union[float, None]:
-        raise NotImplemented()
+    def diameter_out(self) -> float:
+        raise NotImplementedError()
 
     @property
-    def diameter_in(self) -> typing.Union[float, None]:
-        raise NotImplemented()
+    def diameter_in(self) -> float:
+        raise NotImplementedError()
 
     @property
-    def volume(self) -> typing.Union[float, None]:
-        raise NotImplemented()
+    def volume(self) -> float:
+        raise NotImplementedError()
 
     @property
     def mass(self) -> typing.Union[int, None]:
-        raise NotImplemented()
+        raise NotImplementedError()
 
 
 class Option(PageElement):
@@ -157,10 +157,10 @@ class Option(PageElement):
         return self.soup.find(class_='product-info-caption__link').text
 
     @property
-    def price(self) -> typing.Union[int, None]:
+    def price(self) -> int:
         text = self.soup.find(class_='unit_price').text.replace(' ', '')
         # input text can't be float number
-        return int(text) if text.isnumeric() else None
+        return int(text) if text.isnumeric() else 0
 
     def options(self) -> OptionPropertiesSet:
         return OptionPropertiesSet(self.soup.find(class_='product-info-param'))
