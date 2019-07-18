@@ -23,6 +23,7 @@ from django.utils.translation import ugettext as _
 from catalog.helpers import reverse_catalog_url
 from pages.models import CustomPage, FlatPage, ModelPage
 from stroyprombeton import context, models, request_data
+from stroyprombeton.templatetags import stb_extras
 from stroyprombeton.tests.helpers import CategoryTestMixin
 from stroyprombeton.tests.tests_forms import PriceFormTest
 
@@ -299,9 +300,6 @@ class Category(BaseCatalogTestCase, TestPageMixin):
         for from_db, from_app in zip(second_level_db, second_level_app):
             self.assertEqual(from_db.name, from_app.a.text)
 
-    # @todo #721:30m  Fix category links on series.
-    #  Launch the test below to get details.
-    @unittest.expectedFailure
     def test_links_on_series(self):
         """Category should contain it's series list with links."""
         option = models.Option.objects.filter(series__isnull=False).first()
@@ -1197,7 +1195,7 @@ class SeriesByCategory(BaseCatalogTestCase):
     def get_series_url(series: models.Series, category: models.Category):
         return reverse(
             'series_by_category', kwargs={
-                'series_slug': series.slug,
+                'series_slug': series.page.slug,
                 'category_id': category.id
             }
         )
@@ -1231,7 +1229,11 @@ class SeriesByCategory(BaseCatalogTestCase):
         option_to_include = category_to_include.products.first().options.first()
         option_to_include.series = series
         option_to_include.save()
-        self.assertEqual(1, series.options.filter(product__category=category_to_include).count())
+        self.assertEqual(1, (
+            series.options
+            .filter(product__category=category_to_include)
+            .count()
+        ))
 
         soup = self.get_series_soup(series, category_to_include)
         options_app = soup.find_all(class_='table-link')
@@ -1240,3 +1242,24 @@ class SeriesByCategory(BaseCatalogTestCase):
             option_to_include.catalog_name,
             options_app[0].text.strip()
         )
+
+
+@tag('fast')
+class ThrowoutBlocks(TestCase):
+    """It's blocks presented on every page. Like header or footer."""
+
+    fixtures = ['dump.json']
+    PATH = '/'
+
+    def setUp(self):
+        self.page = self.client.get(self.PATH)
+        self.soup = BeautifulSoup(
+            self.page.content.decode('utf-8'),
+            'html.parser'
+        )
+
+    def test_categories(self):
+        categories = self.soup.select('.nav-subnav > .categories .example')
+        self.assertLessEqual(len(categories), stb_extras.TOP_MENU_EXAMPLES_COUNT)
+        for category in categories:
+            self.assertTrue(models.Category.objects.filter(name=category.text))

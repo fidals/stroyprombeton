@@ -1,18 +1,14 @@
 {% load pages_extras %}
 {% load stb_extras %}
 {% get_top_menu_categories as categories %}
+{% get_top_menu_series as series %}
+{% get_top_menu_sections as sections %}
 
 <li class="nav-item">
   <a class="nav-link" href="{% custom_url 'gbi' %}">Каталог</a>
 
-  {% comment %}
-    @todo #740:60m  Show example Series and Sections in top menu. Mobile too.
-     As categories already shown.
-     Then show all the examples stuff at the mobile version.
-     See pr#737 with removed mobile version template code.
-  {% endcomment %}
   <div class="nav-subnav js-nav-subnav">
-    <div class="nav-subnav-block">
+    <div class="nav-subnav-block categories">
       <div class="label"><a href="{% custom_url 'gbi' %}">Категории</a></div>
       <ul class="examples">
         {% for item in categories %}
@@ -21,12 +17,22 @@
       </ul>
     </div>
 
-    <div class="nav-subnav-block">
+    <div class="nav-subnav-block series">
       <div class="label"><a href="{% custom_url 'series' %}">Серии</a></div>
+      <ul class="examples">
+        {% for item in series %}
+          <li class="example"><a href="{{ item.url }}">{{ item.name }}</a></li>
+        {% endfor %}
+      </ul>
     </div>
 
-    <div class="nav-subnav-block">
+    <div class="nav-subnav-block sections">
       <div class="label"><a href="{% custom_url 'sections' %}">Типы изделий</a></div>
+      <ul class="examples">
+        {% for item in sections %}
+          <li class="example"><a href="{{ item.url }}">{{ item.name }}</a></li>
+        {% endfor %}
+      </ul>
     </div>
   </div>
 </li>

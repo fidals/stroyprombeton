@@ -437,7 +437,8 @@ class Product(catalog.models.AbstractProduct, pages.models.PageMixin):
 
     @property
     def catalog_name(self) -> str:
-        return str(self.name)
+        suffix_model = self.options.first().series or self.category
+        return f'{self.name}. {suffix_model.name}'
 
     def get_absolute_url(self):
         return reverse('product', args=(self.id,))

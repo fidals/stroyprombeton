@@ -6,14 +6,14 @@ from django.template.defaultfilters import floatformat
 
 from images.models import ImageMixin
 from pages.models import Page
-from stroyprombeton.models import Category, Tag
+from stroyprombeton import models as stb_models
 
 register = template.Library()
 
 
-# don't put it in the settings,
+# don't put it in the settings.
 # because it's temporary UI decision
-TOP_MENU_CATEGORIES_COUNT = 7
+TOP_MENU_EXAMPLES_COUNT = 7
 
 
 @register.inclusion_tag('tags/product_values.html')
@@ -44,12 +44,34 @@ def format_price(price):
 @register.simple_tag
 def get_top_menu_categories():
     return (
-        Category.objects
+        stb_models.Category.objects
         .bind_fields()
         .active()
         .filter(level=1)
         .order_by('page__position', 'name')
-        [:TOP_MENU_CATEGORIES_COUNT]
+        [:TOP_MENU_EXAMPLES_COUNT]
+    )
+
+
+@register.simple_tag
+def get_top_menu_series():
+    return (
+        stb_models.Series.objects
+        .bind_fields()
+        .exclude_empty()
+        .order_by('page__position', 'name')
+        [:TOP_MENU_EXAMPLES_COUNT]
+    )
+
+
+@register.simple_tag
+def get_top_menu_sections():
+    return (
+        stb_models.Section.objects
+        .bind_fields()
+        .exclude_empty()
+        .order_by('page__position', 'name')
+        [:TOP_MENU_EXAMPLES_COUNT]
     )
 
 
@@ -76,7 +98,7 @@ def get_img_alt(entity: ImageMixin):
 #  This approach requires just few queries.
 @register.simple_tag
 def get_tag_name(group, option) -> str:
-    tag = Tag.objects.filter(group=group, options__in=[option]).first()
+    tag = stb_models.Tag.objects.filter(group=group, options__in=[option]).first()
     return tag.name if tag else ''
 
 
@@ -152,7 +174,7 @@ def get_page_metadata(content: str) -> dict:
 
 
 @register.filter
-def get_category_gent_name(category: Category, default=None) -> str:
+def get_category_gent_name(category: stb_models.Category, default=None) -> str:
     return settings.CATEGORY_GENT_NAMES.get(
         category.id, category.name if not default else default
     )

@@ -14,7 +14,7 @@ from catalog import context
 from catalog.views import catalog
 from images.models import Image
 from pages import context as pages_context
-from pages.models import CustomPage, ModelPage
+from pages import models as pages_models
 from pages.templatetags.pages_extras import breadcrumbs as get_page_breadcrumbs
 from stroyprombeton import context as stb_context, models, exception, request_data
 from stroyprombeton.views.helpers import set_csrf_cookie
@@ -90,7 +90,7 @@ class CategoryMatrix(ListView):
         context = super().get_context_data(**kwargs)
         return {
             **context,
-            'page': CustomPage.objects.get(slug='gbi'),
+            'page': pages_models.CustomPage.objects.get(slug='gbi'),
         }
 
 
@@ -98,7 +98,9 @@ class CategoryMatrix(ListView):
 class CategoryPage(catalog.CategoryPage):
     pk_url_kwarg = 'category_id'
     related_model_name = models.Category().related_model_name
-    queryset = ModelPage.objects.prefetch_related(related_model_name)
+    queryset = (
+        pages_models.ModelPage.objects.prefetch_related(related_model_name)
+    )
 
     def get_object(self, queryset=None):
         category_pk = self.kwargs.get(self.pk_url_kwarg)
@@ -229,7 +231,7 @@ def series_matrix(request, page='series'):
         return result.values()
 
     columns = settings.SERIES_MATRIX_COLUMNS_COUNT
-    page = CustomPage.objects.get(slug=page)
+    page = pages_models.CustomPage.objects.get(slug=page)
     series = (
         models.Series.objects.bind_fields()
         .exclude_empty()
@@ -256,7 +258,7 @@ def sections_matrix(request, page='sections'):
         return result.values()
 
     columns = settings.SECTIONS_MATRIX_COLUMNS_COUNT
-    page = CustomPage.objects.get(slug=page)
+    page = pages_models.CustomPage.objects.get(slug=page)
     sections = (
         models.Section.objects.bind_fields()
         .exclude_empty()
@@ -317,12 +319,16 @@ def section(request, section_slug: str):
 
 
 def series_by_category(request, series_slug: str, category_id: int):
-    series = get_object_or_404(models.Series.objects, slug=series_slug)
+    page = get_object_or_404(
+        pages_models.ModelPage.objects,
+        related_model_name='stroyprombeton_series',
+        slug=series_slug
+    )
     category = get_object_or_404(models.Category.objects, id=category_id)
     options = (
         models.Option.objects
         .bind_fields()
-        .filter(series=series)
+        .filter(series=page.model)
         .filter_descendants(category)
         .active()
     )
@@ -338,7 +344,7 @@ def series_by_category(request, series_slug: str, category_id: int):
         {
             **images.context(),
             'products': options,
-            'page': series.page,
+            'page': page,
             'category': category,
         }
     )
