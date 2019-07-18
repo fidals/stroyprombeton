@@ -187,9 +187,9 @@
     }
 
     & .label {
-      width: 30%;
       display: inline-block;
       vertical-align: top;
+      margin-bottom: 10px;
 
       & a {
         text-decoration: underline;
@@ -197,7 +197,6 @@
     }
 
     & .examples {
-      width: 65%;
       display: inline-block;
 
       & .example {

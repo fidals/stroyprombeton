@@ -13,7 +13,7 @@ register = template.Library()
 
 # don't put it in the settings.
 # because it's temporary UI decision
-TOP_MENU_EXAMPLES_COUNT = 7
+TOP_MENU_EXAMPLES_COUNT = 3
 
 
 @register.inclusion_tag('tags/product_values.html')
